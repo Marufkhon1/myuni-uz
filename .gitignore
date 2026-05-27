@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Build
+frontend/dist/
+
+# Secrets — hech qachon commit qilmang
+.env
+backend/.env
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# Django
+db.sqlite3
+backend/db.sqlite3
+staticfiles/
+backend/staticfiles/
+backend/media/
+backend/sent_emails/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Tests
+frontend/test-results/
+frontend/playwright-report/
+coverage/
+htmlcov/

@@ -1,0 +1,54 @@
+import {
+  SUPPORT_EMAIL,
+  SUPPORT_PHONE_DISPLAY,
+} from "../../config/siteContact.js";
+
+export function getSupportBotReply(text, { isStudent = false } = {}) {
+  const query = text.trim().toLowerCase();
+  if (!query) {
+    return "Savolingizni yozing — yordam berishga harakat qilaman.";
+  }
+  if (query.includes("parol") || query.includes("kirish") || query.includes("login")) {
+    return "Parolni tiklash uchun «Kirish» sahifasidagi «Parolni unutdingizmi?» havolasidan foydalaning.";
+  }
+  if (query.includes("sharh") || query.includes("baho")) {
+    if (isStudent) {
+      return "«Sharh yozish» bo'limida universitet tanlang — baho va izoh qoldirishingiz mumkin.";
+    }
+    return "«Sharhlarni ko'rish» bo'limida universitet tanlang — talabalar tajribasini o'qing. Sharh yozish faqat talabalarga ochiq.";
+  }
+  if (query.includes("abituriyent") || query.includes("talaba") || query.includes("rol")) {
+    if (isStudent) {
+      return "Siz talaba kabinetidasiz: sharh yozish, chat va taqqoslash mavjud.";
+    }
+    return "Siz abituriyent kabinetidasiz: sharhlarni o'qish, taqqoslash va chat orqali savol berish mumkin.";
+  }
+  if (query.includes("chat") || query.includes("qo'shil")) {
+    return "Chatlar bo'limida universitet guruhiga qo'shiling. Keyin xabar yozishingiz mumkin.";
+  }
+  if (query.includes("taqqos") || query.includes("solishtir")) {
+    return "Taqqoslash bo'limida ikkita universitetni tanlab, yonma-yon ko'ring.";
+  }
+  if (query.includes("profil") || query.includes("rasm")) {
+    return "Profil bo'limida ism, universitet va profil rasmini yangilashingiz mumkin.";
+  }
+  if (query.includes("email") || query.includes("pochta")) {
+    return `Pochta orqali yozing: ${SUPPORT_EMAIL}`;
+  }
+  if (query.includes("telefon") || query.includes("qo'ng'iroq") || query.includes("nomer")) {
+    return `Qo'ng'iroq qiling: ${SUPPORT_PHONE_DISPLAY}`;
+  }
+  return (
+    "Rahmat! Aniqroq yordam uchun email yoki telefon orqali murojaat qiling. Operator tez orada javob beradi."
+  );
+}
+
+export function getSupportBotWelcome(isStudent = false) {
+  return {
+    id: "welcome",
+    from: "bot",
+    text: isStudent
+      ? "Salom! Talaba kabineti yordamchisiman — sharh, chat va taqqoslash haqida yozing."
+      : "Salom! Abituriyent kabineti yordamchisiman — sharhlarni o'qish va tanlov haqida yozing.",
+  };
+}
