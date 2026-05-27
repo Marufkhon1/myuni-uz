@@ -1,0 +1,2 @@
+# myuni-uz
+MyUni.uz
