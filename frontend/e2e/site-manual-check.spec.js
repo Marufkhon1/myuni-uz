@@ -72,23 +72,34 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
 
   test("M10 — sharh yozish va o'chirish", async ({ page }) => {
     await loginStudent(page);
+    await expect(page.getByText(/Ma'lumotlar yuklanmoqda/i)).toHaveCount(0, { timeout: 30000 });
     await openReviewsSection(page);
 
-    const uniLabel = seedUniversities[0].short_name || seedUniversities[0].name;
-    await page.getByRole("button", { name: new RegExp(uniLabel.slice(0, 8), "i") }).first().click({
-      timeout: 15000,
-    });
+    const uni = seedUniversities[0];
+    const uniPick = uni.short_name || uni.name.slice(0, 12);
+    await page
+      .getByRole("button", { name: new RegExp(`^${uniPick.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`, "i") })
+      .first()
+      .click();
 
-    const reviewText =
-      "E2E sharh testi — o'qish tajribam yaxshi, ustozlar yordam beradi va tavsiya qilaman.";
-    await page.getByPlaceholder(/muhit, ustozlar/i).fill(reviewText);
+    const reviewText = `E2E sharh ${suffix} — o'qish tajribam yaxshi, ustozlar yordam beradi va tavsiya qilaman.`;
+    const reviewInput = page.locator('textarea[placeholder*="muhit"]');
+    await expect(reviewInput).toBeVisible({ timeout: 20000 });
+    await reviewInput.fill(reviewText);
     await page.getByRole("button", { name: "5 yulduz" }).click();
     await page.getByRole("button", { name: /sharhni yuborish/i }).click();
-    await expect(page.getByText(reviewText)).toBeVisible({ timeout: 20000 });
+    const postedReview = page
+      .getByRole("article")
+      .filter({ hasText: reviewText })
+      .filter({ has: page.getByRole("button", { name: "O'chirish" }) })
+      .first();
+    await expect(postedReview).toBeVisible({ timeout: 20000 });
 
     page.once("dialog", (dialog) => dialog.accept());
-    await page.getByRole("button", { name: /o['']chirish/i }).first().click();
-    await expect(page.getByText(reviewText)).toHaveCount(0, { timeout: 15000 });
+    await postedReview.getByRole("button", { name: "O'chirish" }).click();
+    await expect(
+      page.getByRole("article").filter({ hasText: reviewText })
+    ).toHaveCount(0, { timeout: 15000 });
   });
 
   test("M6 — 404 sahifa", async ({ page }) => {
@@ -99,7 +110,7 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
   test("M3 — login va dashboard (talaba)", async ({ page }) => {
     await loginStudent(page);
     await expect(page.getByText(/Salom/i)).toBeVisible();
-    await page.getByRole("button", { name: /^profil$/i }).first().click();
+    await page.getByRole("navigation").getByRole("button", { name: /^profil/i }).click();
     await expect(page.getByText("Talaba", { exact: true }).first()).toBeVisible();
   });
 
@@ -118,7 +129,7 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
   test("M9 — taqqoslash bo'limi", async ({ page }) => {
     await loginStudent(page);
     await page.getByRole("button", { name: /taqqoslash/i }).first().click();
-    await expect(page.getByText(/OTMlarni solishtiring/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: /OTMlarni solishtiring/i })).toBeVisible();
     await expect(page.getByText(/2 ta turli universitet/i)).toBeVisible();
   });
 
@@ -141,14 +152,10 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
   });
 
   test("M7 — chat: qo'shilish va xabar", async ({ page, request }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
     await loginStudent(page);
 
-    const universities = await request.get(`${API}/api/universities/`, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    expect(universities.ok()).toBeTruthy();
-    const uniList = await universities.json();
-    const uni = uniList[0];
+    const uni = seedUniversities[0];
     expect(uni?.id).toBeTruthy();
 
     await request.post(`${API}/api/universities/${uni.id}/join/`, {
@@ -156,17 +163,11 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     });
 
     await page.reload();
-    await page.getByRole("button", { name: /^chatlar$/i }).first().click();
-    await page.getByRole("button", { name: /^qidiruv$/i }).click();
-    const search = page.getByPlaceholder(/universitet qidiring/i);
-    await expect(search).toBeVisible({ timeout: 10000 });
-    await search.fill((uni.short_name || uni.name).slice(0, 8));
-    await page.getByText(uni.name).first().click();
-
-    const joinBtn = page.getByRole("button", { name: /qo'shilish/i });
-    if (await joinBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await joinBtn.click();
-    }
+    await expect(page.getByText(/Ma'lumotlar yuklanmoqda/i)).toHaveCount(0, { timeout: 30000 });
+    await page.getByRole("navigation").getByRole("button", { name: /^chatlar/i }).click();
+    await page.getByRole("button", { name: "Qo'shilgan", exact: true }).click();
+    const uniPick = (uni.short_name || uni.name).slice(0, 12).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    await page.getByRole("button", { name: new RegExp(`^${uniPick}`, "i") }).first().click();
 
     const uniqueText = `E2E xabar ${suffix}`;
     const input = page.getByPlaceholder(/xabar yozing/i).first();
@@ -177,6 +178,7 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
   });
 
   test("M4b — tarmoq xatosi: chat banner (simulyatsiya)", async ({ page, request }) => {
+    await page.setViewportSize({ width: 1280, height: 720 });
     await loginStudent(page);
 
     const uniId = seedUniversities[0]?.id;
@@ -185,12 +187,12 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     });
 
     await page.reload();
-    await page.getByRole("button", { name: /^chatlar$/i }).first().click();
-    const joinedTab = page.getByRole("button", { name: /qo'shilgan/i });
-    if (await joinedTab.isVisible()) {
-      await joinedTab.click();
-    }
-    await page.getByText(seedUniversities[0].name).first().click({ timeout: 15000 });
+    await expect(page.getByText(/Ma'lumotlar yuklanmoqda/i)).toHaveCount(0, { timeout: 30000 });
+    await page.getByRole("navigation").getByRole("button", { name: /^chatlar/i }).click();
+    await page.getByRole("button", { name: "Qo'shilgan", exact: true }).click();
+    const uni = seedUniversities[0];
+    const uniPick = (uni.short_name || uni.name).slice(0, 12).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    await page.getByRole("button", { name: new RegExp(`^${uniPick}`, "i") }).first().click();
 
     await page.route("**/api/universities/*/messages/**", (route) => {
       if (route.request().method() === "POST") {
