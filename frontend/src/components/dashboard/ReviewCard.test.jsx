@@ -25,12 +25,12 @@ describe("ReviewCard", () => {
   it("calls onDelete for own review", () => {
     const onDelete = vi.fn();
     render(<ReviewCard item={baseItem} onLike={vi.fn()} onDelete={onDelete} />);
-    fireEvent.click(screen.getByRole("button", { name: /O'chirish/i }));
+    fireEvent.click(screen.getByRole("button", { name: /O['']chirish/i }));
     expect(onDelete).toHaveBeenCalledWith(1);
   });
 
   it("shows pending status badge", () => {
     render(<ReviewCard item={{ ...baseItem, status: "pending", is_mine: false }} onLike={vi.fn()} />);
-    expect(screen.getByText("Ko'rib chiqilmoqda")).toBeInTheDocument();
+    expect(screen.getByText(/Ko['']rib chiqilmoqda/)).toBeInTheDocument();
   });
 });
