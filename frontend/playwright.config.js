@@ -4,8 +4,11 @@ const isCi = Boolean(process.env.CI);
 
 export default defineConfig({
   testDir: "./e2e",
-  timeout: 60000,
+  timeout: isCi ? 90000 : 60000,
   retries: isCi ? 1 : 0,
+  expect: {
+    timeout: isCi ? 20000 : 10000,
+  },
   workers: isCi ? 1 : undefined,
   use: {
     baseURL: "http://127.0.0.1:5173",

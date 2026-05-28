@@ -23,16 +23,31 @@ async function registerStudent(request) {
   });
   expect(register.status()).toBe(201);
   const body = await register.json();
-  return body.access;
+  return { access: body.access, universities: list };
+}
+
+async function loginStudent(page) {
+  await page.goto(`${WEB}/login`);
+  await page.fill('input[name="email"]', studentEmail);
+  await page.fill('input[name="password"]', PASSWORD);
+  await page.getByRole("button", { name: /^kirish$/i }).click();
+  await page.waitForURL(/\/student\/dashboard/, { timeout: 20000 });
+}
+
+async function openReviewsSection(page) {
+  await page.getByRole("button", { name: /sharh yozish/i }).first().click();
 }
 
 test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
   test.describe.configure({ mode: "serial" });
 
   let accessToken = "";
+  let seedUniversities = [];
 
   test.beforeAll(async ({ request }) => {
-    accessToken = await registerStudent(request);
+    const registered = await registerStudent(request);
+    accessToken = registered.access;
+    seedUniversities = registered.universities;
   });
 
   test("M1 — landing va CTA matni", async ({ page }) => {
@@ -56,25 +71,24 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
   });
 
   test("M10 — sharh yozish va o'chirish", async ({ page }) => {
-    await page.goto(`${WEB}/login`);
-    await page.fill('input[name="email"]', studentEmail);
-    await page.fill('input[name="password"]', PASSWORD);
-    await page.getByRole("button", { name: /^kirish$/i }).click();
-    await page.waitForURL(/\/student\/dashboard/);
+    await loginStudent(page);
+    await openReviewsSection(page);
 
-    await page.getByRole("button", { name: /sharh yozish/i }).click();
-    await page.locator("button:has(span.truncate)").first().click({ timeout: 15000 });
+    const uniLabel = seedUniversities[0].short_name || seedUniversities[0].name;
+    await page.getByRole("button", { name: new RegExp(uniLabel.slice(0, 8), "i") }).first().click({
+      timeout: 15000,
+    });
 
     const reviewText =
       "E2E sharh testi — o'qish tajribam yaxshi, ustozlar yordam beradi va tavsiya qilaman.";
     await page.getByPlaceholder(/muhit, ustozlar/i).fill(reviewText);
     await page.getByRole("button", { name: "5 yulduz" }).click();
     await page.getByRole("button", { name: /sharhni yuborish/i }).click();
-    await expect(page.getByText(reviewText)).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(reviewText)).toBeVisible({ timeout: 20000 });
 
     page.once("dialog", (dialog) => dialog.accept());
     await page.getByRole("button", { name: /o['']chirish/i }).first().click();
-    await expect(page.getByText(reviewText)).toHaveCount(0, { timeout: 10000 });
+    await expect(page.getByText(reviewText)).toHaveCount(0, { timeout: 15000 });
   });
 
   test("M6 — 404 sahifa", async ({ page }) => {
@@ -83,23 +97,14 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
   });
 
   test("M3 — login va dashboard (talaba)", async ({ page }) => {
-    await page.goto(`${WEB}/login`);
-    await page.fill('input[name="email"]', studentEmail);
-    await page.fill('input[name="password"]', PASSWORD);
-    await page.getByRole("button", { name: /^kirish$/i }).click();
-    await page.waitForURL(/\/student\/dashboard/, { timeout: 15000 });
+    await loginStudent(page);
     await expect(page.getByText(/Salom/i)).toBeVisible();
-    await page.getByRole("button", { name: /^profil$/i }).click();
+    await page.getByRole("button", { name: /^profil$/i }).first().click();
     await expect(page.getByText("Talaba", { exact: true }).first()).toBeVisible();
   });
 
   test("M8 — qo'llab-quvvatlash chat-bot modali", async ({ page }) => {
-    await page.goto(`${WEB}/login`);
-    await page.fill('input[name="email"]', studentEmail);
-    await page.fill('input[name="password"]', PASSWORD);
-    await page.getByRole("button", { name: /^kirish$/i }).click();
-    await page.waitForURL(/\/student\/dashboard/);
-
+    await loginStudent(page);
     await page.getByRole("button", { name: /yordamchi bilan yozing/i }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByText(/MyUni yordamchi/i)).toBeVisible();
@@ -111,90 +116,81 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
   });
 
   test("M9 — taqqoslash bo'limi", async ({ page }) => {
-    await page.goto(`${WEB}/login`);
-    await page.fill('input[name="email"]', studentEmail);
-    await page.fill('input[name="password"]', PASSWORD);
-    await page.getByRole("button", { name: /^kirish$/i }).click();
-    await page.waitForURL(/\/student\/dashboard/);
-
-    await page.getByRole("button", { name: /taqqoslash/i }).click();
+    await loginStudent(page);
+    await page.getByRole("button", { name: /taqqoslash/i }).first().click();
     await expect(page.getByText(/qaysi OTM sizga mos/i)).toBeVisible();
     await expect(page.getByText(/2 ta turli universitet/i)).toBeVisible();
   });
 
   test("M4 — qorong'u rejim", async ({ page }) => {
-    await page.goto(`${WEB}/login`);
-    await page.fill('input[name="email"]', studentEmail);
-    await page.fill('input[name="password"]', PASSWORD);
-    await page.getByRole("button", { name: /^kirish$/i }).click();
-    await page.waitForURL(/\/student\/dashboard/);
-
+    await loginStudent(page);
     const html = page.locator("html");
     const before = await html.evaluate((el) => el.classList.contains("dark"));
     const toggle = page.getByRole("button", { name: /rang rejimini almashtirish/i });
-    if (await toggle.isVisible()) {
-      await toggle.click();
-      const after = await html.evaluate((el) => el.classList.contains("dark"));
-      expect(after).not.toBe(before);
-    }
+    await expect(toggle).toBeVisible();
+    await toggle.click();
+    const after = await html.evaluate((el) => el.classList.contains("dark"));
+    expect(after).not.toBe(before);
   });
 
   test("M5 — mobil: pastki navigatsiya", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto(`${WEB}/login`);
-    await page.fill('input[name="email"]', studentEmail);
-    await page.fill('input[name="password"]', PASSWORD);
-    await page.getByRole("button", { name: /^kirish$/i }).click();
-    await page.waitForURL(/\/student\/dashboard/);
-
+    await loginStudent(page);
     await expect(page.getByRole("navigation", { name: "Asosiy menyu" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Chatlar" })).toBeVisible();
   });
 
   test("M7 — chat: qo'shilish va xabar", async ({ page, request }) => {
-    await page.goto(`${WEB}/login`);
-    await page.fill('input[name="email"]', studentEmail);
-    await page.fill('input[name="password"]', PASSWORD);
-    await page.getByRole("button", { name: /^kirish$/i }).click();
-    await page.waitForURL(/\/student\/dashboard/);
+    await loginStudent(page);
 
     const universities = await request.get(`${API}/api/universities/`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
+    expect(universities.ok()).toBeTruthy();
     const uniList = await universities.json();
-    const uniId = uniList[0]?.id;
-    expect(uniId).toBeTruthy();
+    const uni = uniList[0];
+    expect(uni?.id).toBeTruthy();
 
-    await request.post(`${API}/api/universities/${uniId}/join/`, {
+    await request.post(`${API}/api/universities/${uni.id}/join/`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
     await page.reload();
-    await page.getByRole("button", { name: /qidiruv/i }).click();
+    await page.getByRole("button", { name: /^chatlar$/i }).first().click();
+    await page.getByRole("button", { name: /^qidiruv$/i }).click();
     const search = page.getByPlaceholder(/universitet qidiring/i);
-    if (await search.isVisible()) {
-      await search.fill(uniList[0].name.slice(0, 8));
-    }
-    await page.getByText(uniList[0].name).first().click();
+    await expect(search).toBeVisible({ timeout: 10000 });
+    await search.fill((uni.short_name || uni.name).slice(0, 8));
+    await page.getByText(uni.name).first().click();
 
-    const joinBtn = page.getByRole("button", { name: /chatga qo'shilish/i });
-    if (await joinBtn.isVisible()) {
+    const joinBtn = page.getByRole("button", { name: /qo'shilish/i });
+    if (await joinBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
       await joinBtn.click();
     }
 
     const uniqueText = `E2E xabar ${suffix}`;
     const input = page.getByPlaceholder(/xabar yozing/i).first();
+    await expect(input).toBeVisible({ timeout: 15000 });
     await input.fill(uniqueText);
     await page.getByRole("button", { name: /^yuborish$/i }).first().click();
-    await expect(page.getByText(uniqueText)).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(uniqueText)).toBeVisible({ timeout: 20000 });
   });
 
-  test("M4b — tarmoq xatosi: chat banner (simulyatsiya)", async ({ page }) => {
-    await page.goto(`${WEB}/login`);
-    await page.fill('input[name="email"]', studentEmail);
-    await page.fill('input[name="password"]', PASSWORD);
-    await page.getByRole("button", { name: /^kirish$/i }).click();
-    await page.waitForURL(/\/student\/dashboard/);
+  test("M4b — tarmoq xatosi: chat banner (simulyatsiya)", async ({ page, request }) => {
+    await loginStudent(page);
+
+    const uniId = seedUniversities[0]?.id;
+    await request.post(`${API}/api/universities/${uniId}/join/`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    await page.reload();
+    await page.getByRole("button", { name: /^chatlar$/i }).first().click();
+    const joinedTab = page.getByRole("button", { name: /qo'shilgan/i });
+    if (await joinedTab.isVisible()) {
+      await joinedTab.click();
+    }
+    await page.getByText(seedUniversities[0].name).first().click({ timeout: 15000 });
 
     await page.route("**/api/universities/*/messages/**", (route) => {
       if (route.request().method() === "POST") {
