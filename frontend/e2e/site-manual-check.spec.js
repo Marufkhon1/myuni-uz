@@ -62,25 +62,19 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     await page.getByRole("button", { name: /^kirish$/i }).click();
     await page.waitForURL(/\/student\/dashboard/);
 
-    await page.getByRole("button", { name: /^sharhlar$/i }).click();
-    const firstUni = page.locator("button").filter({ hasText: /universitet/i }).first();
-    await firstUni.click();
+    await page.getByRole("button", { name: /sharh yozish/i }).click();
+    await page.locator("button:has(span.truncate)").first().click({ timeout: 15000 });
 
     const reviewText =
       "E2E sharh testi — o'qish tajribam yaxshi, ustozlar yordam beradi va tavsiya qilaman.";
-    await page.getByPlaceholder(/sharh|tajriba/i).first().fill(reviewText);
-    const starButtons = page.locator('button[aria-label*="baho"], button').filter({ hasText: "★" });
-    if ((await starButtons.count()) > 0) {
-      await page.locator('button[aria-label="5 baho"], button[aria-label*="5"]').first().click({ timeout: 3000 }).catch(() => {});
-    }
-    await page.getByRole("button", { name: /sharh yuborish|yuborish/i }).first().click({ timeout: 5000 }).catch(() => {});
+    await page.getByPlaceholder(/muhit, ustozlar/i).fill(reviewText);
+    await page.getByRole("button", { name: "5 yulduz" }).click();
+    await page.getByRole("button", { name: /sharhni yuborish/i }).click();
+    await expect(page.getByText(reviewText)).toBeVisible({ timeout: 15000 });
 
-    const deleteBtn = page.getByRole("button", { name: /^o'chirish$/i }).first();
-    if (await deleteBtn.isVisible({ timeout: 8000 }).catch(() => false)) {
-      page.once("dialog", (dialog) => dialog.accept());
-      await deleteBtn.click();
-      await expect(page.getByText(reviewText)).toHaveCount(0, { timeout: 10000 });
-    }
+    page.once("dialog", (dialog) => dialog.accept());
+    await page.getByRole("button", { name: /o['']chirish/i }).first().click();
+    await expect(page.getByText(reviewText)).toHaveCount(0, { timeout: 10000 });
   });
 
   test("M6 — 404 sahifa", async ({ page }) => {
@@ -124,7 +118,7 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     await page.waitForURL(/\/student\/dashboard/);
 
     await page.getByRole("button", { name: /taqqoslash/i }).click();
-    await expect(page.getByText(/qaysi universitet sizga mos/i)).toBeVisible();
+    await expect(page.getByText(/qaysi OTM sizga mos/i)).toBeVisible();
     await expect(page.getByText(/2 ta turli universitet/i)).toBeVisible();
   });
 
