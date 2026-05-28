@@ -30,10 +30,20 @@ class ChatPermissionTests(TestCase):
         self.member_token = str(RefreshToken.for_user(self.member).access_token)
         self.outsider_token = str(RefreshToken.for_user(self.outsider).access_token)
 
-    def test_non_member_cannot_list_university_messages(self):
+    def test_non_member_can_preview_university_messages(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.outsider_token}")
         response = self.client.get(
             f"/api/universities/{self.university.id}/messages/"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"messages": [], "pinned": None})
+
+    def test_non_member_cannot_post_university_message(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.outsider_token}")
+        response = self.client.post(
+            f"/api/universities/{self.university.id}/messages/",
+            {"text": "Salom"},
+            format="json",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -43,7 +53,7 @@ class ChatPermissionTests(TestCase):
             f"/api/universities/{self.university.id}/messages/"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), [])
+        self.assertEqual(response.json(), {"messages": [], "pinned": None})
 
     def test_non_member_cannot_open_university_sse(self):
         response = self.client.get(

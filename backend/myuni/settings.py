@@ -144,6 +144,27 @@ PASSWORD_RESET_MAX_PER_SESSION_HOUR = int(os.getenv("PASSWORD_RESET_MAX_PER_SESS
 PASSWORD_RESET_WINDOW_SECONDS = int(os.getenv("PASSWORD_RESET_WINDOW_SECONDS", "3600"))
 PASSWORD_RESET_SESSION_KEY = "password_reset_attempts"
 
+REVIEW_SUBMIT_WINDOW_SECONDS = int(os.getenv("REVIEW_SUBMIT_WINDOW_SECONDS", "3600"))
+REVIEW_SUBMIT_FREE_ATTEMPTS = int(os.getenv("REVIEW_SUBMIT_FREE_ATTEMPTS", "3"))
+REVIEW_SUBMIT_COOLDOWN = int(os.getenv("REVIEW_SUBMIT_COOLDOWN", "300"))
+REVIEW_SUBMIT_MIN_INTERVAL = int(os.getenv("REVIEW_SUBMIT_MIN_INTERVAL", "45"))
+REVIEW_SUBMIT_MAX_PER_USER_HOUR = int(os.getenv("REVIEW_SUBMIT_MAX_PER_USER_HOUR", "8"))
+REVIEW_SUBMIT_MAX_PER_IP_HOUR = int(os.getenv("REVIEW_SUBMIT_MAX_PER_IP_HOUR", "15"))
+REVIEW_SUBMIT_MAX_PER_SESSION_HOUR = int(os.getenv("REVIEW_SUBMIT_MAX_PER_SESSION_HOUR", "6"))
+REVIEW_SUBMIT_SESSION_KEY = "review_submit_attempts"
+
+REVIEW_MODERATION_ENABLED = os.getenv("REVIEW_MODERATION_ENABLED", "False") == "True"
+REVIEW_MODERATOR_EMAILS = os.getenv("REVIEW_MODERATOR_EMAILS", "")
+
+SUPPORT_MAX_PER_IP_HOUR = int(os.getenv("SUPPORT_MAX_PER_IP_HOUR", "10"))
+SUPPORT_MAX_PER_SESSION_HOUR = int(os.getenv("SUPPORT_MAX_PER_SESSION_HOUR", "5"))
+SUPPORT_WINDOW_SECONDS = int(os.getenv("SUPPORT_WINDOW_SECONDS", "3600"))
+SUPPORT_SESSION_KEY = "support_attempts"
+
+STREAM_TOKEN_TTL_SECONDS = int(os.getenv("STREAM_TOKEN_TTL_SECONDS", "300"))
+JWT_ACCESS_COOKIE_MAX_AGE = int(os.getenv("JWT_ACCESS_COOKIE_MAX_AGE", "3600"))
+JWT_REFRESH_COOKIE_MAX_AGE = int(os.getenv("JWT_REFRESH_COOKIE_MAX_AGE", "604800"))
+
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -157,6 +178,7 @@ REST_FRAMEWORK = {
         "rest_framework.renderers.BrowsableAPIRenderer",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "accounts.authentication.CookieJWTAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ],
 }

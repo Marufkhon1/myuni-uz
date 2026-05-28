@@ -3,9 +3,14 @@ import { api } from "./api.js";
 const ACCESS_TOKEN_KEY = "myuni_access_token";
 const REFRESH_TOKEN_KEY = "myuni_refresh_token";
 
+/** Legacy: eski brauzer sessiyalari uchun; yangi login cookie orqali ishlaydi. */
 export function saveTokens({ access, refresh }) {
-  localStorage.setItem(ACCESS_TOKEN_KEY, access);
-  localStorage.setItem(REFRESH_TOKEN_KEY, refresh);
+  if (access) {
+    localStorage.setItem(ACCESS_TOKEN_KEY, access);
+  }
+  if (refresh) {
+    localStorage.setItem(REFRESH_TOKEN_KEY, refresh);
+  }
 }
 
 export function clearTokens() {
@@ -21,15 +26,31 @@ export function hasRefreshToken() {
   return Boolean(localStorage.getItem(REFRESH_TOKEN_KEY));
 }
 
+export async function establishAuthSession(tokens) {
+  await api.post("/auth/session/", tokens);
+}
+
+export async function logoutSession() {
+  try {
+    await api.post("/auth/logout/");
+  } finally {
+    clearTokens();
+  }
+}
+
 export async function register(payload) {
   const { data } = await api.post("/auth/register/", payload);
-  saveTokens(data);
+  if (data.access) {
+    saveTokens(data);
+  }
   return data.user;
 }
 
 export async function login(payload) {
   const { data } = await api.post("/auth/login/", payload);
-  saveTokens(data);
+  if (data.access) {
+    saveTokens(data);
+  }
   return data.user;
 }
 
@@ -60,6 +81,11 @@ export async function updateProfileSettings(payload) {
 export async function getGoogleAuthUrl(params = {}) {
   const { data } = await api.get("/auth/google/start/", { params });
   return data.authorization_url;
+}
+
+export async function fetchStreamToken() {
+  const { data } = await api.post("/auth/stream-token/");
+  return data.stream_token;
 }
 
 export async function requestPasswordReset(email) {

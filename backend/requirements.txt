@@ -6,3 +6,6 @@ psycopg[binary]
 python-dotenv
 requests
 Pillow
+gunicorn
+pytest-cov
+pip-audit

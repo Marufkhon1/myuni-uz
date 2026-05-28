@@ -2,6 +2,7 @@ import { useState } from "react";
 import { CAMPUS_IMAGE_PATHS, campusIndex, getUniversityImageUrl } from "../utils/universityImage.js";
 
 const sizeClasses = {
+  xs: "h-9 w-9 text-[11px]",
   sm: "h-12 w-12 text-sm",
   md: "h-14 w-14 text-base",
   lg: "h-16 w-16 text-xl",

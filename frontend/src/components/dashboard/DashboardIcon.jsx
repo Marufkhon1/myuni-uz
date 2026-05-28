@@ -26,6 +26,15 @@ export default function DashboardIcon({ name }) {
     );
   }
 
+  if (name === "search") {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </svg>
+    );
+  }
+
   if (name === "compare") {
     return (
       <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="2">

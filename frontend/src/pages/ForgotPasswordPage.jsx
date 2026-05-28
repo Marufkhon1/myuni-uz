@@ -54,6 +54,7 @@ export default function ForgotPasswordPage() {
       eyebrow="Parolni tiklash"
       title="Email manzilingizni kiriting."
       subtitle="Agar hisob mavjud bo'lsa, parolni yangilash havolasi yuboriladi."
+      showBackHome={false}
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>

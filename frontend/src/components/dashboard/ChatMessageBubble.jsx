@@ -1,13 +1,25 @@
-import { useEffect, useRef, useState } from "react";
-import { CHAT_REACTIONS } from "../../constants/chatReactions.js";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import ChatMessageContextMenu from "../chat/ChatMessageContextMenu.jsx";
+import ChatReactionPicker from "../chat/ChatReactionPicker.jsx";
+import { getAuthorColorClass } from "../../utils/chatAuthorColor.js";
+import { clampContextMenuPosition, getReactionPickerPosition } from "../../utils/chatMenuPosition.js";
 
-const REACTION_TRIGGER_DELAY_MS = 1500;
-const REACTION_HIDE_DELAY_MS = 220;
+const MENU_ESTIMATE = { width: 210, height: 168 };
+const HOVER_HEART_DELAY_MS = 1500;
+const HOVER_LEAVE_DELAY_MS = 200;
+const HOVER_LEAVE_WITH_PICKER_MS = 400;
 
 export default function ChatMessageBubble({
   message,
   formatTime,
   onReact,
+  onEdit,
+  onDelete,
+  onReport,
+  onPin,
+  onUnpin,
+  isPinned = false,
   onAuthorClick,
   isReacting = false,
   mineClassName = "bg-primary text-white",
@@ -15,242 +27,345 @@ export default function ChatMessageBubble({
   containerClassName = "max-w-[min(42rem,78%)]",
 }) {
   const isMine = message.is_mine;
+  const authorId = message.author_id ?? message.sender_id;
+  const authorColorClass = getAuthorColorClass(
+    authorId,
+    message.author_color ?? message.sender_color
+  );
+  const [showMenu, setShowMenu] = useState(false);
+  const [menuClick, setMenuClick] = useState({ x: 0, y: 0 });
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [showHeartTrigger, setShowHeartTrigger] = useState(false);
-  const [showPicker, setShowPicker] = useState(false);
+  const [pickerExpanded, setPickerExpanded] = useState(false);
+  const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
+
   const rootRef = useRef(null);
-  const triggerTimerRef = useRef(null);
-  const hideTimerRef = useRef(null);
-  const longPressTimerRef = useRef(null);
+  const bubbleRef = useRef(null);
+  const menuRef = useRef(null);
+  const pickerRef = useRef(null);
+  const hoverOpenTimerRef = useRef(null);
+  const hoverCloseTimerRef = useRef(null);
+  const suppressHoverUntilLeaveRef = useRef(false);
+  const pointerInsideRef = useRef(false);
 
   const bubbleClass = isMine ? mineClassName : otherClassName;
-  const reactionChipClass = isMine
-    ? "border-white/20 bg-white/95 text-slate-900 shadow-sm dark:bg-slate-800 dark:text-white"
-    : "border-slate-200/90 bg-white text-slate-800 shadow-sm dark:border-white/15 dark:bg-slate-800 dark:text-white";
+  const reactionBadgeClass =
+    "inline-flex items-center gap-0.5 rounded-full border border-white/10 bg-[#2b3344] px-1.5 py-0.5 text-xs font-bold text-white shadow-lg ring-1 ring-black/10";
 
-  /** Telegram: o‘z xabari — tanlov chat markaziga (chap), boshqasi — o‘ngga */
-  const pickerAnchorClass = isMine
-    ? "right-full bottom-1 mr-0.5"
-    : "left-full bottom-1 ml-0.5";
-
-  const heartAnchorClass = isMine
-    ? "bottom-0.5 -left-2"
-    : "bottom-0.5 -right-2";
-
-  function clearTriggerTimer() {
-    if (triggerTimerRef.current) {
-      window.clearTimeout(triggerTimerRef.current);
-      triggerTimerRef.current = null;
+  const clearHoverTimers = useCallback(() => {
+    if (hoverOpenTimerRef.current) {
+      window.clearTimeout(hoverOpenTimerRef.current);
+      hoverOpenTimerRef.current = null;
     }
+    if (hoverCloseTimerRef.current) {
+      window.clearTimeout(hoverCloseTimerRef.current);
+      hoverCloseTimerRef.current = null;
+    }
+  }, []);
+
+  const updatePickerPosition = useCallback(() => {
+    if (!bubbleRef.current) {
+      return;
+    }
+    setPickerPosition(
+      getReactionPickerPosition(
+        bubbleRef.current.getBoundingClientRect(),
+        isMine,
+        pickerExpanded
+      )
+    );
+  }, [isMine, pickerExpanded]);
+
+  function closeMenu() {
+    setShowMenu(false);
   }
 
-  function clearHideTimer() {
-    if (hideTimerRef.current) {
-      window.clearTimeout(hideTimerRef.current);
-      hideTimerRef.current = null;
-    }
+  function closeReactionUi() {
+    setShowHeartTrigger(false);
+    setPickerExpanded(false);
   }
 
-  function clearLongPressTimer() {
-    if (longPressTimerRef.current) {
-      window.clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
+  function handleMessageContextMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    clearHoverTimers();
+    closeReactionUi();
+    setMenuClick({ x: event.clientX, y: event.clientY });
+    setMenuPosition(
+      clampContextMenuPosition(
+        event.clientX,
+        event.clientY,
+        MENU_ESTIMATE.width,
+        MENU_ESTIMATE.height
+      )
+    );
+    setShowMenu(true);
   }
 
   function scheduleHeartTrigger() {
-    clearTriggerTimer();
-    clearHideTimer();
-    triggerTimerRef.current = window.setTimeout(() => {
+    if (showMenu || suppressHoverUntilLeaveRef.current) {
+      return;
+    }
+    if (hoverCloseTimerRef.current) {
+      window.clearTimeout(hoverCloseTimerRef.current);
+      hoverCloseTimerRef.current = null;
+    }
+    if (hoverOpenTimerRef.current || showHeartTrigger) {
+      return;
+    }
+    hoverOpenTimerRef.current = window.setTimeout(() => {
+      hoverOpenTimerRef.current = null;
+      if (!pointerInsideRef.current || suppressHoverUntilLeaveRef.current) {
+        return;
+      }
+      updatePickerPosition();
       setShowHeartTrigger(true);
-      triggerTimerRef.current = null;
-    }, REACTION_TRIGGER_DELAY_MS);
+    }, HOVER_HEART_DELAY_MS);
   }
 
   function scheduleHideReactionUi() {
-    clearTriggerTimer();
-    clearHideTimer();
-    hideTimerRef.current = window.setTimeout(() => {
-      setShowHeartTrigger(false);
-      setShowPicker(false);
-      hideTimerRef.current = null;
-    }, REACTION_HIDE_DELAY_MS);
+    if (hoverOpenTimerRef.current) {
+      window.clearTimeout(hoverOpenTimerRef.current);
+      hoverOpenTimerRef.current = null;
+    }
+    if (hoverCloseTimerRef.current) {
+      window.clearTimeout(hoverCloseTimerRef.current);
+    }
+    const delay =
+      showHeartTrigger || pickerExpanded ? HOVER_LEAVE_WITH_PICKER_MS : HOVER_LEAVE_DELAY_MS;
+    hoverCloseTimerRef.current = window.setTimeout(() => {
+      hoverCloseTimerRef.current = null;
+      const overArticle = rootRef.current?.matches(":hover");
+      const overPicker = pickerRef.current?.matches(":hover");
+      if (overArticle || overPicker) {
+        return;
+      }
+      closeReactionUi();
+    }, delay);
   }
 
-  function cancelHideReactionUi() {
-    clearHideTimer();
+  function handleArticleMouseEnter() {
+    pointerInsideRef.current = true;
+    scheduleHeartTrigger();
   }
 
-  function openReactionPicker(event) {
-    event.stopPropagation();
-    setShowPicker(true);
-    setShowHeartTrigger(false);
-    clearTriggerTimer();
-    clearHideTimer();
+  function handleArticleMouseLeave() {
+    pointerInsideRef.current = false;
+    suppressHoverUntilLeaveRef.current = false;
+    scheduleHideReactionUi();
   }
 
-  function handleReactionClick(emoji) {
+  function keepReactionUiVisible() {
+    pointerInsideRef.current = true;
+    if (hoverCloseTimerRef.current) {
+      window.clearTimeout(hoverCloseTimerRef.current);
+      hoverCloseTimerRef.current = null;
+    }
+  }
+
+  function handlePickerExpand() {
+    setPickerExpanded(true);
+    updatePickerPosition();
+    keepReactionUiVisible();
+  }
+
+  function handlePickerCollapse() {
+    setPickerExpanded(false);
+    updatePickerPosition();
+  }
+
+  function handleReactionPick(emoji) {
+    clearHoverTimers();
+    closeReactionUi();
+    suppressHoverUntilLeaveRef.current = true;
+    pointerInsideRef.current = false;
     onReact(message, emoji);
-    setShowPicker(false);
-    setShowHeartTrigger(false);
   }
 
-  function handleTouchStart() {
-    clearLongPressTimer();
-    longPressTimerRef.current = window.setTimeout(() => {
-      setShowHeartTrigger(true);
-      longPressTimerRef.current = null;
-    }, REACTION_TRIGGER_DELAY_MS);
-  }
-
-  function handleTouchEnd() {
-    clearLongPressTimer();
-  }
+  useLayoutEffect(() => {
+    if (!showMenu || !menuRef.current) {
+      return;
+    }
+    const rect = menuRef.current.getBoundingClientRect();
+    setMenuPosition(clampContextMenuPosition(menuClick.x, menuClick.y, rect.width, rect.height));
+  }, [showMenu, menuClick.x, menuClick.y]);
 
   useEffect(() => {
-    if (!showPicker) {
+    if (!showHeartTrigger) {
+      return undefined;
+    }
+    updatePickerPosition();
+    function handleReposition() {
+      updatePickerPosition();
+    }
+    window.addEventListener("scroll", handleReposition, true);
+    window.addEventListener("resize", handleReposition);
+    return () => {
+      window.removeEventListener("scroll", handleReposition, true);
+      window.removeEventListener("resize", handleReposition);
+    };
+  }, [showHeartTrigger, pickerExpanded, updatePickerPosition]);
+
+  useEffect(() => {
+    if (!showMenu) {
       return undefined;
     }
 
     function handlePointerDown(event) {
-      if (rootRef.current && !rootRef.current.contains(event.target)) {
-        setShowPicker(false);
-        setShowHeartTrigger(false);
+      if (menuRef.current?.contains(event.target)) {
+        return;
+      }
+      closeMenu();
+    }
+
+    function handleEscape(event) {
+      if (event.key === "Escape") {
+        closeMenu();
       }
     }
 
     document.addEventListener("mousedown", handlePointerDown);
     document.addEventListener("touchstart", handlePointerDown);
+    document.addEventListener("keydown", handleEscape);
     return () => {
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("touchstart", handlePointerDown);
+      document.removeEventListener("keydown", handleEscape);
     };
-  }, [showPicker]);
+  }, [showMenu]);
 
-  useEffect(
-    () => () => {
-      clearTriggerTimer();
-      clearHideTimer();
-      clearLongPressTimer();
-    },
-    []
-  );
+  useEffect(() => () => clearHoverTimers(), [clearHoverTimers]);
 
   const hasReactions = message.reactions?.length > 0;
+  const displayName = message.author || message.sender_name;
+  const reactionCornerClass = isMine
+    ? "bottom-0 left-1 -translate-x-1 translate-y-1/2"
+    : "bottom-0 right-1 translate-x-1 translate-y-1/2";
+
+  const contextMenuPortal =
+    showMenu &&
+    createPortal(
+      <div ref={menuRef} className="fixed z-[200]" style={{ left: menuPosition.x, top: menuPosition.y }}>
+        <ChatMessageContextMenu
+          message={message}
+          isMine={isMine}
+          isReacting={isReacting}
+          isPinned={isPinned}
+          onReact={onReact}
+          onPin={onPin}
+          onUnpin={onUnpin}
+          onReport={onReport}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onClose={closeMenu}
+        />
+      </div>,
+      document.body
+    );
+
+  const reactionPickerPortal =
+    showHeartTrigger &&
+    !showMenu &&
+    createPortal(
+      <div
+        ref={pickerRef}
+        className="fixed z-[190] p-2"
+        style={{ top: pickerPosition.top, left: pickerPosition.left }}
+        onMouseEnter={keepReactionUiVisible}
+        onMouseLeave={scheduleHideReactionUi}
+      >
+        <ChatReactionPicker
+          message={message}
+          isReacting={isReacting}
+          expanded={pickerExpanded}
+          onExpand={handlePickerExpand}
+          onCollapse={handlePickerCollapse}
+          onPick={handleReactionPick}
+        />
+      </div>,
+      document.body
+    );
 
   return (
-    <article
-      ref={rootRef}
-      className={`group/msg relative w-fit ${containerClassName} ${isMine ? "ml-auto" : "mr-auto"} ${
-        hasReactions ? "mb-4" : showHeartTrigger || showPicker ? "mb-1" : ""
-      }`}
-      onMouseEnter={scheduleHeartTrigger}
-      onMouseLeave={scheduleHideReactionUi}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchEnd}
-    >
-      <div className="relative" onMouseEnter={cancelHideReactionUi}>
-        <div
-          className={`relative px-3 py-2 shadow-sm ${bubbleClass} ${
-            isMine ? "rounded-2xl rounded-br-md" : "rounded-2xl rounded-bl-md"
-          }`}
-        >
-          {!isMine && (message.author || message.sender_name) && (
-            onAuthorClick && (message.author_id || message.sender_id) ? (
-              <button
-                type="button"
-                onClick={() =>
-                  onAuthorClick(message.author_id ?? message.sender_id, {
-                    display_name: message.author || message.sender_name,
-                  })
-                }
-                className="text-left text-[11px] font-bold uppercase tracking-wide text-primary/90 transition hover:text-primary"
-              >
-                {message.author || message.sender_name}
-              </button>
-            ) : (
-              <p className="text-[11px] font-bold uppercase tracking-wide text-primary/90">
-                {message.author || message.sender_name}
-              </p>
-            )
-          )}
-          <p
-            className={`text-[15px] leading-snug ${
-              !isMine && (message.author || message.sender_name) ? "mt-0.5" : ""
-            }`}
-          >
-            {message.text}
-          </p>
-          <time
-            className={`mt-1 block text-[10px] font-semibold opacity-60 ${
-              isMine ? "text-right" : "text-left"
-            }`}
-          >
-            {formatTime(message.created_at)}
-          </time>
-        </div>
-
-        {showHeartTrigger && !showPicker && !isReacting && (
-          <button
-            type="button"
-            title="Reaksiya"
-            onClick={openReactionPicker}
-            className={`absolute z-10 grid h-6 w-6 place-items-center rounded-full bg-[#3a3a3a] text-xs text-white shadow-md transition hover:scale-105 ${heartAnchorClass}`}
-            aria-label="Reaksiyalar"
-          >
-            ❤️
-          </button>
-        )}
-
-        {showPicker && (
-          <div
-            className={`absolute z-30 ${pickerAnchorClass} ${isReacting ? "pointer-events-none opacity-60" : ""}`}
-            onMouseEnter={cancelHideReactionUi}
-            onMouseLeave={scheduleHideReactionUi}
-          >
+    <>
+      <article
+        ref={rootRef}
+        className={`relative w-full ${hasReactions ? "mb-5" : showHeartTrigger ? "mb-2" : ""}`}
+        onContextMenu={handleMessageContextMenu}
+        onMouseEnter={handleArticleMouseEnter}
+        onMouseLeave={handleArticleMouseLeave}
+      >
+        <div className={`flex w-full ${isMine ? "justify-end" : "justify-start"}`}>
+          <div ref={bubbleRef} className={`relative w-fit ${containerClassName}`}>
             <div
-              className="flex items-center gap-0 rounded-full bg-[#383838]/95 px-0.5 py-0.5 shadow-lg backdrop-blur-sm"
-              role="toolbar"
-              aria-label="Reaksiyalar"
-            >
-              {CHAT_REACTIONS.map((emoji) => (
-                <button
-                  key={emoji}
-                  type="button"
-                  disabled={isReacting}
-                  onClick={() => handleReactionClick(emoji)}
-                  className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-base leading-none transition hover:scale-110 hover:bg-white/10 disabled:cursor-not-allowed ${
-                    message.my_reaction === emoji ? "bg-white/15" : ""
-                  }`}
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {hasReactions && (
-        <div
-          className={`absolute -bottom-3 z-10 flex flex-wrap gap-1 ${isMine ? "right-2" : "left-2"}`}
-        >
-          {message.reactions.map((reaction) => (
-            <button
-              key={reaction.emoji}
-              type="button"
-              disabled={isReacting}
-              onClick={() => onReact(message, reaction.emoji)}
-              className={`inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0.5 text-xs font-bold transition disabled:opacity-50 ${reactionChipClass} ${
-                reaction.reacted_by_me ? "ring-1 ring-primary/50" : ""
+              className={`relative px-3 py-2 shadow-sm ${bubbleClass} ${
+                isMine ? "rounded-2xl rounded-br-md" : "rounded-2xl rounded-bl-md"
+              } ${isPinned ? "ring-2 ring-amber-300/80 dark:ring-amber-400/50" : ""} ${
+                showHeartTrigger ? "ring-2 ring-white/20" : ""
               }`}
             >
-              <span className="text-sm leading-none">{reaction.emoji}</span>
-              <span className="tabular-nums">{reaction.count}</span>
-            </button>
-          ))}
+              {!isMine && displayName && (
+                onAuthorClick && authorId ? (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onAuthorClick(authorId, {
+                        display_name: displayName,
+                      })
+                    }
+                    className={`text-left text-[11px] font-bold tracking-wide transition hover:underline ${authorColorClass}`}
+                  >
+                    {displayName}
+                  </button>
+                ) : (
+                  <p className={`text-[11px] font-bold tracking-wide ${authorColorClass}`}>{displayName}</p>
+                )
+              )}
+              <p
+                className={`text-[15px] leading-snug select-text ${
+                  !isMine && displayName ? "mt-0.5" : ""
+                }`}
+              >
+                {message.text}
+              </p>
+              <time
+                className={`mt-1 block text-[10px] font-semibold opacity-60 ${
+                  isMine ? "text-right" : "text-left"
+                }`}
+              >
+                {formatTime(message.created_at)}
+                {message.is_edited && (
+                  <span className="ml-1.5 opacity-80">· tahrirlangan</span>
+                )}
+              </time>
+            </div>
+
+            {hasReactions && (
+              <div className={`absolute z-10 flex flex-wrap gap-1 ${reactionCornerClass}`}>
+                {message.reactions.map((reaction) => (
+                  <button
+                    key={reaction.emoji}
+                    type="button"
+                    disabled={isReacting}
+                    onClick={() => handleReactionPick(reaction.emoji)}
+                    className={`${reactionBadgeClass} transition hover:scale-105 disabled:opacity-50 ${
+                      reaction.reacted_by_me ? "ring-2 ring-primary/60" : ""
+                    }`}
+                  >
+                    <span className="text-base leading-none">{reaction.emoji}</span>
+                    {reaction.count > 1 && (
+                      <span className="tabular-nums text-[10px] opacity-90">{reaction.count}</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      )}
-    </article>
+      </article>
+
+      {contextMenuPortal}
+      {reactionPickerPortal}
+    </>
   );
 }

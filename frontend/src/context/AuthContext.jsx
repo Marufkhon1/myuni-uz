@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   clearTokens,
+  establishAuthSession,
   getCurrentUser,
-  hasAccessToken,
-  hasRefreshToken,
   login as loginRequest,
+  logoutSession,
   register as registerRequest,
-  saveTokens,
 } from "../services/authService.js";
 import { AuthContext } from "./authContext.js";
 
@@ -18,13 +17,6 @@ export function AuthProvider({ children }) {
     let isMounted = true;
 
     async function bootstrapAuth() {
-      if (!hasAccessToken() && !hasRefreshToken()) {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-        return;
-      }
-
       try {
         const currentUser = await getCurrentUser();
         if (isMounted) {
@@ -66,13 +58,13 @@ export function AuthProvider({ children }) {
         return nextUser;
       },
       async completeGoogleAuth(tokens) {
-        saveTokens(tokens);
+        await establishAuthSession(tokens);
         const nextUser = await getCurrentUser();
         setUser(nextUser);
         return nextUser;
       },
-      logout() {
-        clearTokens();
+      async logout() {
+        await logoutSession();
         setUser(null);
       },
       async refreshUser() {

@@ -1,7 +1,10 @@
 from django.urls import path
 
 from .chat_realtime import direct_message_stream, university_message_stream
-from .public_views import PublicRecentReviewsView, PublicTopUniversitiesView
+from .pin_views import DirectMessagePinView, UniversityMessagePinView
+from .message_delete_views import DirectMessageDeleteView, UniversityMessageDeleteView
+from .message_edit_views import DirectMessageEditView, UniversityMessageEditView
+from .report_views import ChatMessageReportView, DirectMessageReportView
 from .views import (
     DirectMessageListCreateView,
     DirectMessageReactionView,
@@ -12,6 +15,7 @@ from .views import (
     FavoriteUniversityListView,
     JoinedUniversityListView,
     PopularReviewListView,
+    ReviewDetailView,
     ReviewLikeToggleView,
     ReviewListCreateView,
     UniversityCompareView,
@@ -36,16 +40,52 @@ urlpatterns = [
         name="favorite-university-detail",
     ),
     path(
+        "messages/<int:message_id>/report/",
+        ChatMessageReportView.as_view(),
+        name="university-message-report",
+    ),
+    path(
         "messages/<int:message_id>/reactions/",
         UniversityMessageReactionView.as_view(),
         name="university-message-reaction",
+    ),
+    path(
+        "messages/<int:message_id>/edit/",
+        UniversityMessageEditView.as_view(),
+        name="university-message-edit",
+    ),
+    path(
+        "messages/<int:message_id>/",
+        UniversityMessageDeleteView.as_view(),
+        name="university-message-delete",
+    ),
+    path(
+        "<int:university_id>/messages/<int:message_id>/pin/",
+        UniversityMessagePinView.as_view(),
+        name="university-message-pin",
+    ),
+    path(
+        "directs/messages/<int:message_id>/report/",
+        DirectMessageReportView.as_view(),
+        name="direct-message-report",
     ),
     path(
         "directs/messages/<int:message_id>/reactions/",
         DirectMessageReactionView.as_view(),
         name="direct-message-reaction",
     ),
+    path(
+        "directs/messages/<int:message_id>/edit/",
+        DirectMessageEditView.as_view(),
+        name="direct-message-edit",
+    ),
+    path(
+        "directs/messages/<int:message_id>/",
+        DirectMessageDeleteView.as_view(),
+        name="direct-message-delete",
+    ),
     path("reviews/<int:review_id>/like/", ReviewLikeToggleView.as_view(), name="review-like-toggle"),
+    path("reviews/<int:review_id>/", ReviewDetailView.as_view(), name="review-detail"),
     path("reviews/popular/", PopularReviewListView.as_view(), name="popular-review-list"),
     path("reviews/", ReviewListCreateView.as_view(), name="review-list-create"),
     path("compare/", UniversityCompareView.as_view(), name="university-compare"),
@@ -54,6 +94,11 @@ urlpatterns = [
         "directs/<int:thread_id>/messages/",
         DirectMessageListCreateView.as_view(),
         name="direct-message-list-create",
+    ),
+    path(
+        "directs/<int:thread_id>/messages/<int:message_id>/pin/",
+        DirectMessagePinView.as_view(),
+        name="direct-message-pin",
     ),
     path(
         "directs/<int:thread_id>/read/",

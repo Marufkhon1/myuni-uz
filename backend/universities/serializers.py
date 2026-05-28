@@ -1,7 +1,9 @@
 from accounts.avatar_access import avatar_url_for_request, avatar_url_for_viewer
+from accounts.chat_colors import resolve_chat_color_key
 from rest_framework import serializers
 
 from .models import ChatMessage, ChatMembership, DirectMessage, DirectThread, Review, University
+from .review_validation import validate_review_text
 from .reaction_utils import reactions_summary_for_message
 from .unread_utils import (
     direct_unread_message_count,
@@ -15,6 +17,10 @@ def display_name_for_user(user):
     return getattr(profile, "full_name", None) or user.get_full_name() or user.email
 
 
+def chat_color_for_user(user):
+    return resolve_chat_color_key(getattr(user, "profile", None))
+
+
 class UniversitySerializer(serializers.ModelSerializer):
     class Meta:
         model = University
@@ -22,6 +28,7 @@ class UniversitySerializer(serializers.ModelSerializer):
             "id",
             "name",
             "short_name",
+            "slug",
             "location",
             "description",
             "founded_year",
@@ -105,6 +112,9 @@ class ReviewSerializer(serializers.ModelSerializer):
     )
     like_count = serializers.IntegerField(read_only=True, default=0)
     liked_by_me = serializers.BooleanField(read_only=True, default=False)
+    is_mine = serializers.SerializerMethodField()
+    status = serializers.CharField(read_only=True)
+    moderation_note = serializers.CharField(read_only=True)
 
     class Meta:
         model = Review
@@ -118,9 +128,12 @@ class ReviewSerializer(serializers.ModelSerializer):
             "university_id",
             "rating",
             "text",
+            "status",
+            "moderation_note",
             "created_at",
             "like_count",
             "liked_by_me",
+            "is_mine",
         ]
         read_only_fields = [
             "id",
@@ -129,9 +142,12 @@ class ReviewSerializer(serializers.ModelSerializer):
             "author_avatar_url",
             "author_role",
             "university",
+            "status",
+            "moderation_note",
             "created_at",
             "like_count",
             "liked_by_me",
+            "is_mine",
         ]
 
     def get_author(self, obj):
@@ -146,15 +162,39 @@ class ReviewSerializer(serializers.ModelSerializer):
         profile = getattr(obj.user, "profile", None)
         return getattr(profile, "role", "")
 
+    def get_is_mine(self, obj):
+        request = self.context.get("request")
+        return bool(request and request.user.id == obj.user_id)
+
+    def validate_text(self, value):
+        return validate_review_text(value)
+
     def create(self, validated_data):
         return Review.objects.create(user=self.context["request"].user, **validated_data)
+
+
+class MessageReportSerializer(serializers.Serializer):
+    reason = serializers.ChoiceField(choices=["insult", "abuse", "other"])
+    details = serializers.CharField(required=False, allow_blank=True, max_length=500)
+
+    def validate(self, attrs):
+        reason = attrs.get("reason")
+        details = (attrs.get("details") or "").strip()
+        attrs["details"] = details
+        if reason == "other" and len(details) < 5:
+            raise serializers.ValidationError(
+                {"details": "Boshqa sabab uchun kamida 5 ta belgi yozing."}
+            )
+        return attrs
 
 
 class ChatMessageSerializer(serializers.ModelSerializer):
     author_id = serializers.IntegerField(source="user.id", read_only=True)
     author = serializers.SerializerMethodField()
+    author_color = serializers.SerializerMethodField()
     university_id = serializers.IntegerField(source="university.id", read_only=True)
     is_mine = serializers.SerializerMethodField()
+    is_edited = serializers.SerializerMethodField()
     reactions = serializers.SerializerMethodField()
     my_reaction = serializers.SerializerMethodField()
 
@@ -165,8 +205,11 @@ class ChatMessageSerializer(serializers.ModelSerializer):
             "university_id",
             "author_id",
             "author",
+            "author_color",
             "text",
             "created_at",
+            "updated_at",
+            "is_edited",
             "is_mine",
             "reactions",
             "my_reaction",
@@ -176,9 +219,15 @@ class ChatMessageSerializer(serializers.ModelSerializer):
     def get_author(self, obj):
         return display_name_for_user(obj.user)
 
+    def get_author_color(self, obj):
+        return chat_color_for_user(obj.user)
+
     def get_is_mine(self, obj):
         request = self.context.get("request")
         return bool(request and request.user.id == obj.user_id)
+
+    def get_is_edited(self, obj):
+        return bool(obj.updated_at)
 
     def _reaction_context(self, obj):
         request = self.context.get("request")
@@ -199,7 +248,9 @@ class ChatMessageCreateSerializer(serializers.Serializer):
 class DirectMessageSerializer(serializers.ModelSerializer):
     sender_id = serializers.IntegerField(source="sender.id", read_only=True)
     sender_name = serializers.SerializerMethodField()
+    sender_color = serializers.SerializerMethodField()
     is_mine = serializers.SerializerMethodField()
+    is_edited = serializers.SerializerMethodField()
     reactions = serializers.SerializerMethodField()
     my_reaction = serializers.SerializerMethodField()
 
@@ -209,8 +260,11 @@ class DirectMessageSerializer(serializers.ModelSerializer):
             "id",
             "sender_id",
             "sender_name",
+            "sender_color",
             "text",
             "created_at",
+            "updated_at",
+            "is_edited",
             "is_mine",
             "reactions",
             "my_reaction",
@@ -220,9 +274,15 @@ class DirectMessageSerializer(serializers.ModelSerializer):
     def get_sender_name(self, obj):
         return display_name_for_user(obj.sender)
 
+    def get_sender_color(self, obj):
+        return chat_color_for_user(obj.sender)
+
     def get_is_mine(self, obj):
         request = self.context.get("request")
         return bool(request and request.user.id == obj.sender_id)
+
+    def get_is_edited(self, obj):
+        return bool(obj.updated_at)
 
     def _reaction_context(self, obj):
         request = self.context.get("request")

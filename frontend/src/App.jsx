@@ -14,6 +14,8 @@ import LoginPage from "./pages/LoginPage.jsx";
 import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
 import SignupPage from "./pages/SignupPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import LegalDocumentPage from "./pages/LegalDocumentPage.jsx";
+import UniversityPublicPage from "./pages/UniversityPublicPage.jsx";
 
 export default function App() {
   return (
@@ -26,6 +28,10 @@ export default function App() {
         <Route path="/forgot-password/sent" element={<ForgotPasswordSentPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/universitet/:slug" element={<UniversityPublicPage />} />
+        <Route path="/foydalanish-shartlari" element={<LegalDocumentPage />} />
+        <Route path="/maxfiylik-siyosati" element={<LegalDocumentPage />} />
+        <Route path="/sharh-qoidalari" element={<LegalDocumentPage />} />
         <Route path="/oauth/google/callback" element={<GoogleCallbackPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardRedirect />} />

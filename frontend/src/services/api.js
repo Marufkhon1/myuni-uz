@@ -18,15 +18,14 @@ export const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem(ACCESS_TOKEN_KEY);
-
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
-
   return config;
 });
 
@@ -36,19 +35,23 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     const refresh = localStorage.getItem(REFRESH_TOKEN_KEY);
 
-    if (error.response?.status !== 401 || originalRequest?._retry || !refresh) {
+    if (error.response?.status !== 401 || originalRequest?._retry) {
       return Promise.reject(error);
     }
 
     originalRequest._retry = true;
 
     try {
-      const { data } = await axios.post(`${api.defaults.baseURL}/auth/token/refresh/`, {
-        refresh,
-      });
+      const { data } = await axios.post(
+        `${api.defaults.baseURL}/auth/token/refresh/`,
+        refresh ? { refresh } : {},
+        { withCredentials: true }
+      );
 
-      localStorage.setItem(ACCESS_TOKEN_KEY, data.access);
-      originalRequest.headers.Authorization = `Bearer ${data.access}`;
+      if (data.access) {
+        localStorage.setItem(ACCESS_TOKEN_KEY, data.access);
+        originalRequest.headers.Authorization = `Bearer ${data.access}`;
+      }
       return api(originalRequest);
     } catch (refreshError) {
       localStorage.removeItem(ACCESS_TOKEN_KEY);

@@ -5,6 +5,7 @@ from .password_reset import (
     PasswordResetRequestView,
     PasswordResetStatusView,
 )
+from .auth_views import AuthSessionView, CookieTokenRefreshView, LogoutView, StreamTokenView
 from .support_views import SupportMessageView
 from .views import (
     GoogleAuthCallbackView,
@@ -19,6 +20,10 @@ from .views import (
 
 urlpatterns = [
     path("support/message/", SupportMessageView.as_view(), name="support-message"),
+    path("stream-token/", StreamTokenView.as_view(), name="stream-token"),
+    path("session/", AuthSessionView.as_view(), name="auth-session"),
+    path("logout/", LogoutView.as_view(), name="logout"),
+    path("token/refresh/", CookieTokenRefreshView.as_view(), name="cookie-token-refresh"),
     path("register/", RegisterView.as_view(), name="register"),
     path("login/", LoginView.as_view(), name="login"),
     path("password-reset/", PasswordResetRequestView.as_view(), name="password-reset"),

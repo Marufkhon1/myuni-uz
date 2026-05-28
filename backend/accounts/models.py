@@ -30,6 +30,12 @@ class Profile(models.Model):
         choices=AvatarVisibility.choices,
         default=AvatarVisibility.EVERYONE,
     )
+    chat_color = models.CharField(
+        max_length=20,
+        blank=True,
+        default="",
+        help_text="Bo'sh = avtomatik rang (user id bo'yicha).",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

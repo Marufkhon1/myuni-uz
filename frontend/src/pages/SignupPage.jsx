@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
+import UniversitySearchSelect, {
+  matchUniversityByText,
+} from "../components/dashboard/UniversitySearchSelect.jsx";
 import AuthLayout from "../layouts/AuthLayout.jsx";
 import { getGoogleAuthUrl } from "../services/authService.js";
 import { getPublicUniversities } from "../services/publicService.js";
@@ -81,9 +84,24 @@ export default function SignupPage() {
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
   }
 
+  function setUniversity(value) {
+    setForm((current) => ({ ...current, university: value }));
+  }
+
+  function ensureUniversitySelected() {
+    if (!matchUniversityByText(universities, form.university)) {
+      setError("Ro'yxatdan universitetni tanlang.");
+      return false;
+    }
+    return true;
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
+    if (!ensureUniversitySelected()) {
+      return;
+    }
     setIsSubmitting(true);
 
     try {
@@ -107,8 +125,7 @@ export default function SignupPage() {
   async function handleGoogleLogin() {
     setError("");
 
-    if (!form.university) {
-      setError("Google bilan davom etishdan oldin universitetni tanlang.");
+    if (!ensureUniversitySelected()) {
       return;
     }
 
@@ -208,31 +225,24 @@ export default function SignupPage() {
           />
         </label>
 
-        <label className="block">
-          <span className="text-sm font-black text-slate-700 dark:text-slate-200">
+        <div className="block">
+          <label className="text-sm font-black text-slate-700 dark:text-slate-200">
             {universityFieldLabel}
-          </span>
-          <select
-            name="university"
-            value={form.university}
-            onChange={updateField}
-            required
-            disabled={isUniversitiesLoading || universities.length === 0}
-            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold outline-none transition focus:border-primary focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-slate-900"
-          >
-            <option value="">
-              {isUniversitiesLoading ? "Yuklanmoqda..." : universityPlaceholder}
-            </option>
-            {universities.map((university) => (
-              <option key={university.id} value={university.name}>
-                {university.name}
-              </option>
-            ))}
-          </select>
+          </label>
+          <div className="mt-2">
+            <UniversitySearchSelect
+              universities={universities}
+              value={form.university}
+              onChange={setUniversity}
+              disabled={isUniversitiesLoading || universities.length === 0}
+              placeholder={isUniversitiesLoading ? "Yuklanmoqda..." : universityPlaceholder}
+              reserveHintSpace
+            />
+          </div>
           {universitiesError && (
             <p className="mt-2 text-sm font-semibold text-red-600">{universitiesError}</p>
           )}
-        </label>
+        </div>
 
         <button
           type="submit"

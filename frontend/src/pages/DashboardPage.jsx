@@ -1,28 +1,24 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import DashboardBottomNav from "../components/dashboard/DashboardBottomNav.jsx";
-import DashboardIcon from "../components/dashboard/DashboardIcon.jsx";
-import { chatTabs, ratingStars as stars } from "../components/dashboard/dashboardConstants.js";
+import { ratingStars as stars } from "../components/dashboard/dashboardConstants.js";
 import { dashboardPathForRole } from "../utils/navigation.js";
 import { getDashboardCabinetEyebrow, getDashboardMenuItems } from "../utils/dashboardRoleContent.js";
 import UniversityCompareSection from "../components/dashboard/UniversityCompareSection.jsx";
 import PopularReviewsSection from "../components/dashboard/PopularReviewsSection.jsx";
-import ChatMessageBubble from "../components/dashboard/ChatMessageBubble.jsx";
-import GroupInfoModal from "../components/dashboard/GroupInfoModal.jsx";
-import ProfileModal from "../components/dashboard/ProfileModal.jsx";
+import MessageReportDialog from "../components/MessageReportDialog.jsx";
 import ProfileSection from "../components/dashboard/ProfileSection.jsx";
-import ReviewUniversityList from "../components/dashboard/ReviewUniversityList.jsx";
-import SupportPanel from "../components/dashboard/SupportPanel.jsx";
-import ReviewWorkspacePanel from "../components/dashboard/ReviewWorkspacePanel.jsx";
+import DashboardChatSection from "./dashboard/DashboardChatSection.jsx";
+import DashboardReviewsSection from "./dashboard/DashboardReviewsSection.jsx";
+import DashboardSidebar from "./dashboard/DashboardSidebar.jsx";
 import UserAvatar from "../components/dashboard/UserAvatar.jsx";
-import ChatUniversityRow from "../components/ChatUniversityRow.jsx";
 import UnreadBadge from "../components/UnreadBadge.jsx";
 import ThemeToggle from "../components/ThemeToggle.jsx";
 import logo from "../assets/myuni-logo.png";
 import { useAuth } from "../hooks/useAuth.js";
 import { useBreakpoint } from "../hooks/useBreakpoint.js";
 import { useDarkMode } from "../hooks/useDarkMode.js";
-import { useMessageStream } from "../hooks/useMessageStream.js";
+import { mergeById, useMessageStream } from "../hooks/useMessageStream.js";
 import {
   getDirectMessages,
   getDirectThreads,
@@ -33,18 +29,29 @@ import {
   getUniversityMembers,
   getUniversityMessages,
   joinUniversity,
+  pinDirectMessage,
+  pinUniversityMessage,
   sendDirectMessage,
   sendDirectTyping,
+  editUniversityMessage,
+  editDirectMessage,
+  deleteUniversityMessage,
+  deleteDirectMessage,
   sendUniversityMessage,
   reactToDirectMessage,
   reactToUniversityMessage,
+  reportDirectMessage,
+  reportUniversityMessage,
   sendUniversityTyping,
   startDirectThread,
+  unpinDirectMessage,
+  unpinUniversityMessage,
 } from "../services/chatService.js";
 import { getPublicUser } from "../services/userService.js";
 import { resolveMediaUrl } from "../utils/media.js";
 import {
   createReview,
+  deleteReview,
   getUniversities,
   getUniversityDetail,
   getPopularReviews,
@@ -76,6 +83,7 @@ export default function DashboardPage({ role }) {
   const [dataError, setDataError] = useState("");
   const [chatError, setChatError] = useState("");
   const [isGroupSending, setIsGroupSending] = useState(false);
+  const [isGroupJoining, setIsGroupJoining] = useState(false);
   const [isPrivateSending, setIsPrivateSending] = useState(false);
   const chatErrorReporterRef = useRef(null);
   if (!chatErrorReporterRef.current) {
@@ -92,15 +100,21 @@ export default function DashboardPage({ role }) {
   const [universitySearch, setUniversitySearch] = useState("");
   const [groupMessage, setGroupMessage] = useState("");
   const [groupMessages, setGroupMessages] = useState([]);
+  const [groupPinnedMessage, setGroupPinnedMessage] = useState(null);
   const [chatMembers, setChatMembers] = useState({ members: [], member_count: 0 });
   const [directThreads, setDirectThreads] = useState([]);
   const [draftThread, setDraftThread] = useState(null);
   const [selectedThreadId, setSelectedThreadId] = useState(null);
   const [directMessages, setDirectMessages] = useState([]);
+  const [privatePinnedMessage, setPrivatePinnedMessage] = useState(null);
   const [privateMessage, setPrivateMessage] = useState("");
   const [profileUser, setProfileUser] = useState(null);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
   const [showGroupInfoModal, setShowGroupInfoModal] = useState(false);
+  const [isGroupChatSearchOpen, setIsGroupChatSearchOpen] = useState(false);
+  const [groupChatSearchQuery, setGroupChatSearchQuery] = useState("");
+  const [highlightedGroupMessageId, setHighlightedGroupMessageId] = useState(null);
+  const groupMessageRefs = useRef({});
   const [groupInfoDetail, setGroupInfoDetail] = useState(null);
   const [isGroupInfoDetailLoading, setIsGroupInfoDetailLoading] = useState(false);
   const [chatPanel, setChatPanel] = useState("group");
@@ -114,11 +128,14 @@ export default function DashboardPage({ role }) {
   const [popularReviews, setPopularReviews] = useState([]);
   const [isReviewSubmitting, setIsReviewSubmitting] = useState(false);
   const [reviewSubmitError, setReviewSubmitError] = useState("");
+  const [editingChatMessage, setEditingChatMessage] = useState(null);
   const [reactingMessageId, setReactingMessageId] = useState(null);
+  const [reportTarget, setReportTarget] = useState(null);
+  const [isReportSubmitting, setIsReportSubmitting] = useState(false);
   const [mobileChatScreen, setMobileChatScreen] = useState("list");
   const [mobileReviewScreen, setMobileReviewScreen] = useState("list");
   const [groupTypingUsers, setGroupTypingUsers] = useState([]);
-  const { isPhone, isTablet } = useBreakpoint();
+  const { isPhone } = useBreakpoint();
   const [privateTypingUsers, setPrivateTypingUsers] = useState([]);
 
   const userUniversity = profile?.university || universities[0]?.name || "";
@@ -188,6 +205,45 @@ export default function DashboardPage({ role }) {
   const visibleMenuItems = useMemo(() => getDashboardMenuItems(isStudent), [isStudent]);
   const cabinetEyebrow = getDashboardCabinetEyebrow(isStudent);
 
+  const groupChatSearchTrimmed = groupChatSearchQuery.trim().toLowerCase();
+  const groupChatSearchResults = useMemo(() => {
+    if (!isGroupChatSearchOpen) {
+      return [];
+    }
+    if (!groupChatSearchTrimmed) {
+      return [];
+    }
+
+    const list = groupMessages.filter((item) => {
+      const text = (item.text || "").toLowerCase();
+      const author = (item.author || "").toLowerCase();
+      return text.includes(groupChatSearchTrimmed) || author.includes(groupChatSearchTrimmed);
+    });
+
+    return [...list].sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+  }, [groupMessages, isGroupChatSearchOpen, groupChatSearchTrimmed]);
+
+  function closeGroupChatSearch() {
+    setIsGroupChatSearchOpen(false);
+    setGroupChatSearchQuery("");
+  }
+
+  function openGroupChatSearch() {
+    setIsGroupChatSearchOpen(true);
+    setGroupChatSearchQuery("");
+  }
+
+  function jumpToGroupMessage(messageId) {
+    closeGroupChatSearch();
+    setHighlightedGroupMessageId(messageId);
+    window.requestAnimationFrame(() => {
+      groupMessageRefs.current[messageId]?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    window.setTimeout(() => setHighlightedGroupMessageId(null), 2600);
+  }
+
   const hidePrivateMessageButton = useMemo(() => {
     if (!profileUser?.id) {
       return false;
@@ -207,21 +263,41 @@ export default function DashboardPage({ role }) {
       ? `/api/universities/directs/${selectedThreadId}/messages/stream/`
       : null;
 
-  const mergeMessages = useCallback((incoming) => {
-    setGroupMessages((current) => {
-      const map = new Map(current.map((item) => [item.id, item]));
-      incoming.forEach((item) => map.set(item.id, item));
-      return [...map.values()].sort((a, b) => a.id - b.id);
-    });
-  }, []);
+  const mergeMessages = useCallback(
+    (incoming) => setGroupMessages((current) => mergeById(current, incoming)),
+    []
+  );
 
-  const mergePrivateMessages = useCallback((incoming) => {
-    setDirectMessages((current) => {
-      const map = new Map(current.map((item) => [item.id, item]));
-      incoming.forEach((item) => map.set(item.id, item));
-      return [...map.values()].sort((a, b) => a.id - b.id);
-    });
-  }, []);
+  const mergeGroupUpdated = useCallback(
+    (incoming) => setGroupMessages((current) => mergeById(current, incoming)),
+    []
+  );
+
+  const removeGroupMessages = useCallback((ids) => {
+    const idSet = new Set(ids);
+    setGroupMessages((current) => current.filter((item) => !idSet.has(item.id)));
+    if (groupPinnedMessage && idSet.has(groupPinnedMessage.id)) {
+      setGroupPinnedMessage(null);
+    }
+  }, [groupPinnedMessage]);
+
+  const mergePrivateMessages = useCallback(
+    (incoming) => setDirectMessages((current) => mergeById(current, incoming)),
+    []
+  );
+
+  const mergePrivateUpdated = useCallback(
+    (incoming) => setDirectMessages((current) => mergeById(current, incoming)),
+    []
+  );
+
+  const removePrivateMessages = useCallback((ids) => {
+    const idSet = new Set(ids);
+    setDirectMessages((current) => current.filter((item) => !idSet.has(item.id)));
+    if (privatePinnedMessage && idSet.has(privatePinnedMessage.id)) {
+      setPrivatePinnedMessage(null);
+    }
+  }, [privatePinnedMessage]);
 
   useEffect(() => {
     groupTypingNotifyRef.current = createThrottledTyping(
@@ -249,10 +325,32 @@ export default function DashboardPage({ role }) {
     clearChatError();
   }, [selectedUniversityId, selectedThreadId, chatPanel, clearChatError]);
 
+  useEffect(() => {
+    setEditingChatMessage((current) => {
+      if (!current) {
+        return null;
+      }
+      if (current.scope === "group") {
+        setGroupMessage("");
+      } else if (current.scope === "private") {
+        setPrivateMessage("");
+      }
+      return null;
+    });
+  }, [selectedUniversityId, selectedThreadId]);
+
+  useEffect(() => {
+    closeGroupChatSearch();
+    setHighlightedGroupMessageId(null);
+    groupMessageRefs.current = {};
+  }, [selectedUniversityId]);
+
   useMessageStream({
     streamUrl: groupStreamUrl,
-    enabled: activeSection === "chats" && chatPanel === "group" && Boolean(selectedUniversityId),
+    enabled: activeSection === "chats" && chatPanel === "group" && hasJoinedSelectedChat,
     onMessages: mergeMessages,
+    onMessageUpdated: mergeGroupUpdated,
+    onMessageDeleted: removeGroupMessages,
     onTyping: setGroupTypingUsers,
   });
 
@@ -260,6 +358,8 @@ export default function DashboardPage({ role }) {
     streamUrl: privateStreamUrl,
     enabled: activeSection === "chats" && chatPanel === "private" && Boolean(selectedThreadId),
     onMessages: mergePrivateMessages,
+    onMessageUpdated: mergePrivateUpdated,
+    onMessageDeleted: removePrivateMessages,
     onTyping: setPrivateTypingUsers,
   });
 
@@ -280,6 +380,7 @@ export default function DashboardPage({ role }) {
     (universityList) => {
       const section = searchParams.get("section");
       const universityName = searchParams.get("university");
+      const universityIdParam = searchParams.get("university_id");
 
       if (section === "reviews") {
         setActiveSection("reviews");
@@ -291,13 +392,16 @@ export default function DashboardPage({ role }) {
         setActiveSection("profile");
       }
 
-      if (!universityName) {
-        return;
+      let match = null;
+      if (universityIdParam) {
+        match = universityList.find((university) => String(university.id) === universityIdParam) ?? null;
       }
-
-      const match = universityList.find(
-        (university) => university.name === universityName || university.short_name === universityName
-      );
+      if (!match && universityName) {
+        match = universityList.find(
+          (university) =>
+            university.name === universityName || university.short_name === universityName
+        );
+      }
 
       if (!match) {
         return;
@@ -382,17 +486,21 @@ export default function DashboardPage({ role }) {
 
     async function loadMessages() {
       try {
-        const items = await getUniversityMessages(selectedUniversityId);
+        const { messages, pinned } = await getUniversityMessages(selectedUniversityId);
         if (isMounted) {
-          setGroupMessages(items);
+          setGroupMessages(messages);
+          setGroupPinnedMessage(pinned);
         }
-        await markUniversityChatRead(selectedUniversityId);
-        if (isMounted) {
-          refreshChatSummaries();
+        if (joinedUniversityIds.has(selectedUniversityId)) {
+          await markUniversityChatRead(selectedUniversityId);
+          if (isMounted) {
+            refreshChatSummaries();
+          }
         }
       } catch {
         if (isMounted) {
           setGroupMessages([]);
+          setGroupPinnedMessage(null);
         }
       }
     }
@@ -412,9 +520,10 @@ export default function DashboardPage({ role }) {
 
     async function loadPrivateMessages() {
       try {
-        const items = await getDirectMessages(selectedThreadId);
+        const { messages, pinned } = await getDirectMessages(selectedThreadId);
         if (isMounted) {
-          setDirectMessages(items);
+          setDirectMessages(messages);
+          setPrivatePinnedMessage(pinned);
         }
         await markDirectThreadRead(selectedThreadId);
         if (isMounted) {
@@ -423,6 +532,7 @@ export default function DashboardPage({ role }) {
       } catch {
         if (isMounted) {
           setDirectMessages([]);
+          setPrivatePinnedMessage(null);
         }
       }
     }
@@ -543,23 +653,12 @@ export default function DashboardPage({ role }) {
   function backToChatList() {
     setMobileChatScreen("list");
     setShowGroupInfoModal(false);
+    closeGroupChatSearch();
   }
 
   function backToReviewList() {
     setMobileReviewScreen("list");
   }
-
-  const chatMessagesHeight = isPhone
-    ? "h-[calc(100dvh-14rem)] min-h-[240px]"
-    : isTablet
-      ? "h-[min(520px,calc(100dvh-12rem))]"
-      : "h-[470px]";
-
-  const privateChatMessagesHeight = isPhone
-    ? "h-[calc(100dvh-14rem)] min-h-[240px]"
-    : isTablet
-      ? "h-[min(640px,calc(100dvh-11rem))]"
-      : "min-h-0 flex-1";
 
   const isPrivateChatLayout =
     !isPhone && activeSection === "chats" && chatListTab === "private";
@@ -569,17 +668,27 @@ export default function DashboardPage({ role }) {
 
   const isWideChatLayout = isPrivateChatLayout || isGroupChatLayout;
 
+  const chatColumnEqualHeightClass = isPhone
+    ? "h-fit max-h-[calc(100dvh-11rem)] self-start md:max-h-[calc(100vh-10rem)]"
+    : "md:flex md:h-[calc(100dvh-11.5rem)] md:max-h-[calc(100dvh-11.5rem)] md:flex-col md:overflow-hidden";
+
+  const chatListScrollClass = isPhone
+    ? "chat-messages-scroll mt-4 max-h-[min(28rem,calc(100dvh-17rem))] space-y-1 overflow-y-auto overscroll-contain pr-1"
+    : "chat-messages-scroll mt-4 min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1";
+
+  const chatMessagesAreaClass = isPhone
+    ? "chat-messages-scroll h-[calc(100dvh-14rem)] min-h-[200px] overflow-y-auto overflow-x-hidden overscroll-contain"
+    : "chat-messages-scroll min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain";
+
+  const chatPanelInnerClass = isPhone
+    ? "flex flex-col"
+    : "flex min-h-0 flex-1 flex-col overflow-hidden";
+
   const chatSectionGridClass = isPhone
     ? "grid-cols-1"
     : isWideChatLayout
       ? "md:grid-cols-[minmax(280px,30%)_minmax(0,1fr)] md:gap-3 lg:gap-4"
       : "md:grid-cols-[minmax(0,340px)_minmax(0,1fr)] xl:grid-cols-[420px_1fr]";
-
-  const groupChatMessagesHeight = isPhone
-    ? "h-[calc(100dvh-14rem)] min-h-[200px]"
-    : isTablet
-      ? "h-[min(640px,calc(100dvh-11rem))]"
-      : "min-h-0 flex-1";
 
   function handleChatTabChange(tabId) {
     setChatListTab(tabId);
@@ -601,49 +710,77 @@ export default function DashboardPage({ role }) {
     }
   }
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    await logout();
     navigate("/", { replace: true });
   }
 
   async function handleJoin(universityId) {
-    await joinUniversity(universityId);
-    setJoinedUniversityIds((current) => {
-      const next = new Set(current);
-      next.add(universityId);
-      return next;
-    });
-    setSelectedUniversityId(universityId);
-    setChatPanel("group");
-    setChatListTab("joined");
-    setMobileChatScreen("chat");
+    setIsGroupJoining(true);
+    clearChatError();
     try {
-      const data = await getUniversityMembers(universityId);
-      setChatMembers({
-        members: data.members ?? [],
-        member_count: data.member_count ?? 0,
+      await joinUniversity(universityId);
+      setJoinedUniversityIds((current) => {
+        const next = new Set(current);
+        next.add(universityId);
+        return next;
       });
-    } catch {
-      setChatMembers({ members: [], member_count: 0 });
+      setSelectedUniversityId(universityId);
+      setChatPanel("group");
+      setChatListTab("joined");
+      setMobileChatScreen("chat");
+      try {
+        const data = await getUniversityMembers(universityId);
+        setChatMembers({
+          members: data.members ?? [],
+          member_count: data.member_count ?? 0,
+        });
+      } catch {
+        setChatMembers({ members: [], member_count: 0 });
+      }
+      await markUniversityChatRead(universityId);
+      refreshChatSummaries();
+    } catch (error) {
+      reportChatError(getApiErrorMessage(error, "Chatga qo'shilib bo'lmadi. Qayta urinib ko'ring."));
+    } finally {
+      setIsGroupJoining(false);
     }
   }
 
   async function sendGroupChatMessage(event) {
     event.preventDefault();
 
-    if (!hasJoinedSelectedChat || !groupMessage.trim() || !selectedUniversityId || isGroupSending) {
+    const trimmed = groupMessage.trim();
+    if (!hasJoinedSelectedChat || !trimmed || !selectedUniversityId || isGroupSending) {
       return;
     }
+
+    const isEditingGroup = editingChatMessage?.scope === "group";
 
     setIsGroupSending(true);
     clearChatError();
     try {
-      const created = await sendUniversityMessage(selectedUniversityId, groupMessage.trim());
-      setGroupMessages((current) => [...current, created]);
-      setGroupMessage("");
-      setGroupTypingUsers([]);
+      if (isEditingGroup) {
+        const updated = await editUniversityMessage(editingChatMessage.message.id, trimmed);
+        updateMessageInList(setGroupMessages, updated);
+        if (groupPinnedMessage?.id === updated.id) {
+          setGroupPinnedMessage(updated);
+        }
+        setEditingChatMessage(null);
+        setGroupMessage("");
+      } else {
+        const created = await sendUniversityMessage(selectedUniversityId, trimmed);
+        setGroupMessages((current) => [...current, created]);
+        setGroupMessage("");
+        setGroupTypingUsers([]);
+      }
     } catch (error) {
-      reportChatError(getApiErrorMessage(error, "Guruh xabari yuborilmadi."));
+      reportChatError(
+        getApiErrorMessage(
+          error,
+          isEditingGroup ? "Xabarni saqlab bo'lmadi." : "Guruh xabari yuborilmadi."
+        )
+      );
     } finally {
       setIsGroupSending(false);
     }
@@ -715,6 +852,82 @@ export default function DashboardPage({ role }) {
     }
   }
 
+  function openMessageReport(message, scope) {
+    setReportTarget({ message, scope });
+  }
+
+  async function handlePinGroupMessage(message) {
+    if (!selectedUniversityId || !hasJoinedSelectedChat) {
+      return;
+    }
+    try {
+      const pinned = await pinUniversityMessage(selectedUniversityId, message.id);
+      setGroupPinnedMessage(pinned);
+      clearChatError();
+    } catch (error) {
+      reportChatError(getApiErrorMessage(error, "Xabar biriktirilmadi."));
+    }
+  }
+
+  async function handleUnpinGroupMessage(message) {
+    if (!selectedUniversityId) {
+      return;
+    }
+    try {
+      await unpinUniversityMessage(selectedUniversityId, message.id);
+      setGroupPinnedMessage(null);
+      clearChatError();
+    } catch (error) {
+      reportChatError(getApiErrorMessage(error, "Biriktirish olib tashlanmadi."));
+    }
+  }
+
+  async function handlePinPrivateMessage(message) {
+    if (!selectedThreadId) {
+      return;
+    }
+    try {
+      const pinned = await pinDirectMessage(selectedThreadId, message.id);
+      setPrivatePinnedMessage(pinned);
+      clearChatError();
+    } catch (error) {
+      reportChatError(getApiErrorMessage(error, "Xabar biriktirilmadi."));
+    }
+  }
+
+  async function handleUnpinPrivateMessage(message) {
+    if (!selectedThreadId) {
+      return;
+    }
+    try {
+      await unpinDirectMessage(selectedThreadId, message.id);
+      setPrivatePinnedMessage(null);
+      clearChatError();
+    } catch (error) {
+      reportChatError(getApiErrorMessage(error, "Biriktirish olib tashlanmadi."));
+    }
+  }
+
+  async function submitMessageReport(payload) {
+    if (!reportTarget) {
+      return;
+    }
+    setIsReportSubmitting(true);
+    try {
+      if (reportTarget.scope === "group") {
+        await reportUniversityMessage(reportTarget.message.id, payload);
+      } else {
+        await reportDirectMessage(reportTarget.message.id, payload);
+      }
+      setReportTarget(null);
+      clearChatError();
+    } catch (error) {
+      reportChatError(getApiErrorMessage(error, "Shikoyat yuborilmadi."));
+    } finally {
+      setIsReportSubmitting(false);
+    }
+  }
+
   function notifyGroupTyping() {
     if (selectedUniversityId && hasJoinedSelectedChat) {
       groupTypingNotifyRef.current();
@@ -730,21 +943,39 @@ export default function DashboardPage({ role }) {
   async function sendPrivateChatMessage(event) {
     event.preventDefault();
 
-    if (!privateMessage.trim() || !selectedThreadId || isPrivateSending) {
+    const trimmed = privateMessage.trim();
+    if (!trimmed || !selectedThreadId || isPrivateSending) {
       return;
     }
+
+    const isEditingPrivate = editingChatMessage?.scope === "private";
 
     setIsPrivateSending(true);
     clearChatError();
     try {
-      const created = await sendDirectMessage(selectedThreadId, privateMessage.trim());
-      setDirectMessages((current) => [...current, created]);
-      setPrivateMessage("");
-      const threads = await getDirectThreads();
-      setDirectThreads(threads);
-      setDraftThread(null);
+      if (isEditingPrivate) {
+        const updated = await editDirectMessage(editingChatMessage.message.id, trimmed);
+        updateMessageInList(setDirectMessages, updated);
+        if (privatePinnedMessage?.id === updated.id) {
+          setPrivatePinnedMessage(updated);
+        }
+        setEditingChatMessage(null);
+        setPrivateMessage("");
+      } else {
+        const created = await sendDirectMessage(selectedThreadId, trimmed);
+        setDirectMessages((current) => [...current, created]);
+        setPrivateMessage("");
+        const threads = await getDirectThreads();
+        setDirectThreads(threads);
+        setDraftThread(null);
+      }
     } catch (error) {
-      reportChatError(getApiErrorMessage(error, "Shaxsiy xabar yuborilmadi."));
+      reportChatError(
+        getApiErrorMessage(
+          error,
+          isEditingPrivate ? "Xabarni saqlab bo'lmadi." : "Shaxsiy xabar yuborilmadi."
+        )
+      );
     } finally {
       setIsPrivateSending(false);
     }
@@ -857,8 +1088,19 @@ export default function DashboardPage({ role }) {
   }
 
   function openReviewUniversityFromPopular(universityId) {
-    selectReviewUniversity(universityId);
     changeSection("reviews");
+    selectReviewUniversity(universityId);
+  }
+
+  function openChatFromReviewUniversity() {
+    if (!reviewUniversity) {
+      return;
+    }
+    const id = Number(reviewUniversity);
+    setSelectedUniversityId(id);
+    setChatPanel("group");
+    setMobileChatScreen("group");
+    changeSection("chats");
   }
 
   async function handleReviewLike(reviewId) {
@@ -867,6 +1109,75 @@ export default function DashboardPage({ role }) {
       item.id === reviewId ? { ...item, liked_by_me: result.liked, like_count: result.like_count } : item;
     setReviews((current) => current.map(updateItem));
     setPopularReviews((current) => current.map(updateItem));
+  }
+
+  async function handleDeleteGroupMessage(message) {
+    if (!window.confirm("Xabarni o'chirishni tasdiqlaysizmi?")) {
+      return;
+    }
+    try {
+      await deleteUniversityMessage(message.id);
+      setGroupMessages((current) => current.filter((item) => item.id !== message.id));
+      if (groupPinnedMessage?.id === message.id) {
+        setGroupPinnedMessage(null);
+      }
+    } catch (error) {
+      reportChatError(getApiErrorMessage(error, "Xabarni o'chirib bo'lmadi."));
+    }
+  }
+
+  async function handleDeletePrivateMessage(message) {
+    if (!window.confirm("Xabarni o'chirishni tasdiqlaysizmi?")) {
+      return;
+    }
+    try {
+      await deleteDirectMessage(message.id);
+      setDirectMessages((current) => current.filter((item) => item.id !== message.id));
+      if (privatePinnedMessage?.id === message.id) {
+        setPrivatePinnedMessage(null);
+      }
+    } catch (error) {
+      reportChatError(getApiErrorMessage(error, "Xabarni o'chirib bo'lmadi."));
+    }
+  }
+
+  function openEditChatMessage(message, scope) {
+    setEditingChatMessage({ message, scope });
+    clearChatError();
+    if (scope === "group") {
+      setGroupMessage(message.text);
+    } else {
+      setPrivateMessage(message.text);
+    }
+  }
+
+  function cancelEditChatMessage() {
+    const scope = editingChatMessage?.scope;
+    setEditingChatMessage(null);
+    if (scope === "group") {
+      setGroupMessage("");
+    } else if (scope === "private") {
+      setPrivateMessage("");
+    }
+  }
+
+  async function handleDeleteReview(reviewId) {
+    if (!window.confirm("Sharhni o'chirishni tasdiqlaysizmi?")) {
+      return;
+    }
+    try {
+      await deleteReview(reviewId);
+      setReviews((current) => current.filter((item) => item.id !== reviewId));
+      setPopularReviews((current) => current.filter((item) => item.id !== reviewId));
+      if (reviewUniversity) {
+        const detail = await getUniversityDetail(reviewUniversity);
+        setReviewUniversityDetail(detail);
+      }
+    } catch (requestError) {
+      setReviewSubmitError(
+        getApiErrorMessage(requestError, "Sharhni o'chirib bo'lmadi. Qayta urinib ko'ring.")
+      );
+    }
   }
 
   async function submitReview(event) {
@@ -892,6 +1203,13 @@ export default function DashboardPage({ role }) {
       setReviewText("");
       const detail = await getUniversityDetail(reviewUniversity);
       setReviewUniversityDetail(detail);
+      if (nextReview.status === "pending") {
+        setReviewSubmitError(
+          "Sharh yuborildi. Moderator tasdiqlagach saytda ko'rinadi (email xabari yuboriladi)."
+        );
+      } else {
+        setReviewSubmitError("");
+      }
     } catch (requestError) {
       setReviewSubmitError(
         getApiErrorMessage(requestError, "Sharh yuborilmadi. Qayta urinib ko'ring.")
@@ -904,44 +1222,13 @@ export default function DashboardPage({ role }) {
   return (
     <main className="min-h-screen bg-[#f5f7fb] text-slate-950 dark:bg-slateNight dark:text-white">
       <div className="grid min-h-screen lg:grid-cols-[292px_1fr]">
-        <aside className="hidden min-h-screen flex-col border-r border-slate-200 bg-white/90 p-5 backdrop-blur-xl lg:flex dark:border-white/10 dark:bg-slate-950/80">
-          <Link to="/" className="flex items-center gap-3 rounded-3xl p-2">
-            <img src={logo} alt="MyUni.uz logotipi" className="h-12 w-12 rounded-2xl object-cover shadow-glow" />
-            <div>
-              <p className="text-xl font-black">MyUni.uz</p>
-              <p className="text-xs font-bold text-slate-500 dark:text-slate-400">{cabinetEyebrow}</p>
-            </div>
-          </Link>
-
-          <nav className="mt-8 flex-1 space-y-2 overflow-y-auto">
-            {visibleMenuItems.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => changeSection(item.id)}
-                className={`flex min-h-[4.5rem] w-full items-center gap-4 rounded-3xl p-4 text-left transition ${
-                  activeSection === item.id
-                    ? "bg-slate-950 text-white shadow-soft dark:bg-white dark:text-slate-950"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
-                }`}
-              >
-                <span
-                  className={`grid h-11 w-11 place-items-center rounded-2xl ${
-                    activeSection === item.id ? "bg-white/10" : "bg-slate-100 dark:bg-white/10"
-                  }`}
-                >
-                  <DashboardIcon name={item.id} />
-                </span>
-                <span>
-                  <span className="block font-black">{item.label}</span>
-                  <span className="mt-0.5 block text-xs font-semibold opacity-70">{item.helper}</span>
-                </span>
-              </button>
-            ))}
-          </nav>
-
-          <SupportPanel isStudent={isStudent} />
-        </aside>
+        <DashboardSidebar
+          cabinetEyebrow={cabinetEyebrow}
+          visibleMenuItems={visibleMenuItems}
+          activeSection={activeSection}
+          onChangeSection={changeSection}
+          isStudent={isStudent}
+        />
 
         <section className="min-w-0">
           <header className="sticky top-0 z-40 border-b border-slate-200 bg-[#f5f7fb]/90 px-4 py-3 backdrop-blur-xl sm:px-6 sm:py-4 lg:px-8 dark:border-white/10 dark:bg-slateNight/85">
@@ -1004,380 +1291,90 @@ export default function DashboardPage({ role }) {
             ) : (
               <div className="min-h-[calc(100vh-12rem)]">
             {activeSection === "chats" && (
-              <section
-                className={`grid gap-4 md:items-stretch md:gap-6 ${chatSectionGridClass}`}
-              >
-                <div
-                  className={`flex h-fit w-full max-h-[calc(100dvh-11rem)] flex-col self-start rounded-[2rem] border border-slate-200 bg-white p-4 shadow-soft sm:p-5 md:max-h-[calc(100vh-10rem)] dark:border-white/10 dark:bg-white/[0.06] ${
-                    isPhone && mobileChatScreen !== "list" ? "hidden" : ""
-                  }`}
-                >
-                  <div>
-                    <p className="text-sm font-black uppercase tracking-[0.18em] text-primary">Chatlar</p>
-                    <h2 className="mt-2 text-2xl font-black sm:text-3xl">Universitet tanlang</h2>
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-3 gap-2">
-                    {chatTabs.map((tab) => (
-                      <button
-                        key={tab.id}
-                        type="button"
-                        onClick={() => handleChatTabChange(tab.id)}
-                        className={`relative rounded-2xl px-3 py-2.5 text-xs font-black transition hover:-translate-y-0.5 ${
-                          chatListTab === tab.id
-                            ? "bg-slate-950 text-white shadow-soft dark:bg-white dark:text-slate-950"
-                            : "bg-slate-100 text-slate-600 hover:border-primary/30 hover:bg-slate-200 hover:text-slate-950 hover:shadow-sm dark:bg-white/10 dark:text-slate-300 dark:hover:bg-white/20 dark:hover:text-white"
-                        }`}
-                      >
-                        {tab.label}
-                        {tab.id === "joined" && totalJoinedUnread > 0 && (
-                          <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-red-500 px-1 text-[10px] font-black text-white shadow-sm">
-                            {totalJoinedUnread > 99 ? "99+" : totalJoinedUnread}
-                          </span>
-                        )}
-                        {tab.id === "private" && totalPrivateUnread > 0 && (
-                          <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-red-500 px-1 text-[10px] font-black text-white shadow-sm">
-                            {totalPrivateUnread > 99 ? "99+" : totalPrivateUnread}
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-
-                  {chatListTab === "search" && (
-                    <input
-                      value={universitySearch}
-                      onChange={(event) => setUniversitySearch(event.target.value)}
-                      placeholder="Universitet qidiring..."
-                      className="mt-4 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:ring-blue-400/25"
-                    />
-                  )}
-
-                  <div className="mt-4 max-h-[min(28rem,calc(100dvh-17rem))] space-y-1 overflow-y-auto overscroll-contain pr-1">
-                    {chatListTab === "private" ? (
-                      privateThreadList.length === 0 ? (
-                        <p className="rounded-3xl bg-slate-50 p-4 text-sm font-semibold text-slate-500 dark:bg-white/5">
-                          Hali shaxsiy xabar yo'q. Guruh chatidan profilni ochib «Shaxsiy xabar» tugmasini bosing.
-                        </p>
-                      ) : (
-                        privateThreadList.map((thread) => renderPrivateThreadRow(thread))
-                      )
-                    ) : filteredUniversities.length === 0 ? (
-                      <p className="px-2 py-4 text-sm font-semibold text-slate-500">
-                        {chatListTab === "joined"
-                          ? "Hali qo'shilgan chat yo'q."
-                          : "Universitet topilmadi."}
-                      </p>
-                    ) : (
-                      filteredUniversities.map((university) => (
-                        <ChatUniversityRow
-                          key={university.id}
-                          university={university}
-                          isSelected={selectedUniversityId === university.id}
-                          isJoined={joinedUniversityIds.has(university.id)}
-                          onSelect={selectUniversityChat}
-                        />
-                      ))
-                    )}
-                  </div>
-                </div>
-
-                <div
-                  className={`flex min-h-0 flex-col overflow-hidden border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-white/[0.06] ${
-                    isPhone && mobileChatScreen !== "chat" ? "hidden" : ""
-                  } ${
-                    isWideChatLayout
-                      ? "min-h-[calc(100vh-11rem)] rounded-2xl md:rounded-[1.25rem]"
-                      : "rounded-[2rem]"
-                  }`}
-                >
-                  {chatPanel === "private" && selectedThread ? (
-                    <div className="flex min-h-0 flex-1 flex-col">
-                      <div className="border-b border-slate-200 p-4 sm:p-6 dark:border-white/10">
-                        {isPhone && (
-                          <button
-                            type="button"
-                            onClick={backToChatList}
-                            className="mb-3 flex items-center gap-2 text-sm font-black text-primary"
-                          >
-                            ← Ro'yxat
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (selectedThread.other_user_id) {
-                              openUserProfile(
-                                selectedThread.other_user_id,
-                                {
-                                  display_name: selectedThread.other_user_name,
-                                  avatar_url: selectedThread.other_user_avatar_url,
-                                },
-                                {}
-                              );
-                            }
-                          }}
-                          className="flex w-full items-center gap-4 rounded-2xl text-left transition hover:bg-slate-50 dark:hover:bg-white/5"
-                        >
-                          <UserAvatar
-                            name={selectedThread.other_user_name}
-                            avatarUrl={selectedThread.other_user_avatar_url}
-                            size="lg"
-                          />
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-black uppercase tracking-[0.18em] text-primary">Shaxsiy chat</p>
-                            <h2 className="mt-1 truncate text-2xl font-black sm:text-3xl hover:text-primary">
-                              {selectedThread.other_user_name}
-                            </h2>
-                          </div>
-                          <span className="shrink-0 text-xl text-slate-400">›</span>
-                        </button>
-                      </div>
-                      <div
-                        className={`overflow-y-auto overflow-x-hidden bg-[#e8ecf4] px-4 py-4 sm:px-6 sm:py-5 dark:bg-slate-950/60 ${privateChatMessagesHeight}`}
-                      >
-                        {directMessages.length === 0 ? (
-                          <div className="grid h-full min-h-[12rem] place-items-center text-center text-slate-500">
-                            Birinchi shaxsiy xabaringizni yozing
-                          </div>
-                        ) : (
-                          <div className="w-full space-y-3 pb-3">
-                            {directMessages.map((item) => (
-                              <ChatMessageBubble
-                                key={item.id}
-                                message={item}
-                                formatTime={formatTime}
-                                onReact={handlePrivateReaction}
-                                onAuthorClick={(authorId, prefetch) =>
-                                  openUserProfile(authorId, prefetch, {})
-                                }
-                                isReacting={reactingMessageId === item.id}
-                                containerClassName="max-w-[min(42rem,78%)]"
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      {privateTypingUsers.length > 0 && (
-                        <p className="border-t border-slate-200 px-4 py-2 text-xs font-semibold text-slate-500 dark:border-white/10">
-                          {privateTypingUsers.join(", ")} yozmoqda...
-                        </p>
-                      )}
-                      <form
-                        onSubmit={sendPrivateChatMessage}
-                        className="border-t border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900/90"
-                      >
-                        <div className="flex flex-col gap-3 sm:flex-row">
-                          <input
-                            value={privateMessage}
-                            onChange={(event) => {
-                              setPrivateMessage(event.target.value);
-                              notifyPrivateTyping();
-                            }}
-                            placeholder="Shaxsiy xabar yozing..."
-                            className="min-h-12 flex-1 rounded-2xl border border-slate-200 bg-white px-4 font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:ring-blue-400/25"
-                          />
-                          <button
-                            type="submit"
-                            disabled={!privateMessage.trim() || isPrivateSending}
-                            className="rounded-2xl bg-premium-gradient px-6 py-3 font-black text-white shadow-glow transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            Yuborish
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  ) : chatPanel === "private" ? (
-                    <div className="grid min-h-[280px] flex-1 place-items-center bg-slate-50 p-8 text-center md:min-h-[420px] dark:bg-slate-950/40">
-                      <p className="text-slate-500 dark:text-slate-400">Chap ro'yxatdan suhbat tanlang</p>
-                    </div>
-                  ) : (
-                    <div className="flex min-h-0 flex-1 flex-col">
-                      <div className="shrink-0 border-b border-slate-200 p-4 sm:px-5 dark:border-white/10">
-                        {isPhone && selectedUniversity && (
-                          <button
-                            type="button"
-                            onClick={backToChatList}
-                            className="mb-3 flex items-center gap-2 text-sm font-black text-primary"
-                          >
-                            ← Ro&apos;yxat
-                          </button>
-                        )}
-                        <div className="flex flex-wrap items-center gap-3">
-                          <button
-                            type="button"
-                            onClick={openGroupInfoModal}
-                            className="flex min-w-0 flex-1 items-center gap-3 rounded-2xl text-left transition hover:bg-slate-50 dark:hover:bg-white/5"
-                          >
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">
-                                Guruh chat
-                              </p>
-                              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-                                <h2 className="text-2xl font-black sm:text-3xl hover:text-primary">
-                                  {selectedUniversity?.short_name || selectedUniversity?.name || "Universitet"}
-                                </h2>
-                                {selectedUniversity?.location && (
-                                  <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-                                    {selectedUniversity.location}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                            <span className="shrink-0 text-xl text-slate-400" aria-hidden="true">
-                              ›
-                            </span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={openGroupInfoModal}
-                            className="flex shrink-0 items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-left transition hover:border-primary hover:bg-blue-50/80 dark:border-white/10 dark:bg-white/5 dark:hover:border-primary/40"
-                          >
-                            <div className="flex -space-x-2">
-                              {activeChatMembers.members.length === 0 ? (
-                                <span className="grid h-8 w-8 place-items-center rounded-full bg-slate-200 text-[10px] font-black text-slate-500 dark:bg-white/10">
-                                  ?
-                                </span>
-                              ) : (
-                                activeChatMembers.members.slice(0, 3).map((member) => (
-                                  <UserAvatar
-                                    key={member.id}
-                                    name={member.display_name}
-                                    avatarUrl={member.avatar_url}
-                                    size="sm"
-                                  />
-                                ))
-                              )}
-                            </div>
-                            <span className="text-xs font-black text-slate-700 dark:text-slate-200">
-                              {activeChatMembers.member_count === 0
-                                ? "A'zolar"
-                                : `${activeChatMembers.member_count} a'zo`}
-                            </span>
-                            <span className="text-slate-400" aria-hidden="true">
-                              ›
-                            </span>
-                          </button>
-
-                          {!hasJoinedSelectedChat && selectedUniversity ? (
-                            <button
-                              type="button"
-                              onClick={() => handleJoin(selectedUniversity.id)}
-                              className="shrink-0 rounded-2xl border border-primary/30 bg-blue-50 px-3 py-2 text-xs font-black text-primary transition hover:bg-blue-100 dark:border-primary/40 dark:bg-blue-400/15 dark:hover:bg-blue-400/25 sm:text-sm"
-                            >
-                              Qo&apos;shilish
-                            </button>
-                          ) : hasJoinedSelectedChat ? (
-                            <button
-                              type="button"
-                              onClick={handleLeaveChat}
-                              className="shrink-0 rounded-2xl border border-red-200 px-3 py-2 text-xs font-black text-red-600 transition hover:bg-red-50 dark:border-red-400/30 dark:text-red-400 dark:hover:bg-red-500/10 sm:text-sm"
-                            >
-                              Chiqish
-                            </button>
-                          ) : null}
-                        </div>
-                      </div>
-
-                      <div
-                        className={`overflow-y-auto overflow-x-hidden bg-[#e8ecf4] px-4 py-4 sm:px-6 sm:py-5 dark:bg-slate-950/60 ${groupChatMessagesHeight}`}
-                      >
-                        {groupMessages.length === 0 ? (
-                          <div className="grid h-full min-h-[12rem] place-items-center text-center text-slate-500">
-                            {hasJoinedSelectedChat
-                              ? "Birinchi xabarni yozing"
-                              : "Chatga qo'shilib yozing"}
-                          </div>
-                        ) : (
-                          <div className="w-full space-y-3 pb-3">
-                            {groupMessages.map((item) => (
-                              <ChatMessageBubble
-                                key={item.id}
-                                message={{ ...item, is_mine: item.is_mine ?? item.author_id === user?.id }}
-                                formatTime={formatTime}
-                                onReact={handleGroupReaction}
-                                onAuthorClick={openGroupChatAuthorProfile}
-                                isReacting={reactingMessageId === item.id}
-                                containerClassName="max-w-[min(42rem,78%)]"
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {groupTypingUsers.length > 0 && (
-                        <p className="shrink-0 border-t border-slate-200 px-4 py-2 text-xs font-semibold text-slate-500 dark:border-white/10">
-                          {groupTypingUsers.join(", ")} yozmoqda...
-                        </p>
-                      )}
-
-                      <form
-                        onSubmit={sendGroupChatMessage}
-                        className="shrink-0 border-t border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900/90"
-                      >
-                        <div className="flex flex-col gap-3 sm:flex-row">
-                          <input
-                            value={groupMessage}
-                            onChange={(event) => {
-                              setGroupMessage(event.target.value);
-                              notifyGroupTyping();
-                            }}
-                            disabled={!hasJoinedSelectedChat}
-                            placeholder={
-                              hasJoinedSelectedChat
-                                ? "Xabar yozing..."
-                                : "Qo'shilgandan keyin yozish mumkin"
-                            }
-                            className="min-h-12 flex-1 rounded-2xl border border-slate-200 bg-white px-4 font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:ring-blue-400/25 dark:disabled:bg-white/5 dark:disabled:text-slate-500"
-                          />
-                          <button
-                            type="submit"
-                            disabled={!hasJoinedSelectedChat || !groupMessage.trim() || isGroupSending}
-                            className="rounded-2xl bg-premium-gradient px-6 py-3 font-black text-white shadow-glow transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
-                          >
-                            Yuborish
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  )}
-                </div>
-
-                {showGroupInfoModal && chatPanel === "group" && (
-                  <GroupInfoModal
-                    university={groupInfoUniversity}
-                    isDetailLoading={isGroupInfoDetailLoading}
-                    members={activeChatMembers.members}
-                    memberCount={activeChatMembers.member_count}
-                    hasJoined={hasJoinedSelectedChat}
-                    onJoin={() => selectedUniversity && handleJoin(selectedUniversity.id)}
-                    onLeave={handleLeaveChat}
-                    onMemberClick={(member) =>
-                      openUserProfile(
-                        member.id,
-                        {
-                          display_name: member.display_name,
-                          avatar_url: member.avatar_url,
-                          role_label: member.is_me ? "Siz" : member.role_label,
-                          university: member.university,
-                        },
-                        { universityId: selectedUniversityId }
-                      )
-                    }
-                    onClose={() => setShowGroupInfoModal(false)}
-                  />
-                )}
-
-                <ProfileModal
-                  profileUser={profileUser}
-                  isProfileLoading={isProfileLoading}
-                  currentUserId={user?.id}
-                  hidePrivateMessage={hidePrivateMessageButton}
-                  onPrivateMessage={() => openPrivateChatWithUser(profileUser.id)}
-                  onClose={() => setProfileUser(null)}
-                />
-              </section>
+              <DashboardChatSection
+                chatError={chatError}
+                isPhone={isPhone}
+                mobileChatScreen={mobileChatScreen}
+                chatSectionGridClass={chatSectionGridClass}
+                chatColumnEqualHeightClass={chatColumnEqualHeightClass}
+                chatListScrollClass={chatListScrollClass}
+                chatMessagesAreaClass={chatMessagesAreaClass}
+                chatPanelInnerClass={chatPanelInnerClass}
+                chatListTab={chatListTab}
+                handleChatTabChange={handleChatTabChange}
+                totalJoinedUnread={totalJoinedUnread}
+                totalPrivateUnread={totalPrivateUnread}
+                universitySearch={universitySearch}
+                setUniversitySearch={setUniversitySearch}
+                privateThreadList={privateThreadList}
+                renderPrivateThreadRow={renderPrivateThreadRow}
+                filteredUniversities={filteredUniversities}
+                selectedUniversityId={selectedUniversityId}
+                joinedUniversityIds={joinedUniversityIds}
+                selectUniversityChat={selectUniversityChat}
+                isWideChatLayout={isWideChatLayout}
+                chatPanel={chatPanel}
+                selectedThread={selectedThread}
+                backToChatList={backToChatList}
+                openUserProfile={openUserProfile}
+                formatTime={formatTime}
+                privatePinnedMessage={privatePinnedMessage}
+                handleUnpinPrivateMessage={handleUnpinPrivateMessage}
+                directMessages={directMessages}
+                handlePrivateReaction={handlePrivateReaction}
+                handlePinPrivateMessage={handlePinPrivateMessage}
+                handleUnpinGroupMessage={handleUnpinGroupMessage}
+                openMessageReport={openMessageReport}
+                reactingMessageId={reactingMessageId}
+                privateTypingUsers={privateTypingUsers}
+                privateMessage={privateMessage}
+                setPrivateMessage={setPrivateMessage}
+                notifyPrivateTyping={notifyPrivateTyping}
+                sendPrivateChatMessage={sendPrivateChatMessage}
+                isPrivateSending={isPrivateSending}
+                isGroupChatSearchOpen={isGroupChatSearchOpen}
+                closeGroupChatSearch={closeGroupChatSearch}
+                openGroupChatSearch={openGroupChatSearch}
+                selectedUniversity={selectedUniversity}
+                openGroupInfoModal={openGroupInfoModal}
+                activeChatMembers={activeChatMembers}
+                groupPinnedMessage={groupPinnedMessage}
+                groupMessages={groupMessages}
+                hasJoinedSelectedChat={hasJoinedSelectedChat}
+                highlightedGroupMessageId={highlightedGroupMessageId}
+                groupMessageRefs={groupMessageRefs}
+                handleGroupReaction={handleGroupReaction}
+                handlePinGroupMessage={handlePinGroupMessage}
+                user={user}
+                openGroupChatAuthorProfile={openGroupChatAuthorProfile}
+                groupTypingUsers={groupTypingUsers}
+                groupMessage={groupMessage}
+                setGroupMessage={setGroupMessage}
+                notifyGroupTyping={notifyGroupTyping}
+                sendGroupChatMessage={sendGroupChatMessage}
+                isGroupSending={isGroupSending}
+                handleLeaveChat={handleLeaveChat}
+                handleJoin={handleJoin}
+                isGroupJoining={isGroupJoining}
+                groupChatSearchQuery={groupChatSearchQuery}
+                setGroupChatSearchQuery={setGroupChatSearchQuery}
+                groupChatSearchResults={groupChatSearchResults}
+                jumpToGroupMessage={jumpToGroupMessage}
+                showGroupInfoModal={showGroupInfoModal}
+                groupInfoUniversity={groupInfoUniversity}
+                isGroupInfoDetailLoading={isGroupInfoDetailLoading}
+                setShowGroupInfoModal={setShowGroupInfoModal}
+                profileUser={profileUser}
+                isProfileLoading={isProfileLoading}
+                hidePrivateMessageButton={hidePrivateMessageButton}
+                openPrivateChatWithUser={openPrivateChatWithUser}
+                setProfileUser={setProfileUser}
+                openEditChatMessage={openEditChatMessage}
+                editingChatMessage={editingChatMessage}
+                cancelEditChatMessage={cancelEditChatMessage}
+                handleDeleteGroupMessage={handleDeleteGroupMessage}
+                handleDeletePrivateMessage={handleDeletePrivateMessage}
+              />
             )}
 
             {activeSection === "popular" && (
@@ -1391,47 +1388,32 @@ export default function DashboardPage({ role }) {
             )}
 
             {activeSection === "reviews" && (
-              <section
-                className={`grid items-stretch gap-4 lg:gap-6 ${
-                  isPhone ? "grid-cols-1" : "xl:grid-cols-[minmax(280px,320px)_minmax(0,1fr)]"
-                }`}
-              >
-                <ReviewUniversityList
-                  title={isStudent ? "Sharh yozish" : "Sharhlarni ko'rish"}
-                  subtitle={isStudent ? "O'qiyotgan yoki tanlangan OTM" : "Qiziqayotgan universitet"}
-                  hint={
-                    isStudent
-                      ? "Baholang va tajribangizni yozing."
-                      : "Talabalar sharhlarini o'qing — yozish faqat talabalarga."
-                  }
-                  search={reviewUniversitySearch}
-                  onSearchChange={setReviewUniversitySearch}
-                  universities={filteredReviewUniversities}
-                  selectedId={reviewUniversity}
-                  onSelect={selectReviewUniversity}
-                  className={isPhone && mobileReviewScreen !== "list" ? "hidden" : ""}
-                />
-
-                <ReviewWorkspacePanel
-                  isStudent={isStudent}
-                  isPhone={isPhone}
-                  reviewUniversity={reviewUniversity}
-                  reviewUniversityDetail={reviewUniversityDetail}
-                  isReviewDetailLoading={isReviewDetailLoading}
-                  reviews={reviews}
-                  onBack={backToReviewList}
-                  onSubmitReview={submitReview}
-                  rating={rating}
-                  onRatingChange={setRating}
-                  reviewText={reviewText}
-                  onReviewTextChange={setReviewText}
-                  isReviewSubmitting={isReviewSubmitting}
-                  reviewSubmitError={reviewSubmitError}
-                  onLike={handleReviewLike}
-                  stars={stars}
-                  className={isPhone && mobileReviewScreen !== "detail" ? "hidden" : ""}
-                />
-              </section>
+              <DashboardReviewsSection
+                isStudent={isStudent}
+                isPhone={isPhone}
+                reviewUniversity={reviewUniversity}
+                reviewUniversitySearch={reviewUniversitySearch}
+                onReviewUniversitySearchChange={setReviewUniversitySearch}
+                filteredReviewUniversities={filteredReviewUniversities}
+                onSelectReviewUniversity={selectReviewUniversity}
+                mobileReviewScreen={mobileReviewScreen}
+                reviewUniversityDetail={reviewUniversityDetail}
+                isReviewDetailLoading={isReviewDetailLoading}
+                reviews={reviews}
+                onBackToReviewList={backToReviewList}
+                onSubmitReview={submitReview}
+                rating={rating}
+                onRatingChange={setRating}
+                reviewText={reviewText}
+                onReviewTextChange={setReviewText}
+                isReviewSubmitting={isReviewSubmitting}
+                reviewSubmitError={reviewSubmitError}
+                onLike={handleReviewLike}
+                onDeleteReview={isStudent ? handleDeleteReview : undefined}
+                stars={stars}
+                onOpenSection={changeSection}
+                onOpenChat={openChatFromReviewUniversity}
+              />
             )}
 
             {activeSection === "profile" && (
@@ -1469,6 +1451,14 @@ export default function DashboardPage({ role }) {
         activeSection={activeSection}
         onSelect={changeSection}
       />
+
+      <MessageReportDialog
+        open={Boolean(reportTarget)}
+        onClose={() => setReportTarget(null)}
+        onSubmit={submitMessageReport}
+        isSubmitting={isReportSubmitting}
+      />
+
     </main>
   );
 }

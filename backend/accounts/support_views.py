@@ -3,15 +3,30 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .support import notify_support_telegram
+from .support_limits import check_support_message_allowed, record_support_message_request
 
 
 class SupportMessageView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
+        allowed, detail, retry_after = check_support_message_allowed(request)
+        if not allowed:
+            response = Response({"detail": detail}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+            if retry_after:
+                response["Retry-After"] = str(retry_after)
+            return response
+
         message = (request.data.get("message") or "").strip()
         if not message:
             return Response({"detail": "Xabar bo'sh bo'lmasligi kerak."}, status=status.HTTP_400_BAD_REQUEST)
+        if len(message) > 4000:
+            return Response(
+                {"detail": "Xabar juda uzun (maksimum 4000 belgi)."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        record_support_message_request(request)
 
         user = request.user if request.user.is_authenticated else None
         delivered = notify_support_telegram(

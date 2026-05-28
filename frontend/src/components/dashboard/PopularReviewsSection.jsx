@@ -9,20 +9,16 @@ function StatTile({ label, value, accent = false }) {
     <div
       className={`rounded-xl border px-3 py-2.5 text-center ${
         accent
-          ? "border-violet-200/80 bg-violet-50 dark:border-violet-400/20 dark:bg-violet-400/10"
+          ? "border-primary/25 bg-blue-50 dark:border-primary/30 dark:bg-blue-400/10"
           : "border-slate-200/80 bg-slate-50 dark:border-white/10 dark:bg-white/5"
       }`}
     >
-      <p
-        className={`text-[10px] font-black uppercase ${
-          accent ? "text-violet-600 dark:text-violet-300" : "text-slate-400"
-        }`}
-      >
+      <p className={`text-[10px] font-black uppercase ${accent ? "text-primary" : "text-slate-400"}`}>
         {label}
       </p>
       <p
         className={`mt-0.5 text-lg font-black ${
-          accent ? "text-violet-800 dark:text-violet-200" : "text-slate-800 dark:text-white"
+          accent ? "text-primary dark:text-blue-200" : "text-slate-800 dark:text-white"
         }`}
       >
         {value}
@@ -280,7 +276,13 @@ export default function PopularReviewsSection({
                   </p>
                   <div className="grid gap-4 lg:grid-cols-2">
                     {otherReviews.map((item) => (
-                      <ReviewCard key={item.id} item={item} showUniversity onLike={onLike} />
+                      <ReviewCard
+                        key={item.id}
+                        item={item}
+                        showUniversity
+                        onLike={onLike}
+                        showStudentVoiceBadge={!isStudent}
+                      />
                     ))}
                   </div>
                 </div>

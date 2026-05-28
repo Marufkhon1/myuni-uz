@@ -12,8 +12,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from .chat_colors import CHAT_COLOR_SET
 from .models import Profile
 from .profile_access import can_view_chat_profile
+from .auth_cookies import clear_auth_cookies, set_auth_cookies
 from .serializers import LoginSerializer, PublicUserSerializer, RegisterSerializer, UserSerializer
 
 User = get_user_model()
@@ -42,8 +44,7 @@ class RegisterView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         refresh = RefreshToken.for_user(user)
-
-        return Response(
+        response = Response(
             {
                 "access": str(refresh.access_token),
                 "refresh": str(refresh),
@@ -51,6 +52,8 @@ class RegisterView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+        set_auth_cookies(response, refresh)
+        return response
 
 
 class LoginView(APIView):
@@ -59,7 +62,11 @@ class LoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        return Response(serializer.validated_data)
+        data = serializer.validated_data
+        refresh = RefreshToken(data["refresh"])
+        response = Response(data)
+        set_auth_cookies(response, refresh)
+        return response
 
 
 class MeView(APIView):
@@ -74,6 +81,7 @@ class MeView(APIView):
         update_fields = []
         user_update_fields = []
         visibility = request.data.get("avatar_visibility")
+        chat_color = request.data.get("chat_color")
         full_name = request.data.get("full_name")
         university = request.data.get("university")
 
@@ -96,6 +104,16 @@ class MeView(APIView):
                 )
             profile.avatar_visibility = visibility
             update_fields.append("avatar_visibility")
+
+        if chat_color is not None:
+            normalized = str(chat_color).strip()
+            if normalized and normalized not in CHAT_COLOR_SET:
+                return Response(
+                    {"detail": "Chat rangi noto'g'ri tanlangan."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            profile.chat_color = normalized
+            update_fields.append("chat_color")
 
         avatar = request.FILES.get("avatar")
         if avatar:

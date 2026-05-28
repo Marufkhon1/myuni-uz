@@ -6,7 +6,7 @@ import UniversityMetaLine from "./UniversityMetaLine.jsx";
 import UniversityRatingStars from "./dashboard/UniversityRatingStars.jsx";
 import { useAuth } from "../hooks/useAuth.js";
 import { getPublicTopUniversities } from "../services/publicService.js";
-import { buildReviewsHubPath, buildUniversityDetailsPath } from "../utils/navigation.js";
+import { buildReviewsHubPath, buildUniversityPublicPath } from "../utils/navigation.js";
 
 export default function TopUniversitiesSection() {
   const { isAuthenticated, isLoading, role } = useAuth();
@@ -86,11 +86,7 @@ export default function TopUniversitiesSection() {
             </p>
           )}
           {universities.map((university, index) => {
-            const detailsPath = buildUniversityDetailsPath({
-              role,
-              universityName: university.name,
-              isAuthenticated,
-            });
+            const publicPath = buildUniversityPublicPath(university);
 
             return (
               <motion.article
@@ -123,7 +119,7 @@ export default function TopUniversitiesSection() {
                     {isLoading ? (
                       <span className="text-sm font-black text-slate-400">Tekshirilmoqda...</span>
                     ) : (
-                      <Link to={detailsPath} className="text-sm font-black text-primary">
+                      <Link to={publicPath} className="text-sm font-black text-primary">
                         Batafsil
                       </Link>
                     )}

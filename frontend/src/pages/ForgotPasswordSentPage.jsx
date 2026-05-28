@@ -10,6 +10,7 @@ export default function ForgotPasswordSentPage() {
       eyebrow="Email yuborildi"
       title="Pochtangizni tekshiring."
       subtitle="Emaildagi havolani oching va yangi parol kiriting."
+      showBackHome={false}
     >
       <div className="space-y-5">
         <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 dark:border-emerald-400/30 dark:bg-emerald-950/40">

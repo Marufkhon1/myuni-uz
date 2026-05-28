@@ -38,3 +38,7 @@ export async function toggleReviewLike(reviewId) {
   const { data } = await api.post(`/universities/reviews/${reviewId}/like/`);
   return data;
 }
+
+export async function deleteReview(reviewId) {
+  await api.delete(`/universities/reviews/${reviewId}/`);
+}

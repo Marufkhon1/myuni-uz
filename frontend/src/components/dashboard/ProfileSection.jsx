@@ -2,6 +2,7 @@ import { useState } from "react";
 import { deleteAvatar, updateProfileSettings, uploadAvatar } from "../../services/authService.js";
 import { resolveMediaUrl } from "../../utils/media.js";
 import UniversitySearchSelect, { matchUniversityByText } from "./UniversitySearchSelect.jsx";
+import ChatColorPicker from "./ChatColorPicker.jsx";
 
 export default function ProfileSection({
   user,
@@ -20,6 +21,7 @@ export default function ProfileSection({
   const [isAvatarUploading, setIsAvatarUploading] = useState(false);
   const [isAvatarDeleting, setIsAvatarDeleting] = useState(false);
   const [isSettingsSaving, setIsSettingsSaving] = useState(false);
+  const [isColorSaving, setIsColorSaving] = useState(false);
   const displayAvatarUrl = resolveMediaUrl(avatarPreview || savedAvatarUrl);
   const hasAvatar = Boolean(displayAvatarUrl);
 
@@ -64,6 +66,19 @@ export default function ProfileSection({
       setAvatarError("Rasmni o'chirib bo'lmadi.");
     } finally {
       setIsAvatarDeleting(false);
+    }
+  }
+
+  async function handleChatColorChange(colorId) {
+    setAvatarError("");
+    setIsColorSaving(true);
+    try {
+      await updateProfileSettings({ chat_color: colorId });
+      await refreshUser();
+    } catch {
+      setAvatarError("Chat rangini saqlab bo'lmadi.");
+    } finally {
+      setIsColorSaving(false);
     }
   }
 
@@ -413,6 +428,15 @@ export default function ProfileSection({
           </div>
         </div>
       </div>
+
+      <ChatColorPicker
+        displayName={displayName}
+        userId={user?.id}
+        selectedColor={profile?.chat_color || ""}
+        resolvedColor={profile?.chat_color_resolved}
+        isSaving={isColorSaving}
+        onSelect={handleChatColorChange}
+      />
 
       <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-white/[0.06]">
         <p className="text-sm font-black uppercase tracking-[0.18em] text-primary">Sozlamalar</p>

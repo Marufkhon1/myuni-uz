@@ -1,8 +1,10 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/myuni-logo.png";
 import { useAuth } from "../hooks/useAuth.js";
+import { PublicBackHomeButton, PublicLoginButton, PublicSignupButton } from "./PublicPageButtons.jsx";
+import { scrollToLandingSection } from "../utils/landingScroll.js";
 
 const navLinks = [
   { label: "Bosh sahifa", href: "#home" },
@@ -12,10 +14,32 @@ const navLinks = [
   { label: "Biz haqimizda", href: "#about" },
 ];
 
-export default function Navbar({ isDark, onToggleTheme }) {
+const navLinkClass =
+  "text-sm font-semibold text-slate-600 transition hover:text-primary dark:text-slate-300 dark:hover:text-white";
+const navLinkMobileClass =
+  "rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10";
+
+export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guestHomeButtonOnly = false }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { isAuthenticated, isLoading, role } = useAuth();
   const dashboardPath = role === "student" ? "/student/dashboard" : "/applicant/dashboard";
+  const themeToggle = onToggleTheme ? () => onToggleTheme() : undefined;
+
+  function goToLandingSection(event, hash) {
+    event.preventDefault();
+    setIsOpen(false);
+
+    if (pathname === "/") {
+      scrollToLandingSection(hash);
+      window.history.replaceState(null, "", hash);
+      return;
+    }
+
+    navigate({ pathname: "/", hash });
+  }
+
   const ThemeIcon = isDark ? (
     <svg viewBox="0 0 24 24" className="h-5 w-5 fill-amber-400" aria-hidden="true">
       <path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM12 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1ZM12 19a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1ZM4.22 4.22a1 1 0 0 1 1.42 0l.7.7a1 1 0 0 1-1.41 1.42l-.71-.7a1 1 0 0 1 0-1.42ZM17.66 17.66a1 1 0 0 1 1.41 0l.71.7a1 1 0 1 1-1.42 1.42l-.7-.71a1 1 0 0 1 0-1.41ZM2 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1ZM19 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1ZM4.93 17.66a1 1 0 0 1 1.41 1.41l-.7.71a1 1 0 0 1-1.42-1.42l.71-.7ZM18.36 4.22a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 0 1-1.41-1.41l.7-.71Z" />
@@ -32,7 +56,7 @@ export default function Navbar({ isDark, onToggleTheme }) {
         className="container-shell flex h-20 items-center justify-between"
         aria-label="Asosiy navigatsiya"
       >
-        <a href="#home" className="flex items-center gap-3" aria-label="MyUni.uz bosh sahifa">
+        <Link to="/" className="flex items-center gap-3" aria-label="MyUni.uz bosh sahifa">
           <img
             src={logo}
             alt="MyUni.uz logotipi"
@@ -41,14 +65,15 @@ export default function Navbar({ isDark, onToggleTheme }) {
           <span className="text-xl font-black tracking-tight text-slate-950 dark:text-white">
             MyUni.uz
           </span>
-        </a>
+        </Link>
 
         <div className="hidden items-center gap-8 lg:flex">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="text-sm font-semibold text-slate-600 transition hover:text-primary dark:text-slate-300 dark:hover:text-white"
+              onClick={(event) => goToLandingSection(event, link.href)}
+              className={navLinkClass}
             >
               {link.label}
             </a>
@@ -56,14 +81,16 @@ export default function Navbar({ isDark, onToggleTheme }) {
         </div>
 
         <div className="hidden items-center gap-3 lg:flex">
+          {themeToggle && (
           <button
             type="button"
-            onClick={onToggleTheme}
+            onClick={themeToggle}
             className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white shadow-soft transition hover:-translate-y-0.5 hover:border-primary dark:border-white/10 dark:bg-white/10"
             aria-label="Rang rejimini almashtirish"
           >
             {ThemeIcon}
           </button>
+          )}
           {!isLoading && isAuthenticated ? (
             <Link
               to={dashboardPath}
@@ -71,20 +98,12 @@ export default function Navbar({ isDark, onToggleTheme }) {
             >
               Kabinet
             </Link>
+          ) : guestHomeButtonOnly ? (
+            <PublicBackHomeButton className="!min-h-10 !px-4" />
           ) : (
             <>
-              <Link
-                to="/login"
-                className="rounded-full px-5 py-2.5 text-sm font-bold text-slate-700 transition hover:text-primary dark:text-slate-200"
-              >
-                Kirish
-              </Link>
-              <Link
-                to="/signup"
-                className="rounded-full bg-slate-950 px-5 py-2.5 text-sm font-bold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-primary dark:bg-white dark:text-slate-950"
-              >
-                Ro'yxatdan o'tish
-              </Link>
+              <PublicLoginButton to={loginTo} className="!min-h-10 !px-4" />
+              <PublicSignupButton to={signupTo} className="!min-h-10 !px-4" />
             </>
           )}
         </div>
@@ -118,22 +137,24 @@ export default function Navbar({ isDark, onToggleTheme }) {
                   <a
                     key={link.href}
                     href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className="rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10"
+                    onClick={(event) => goToLandingSection(event, link.href)}
+                    className={navLinkMobileClass}
                   >
                     {link.label}
                   </a>
                 ))}
               </div>
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <div className={`mt-4 grid gap-3 ${themeToggle ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+                {themeToggle && (
                 <button
                   type="button"
-                  onClick={onToggleTheme}
+                  onClick={themeToggle}
                   className="grid place-items-center rounded-2xl border border-slate-200 px-4 py-3 dark:border-white/10"
                   aria-label="Rang rejimini almashtirish"
                 >
                   {ThemeIcon}
                 </button>
+                )}
                 {!isLoading && isAuthenticated ? (
                   <Link
                     to={dashboardPath}
@@ -141,17 +162,12 @@ export default function Navbar({ isDark, onToggleTheme }) {
                   >
                     Kabinet
                   </Link>
+                ) : guestHomeButtonOnly ? (
+                  <PublicBackHomeButton className="w-full" />
                 ) : (
                   <>
-                    <Link to="/login" className="rounded-2xl px-4 py-3 text-center text-sm font-bold">
-                      Kirish
-                    </Link>
-                    <Link
-                      to="/signup"
-                      className="rounded-2xl bg-primary px-4 py-3 text-center text-sm font-bold text-white"
-                    >
-                      Ro'yxatdan o'tish
-                    </Link>
+                    <PublicLoginButton to={loginTo} className="w-full" />
+                    <PublicSignupButton to={signupTo} className="w-full" />
                   </>
                 )}
               </div>

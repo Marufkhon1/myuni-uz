@@ -5,6 +5,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .avatar_access import avatar_url_for_viewer
+from .chat_colors import resolve_chat_color_key
 from .models import Profile
 
 User = get_user_model()
@@ -26,6 +27,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "avatar_url",
             "avatar_visibility",
             "avatar_visibility_label",
+            "chat_color",
         ]
 
     def get_avatar_url(self, obj):
@@ -36,6 +38,11 @@ class ProfileSerializer(serializers.ModelSerializer):
         if request:
             return request.build_absolute_uri(url)
         return url
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["chat_color_resolved"] = resolve_chat_color_key(instance)
+        return data
 
 
 class UserSerializer(serializers.ModelSerializer):

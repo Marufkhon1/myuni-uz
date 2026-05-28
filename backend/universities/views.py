@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Avg, Count, Exists, OuterRef, Q
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -35,6 +36,12 @@ from .models import (
 )
 from .reaction_serializers import MessageReactionSerializer
 from .reaction_utils import toggle_message_reaction
+from .review_moderation import (
+    initial_review_status,
+    moderation_enabled,
+    notify_moderators_new_review,
+    reviews_visible_to_user,
+)
 from .serializers import (
     ChatMessageCreateSerializer,
     ChatMessageSerializer,
@@ -182,17 +189,22 @@ class UniversityDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, university_id):
+        from .compare_utils import rating_distribution
+
         university = get_object_or_404(University, pk=university_id)
         stats = Review.objects.filter(university=university).aggregate(
             average_rating=Avg("rating"),
             review_count=Count("id"),
         )
         average = stats["average_rating"]
+        member_count = ChatMembership.objects.filter(university=university).count()
         return Response(
             {
                 **UniversitySerializer(university).data,
                 "average_rating": round(average, 1) if average is not None else None,
                 "review_count": stats["review_count"] or 0,
+                "member_count": member_count,
+                "rating_distribution": rating_distribution(university.id),
             }
         )
 
@@ -211,7 +223,9 @@ class PopularReviewListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = Review.objects.select_related("university", "user", "user__profile")
+        queryset = Review.objects.filter(status=Review.Status.APPROVED).select_related(
+            "university", "user", "user__profile"
+        )
         return annotate_reviews_with_likes(queryset, self.request.user).order_by(
             "-like_count", "-created_at"
         )[:30]
@@ -226,12 +240,54 @@ class ReviewListCreateView(generics.ListCreateAPIView):
         if university_id:
             queryset = queryset.filter(university_id=university_id)
 
+        queryset = reviews_visible_to_user(queryset, self.request.user)
         return annotate_reviews_with_likes(queryset, self.request.user)
 
     def get_permissions(self):
         if self.request.method == "POST":
             return [CanWriteStudentContent()]
         return [IsAuthenticated()]
+
+    def create(self, request, *args, **kwargs):
+        from .review_limits import check_review_submit_allowed, record_review_submit
+
+        allowed, limit_message, retry_after = check_review_submit_allowed(
+            request, request.user.id
+        )
+        if not allowed:
+            return Response(
+                {
+                    "detail": limit_message,
+                    "retry_after_seconds": retry_after,
+                },
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        response = super().create(request, *args, **kwargs)
+        if response.status_code == status.HTTP_201_CREATED:
+            record_review_submit(request, request.user.id)
+        return response
+
+    def perform_create(self, serializer):
+        status_value = initial_review_status()
+        review = serializer.save(status=status_value)
+        if status_value == Review.Status.PENDING:
+            notify_moderators_new_review(review)
+
+
+class ReviewDetailView(generics.DestroyAPIView):
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated, CanWriteStudentContent]
+    lookup_url_kwarg = "review_id"
+
+    def get_queryset(self):
+        queryset = Review.objects.select_related("university", "user", "user__profile")
+        return reviews_visible_to_user(queryset, self.request.user)
+
+    def perform_destroy(self, instance):
+        if instance.user_id != self.request.user.id:
+            raise PermissionDenied("Faqat o'z sharhingizni o'chira olasiz.")
+        instance.delete()
 
 
 class ReviewLikeToggleView(APIView):
@@ -281,19 +337,22 @@ class UniversityMessageListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, university_id):
-        if not require_university_member(request.user, university_id):
-            return Response(
-                {"detail": "Avval universitet chatiga qo'shiling."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        get_object_or_404(University, pk=university_id)
+        from .pin_utils import get_pinned_university_message
+
         messages = (
-            ChatMessage.objects.filter(university_id=university_id)
+            ChatMessage.objects.filter(university_id=university_id, is_deleted=False)
             .select_related("user", "user__profile")
             .prefetch_related("reactions")
             .order_by("created_at")
         )
         return Response(
-            ChatMessageSerializer(messages, many=True, context={"request": request}).data
+            {
+                "messages": ChatMessageSerializer(
+                    messages, many=True, context={"request": request}
+                ).data,
+                "pinned": get_pinned_university_message(university_id, request),
+            }
         )
 
     def post(self, request, university_id):
@@ -517,14 +576,22 @@ class DirectMessageListCreateView(APIView):
         )
 
     def get(self, request, thread_id):
+        from .pin_utils import get_pinned_direct_message
+
         thread = self.get_thread_for_user(request, thread_id)
-        messages = DirectMessage.objects.filter(thread=thread).select_related(
-            "sender", "sender__profile"
-        ).prefetch_related("reactions")
+        messages = (
+            DirectMessage.objects.filter(thread=thread, is_deleted=False)
+            .select_related("sender", "sender__profile")
+            .prefetch_related("reactions")
+            .order_by("created_at")
+        )
         return Response(
-            DirectMessageSerializer(
-                messages, many=True, context={"request": request}
-            ).data
+            {
+                "messages": DirectMessageSerializer(
+                    messages, many=True, context={"request": request}
+                ).data,
+                "pinned": get_pinned_direct_message(thread.id, request),
+            }
         )
 
     def post(self, request, thread_id):

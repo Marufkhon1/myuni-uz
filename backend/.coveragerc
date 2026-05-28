@@ -1,0 +1,11 @@
+[run]
+source = accounts,universities
+omit =
+    */migrations/*
+    */tests/*
+    manage.py
+
+[report]
+fail_under = 55
+show_missing = True
+skip_covered = False

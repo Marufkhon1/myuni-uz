@@ -14,3 +14,8 @@ export async function getPublicRecentReviews() {
   const { data } = await api.get("/public/reviews/recent/");
   return data;
 }
+
+export async function getPublicUniversityBySlug(slug) {
+  const { data } = await api.get(`/public/universities/${slug}/`);
+  return data;
+}

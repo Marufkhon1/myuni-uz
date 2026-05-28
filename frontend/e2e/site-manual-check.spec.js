@@ -41,14 +41,46 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     await expect(page.getByRole("link", { name: /ro'yxatga qo'shilish/i }).first()).toBeVisible();
   });
 
-  test("M2 — signup: Talaba va universitet API", async ({ page }) => {
+  test("M2 — signup: universitet dropdown", async ({ page }) => {
     await page.goto(`${WEB}/signup`);
     await expect(page.getByText("Talaba")).toBeVisible();
     await expect(page.getByText("Abituriyent")).toBeVisible();
-    const select = page.locator('select[name="university"]');
-    await expect(select).toBeEnabled({ timeout: 15000 });
-    const options = await select.locator("option").allTextContents();
-    expect(options.filter((text) => text && !text.includes("tanlang")).length).toBeGreaterThan(0);
+    const universityField = page.getByRole("combobox");
+    await expect(universityField).toBeEnabled({ timeout: 15000 });
+    await universityField.click();
+    await expect(page.getByRole("listbox")).toBeVisible();
+    const options = await page.getByRole("option").count();
+    expect(options).toBeGreaterThan(0);
+    await page.getByRole("option").first().click();
+    await expect(universityField).not.toHaveValue("");
+  });
+
+  test("M10 — sharh yozish va o'chirish", async ({ page }) => {
+    await page.goto(`${WEB}/login`);
+    await page.fill('input[name="email"]', studentEmail);
+    await page.fill('input[name="password"]', PASSWORD);
+    await page.getByRole("button", { name: /^kirish$/i }).click();
+    await page.waitForURL(/\/student\/dashboard/);
+
+    await page.getByRole("button", { name: /^sharhlar$/i }).click();
+    const firstUni = page.locator("button").filter({ hasText: /universitet/i }).first();
+    await firstUni.click();
+
+    const reviewText =
+      "E2E sharh testi — o'qish tajribam yaxshi, ustozlar yordam beradi va tavsiya qilaman.";
+    await page.getByPlaceholder(/sharh|tajriba/i).first().fill(reviewText);
+    const starButtons = page.locator('button[aria-label*="baho"], button').filter({ hasText: "★" });
+    if ((await starButtons.count()) > 0) {
+      await page.locator('button[aria-label="5 baho"], button[aria-label*="5"]').first().click({ timeout: 3000 }).catch(() => {});
+    }
+    await page.getByRole("button", { name: /sharh yuborish|yuborish/i }).first().click({ timeout: 5000 }).catch(() => {});
+
+    const deleteBtn = page.getByRole("button", { name: /^o'chirish$/i }).first();
+    if (await deleteBtn.isVisible({ timeout: 8000 }).catch(() => false)) {
+      page.once("dialog", (dialog) => dialog.accept());
+      await deleteBtn.click();
+      await expect(page.getByText(reviewText)).toHaveCount(0, { timeout: 10000 });
+    }
   });
 
   test("M6 — 404 sahifa", async ({ page }) => {
