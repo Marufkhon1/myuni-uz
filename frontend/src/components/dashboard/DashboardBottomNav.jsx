@@ -51,14 +51,14 @@ export default function DashboardBottomNav({ items, activeSection, onSelect }) {
               key={item.id}
               type="button"
               onClick={() => onSelect(item.id)}
-              className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-2 transition sm:gap-1 sm:px-2 ${
+              className={`flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2.5 transition sm:gap-1.5 sm:px-2 ${
                 isActive
                   ? "bg-slate-950 text-white dark:bg-white dark:text-slate-950"
                   : "text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/10"
               }`}
             >
               <NavIcon name={item.id} />
-              <span className="w-full truncate text-center text-[9px] font-black leading-tight sm:text-[10px]">
+              <span className="w-full truncate text-center text-[10px] font-black leading-tight sm:text-xs">
                 {item.label}
               </span>
             </button>

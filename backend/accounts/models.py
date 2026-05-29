@@ -36,6 +36,7 @@ class Profile(models.Model):
         default="",
         help_text="Bo'sh = avtomatik rang (user id bo'yicha).",
     )
+    bio = models.CharField(max_length=70, blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

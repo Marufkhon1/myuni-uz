@@ -24,7 +24,7 @@ export default function ChatMessageBubble({
   isReacting = false,
   mineClassName = "bg-primary text-white",
   otherClassName = "bg-white text-slate-900 dark:bg-white/10 dark:text-white",
-  containerClassName = "max-w-[min(42rem,78%)]",
+  containerClassName = "max-w-[min(34rem,70%)]",
 }) {
   const isMine = message.is_mine;
   const authorId = message.author_id ?? message.sender_id;
@@ -47,6 +47,7 @@ export default function ChatMessageBubble({
   const hoverCloseTimerRef = useRef(null);
   const suppressHoverUntilLeaveRef = useRef(false);
   const pointerInsideRef = useRef(false);
+  const longPressTimerRef = useRef(null);
 
   const bubbleClass = isMine ? mineClassName : otherClassName;
   const reactionBadgeClass =
@@ -85,21 +86,57 @@ export default function ChatMessageBubble({
     setPickerExpanded(false);
   }
 
-  function handleMessageContextMenu(event) {
-    event.preventDefault();
-    event.stopPropagation();
+  function openMenuAt(clientX, clientY) {
     clearHoverTimers();
     closeReactionUi();
-    setMenuClick({ x: event.clientX, y: event.clientY });
+    setMenuClick({ x: clientX, y: clientY });
     setMenuPosition(
       clampContextMenuPosition(
-        event.clientX,
-        event.clientY,
+        clientX,
+        clientY,
         MENU_ESTIMATE.width,
         MENU_ESTIMATE.height
       )
     );
     setShowMenu(true);
+  }
+
+  function handleMessageContextMenu(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    openMenuAt(event.clientX, event.clientY);
+  }
+
+  function handleTouchStart(event) {
+    if (event.touches.length !== 1) {
+      return;
+    }
+    const touch = event.touches[0];
+    longPressTimerRef.current = window.setTimeout(() => {
+      longPressTimerRef.current = null;
+      openMenuAt(touch.clientX, touch.clientY);
+    }, 450);
+  }
+
+  function handleTouchEnd() {
+    if (longPressTimerRef.current) {
+      window.clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  }
+
+  function handleTouchMove() {
+    handleTouchEnd();
+  }
+
+  function handleMenuButtonClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const rect = bubbleRef.current?.getBoundingClientRect();
+    if (!rect) {
+      return;
+    }
+    openMenuAt(rect.right - 12, rect.top + 12);
   }
 
   function scheduleHeartTrigger() {
@@ -234,7 +271,12 @@ export default function ChatMessageBubble({
     };
   }, [showMenu]);
 
-  useEffect(() => () => clearHoverTimers(), [clearHoverTimers]);
+  useEffect(() => () => {
+    clearHoverTimers();
+    if (longPressTimerRef.current) {
+      window.clearTimeout(longPressTimerRef.current);
+    }
+  }, [clearHoverTimers]);
 
   const hasReactions = message.reactions?.length > 0;
   const displayName = message.author || message.sender_name;
@@ -290,13 +332,27 @@ export default function ChatMessageBubble({
     <>
       <article
         ref={rootRef}
-        className={`relative w-full ${hasReactions ? "mb-5" : showHeartTrigger ? "mb-2" : ""}`}
+        className={`group relative w-full ${hasReactions ? "mb-5" : showHeartTrigger ? "mb-2" : ""}`}
         onContextMenu={handleMessageContextMenu}
         onMouseEnter={handleArticleMouseEnter}
         onMouseLeave={handleArticleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
+        onTouchCancel={handleTouchEnd}
       >
         <div className={`flex w-full ${isMine ? "justify-end" : "justify-start"}`}>
           <div ref={bubbleRef} className={`relative w-fit ${containerClassName}`}>
+            <button
+              type="button"
+              onClick={handleMenuButtonClick}
+              className={`absolute -top-2 z-10 grid h-9 w-9 place-items-center rounded-full border border-slate-200/80 bg-white/95 text-base font-black text-slate-600 shadow-sm transition dark:border-white/15 dark:bg-slate-900/95 dark:text-slate-200 ${
+                isMine ? "-left-2" : "-right-2"
+              } opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100`}
+              aria-label="Xabar menyusi"
+            >
+              ⋯
+            </button>
             <div
               className={`relative px-3 py-2 shadow-sm ${bubbleClass} ${
                 isMine ? "rounded-2xl rounded-br-md" : "rounded-2xl rounded-bl-md"

@@ -46,7 +46,7 @@ export default function ReviewUniversityList({
 
   return (
     <div
-      className={`flex h-fit w-full max-h-[calc(100dvh-11rem)] flex-col self-start rounded-[2rem] border border-slate-200 bg-white p-3.5 shadow-soft sm:p-4 md:max-h-[calc(100vh-10rem)] dark:border-white/10 dark:bg-white/[0.06] ${className}`}
+      className={`flex h-fit w-full flex-col self-start rounded-[2rem] border border-slate-200 bg-white p-3.5 shadow-soft sm:p-4 dark:border-white/10 dark:bg-white/[0.06] lg:max-h-[calc(100dvh-11rem)] ${className}`}
     >
       <div>
         <p className="text-sm font-black uppercase tracking-[0.18em] text-primary">{content.title}</p>

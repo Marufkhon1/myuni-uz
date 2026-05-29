@@ -190,7 +190,7 @@ export default function DashboardChatSection(p) {
                                   p.openUserProfile(authorId, prefetch, {})
                                 }
                                 isReacting={p.reactingMessageId === item.id}
-                                containerClassName="max-w-[min(42rem,78%)]"
+                                containerClassName="max-w-[min(34rem,70%)]"
                               />
                             ))}
                           </div>
@@ -372,7 +372,7 @@ export default function DashboardChatSection(p) {
                                   onDelete={p.handleDeleteGroupMessage}
                                   onAuthorClick={p.openGroupChatAuthorProfile}
                                   isReacting={p.reactingMessageId === item.id}
-                                  containerClassName="max-w-[min(42rem,78%)]"
+                                  containerClassName="max-w-[min(34rem,70%)]"
                                 />
                               </div>
                             ))}

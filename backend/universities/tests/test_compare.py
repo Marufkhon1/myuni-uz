@@ -3,7 +3,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from universities.models import ChatMembership, Review, University
+from universities.models import ChatMembership, Review, ReviewLike, University
 
 User = get_user_model()
 
@@ -31,7 +31,11 @@ class UniversityCompareTests(TestCase):
         )
         Review.objects.create(university=self.uni_a, user=self.user, rating=5, text="A joy")
         Review.objects.create(university=self.uni_a, user=self.user, rating=4, text="A yana")
-        Review.objects.create(university=self.uni_b, user=self.user, rating=3, text="B bir")
+        self.review_b = Review.objects.create(
+            university=self.uni_b, user=self.user, rating=3, text="B bir"
+        )
+        self.top_review_a = Review.objects.filter(university=self.uni_a, text="A joy").first()
+        ReviewLike.objects.create(user=self.user, review=self.top_review_a)
         ChatMembership.objects.create(user=self.user, university=self.uni_a)
 
     def test_compare_returns_two_universities_with_highlights(self):
@@ -47,6 +51,10 @@ class UniversityCompareTests(TestCase):
         self.assertEqual(payload["universities"][1]["review_count"], 1)
         self.assertTrue(payload["universities"][0]["is_joined"])
         self.assertEqual(payload["highlights"]["reviews"]["university_id"], self.uni_a.id)
+        self.assertEqual(payload["highlights"]["reviews"]["value"], 2)
+        self.assertEqual(payload["highlights"]["rating"]["value"], 4.5)
+        self.assertEqual(payload["universities"][0]["sample_review"]["text"], "A joy")
+        self.assertEqual(payload["universities"][0]["sample_review"]["like_count"], 1)
 
     def test_compare_requires_exactly_two_ids(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")

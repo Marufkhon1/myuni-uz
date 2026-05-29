@@ -12,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from .bio_validation import normalize_bio, validate_bio
 from .chat_colors import CHAT_COLOR_SET
 from .models import Profile
 from .profile_access import can_view_chat_profile
@@ -84,6 +85,7 @@ class MeView(APIView):
         chat_color = request.data.get("chat_color")
         full_name = request.data.get("full_name")
         university = request.data.get("university")
+        bio = request.data.get("bio")
 
         if full_name is not None and str(full_name).strip():
             profile.full_name = str(full_name).strip()
@@ -94,6 +96,14 @@ class MeView(APIView):
         if university is not None:
             profile.university = str(university).strip()
             update_fields.append("university")
+
+        if bio is not None:
+            normalized_bio = normalize_bio(bio)
+            try:
+                profile.bio = validate_bio(normalized_bio)
+            except ValueError as exc:
+                return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+            update_fields.append("bio")
 
         if visibility is not None and visibility != "":
             valid = {Profile.AvatarVisibility.EVERYONE, Profile.AvatarVisibility.PRIVATE_ONLY}

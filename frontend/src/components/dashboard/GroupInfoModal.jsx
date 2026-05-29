@@ -90,6 +90,11 @@ export default function GroupInfoModal({
                             {member.university}
                           </p>
                         )}
+                        {member.bio && (
+                          <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-600 dark:text-slate-300">
+                            {member.bio}
+                          </p>
+                        )}
                         {!member.can_open_profile && !member.is_me && (
                           <p className="mt-1 text-xs font-semibold text-slate-400">
                             Hali chatda xabar yo&apos;q

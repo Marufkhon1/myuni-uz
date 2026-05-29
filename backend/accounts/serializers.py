@@ -28,6 +28,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "avatar_visibility",
             "avatar_visibility_label",
             "chat_color",
+            "bio",
         ]
 
     def get_avatar_url(self, obj):
@@ -69,6 +70,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
     role_label = serializers.CharField(source="profile.get_role_display", read_only=True)
     university = serializers.CharField(source="profile.university", read_only=True)
     study_program = serializers.CharField(source="profile.study_program", read_only=True)
+    bio = serializers.CharField(source="profile.bio", read_only=True)
 
     class Meta:
         model = User
@@ -80,6 +82,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
             "role_label",
             "university",
             "study_program",
+            "bio",
         ]
 
     def get_avatar_url(self, obj):

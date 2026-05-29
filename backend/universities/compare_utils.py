@@ -3,10 +3,14 @@ from django.db.models import Avg, Count
 from .models import ChatMembership, Review, University, UniversityFavorite
 
 
+def approved_reviews_queryset(university):
+    return Review.objects.filter(university=university, status=Review.Status.APPROVED)
+
+
 def rating_distribution(university_id):
     counts = {str(star): 0 for star in range(1, 6)}
     for row in (
-        Review.objects.filter(university_id=university_id)
+        Review.objects.filter(university_id=university_id, status=Review.Status.APPROVED)
         .values("rating")
         .annotate(total=Count("id"))
     ):
@@ -15,33 +19,35 @@ def rating_distribution(university_id):
 
 
 def build_compare_row(university, joined_ids, favorite_ids):
-    stats = Review.objects.filter(university=university).aggregate(
+    reviews = approved_reviews_queryset(university)
+    stats = reviews.aggregate(
         average_rating=Avg("rating"),
         review_count=Count("id"),
     )
     average = stats["average_rating"]
     member_count = ChatMembership.objects.filter(university=university).count()
-    latest_review = (
-        Review.objects.filter(university=university)
-        .select_related("user", "user__profile")
-        .order_by("-created_at")
+    top_review = (
+        reviews.select_related("user", "user__profile")
+        .annotate(like_count=Count("likes", distinct=True))
+        .order_by("-like_count", "-created_at")
         .first()
     )
     sample_review = None
-    if latest_review:
-        text = (latest_review.text or "").strip()
+    if top_review:
+        text = (top_review.text or "").strip()
         if len(text) > 160:
             text = f"{text[:157]}..."
-        profile = getattr(latest_review.user, "profile", None)
+        profile = getattr(top_review.user, "profile", None)
         author = (
             getattr(profile, "full_name", None)
-            or latest_review.user.get_full_name()
-            or latest_review.user.email
+            or top_review.user.get_full_name()
+            or top_review.user.email
         )
         sample_review = {
             "author": author,
-            "rating": latest_review.rating,
+            "rating": top_review.rating,
             "text": text,
+            "like_count": top_review.like_count,
         }
 
     return {

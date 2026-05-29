@@ -29,10 +29,10 @@ export default function DashboardReviewsSection({
 }) {
   return (
     <section
-      className={`grid items-stretch gap-4 md:gap-6 ${
+      className={`grid items-start gap-4 md:gap-6 ${
         isPhone
           ? "grid-cols-1"
-          : "md:grid-cols-[minmax(0,260px)_minmax(0,1fr)] xl:grid-cols-[minmax(280px,18rem)_1fr]"
+          : "lg:grid-cols-[minmax(0,260px)_minmax(0,1fr)] xl:grid-cols-[minmax(280px,18rem)_1fr]"
       }`}
     >
       <ReviewUniversityList

@@ -118,6 +118,7 @@ class UniversityMembersView(APIView):
                     ),
                     "role_label": profile.get_role_display() if profile else "",
                     "university": (profile.university if profile else "") or "",
+                    "bio": (profile.bio if profile else "") or "",
                     "is_me": membership.user.id == request.user.id,
                     "can_open_profile": can_open_profile,
                 }

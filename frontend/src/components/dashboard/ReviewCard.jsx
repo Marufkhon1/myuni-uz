@@ -29,11 +29,13 @@ export default function ReviewCard({
   showUniversity = false,
   onLike,
   onDelete,
+  onOpenUniversity,
   elevated = false,
   likeLabel = "Yoqdi",
   showMineBadge = false,
   showStudentVoiceBadge = false,
   hideLike = false,
+  rank,
 }) {
   const isStudentAuthor = item.author_role === "student";
   const dateLabel = new Date(item.created_at).toLocaleDateString("uz-UZ", {
@@ -44,12 +46,27 @@ export default function ReviewCard({
 
   return (
     <article
-      className={`rounded-2xl border p-4 sm:p-5 ${
+      className={`relative rounded-2xl border p-4 sm:p-5 ${
         elevated
           ? "border-slate-200/90 bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.06]"
           : "border-slate-200/80 bg-slate-50 dark:border-white/10 dark:bg-white/5"
       }`}
     >
+      {rank != null && rank > 0 && (
+        <span
+          className={`absolute right-4 top-4 grid h-8 min-w-8 place-items-center rounded-full px-2 text-xs font-black ${
+            rank === 1
+              ? "bg-amber-100 text-amber-800 dark:bg-amber-400/20 dark:text-amber-200"
+              : rank === 2
+                ? "bg-slate-200 text-slate-700 dark:bg-white/15 dark:text-slate-200"
+                : rank === 3
+                  ? "bg-orange-100 text-orange-800 dark:bg-orange-400/20 dark:text-orange-200"
+                  : "bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300"
+          }`}
+        >
+          #{rank}
+        </span>
+      )}
       <div className="flex items-start gap-3">
         <UserAvatar
           name={item.author}
@@ -80,7 +97,17 @@ export default function ReviewCard({
             </span>
           </div>
           {showUniversity && item.university?.name && (
-            <p className="mt-1 text-sm font-bold text-primary">{item.university.name}</p>
+            onOpenUniversity ? (
+              <button
+                type="button"
+                onClick={() => onOpenUniversity(item.university.id)}
+                className="mt-1 text-left text-sm font-bold text-primary hover:underline"
+              >
+                {item.university.name}
+              </button>
+            ) : (
+              <p className="mt-1 text-sm font-bold text-primary">{item.university.name}</p>
+            )
           )}
           <p className="mt-1 text-xs font-semibold tabular-nums text-slate-500 dark:text-slate-400">
             {dateLabel}

@@ -7,6 +7,7 @@ import { getDashboardCabinetEyebrow, getDashboardMenuItems } from "../utils/dash
 import UniversityCompareSection from "../components/dashboard/UniversityCompareSection.jsx";
 import PopularReviewsSection from "../components/dashboard/PopularReviewsSection.jsx";
 import MessageReportDialog from "../components/MessageReportDialog.jsx";
+import ConfirmDialog from "../components/ConfirmDialog.jsx";
 import ProfileSection from "../components/dashboard/ProfileSection.jsx";
 import DashboardChatSection from "./dashboard/DashboardChatSection.jsx";
 import DashboardReviewsSection from "./dashboard/DashboardReviewsSection.jsx";
@@ -68,7 +69,7 @@ export default function DashboardPage({ role }) {
   const { logout, user, refreshUser } = useAuth();
   const { isDark, setIsDark } = useDarkMode();
   const profileRole = user?.profile?.role;
-  const isStudent = role === "student";
+  const isStudent = profileRole === "student";
   const profile = user?.profile;
 
   useEffect(() => {
@@ -132,10 +133,13 @@ export default function DashboardPage({ role }) {
   const [reactingMessageId, setReactingMessageId] = useState(null);
   const [reportTarget, setReportTarget] = useState(null);
   const [isReportSubmitting, setIsReportSubmitting] = useState(false);
+  const [messageDeleteTarget, setMessageDeleteTarget] = useState(null);
+  const [isMessageDeleting, setIsMessageDeleting] = useState(false);
   const [mobileChatScreen, setMobileChatScreen] = useState("list");
   const [mobileReviewScreen, setMobileReviewScreen] = useState("list");
   const [groupTypingUsers, setGroupTypingUsers] = useState([]);
-  const { isPhone } = useBreakpoint();
+  const { isPhone, isTablet, isDesktop } = useBreakpoint();
+  const isCompactLayout = isPhone || isTablet;
   const [privateTypingUsers, setPrivateTypingUsers] = useState([]);
 
   const userUniversity = profile?.university || universities[0]?.name || "";
@@ -661,38 +665,38 @@ export default function DashboardPage({ role }) {
   }
 
   const isPrivateChatLayout =
-    !isPhone && activeSection === "chats" && chatListTab === "private";
+    isDesktop && activeSection === "chats" && chatListTab === "private";
 
   const isGroupChatLayout =
-    !isPhone && activeSection === "chats" && chatPanel === "group";
+    isDesktop && activeSection === "chats" && chatPanel === "group";
 
   const isWideChatLayout = isPrivateChatLayout || isGroupChatLayout;
 
-  const chatColumnEqualHeightClass = isPhone
+  const chatColumnEqualHeightClass = isCompactLayout
     ? "h-fit max-h-[calc(100dvh-11rem)] self-start md:max-h-[calc(100vh-10rem)]"
     : "md:flex md:h-[calc(100dvh-11.5rem)] md:max-h-[calc(100dvh-11.5rem)] md:flex-col md:overflow-hidden";
 
-  const chatListScrollClass = isPhone
+  const chatListScrollClass = isCompactLayout
     ? "chat-messages-scroll mt-4 max-h-[min(28rem,calc(100dvh-17rem))] space-y-1 overflow-y-auto overscroll-contain pr-1"
     : "chat-messages-scroll mt-4 min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1";
 
-  const chatMessagesAreaClass = isPhone
+  const chatMessagesAreaClass = isCompactLayout
     ? "chat-messages-scroll h-[calc(100dvh-14rem)] min-h-[200px] overflow-y-auto overflow-x-hidden overscroll-contain"
     : "chat-messages-scroll min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain";
 
-  const chatPanelInnerClass = isPhone
+  const chatPanelInnerClass = isCompactLayout
     ? "flex flex-col"
     : "flex min-h-0 flex-1 flex-col overflow-hidden";
 
-  const chatSectionGridClass = isPhone
+  const chatSectionGridClass = isCompactLayout
     ? "grid-cols-1"
     : isWideChatLayout
-      ? "md:grid-cols-[minmax(280px,30%)_minmax(0,1fr)] md:gap-3 lg:gap-4"
-      : "md:grid-cols-[minmax(0,340px)_minmax(0,1fr)] xl:grid-cols-[420px_1fr]";
+      ? "lg:grid-cols-[minmax(280px,30%)_minmax(0,1fr)] lg:gap-4 xl:gap-5"
+      : "lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] xl:grid-cols-[420px_1fr]";
 
   function handleChatTabChange(tabId) {
     setChatListTab(tabId);
-    if (isPhone) {
+    if (isCompactLayout) {
       setMobileChatScreen("list");
     }
     if (tabId === "private") {
@@ -1111,33 +1115,41 @@ export default function DashboardPage({ role }) {
     setPopularReviews((current) => current.map(updateItem));
   }
 
-  async function handleDeleteGroupMessage(message) {
-    if (!window.confirm("Xabarni o'chirishni tasdiqlaysizmi?")) {
-      return;
-    }
-    try {
-      await deleteUniversityMessage(message.id);
-      setGroupMessages((current) => current.filter((item) => item.id !== message.id));
-      if (groupPinnedMessage?.id === message.id) {
-        setGroupPinnedMessage(null);
-      }
-    } catch (error) {
-      reportChatError(getApiErrorMessage(error, "Xabarni o'chirib bo'lmadi."));
-    }
+  function requestDeleteGroupMessage(message) {
+    setMessageDeleteTarget({ message, scope: "group" });
   }
 
-  async function handleDeletePrivateMessage(message) {
-    if (!window.confirm("Xabarni o'chirishni tasdiqlaysizmi?")) {
+  function requestDeletePrivateMessage(message) {
+    setMessageDeleteTarget({ message, scope: "private" });
+  }
+
+  async function confirmMessageDelete() {
+    if (!messageDeleteTarget) {
       return;
     }
+
+    const { message, scope } = messageDeleteTarget;
+    setIsMessageDeleting(true);
     try {
-      await deleteDirectMessage(message.id);
-      setDirectMessages((current) => current.filter((item) => item.id !== message.id));
-      if (privatePinnedMessage?.id === message.id) {
-        setPrivatePinnedMessage(null);
+      if (scope === "group") {
+        await deleteUniversityMessage(message.id);
+        setGroupMessages((current) => current.filter((item) => item.id !== message.id));
+        if (groupPinnedMessage?.id === message.id) {
+          setGroupPinnedMessage(null);
+        }
+      } else {
+        await deleteDirectMessage(message.id);
+        setDirectMessages((current) => current.filter((item) => item.id !== message.id));
+        if (privatePinnedMessage?.id === message.id) {
+          setPrivatePinnedMessage(null);
+        }
       }
+      setMessageDeleteTarget(null);
+      clearChatError();
     } catch (error) {
       reportChatError(getApiErrorMessage(error, "Xabarni o'chirib bo'lmadi."));
+    } finally {
+      setIsMessageDeleting(false);
     }
   }
 
@@ -1256,7 +1268,7 @@ export default function DashboardPage({ role }) {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-black shadow-soft transition hover:border-primary hover:text-primary sm:px-5 sm:py-2.5 sm:text-sm dark:border-white/10 dark:bg-white/10"
+                  className="min-h-11 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-black shadow-soft transition hover:border-primary hover:text-primary sm:px-5 sm:text-sm dark:border-white/10 dark:bg-white/10"
                 >
                   Chiqish
                 </button>
@@ -1266,7 +1278,9 @@ export default function DashboardPage({ role }) {
 
           <div
             className={`min-h-[calc(100vh-9rem)] pb-24 sm:pb-24 lg:pb-8 ${
-              isWideChatLayout ? "p-3 sm:p-4 lg:px-4 lg:py-5" : "p-4 sm:p-6 lg:p-8"
+              isWideChatLayout || activeSection === "profile" || activeSection === "compare"
+                ? "p-3 sm:p-4 lg:px-6 lg:py-6"
+                : "p-4 sm:p-6 lg:p-8"
             }`}
           >
             {dataError && (
@@ -1293,7 +1307,7 @@ export default function DashboardPage({ role }) {
             {activeSection === "chats" && (
               <DashboardChatSection
                 chatError={chatError}
-                isPhone={isPhone}
+                isPhone={isCompactLayout}
                 mobileChatScreen={mobileChatScreen}
                 chatSectionGridClass={chatSectionGridClass}
                 chatColumnEqualHeightClass={chatColumnEqualHeightClass}
@@ -1372,8 +1386,8 @@ export default function DashboardPage({ role }) {
                 openEditChatMessage={openEditChatMessage}
                 editingChatMessage={editingChatMessage}
                 cancelEditChatMessage={cancelEditChatMessage}
-                handleDeleteGroupMessage={handleDeleteGroupMessage}
-                handleDeletePrivateMessage={handleDeletePrivateMessage}
+                handleDeleteGroupMessage={requestDeleteGroupMessage}
+                handleDeletePrivateMessage={requestDeletePrivateMessage}
               />
             )}
 
@@ -1390,7 +1404,7 @@ export default function DashboardPage({ role }) {
             {activeSection === "reviews" && (
               <DashboardReviewsSection
                 isStudent={isStudent}
-                isPhone={isPhone}
+                isPhone={isCompactLayout}
                 reviewUniversity={reviewUniversity}
                 reviewUniversitySearch={reviewUniversitySearch}
                 onReviewUniversitySearchChange={setReviewUniversitySearch}
@@ -1427,7 +1441,6 @@ export default function DashboardPage({ role }) {
                 savedAvatarUrl={savedAvatarUrl}
                 refreshUser={refreshUser}
                 joinedChatCount={joinedUniversityIds.size}
-                onOpenSection={changeSection}
               />
             )}
 
@@ -1437,7 +1450,6 @@ export default function DashboardPage({ role }) {
                 userUniversity={userUniversity}
                 isStudent={isStudent}
                 onViewReviews={selectReviewUniversity}
-                onOpenSection={changeSection}
               />
             )}
               </div>
@@ -1457,6 +1469,22 @@ export default function DashboardPage({ role }) {
         onClose={() => setReportTarget(null)}
         onSubmit={submitMessageReport}
         isSubmitting={isReportSubmitting}
+      />
+
+      <ConfirmDialog
+        open={Boolean(messageDeleteTarget)}
+        title="Xabarni o'chirish"
+        description="Bu xabarni butunlay o'chirmoqchimisiz? Amalni ortga qaytarib bo'lmaydi."
+        confirmLabel="O'chirish"
+        cancelLabel="Bekor qilish"
+        onClose={() => {
+          if (!isMessageDeleting) {
+            setMessageDeleteTarget(null);
+          }
+        }}
+        onConfirm={confirmMessageDelete}
+        isSubmitting={isMessageDeleting}
+        tone="danger"
       />
 
     </main>

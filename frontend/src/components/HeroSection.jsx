@@ -13,7 +13,7 @@ export default function HeroSection() {
       <div className="container-shell grid items-center gap-14 lg:grid-cols-[1.03fr_0.97fr]">
         <div className="hero-enter-left mx-auto max-w-4xl text-center lg:mx-0 lg:text-left [animation:hero-fade-up_0.7s_ease-out_both]">
           <span className="eyebrow">To'g'ri universitet, to'g'ri kelajak</span>
-          <h1 className="mt-7 text-5xl font-black tracking-tight text-slate-950 sm:text-6xl lg:text-7xl dark:text-white">
+          <h1 className="mt-7 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-7xl dark:text-white">
             Eng yaxshi universitetni haqiqiy talabalar tajribasi orqali toping
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl lg:mx-0 dark:text-slate-300">
@@ -34,7 +34,7 @@ export default function HeroSection() {
               Hamjamiyatga qo'shilish
             </a>
           </div>
-          <dl className="mt-10 grid grid-cols-3 gap-4 rounded-3xl border border-slate-200 bg-white/70 p-4 shadow-soft backdrop-blur dark:border-white/10 dark:bg-white/5">
+          <dl className="mt-10 grid grid-cols-1 gap-3 rounded-3xl border border-slate-200 bg-white/70 p-4 shadow-soft backdrop-blur sm:grid-cols-3 sm:gap-4 dark:border-white/10 dark:bg-white/5">
             {[
               ["14", "Jamoa a'zosi"],
               ["223", "Raqamli iqtisodiyot guruhi"],
@@ -52,7 +52,7 @@ export default function HeroSection() {
 
         <div className="hero-enter-right relative mx-auto w-full max-w-xl [animation:hero-fade-scale_0.7s_ease-out_0.15s_both]">
           <div className="relative rounded-[2rem] border border-white/70 bg-white/80 p-4 shadow-glow backdrop-blur-2xl dark:border-white/10 dark:bg-white/[0.06]">
-            <div className="relative h-[430px] overflow-hidden rounded-[1.5rem] bg-premium-gradient">
+            <div className="relative h-[min(430px,55vh)] min-h-[280px] overflow-hidden rounded-[1.5rem] bg-premium-gradient sm:h-[430px]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.45),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(255,255,255,0.25),transparent_22%),linear-gradient(180deg,transparent,rgba(15,23,42,0.55))]" />
               <div className="absolute left-8 top-8 rounded-3xl border border-white/25 bg-white/20 p-5 text-white backdrop-blur-xl">
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-white/75">

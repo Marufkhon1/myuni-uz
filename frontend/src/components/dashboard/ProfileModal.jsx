@@ -34,6 +34,11 @@ export default function ProfileModal({
               </div>
             </div>
             <p className="mt-4 font-bold">{profileUser.university || "Universitet ko'rsatilmagan"}</p>
+            {profileUser.bio && (
+              <p className="mt-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-7 text-slate-700 dark:bg-white/[0.06] dark:text-slate-200">
+                {profileUser.bio}
+              </p>
+            )}
             {profileUser.study_program && (
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{profileUser.study_program}</p>
             )}

@@ -77,3 +77,17 @@ class ReviewDeleteTests(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.applicant_token}")
         response = self.client.delete(f"/api/universities/reviews/{self.review.id}/")
         self.assertEqual(response.status_code, 403)
+
+    def test_applicant_cannot_create_review(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.applicant_token}")
+        response = self.client.post(
+            "/api/universities/reviews/",
+            {
+                "university": self.university.id,
+                "rating": 5,
+                "text": "Abituriyent sharh yozmoqchi — bu bloklanishi kerak.",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Review.objects.filter(user=self.applicant).count(), 0)
