@@ -221,7 +221,7 @@ export default function ProfileSection({
   }
 
   return (
-    <section className="mx-auto w-full min-w-0 max-w-2xl space-y-4 sm:space-y-5">
+    <section className="mx-auto w-full min-w-0 max-w-4xl space-y-4 sm:space-y-5">
       <div className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-white/[0.06]">
         <div className="bg-gradient-to-b from-primary/10 via-transparent to-transparent px-4 pb-5 pt-6 sm:px-6 sm:pb-6 sm:pt-8">
           <div className="flex flex-col items-center text-center">

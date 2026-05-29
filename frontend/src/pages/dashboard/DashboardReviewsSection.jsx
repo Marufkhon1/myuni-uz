@@ -32,7 +32,7 @@ export default function DashboardReviewsSection({
       className={`grid items-start gap-4 md:gap-6 ${
         isPhone
           ? "grid-cols-1"
-          : "lg:grid-cols-[minmax(0,260px)_minmax(0,1fr)] xl:grid-cols-[minmax(280px,18rem)_1fr]"
+          : "lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] xl:grid-cols-[minmax(380px,420px)_1fr]"
       }`}
     >
       <ReviewUniversityList

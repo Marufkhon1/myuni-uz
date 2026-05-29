@@ -129,16 +129,6 @@ export default function ChatMessageBubble({
     handleTouchEnd();
   }
 
-  function handleMenuButtonClick(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const rect = bubbleRef.current?.getBoundingClientRect();
-    if (!rect) {
-      return;
-    }
-    openMenuAt(rect.right - 12, rect.top + 12);
-  }
-
   function scheduleHeartTrigger() {
     if (showMenu || suppressHoverUntilLeaveRef.current) {
       return;
@@ -343,16 +333,6 @@ export default function ChatMessageBubble({
       >
         <div className={`flex w-full ${isMine ? "justify-end" : "justify-start"}`}>
           <div ref={bubbleRef} className={`relative w-fit ${containerClassName}`}>
-            <button
-              type="button"
-              onClick={handleMenuButtonClick}
-              className={`absolute -top-2 z-10 grid h-9 w-9 place-items-center rounded-full border border-slate-200/80 bg-white/95 text-base font-black text-slate-600 shadow-sm transition dark:border-white/15 dark:bg-slate-900/95 dark:text-slate-200 ${
-                isMine ? "-left-2" : "-right-2"
-              } opacity-0 group-hover:opacity-100 [@media(hover:none)]:opacity-100`}
-              aria-label="Xabar menyusi"
-            >
-              ⋯
-            </button>
             <div
               className={`relative px-3 py-2 shadow-sm ${bubbleClass} ${
                 isMine ? "rounded-2xl rounded-br-md" : "rounded-2xl rounded-bl-md"

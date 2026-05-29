@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import UniversityAvatar from "../UniversityAvatar.jsx";
 import UniversityRatingStars from "./UniversityRatingStars.jsx";
+import { formatUniversityPreview } from "../UniversityMetaLine.jsx";
 import { matchUniversityByText } from "./UniversitySearchSelect.jsx";
 import { addFavoriteUniversity, removeFavoriteUniversity } from "../../services/favoriteService.js";
 import { getUniversityCompare } from "../../services/universityService.js";
@@ -27,7 +28,10 @@ const SUMMARY_METRICS = {
   chat_activity: { field: "member_count", format: (value) => `${value ?? 0}` },
 };
 
-const sectionLabelClass = "text-xs font-black uppercase tracking-[0.18em] text-primary";
+const sectionLabelClass = "text-sm font-black uppercase tracking-[0.18em] text-primary";
+
+const compareSearchInputClass =
+  "mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:ring-blue-400/25";
 
 function formatSummaryMetric(metricKey, universities, highlight) {
   const { field, format } = SUMMARY_METRICS[metricKey];
@@ -65,9 +69,6 @@ function WinnerPill({ label, metricKey, highlight, universities }) {
     </div>
   );
 }
-
-const pickerInputClass =
-  "h-9 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400/25";
 
 function filterUniversities(universities, query) {
   const normalized = query.trim().toLowerCase();
@@ -143,14 +144,14 @@ function ComparePickerCompact({
   );
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-3 dark:border-white/10 dark:bg-white/[0.04]">
+    <div className="flex min-w-0 flex-col rounded-[2rem] border border-slate-200 bg-white p-3.5 shadow-soft sm:p-4 dark:border-white/10 dark:bg-white/[0.06]">
       <div className="flex items-center justify-between gap-2">
         <p className={sectionLabelClass}>{title}</p>
         {selectedUniversity && (
           <button
             type="button"
             onClick={onClear}
-            className="text-[10px] font-black text-slate-500 hover:text-primary"
+            className="text-xs font-black text-slate-500 hover:text-primary"
           >
             O&apos;chirish
           </button>
@@ -158,14 +159,17 @@ function ComparePickerCompact({
       </div>
 
       {selectedUniversity ? (
-        <div className="mt-2 flex items-center gap-2 rounded-lg border border-primary/20 bg-blue-50/50 px-2.5 py-2 dark:border-primary/30 dark:bg-blue-400/10">
+        <div className="mt-3 flex items-center gap-3 rounded-2xl border border-primary/20 bg-blue-50/50 px-3 py-3 dark:border-primary/30 dark:bg-blue-400/10">
           <UniversityAvatar university={selectedUniversity} size="sm" />
           <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-black text-slate-900 dark:text-white">
+            <p className="truncate font-bold text-slate-900 dark:text-white">
               {selectedUniversity.short_name || selectedUniversity.name}
             </p>
-            {selectedUniversity.location && (
-              <p className="truncate text-[10px] text-slate-500">{selectedUniversity.location}</p>
+            {(formatUniversityPreview(selectedUniversity) || selectedUniversity.location) && (
+              <p className="mt-0.5 line-clamp-2 text-sm font-medium leading-snug text-slate-500 dark:text-slate-400">
+                {formatUniversityPreview(selectedUniversity)?.slice(0, 120) ||
+                  selectedUniversity.location}
+              </p>
             )}
           </div>
         </div>
@@ -175,7 +179,7 @@ function ComparePickerCompact({
             <button
               type="button"
               onClick={onUseMyUniversity}
-              className="mt-2 w-full rounded-lg border border-violet-200/80 bg-violet-50/80 px-2.5 py-2 text-[11px] font-black text-violet-800 dark:border-violet-400/25 dark:bg-violet-400/10 dark:text-violet-200"
+              className="mt-3 w-full rounded-2xl border border-violet-200/80 bg-violet-50/80 px-4 py-3 text-sm font-black text-violet-800 transition hover:border-violet-300 dark:border-violet-400/25 dark:bg-violet-400/10 dark:text-violet-200"
             >
               {myUniversityLabel}
             </button>
@@ -184,30 +188,39 @@ function ComparePickerCompact({
             type="search"
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
-            placeholder="Qidirish..."
-            className={`mt-2 ${pickerInputClass}`}
+            placeholder="Universitet qidiring..."
+            className={compareSearchInputClass}
           />
-          <div className="mt-2 max-h-36 space-y-1 overflow-y-auto overscroll-contain rounded-lg border border-slate-100 p-1 dark:border-white/10">
+          <div className="mt-3 min-h-0 max-h-[min(22rem,calc(100dvh-20rem))] space-y-1 overflow-y-auto overscroll-contain pr-1">
             {list.length === 0 ? (
-              <p className="py-4 text-center text-xs font-semibold text-slate-500">Topilmadi</p>
+              <p className="px-2 py-4 text-sm font-semibold text-slate-500">Universitet topilmadi.</p>
             ) : (
               list.map((university) => {
                 const isSelected = String(university.id) === isActiveId;
+                const preview =
+                  formatUniversityPreview(university)?.slice(0, 120) || university.location || "";
                 return (
                   <button
                     key={university.id}
                     type="button"
                     onClick={() => onSelect(university.id)}
-                    className={`flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-xs transition ${
+                    className={`flex w-full items-center gap-3 rounded-2xl border border-transparent px-2 py-3 text-left transition-colors ${
                       isSelected
-                        ? "bg-slate-950 text-white dark:bg-white dark:text-slate-950"
-                        : "hover:bg-slate-50 dark:hover:bg-white/10"
+                        ? "bg-blue-50 dark:bg-blue-400/10"
+                        : "hover:bg-slate-100 dark:hover:bg-white/5"
                     }`}
                   >
                     <UniversityAvatar university={university} size="sm" />
-                    <span className="min-w-0 flex-1 truncate font-bold">
-                      {university.short_name || university.name}
-                    </span>
+                    <div className="min-w-0 flex-1">
+                      <span className="block truncate font-bold text-slate-900 dark:text-white">
+                        {university.short_name || university.name}
+                      </span>
+                      {preview && (
+                        <p className="mt-0.5 line-clamp-2 text-sm font-medium leading-snug text-slate-500 dark:text-slate-400">
+                          {preview}
+                        </p>
+                      )}
+                    </div>
                   </button>
                 );
               })
@@ -564,14 +577,14 @@ export default function UniversityCompareSection({
   const isProfileInFirst = Boolean(profileUniversityId && firstId === profileUniversityId);
 
   return (
-    <section className="mx-auto w-full min-w-0 max-w-4xl space-y-3 sm:space-y-4">
-      <div className="rounded-2xl border border-slate-200 bg-white p-3 shadow-soft sm:p-4 dark:border-white/10 dark:bg-white/[0.06]">
+    <section className="mx-auto w-full min-w-0 max-w-4xl space-y-4 sm:space-y-6">
+      <div className="rounded-[2rem] border border-slate-200 bg-white p-3.5 shadow-soft sm:p-4 dark:border-white/10 dark:bg-white/[0.06]">
         <div className="flex items-center justify-between gap-2">
           <div>
             <p className={sectionLabelClass}>Taqqoslash</p>
-            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              {isStudent ? "Ikki OTMni yonma-yon solishtiring" : "Tanlov uchun ikki variantni ko'ring"}
-            </p>
+            <h2 className="mt-1.5 text-xl font-black leading-snug text-slate-950 dark:text-white">
+              {isStudent ? "OTMlarni solishtiring" : "Qaysi OTM sizga mos?"}
+            </h2>
           </div>
           {(firstId || secondId) && (
             <button
@@ -613,7 +626,7 @@ export default function UniversityCompareSection({
         )}
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="grid items-start gap-4 md:gap-6 lg:grid-cols-2">
         <ComparePickerCompact
           title="1-chi universitet"
           selectedUniversity={firstUniversity}
@@ -655,7 +668,7 @@ export default function UniversityCompareSection({
       )}
 
       {!canCompare && !isLoading && (
-        <p className="text-center text-sm font-semibold text-slate-500">
+        <p className="text-center text-xs font-semibold text-slate-400">
           Ikkita turli universitet tanlang — natija avtomatik chiqadi.
         </p>
       )}

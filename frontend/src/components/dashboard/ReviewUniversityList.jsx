@@ -7,7 +7,7 @@ const searchInputClass =
 
 function ReviewUniversityRow({ university, isSelected, onSelect }) {
   const preview =
-    formatUniversityPreview(university)?.slice(0, 80) || university.location || "";
+    formatUniversityPreview(university)?.slice(0, 120) || university.location || "";
 
   return (
     <button
@@ -22,7 +22,7 @@ function ReviewUniversityRow({ university, isSelected, onSelect }) {
         <span className="block truncate font-bold text-slate-900 dark:text-white">
           {university.short_name || university.name}
         </span>
-        <p className="mt-0.5 truncate text-sm font-medium text-slate-500 dark:text-slate-400">
+        <p className="mt-0.5 line-clamp-2 text-sm font-medium leading-snug text-slate-500 dark:text-slate-400">
           {preview}
         </p>
       </div>

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { sendSupportMessage } from "../../services/supportService.js";
-import { getSupportBotReply } from "./supportBot.js";
+import { getSupportBotReply, getSupportQuickQuestions } from "./supportBot.js";
 
 export default function SupportChatModal({
   isOpen,
@@ -41,6 +41,18 @@ export default function SupportChatModal({
     }
   }, [messages, isOpen]);
 
+  function appendExchange(question, answer) {
+    const stamp = Date.now();
+    onMessagesChange((current) => [
+      ...current,
+      { id: `u-${stamp}`, from: "user", text: question },
+      { id: `b-${stamp + 1}`, from: "bot", text: answer },
+    ]);
+    sendSupportMessage(question).catch(() => {
+      /* Bot javobi lokal; operatorga yuborish ixtiyoriy */
+    });
+  }
+
   function sendMessage(event) {
     event.preventDefault();
     const text = draft.trim();
@@ -48,17 +60,16 @@ export default function SupportChatModal({
       return;
     }
 
-    const botReply = getSupportBotReply(text, { isStudent });
-    onMessagesChange((current) => [
-      ...current,
-      { id: `u-${Date.now()}`, from: "user", text },
-      { id: `b-${Date.now()}`, from: "bot", text: botReply },
-    ]);
+    appendExchange(text, getSupportBotReply(text, { isStudent }));
     onDraftChange("");
-    sendSupportMessage(text).catch(() => {
-      /* Bot javobi lokal; operatorga yuborish ixtiyoriy */
-    });
   }
+
+  function handleQuickQuestion(item) {
+    appendExchange(item.question, item.answer);
+  }
+
+  const quickQuestions = getSupportQuickQuestions(isStudent);
+  const showQuickQuestions = messages.length <= 1;
 
   if (!isOpen) {
     return null;
@@ -114,6 +125,24 @@ export default function SupportChatModal({
               {message.text}
             </div>
           ))}
+
+          {showQuickQuestions && (
+            <div className="mr-auto flex max-w-[92%] flex-col gap-2 pt-1">
+              <p className="text-xs font-bold text-slate-500 dark:text-slate-400">Tez savollar:</p>
+              <div className="flex flex-wrap gap-2">
+                {quickQuestions.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => handleQuickQuestion(item)}
+                    className="rounded-2xl border border-primary/25 bg-blue-50 px-3.5 py-2 text-left text-sm font-bold text-primary transition hover:border-primary hover:bg-blue-100 dark:border-primary/40 dark:bg-primary/15 dark:text-blue-200 dark:hover:bg-primary/25"
+                  >
+                    {item.question}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <form

@@ -52,3 +52,44 @@ export function getSupportBotWelcome(isStudent = false) {
       : "Salom! Abituriyent kabineti yordamchisiman — sharhlarni o'qish va tanlov haqida yozing.",
   };
 }
+
+/** Tez savollar — bosilganda javob darhol chiqadi */
+export function getSupportQuickQuestions(isStudent = false) {
+  if (isStudent) {
+    return [
+      {
+        id: "review",
+        question: "Sharh qanday yoziladi?",
+        answer: getSupportBotReply("sharh", { isStudent }),
+      },
+      {
+        id: "chat",
+        question: "Chatga qanday qo'shilaman?",
+        answer: getSupportBotReply("chat", { isStudent }),
+      },
+      {
+        id: "compare",
+        question: "OTMlarni qanday taqqoslash?",
+        answer: getSupportBotReply("taqqoslash", { isStudent }),
+      },
+    ];
+  }
+
+  return [
+    {
+      id: "reviews-read",
+      question: "Sharhlarni qayerdan o'qiyman?",
+      answer: getSupportBotReply("sharh", { isStudent }),
+    },
+    {
+      id: "compare",
+      question: "Taqqoslash qanday ishlaydi?",
+      answer: getSupportBotReply("taqqoslash", { isStudent }),
+    },
+    {
+      id: "password",
+      question: "Parolni qanday tiklash?",
+      answer: getSupportBotReply("parol", { isStudent }),
+    },
+  ];
+}
