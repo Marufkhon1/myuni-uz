@@ -130,7 +130,7 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
   test("M9 — taqqoslash bo'limi", async ({ page }) => {
     await loginStudent(page);
     await page.getByRole("button", { name: /taqqoslash/i }).first().click();
-    await expect(page.getByText(/Ikki OTMni yonma-yon solishtiring/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: /OTMlarni solishtiring/i })).toBeVisible();
     await expect(page.getByText(/Ikkita turli universitet/i)).toBeVisible();
   });
 
