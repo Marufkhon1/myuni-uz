@@ -42,12 +42,14 @@ export default function SupportChatModal({
   }, [messages, isOpen]);
 
   function appendExchange(question, answer) {
-    const stamp = Date.now();
-    onMessagesChange((current) => [
-      ...current,
-      { id: `u-${stamp}`, from: "user", text: question },
-      { id: `b-${stamp + 1}`, from: "bot", text: answer },
-    ]);
+    onMessagesChange((current) => {
+      const stamp = Date.now();
+      return [
+        ...current,
+        { id: `u-${stamp}`, from: "user", text: question },
+        { id: `b-${stamp + 1}`, from: "bot", text: answer },
+      ];
+    });
     sendSupportMessage(question).catch(() => {
       /* Bot javobi lokal; operatorga yuborish ixtiyoriy */
     });
