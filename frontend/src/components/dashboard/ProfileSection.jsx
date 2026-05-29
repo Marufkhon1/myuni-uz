@@ -668,7 +668,7 @@ function CopyEmailButton({ email }) {
   async function handleCopy(event) {
     event.stopPropagation();
     try {
-      await navigator.clipboard.writeText(email);
+      await window.navigator.clipboard.writeText(email);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {

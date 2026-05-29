@@ -141,7 +141,6 @@ function OverviewSidebar({
   distribution,
   isStudent,
   onOpenSection,
-  onOpenChat,
   onQuickAction,
   visibleQuickActions,
 }) {
@@ -608,7 +607,6 @@ export default function ReviewWorkspacePanel({
           distribution={distribution}
           isStudent={isStudent}
           onOpenSection={onOpenSection}
-          onOpenChat={onOpenChat}
           onQuickAction={handleQuickAction}
           visibleQuickActions={visibleQuickActions}
         />
