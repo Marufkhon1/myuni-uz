@@ -262,6 +262,7 @@ class MeView(APIView):
         profile.save(update_fields=update_fields)
         if user_update_fields:
             user.save(update_fields=user_update_fields)
+        request.user.profile = profile
         return Response(UserSerializer(request.user, context={"request": request}).data)
 
 

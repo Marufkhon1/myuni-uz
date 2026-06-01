@@ -21,7 +21,11 @@ export default function TypingUsersLine({ users, className = "", mode = "group" 
     };
 
     update();
-    const observer = new ResizeObserver(update);
+    const Observer = typeof window !== "undefined" ? window.ResizeObserver : null;
+    if (!Observer) {
+      return undefined;
+    }
+    const observer = new Observer(update);
     observer.observe(element);
     return () => observer.disconnect();
   }, []);

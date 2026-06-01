@@ -19,7 +19,6 @@ import DashboardReviewsSection from "./dashboard/DashboardReviewsSection.jsx";
 import DashboardSidebar from "./dashboard/DashboardSidebar.jsx";
 import DashboardHeader from "./dashboard/DashboardHeader.jsx";
 import DashboardSectionSkeleton from "../components/skeletons/DashboardSkeletons.jsx";
-import UserAvatar from "../components/dashboard/UserAvatar.jsx";
 import UserAvatarWithPresence from "../components/dashboard/UserAvatarWithPresence.jsx";
 import AnimatedTypingDots from "../components/chat/AnimatedTypingDots.jsx";
 import UnreadBadge from "../components/UnreadBadge.jsx";
