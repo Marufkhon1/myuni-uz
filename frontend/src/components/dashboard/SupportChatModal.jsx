@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import RateLimitNotice from "../RateLimitNotice.jsx";
 import { sendSupportMessage } from "../../services/supportService.js";
@@ -46,7 +46,7 @@ export default function SupportChatModal({
     }
   }, [messages, isOpen]);
 
-  async function appendExchange(question, answer) {
+  const appendExchange = useCallback(async (question, answer) => {
     const stamp = Date.now();
     onMessagesChange((current) => [
       ...current,
@@ -88,7 +88,7 @@ export default function SupportChatModal({
     } finally {
       setIsSending(false);
     }
-  }
+  }, [onMessagesChange]);
 
   async function sendMessage(event) {
     event.preventDefault();

@@ -100,7 +100,7 @@ export default function DashboardHomeSection({
   onOpenComparePair,
   onOpenPrivateThread,
 }) {
-  const homeContent = getDashboardHomeContent(isStudent);
+  const homeContent = getDashboardHomeContent();
   const quickActions = getDashboardHomeQuickActions(isStudent);
 
   const recentChats = useMemo(

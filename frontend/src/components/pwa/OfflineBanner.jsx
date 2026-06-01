@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+/* global navigator */
+
 export function useOnlineStatus() {
   const [online, setOnline] = useState(
     typeof navigator !== "undefined" ? navigator.onLine : true

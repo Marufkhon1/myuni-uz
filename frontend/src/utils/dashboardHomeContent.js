@@ -1,6 +1,6 @@
 /** Bosh sahifa — bir xil layout, rol bo'yicha faqat funksiya farqi. */
 
-export function getDashboardHomeContent(isStudent) {
+export function getDashboardHomeContent() {
   return {
     heroSubtitle:
       "Oxirgi chatlar, mashhur sharhlar va tezkor harakatlar — barchasi bir joyda.",

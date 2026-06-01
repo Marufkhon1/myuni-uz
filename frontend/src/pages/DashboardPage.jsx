@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardBottomNav from "../components/dashboard/DashboardBottomNav.jsx";
 import DashboardMobileSupport from "../components/dashboard/DashboardMobileSupport.jsx";
-import { ratingStars as stars } from "../components/dashboard/dashboardConstants.js";
 import { dashboardPathForRole } from "../utils/navigation.js";
 import { getDashboardCabinetEyebrow, getDashboardMenuItems } from "../utils/dashboardRoleContent.js";
 import UniversityCompareSection from "../components/dashboard/UniversityCompareSection.jsx";
@@ -1200,7 +1199,6 @@ export default function DashboardPage({ role }) {
     setRating(0);
     setAspectRatings(buildDefaultAspectRatings());
     setStudyDirectionId("");
-    setImageFiles([]);
     setReviewText("");
     setReviewUniversityDetail(null);
     setReviews([]);

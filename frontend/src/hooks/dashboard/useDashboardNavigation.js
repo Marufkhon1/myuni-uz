@@ -40,7 +40,10 @@ export function useDashboardNavigation({
   const activeSection = useMemo(() => resolveActiveSection(searchParams), [searchParams]);
   const deepLinkKey = useMemo(() => buildDeepLinkKey(searchParams), [searchParams]);
   const universitiesRef = useRef(universities);
-  universitiesRef.current = universities;
+
+  useEffect(() => {
+    universitiesRef.current = universities;
+  }, [universities]);
 
   const syncSectionInUrl = useCallback(
     (sectionId, { universityId, threadId, chatPanel } = {}, { replace = false } = {}) => {
