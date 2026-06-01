@@ -40,9 +40,21 @@ export async function registerAccount(
   return { access, body };
 }
 
+export async function skipOnboardingForE2e(page) {
+  await page.evaluate(() => {
+    try {
+      localStorage.setItem("myuni_onboarding_v1_done", "1");
+    } catch {
+      // ignore
+    }
+  });
+}
+
 export async function dismissOnboardingIfOpen(page) {
   const onboardingDialog = page.getByRole("dialog").filter({ has: page.locator("#onboarding-title") });
-  if ((await onboardingDialog.count()) === 0) {
+  try {
+    await onboardingDialog.waitFor({ state: "visible", timeout: 15000 });
+  } catch {
     return;
   }
 
@@ -56,11 +68,18 @@ export async function dismissOnboardingIfOpen(page) {
   await expect(onboardingDialog).toHaveCount(0, { timeout: 5000 });
 }
 
+export async function waitForDashboardReady(page) {
+  await expect(page.getByRole("heading", { name: /Salom/i }).first()).toBeVisible({ timeout: 30000 });
+}
+
 export async function loginViaUi(page, { email, password = E2E_PASSWORD, dashboardPattern }) {
   await page.goto(`${WEB}/login`);
+  await skipOnboardingForE2e(page);
   await page.fill('input[name="email"]', email);
   await page.fill('input[name="password"]', password);
   await page.getByRole("button", { name: /^kirish$/i }).click();
   await page.waitForURL(dashboardPattern, { timeout: 20000 });
+  await waitForDashboardReady(page);
+  await skipOnboardingForE2e(page);
   await dismissOnboardingIfOpen(page);
 }

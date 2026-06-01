@@ -60,6 +60,6 @@ test.describe("Abituriyent kritik flow", () => {
       password: E2E_PASSWORD,
       dashboardPattern: /\/applicant\/dashboard/,
     });
-    await expect(page.getByRole("heading", { name: /Salom/i })).toBeVisible({ timeout: 20000 });
+    await expect(page.getByRole("heading", { name: /Salom/i }).first()).toBeVisible({ timeout: 20000 });
   });
 });
