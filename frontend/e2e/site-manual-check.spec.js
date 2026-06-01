@@ -82,9 +82,16 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     const reviewInput = page.locator('textarea[placeholder*="muhit"]');
     await expect(reviewInput).toBeVisible({ timeout: 20000 });
     await reviewInput.fill(reviewText);
-    await page.getByRole("button", { name: "5 yulduz", exact: true }).click();
+    await page
+      .getByRole("radiogroup", { name: /qanday baho ber/i })
+      .getByRole("button", { name: "5 yulduz", exact: true })
+      .click();
     for (const aspectLabel of ["O'qituvchilar", "Yotoqxona", "Infratuzilma"]) {
-      await page.getByRole("button", { name: new RegExp(`${aspectLabel} 5 yulduz`, "i") }).click();
+      await page
+        .locator("div")
+        .filter({ has: page.getByText(aspectLabel, { exact: true }) })
+        .getByRole("button", { name: "5 yulduz", exact: true })
+        .click();
     }
     await page.getByRole("button", { name: /sharhni yuborish/i }).click();
     const postedReview = page
@@ -117,13 +124,13 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
   test("M8 — qo'llab-quvvatlash chat-bot modali", async ({ page }) => {
     await loginStudent(page);
     await page.getByRole("button", { name: /yordamchi bilan yozing/i }).click();
-    await expect(page.getByRole("dialog")).toBeVisible();
-    await expect(page.getByText(/MyUni yordamchi/i)).toBeVisible();
+    const supportDialog = page.getByRole("dialog", { name: /MyUni yordamchi/i });
+    await expect(supportDialog).toBeVisible();
     await page.getByPlaceholder(/savolingizni yozing/i).fill("parol");
     await page.getByRole("button", { name: /^yuborish$/i }).click();
     await expect(page.getByText(/parolni tiklash/i)).toBeVisible();
     await page.getByRole("button", { name: /chatni yopish/i }).click();
-    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await expect(supportDialog).toHaveCount(0);
   });
 
   test("M9 — taqqoslash bo'limi", async ({ page }) => {

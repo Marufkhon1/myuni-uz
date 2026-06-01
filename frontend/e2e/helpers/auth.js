@@ -40,10 +40,27 @@ export async function registerAccount(
   return { access, body };
 }
 
+export async function dismissOnboardingIfOpen(page) {
+  const onboardingDialog = page.getByRole("dialog").filter({ has: page.locator("#onboarding-title") });
+  if ((await onboardingDialog.count()) === 0) {
+    return;
+  }
+
+  const finishLater = page.getByRole("button", { name: /^keyinroq$/i });
+  if (await finishLater.isVisible().catch(() => false)) {
+    await finishLater.click();
+  } else {
+    await page.getByRole("button", { name: /yo'riqnomani yopish/i }).click({ force: true });
+  }
+
+  await expect(onboardingDialog).toHaveCount(0, { timeout: 5000 });
+}
+
 export async function loginViaUi(page, { email, password = E2E_PASSWORD, dashboardPattern }) {
   await page.goto(`${WEB}/login`);
   await page.fill('input[name="email"]', email);
   await page.fill('input[name="password"]', password);
   await page.getByRole("button", { name: /^kirish$/i }).click();
   await page.waitForURL(dashboardPattern, { timeout: 20000 });
+  await dismissOnboardingIfOpen(page);
 }
