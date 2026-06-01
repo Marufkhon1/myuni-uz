@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from universities.models import Review, University
+from universities.models import Article, Review, University
 
 User = get_user_model()
 
@@ -32,7 +32,30 @@ class PublicApiTests(TestCase):
     def test_public_university_list(self):
         response = self.client.get("/api/public/universities/")
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(any(item["slug"] == "public-api-university" for item in response.json()))
+        payload = response.json()
+        self.assertIn("results", payload)
+        self.assertTrue(
+            any(item["slug"] == "public-api-university" for item in payload["results"])
+        )
+
+    def test_public_university_list_filters_by_city(self):
+        self.university.city = "Andijon"
+        self.university.save(update_fields=["city"])
+        response = self.client.get("/api/public/universities/", {"city": "Andijon"})
+        self.assertEqual(response.status_code, 200)
+        slugs = [item["slug"] for item in response.json()["results"]]
+        self.assertIn("public-api-university", slugs)
+
+    def test_public_university_map(self):
+        self.university.city = "Andijon"
+        self.university.latitude = 40.7821
+        self.university.longitude = 72.3442
+        self.university.save(update_fields=["city", "latitude", "longitude"])
+        response = self.client.get("/api/public/universities/map/")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("markers", payload)
+        self.assertTrue(any(item["slug"] == "public-api-university" for item in payload["markers"]))
 
     def test_public_university_detail_by_slug(self):
         response = self.client.get("/api/public/universities/public-api-university/")
@@ -52,3 +75,110 @@ class PublicApiTests(TestCase):
         response = self.client.get("/api/public/universities/top/")
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json(), list)
+
+    def test_public_platform_stats(self):
+        response = self.client.get("/api/public/stats/")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertGreaterEqual(payload["university_count"], 1)
+        self.assertGreaterEqual(payload["review_count"], 1)
+        self.assertGreaterEqual(payload["member_count"], 0)
+        self.assertGreaterEqual(payload["chat_member_count"], 0)
+        self.assertGreaterEqual(payload["reviews_last_7_days"], 1)
+        self.assertGreaterEqual(payload["new_members_last_7_days"], 0)
+        self.assertGreaterEqual(payload["message_count"], 0)
+
+    def test_public_landing_preview(self):
+        response = self.client.get("/api/public/landing-preview/")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("stats", payload)
+        self.assertIn("universities", payload)
+        self.assertIn("featured_review", payload)
+        self.assertIn("chat_messages", payload)
+        self.assertIsInstance(payload["universities"], list)
+        self.assertIsInstance(payload["chat_messages"], list)
+        if payload["featured_review"]:
+            self.assertIn("text", payload["featured_review"])
+            self.assertIn("author", payload["featured_review"])
+        if payload["chat_messages"]:
+            self.assertIn("author_role", payload["chat_messages"][0])
+
+    def test_public_featured_universities(self):
+        response = self.client.get("/api/public/universities/featured/")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIsInstance(payload, list)
+        self.assertTrue(any(item["slug"] == "public-api-university" for item in payload))
+
+    def test_public_recent_reviews_limit(self):
+        response = self.client.get("/api/public/reviews/recent/?limit=1")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+
+    def test_public_review_filters(self):
+        response = self.client.get("/api/public/reviews/filters/")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertIn("cities", payload)
+        self.assertIn("directions", payload)
+        self.assertIn("sort_options", payload)
+
+    def test_public_share_preview_home(self):
+        response = self.client.get("/api/public/share-preview/?path=/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("text/html", response["Content-Type"])
+        body = response.content.decode()
+        self.assertIn("og:title", body)
+        self.assertIn("MyUni.uz", body)
+
+    def test_public_share_preview_university(self):
+        response = self.client.get(
+            "/api/public/share-preview/?path=/universitet/public-api-university/"
+        )
+        self.assertEqual(response.status_code, 200)
+        body = response.content.decode()
+        self.assertIn("Public API University", body)
+        self.assertIn("og:description", body)
+        self.assertIn("/images/campuses/", body)
+
+    def test_public_articles_list(self):
+        response = self.client.get("/api/public/articles/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.json(), list)
+
+    def test_public_articles_detail_and_sitemap(self):
+        article = Article.objects.create(
+            title="Test maqola",
+            slug="test-maqola",
+            excerpt="Qisqa tavsif.",
+            body="Maqola matni.",
+            status=Article.Status.PUBLISHED,
+        )
+        list_response = self.client.get("/api/public/articles/")
+        self.assertEqual(list_response.status_code, 200)
+        slugs = [item["slug"] for item in list_response.json()]
+        self.assertIn("test-maqola", slugs)
+
+        detail_response = self.client.get("/api/public/articles/test-maqola/")
+        self.assertEqual(detail_response.status_code, 200)
+        self.assertEqual(detail_response.json()["title"], article.title)
+        self.assertIn("body", detail_response.json())
+
+        sitemap_response = self.client.get("/api/public/sitemap.xml")
+        self.assertIn("test-maqola", sitemap_response.content.decode())
+        self.assertIn("/maqolalar", sitemap_response.content.decode())
+
+        share_response = self.client.get("/api/public/share-preview/?path=/maqolalar/test-maqola/")
+        self.assertEqual(share_response.status_code, 200)
+        self.assertIn("Test maqola", share_response.content.decode())
+
+    def test_article_sets_published_at_on_publish(self):
+        article = Article.objects.create(
+            title="Nashr vaqti test",
+            slug="nashr-vaqti-test",
+            excerpt="Test.",
+            body="Matn.",
+            status=Article.Status.PUBLISHED,
+        )
+        self.assertIsNotNone(article.published_at)

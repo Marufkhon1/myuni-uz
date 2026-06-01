@@ -57,3 +57,34 @@ export function getUniversityImageUrl(university) {
 export function getUniversityBannerUrl(university) {
   return getUniversityImageUrl(university);
 }
+
+/** Faqat admin yuklagan haqiqiy rasm — stock kampus fallback emas */
+export function hasCustomUniversityImage(university) {
+  if (!university) {
+    return false;
+  }
+  const stored = resolveMediaUrl(university.image_url || "");
+  return Boolean(stored && !isUnreliableImageUrl(stored));
+}
+
+export function getUniversityLogoUrl(university) {
+  if (!hasCustomUniversityImage(university)) {
+    return null;
+  }
+  return resolveMediaUrl(university.image_url || "");
+}
+
+/** OG / ijtimoiy tarmoq preview — barqaror public URL (build hashsiz). */
+export function getUniversityOgImagePath(university) {
+  if (!university) {
+    return "/images/campuses/campus-01.jpg";
+  }
+
+  const stored = resolveMediaUrl(university.image_url || "");
+  if (stored && !isUnreliableImageUrl(stored)) {
+    return stored;
+  }
+
+  const index = campusIndex(university) + 1;
+  return `/images/campuses/campus-${String(index).padStart(2, "0")}.jpg`;
+}

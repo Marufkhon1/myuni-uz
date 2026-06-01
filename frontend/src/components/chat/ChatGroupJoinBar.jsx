@@ -5,7 +5,7 @@ export default function ChatGroupJoinBar({ onJoin, isJoining }) {
         type="button"
         onClick={onJoin}
         disabled={isJoining}
-        className="flex min-h-11 w-full items-center justify-center rounded-2xl bg-premium-gradient px-5 py-2.5 text-base font-black text-white shadow-glow transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+        className="btn-modal-gradient flex min-h-11 w-full items-center justify-center px-5 py-2.5 text-base"
       >
         {isJoining ? "Qo'shilmoqda..." : "Qo'shilish"}
       </button>

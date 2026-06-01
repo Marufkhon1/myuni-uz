@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout.jsx";
+import { PAGE_META } from "../config/siteMeta.js";
+import { usePageMeta } from "../hooks/usePageMeta.js";
+import { useToast } from "../hooks/useToast.js";
 import { requestPasswordReset } from "../services/authService.js";
 import { getApiErrorMessage } from "../utils/apiErrors.js";
 
 export default function ForgotPasswordPage() {
+  usePageMeta(PAGE_META.forgotPassword);
+
   const navigate = useNavigate();
+  const toast = useToast();
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
 
@@ -27,8 +31,6 @@ export default function ForgotPasswordPage() {
     if (cooldownSeconds > 0) {
       return;
     }
-    setError("");
-    setMessage("");
     setIsSubmitting(true);
 
     try {
@@ -41,7 +43,7 @@ export default function ForgotPasswordPage() {
       if (status === 429 && data?.retry_after_seconds) {
         setCooldownSeconds(Number(data.retry_after_seconds));
       }
-      setError(
+      toast.error(
         data?.detail || getApiErrorMessage(requestError, "So'rov yuborilmadi. Qayta urinib ko'ring.")
       );
     } finally {
@@ -58,7 +60,7 @@ export default function ForgotPasswordPage() {
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <h1 className="text-3xl font-black tracking-tight">Parolni unutdingizmi?</h1>
+          <h1 className="text-2xl font-black tracking-tight sm:text-3xl">Parolni unutdingizmi?</h1>
           <p className="mt-3 text-slate-600 dark:text-slate-300">
             Ro'yxatdan o'tgan emailni kiriting.
           </p>
@@ -72,8 +74,6 @@ export default function ForgotPasswordPage() {
           placeholder="email@example.com"
           className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold outline-none focus:border-primary dark:border-white/15 dark:bg-slate-800 dark:text-white"
         />
-        {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
-        {message && <p className="text-sm font-semibold text-primary">{message}</p>}
         <button
           type="submit"
           disabled={isSubmitting || cooldownSeconds > 0}

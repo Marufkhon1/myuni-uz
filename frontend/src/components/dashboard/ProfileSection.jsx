@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { deleteAvatar, updateProfileSettings, uploadAvatar } from "../../services/authService.js";
+import { useToast } from "../../hooks/useToast.js";
 import { resolveMediaUrl } from "../../utils/media.js";
-import UniversitySearchSelect, { matchUniversityByText } from "./UniversitySearchSelect.jsx";
+import UniversitySearchSelect from "./UniversitySearchSelect.jsx";
+import { matchUniversityByText } from "../../utils/universityMatch.js";
 import ChatColorPicker from "./ChatColorPicker.jsx";
+import { getProfileContent, getProfileDigitalIdNarrative } from "../../utils/profileRoleContent.js";
 
 const BIO_MIN_LENGTH = 3;
 const BIO_MAX_LENGTH = 70;
@@ -61,9 +65,9 @@ function SettingsRow({ label, hint, value, onClick, disabled = false, active = f
 
 function ProfileHeaderStat({ value, label }) {
   return (
-    <div className="min-w-0 flex-1 rounded-2xl border border-slate-200/80 bg-slate-50/80 px-3 py-3 text-center dark:border-white/10 dark:bg-white/[0.04]">
+    <div className="min-w-0 rounded-2xl border border-slate-200/80 bg-slate-50/80 px-3 py-3 dark:border-white/10 dark:bg-white/[0.04]">
       <p className="truncate text-xl font-black tabular-nums text-slate-950 dark:text-white sm:text-2xl">{value}</p>
-      <p className="mt-0.5 truncate text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+      <p className="mt-0.5 truncate text-[10px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
         {label}
       </p>
     </div>
@@ -92,9 +96,10 @@ export default function ProfileSection({
   const displayAvatarUrl = resolveMediaUrl(avatarPreview || savedAvatarUrl);
   const hasAvatar = Boolean(displayAvatarUrl);
 
-  const roleLabel = isStudent ? "Talaba" : "Abituriyent";
+  const profileContent = getProfileContent(isStudent);
+  const roleLabel = profileContent.roleLabel;
   const avatarVisibility = profile?.avatar_visibility || "everyone";
-  const universityLabel = isStudent ? "Universitet" : "Qiziqilgan universitet";
+  const universityLabel = profileContent.universityLabel;
   const hasUniversity = Boolean((userUniversity || profile?.university || "").trim());
 
   const matchedUniversity = useMemo(
@@ -108,47 +113,18 @@ export default function ProfileSection({
   const universityLocation = matchedUniversity?.location || "";
   const savedBio = profile?.bio || "";
 
-  const profileChecks = isStudent
-    ? [
-        { label: "Ism", done: Boolean((profile?.full_name || "").trim()) },
-        { label: "Universitet", done: hasUniversity },
-        { label: "Rasm", done: hasAvatar },
-      ]
-    : [
-        { label: "Ism", done: Boolean((profile?.full_name || "").trim()) },
-        { label: "Universitet", done: hasUniversity },
-      ];
+  const profileChecks = [
+    { label: profileContent.profileCheckLabels.name, done: Boolean((profile?.full_name || "").trim()) },
+    { label: profileContent.profileCheckLabels.university, done: hasUniversity },
+    { label: profileContent.profileCheckLabels.avatar, done: hasAvatar },
+  ];
 
   const completedChecks = profileChecks.filter((item) => item.done).length;
   const profileProgress = Math.round((completedChecks / profileChecks.length) * 100);
   const isProfileComplete = profileProgress === 100;
   const showAvatarPublicly = avatarVisibility !== "private_only";
 
-  const avatarOptions = isStudent
-    ? [
-        {
-          value: "everyone",
-          title: "Hammaga ko'rinadi",
-          hint: "Sharh, chat va profilda",
-        },
-        {
-          value: "private_only",
-          title: "Faqat shaxsiy chat",
-          hint: "Guruh va sharhlarda yashirin",
-        },
-      ]
-    : [
-        {
-          value: "everyone",
-          title: "Hammaga ko'rinadi",
-          hint: "Profil va bo'limlarda",
-        },
-        {
-          value: "private_only",
-          title: "Kamroq ko'rsatish",
-          hint: "Asosan shaxsiy aloqada",
-        },
-      ];
+  const avatarOptions = profileContent.avatarOptions;
 
   async function handleAvatarChange(event) {
     const file = event.target.files?.[0];
@@ -221,16 +197,27 @@ export default function ProfileSection({
   }
 
   return (
-    <section className="mx-auto w-full min-w-0 max-w-4xl space-y-4 sm:space-y-5">
-      <div className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-white/[0.06]">
-        <div className="bg-gradient-to-b from-primary/10 via-transparent to-transparent px-4 pb-5 pt-6 sm:px-6 sm:pb-6 sm:pt-8">
-          <div className="flex flex-col items-center text-center">
-            <label
-              className={`group relative mb-4 grid h-24 w-24 cursor-pointer place-items-center overflow-hidden rounded-full bg-blue-50 ring-4 ring-white dark:bg-blue-400/10 dark:ring-slate-900 sm:h-28 sm:w-28 ${
-                isAvatarUploading || isAvatarDeleting ? "pointer-events-none opacity-70" : ""
-              }`}
-              title={hasAvatar ? "Rasmni almashtirish" : "Rasm qo'shish"}
-            >
+    <section className="grid w-full min-w-0 items-start gap-4 lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] lg:gap-5 2xl:grid-cols-[minmax(0,360px)_1fr]">
+      <aside className="min-w-0 w-full space-y-4">
+        <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-white/[0.06]">
+          <div className="relative h-28 bg-gradient-to-br from-primary via-blue-600 to-violet-600 sm:h-32">
+            <div
+              className="pointer-events-none absolute inset-0 opacity-30"
+              style={{
+                backgroundImage: "radial-gradient(circle at 1px 1px, rgb(255 255 255 / 0.35) 1px, transparent 0)",
+                backgroundSize: "18px 18px",
+              }}
+            />
+          </div>
+
+          <div className="relative px-5 pb-5 pt-0">
+            <div className="flex justify-center">
+              <label
+                className={`group relative -mt-14 mb-4 grid h-28 w-28 cursor-pointer place-items-center overflow-hidden rounded-[1.35rem] bg-blue-50 ring-4 ring-white dark:bg-blue-400/10 dark:ring-[#121826] sm:h-32 sm:w-32 ${
+                  isAvatarUploading || isAvatarDeleting ? "pointer-events-none opacity-70" : ""
+                }`}
+                title={hasAvatar ? "Rasmni almashtirish" : "Rasm qo'shish"}
+              >
               {hasAvatar ? (
                 <img src={displayAvatarUrl} alt="" className="h-full w-full object-cover" />
               ) : (
@@ -238,199 +225,234 @@ export default function ProfileSection({
                   {displayName.slice(0, 1).toUpperCase()}
                 </span>
               )}
-              <span className="absolute inset-0 grid place-items-center rounded-full bg-slate-950/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 group-active:opacity-100 [@media(hover:none)]:opacity-0 [@media(hover:none)]:active:opacity-100">
-                <span className="text-4xl font-black leading-none text-white">+</span>
+              <span className="absolute inset-0 grid place-items-center rounded-[1.35rem] bg-slate-950/60 opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 group-active:opacity-100 [@media(hover:none)]:opacity-0 [@media(hover:none)]:active:opacity-100">
+                <span className="text-3xl font-black leading-none text-white">+</span>
               </span>
               {(isAvatarUploading || isAvatarDeleting) && (
-                <span className="absolute inset-0 z-10 grid place-items-center rounded-full bg-slate-950/70 px-2 text-center text-xs font-black leading-tight text-white">
+                <span className="absolute inset-0 z-10 grid place-items-center rounded-[1.35rem] bg-slate-950/70 px-2 text-center text-xs font-black leading-tight text-white">
                   {isAvatarDeleting ? "O'chirilmoqda" : "Yuklanmoqda"}
                 </span>
               )}
               <input type="file" accept="image/*" onChange={handleAvatarChange} className="sr-only" />
             </label>
+            </div>
 
-            <h2 className="max-w-full truncate text-2xl font-black text-slate-950 dark:text-white sm:text-3xl">
+            <h2 className="text-center text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">
               {displayName}
             </h2>
-            <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-              <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-black text-primary">{roleLabel}</span>
+            <div className="mt-2 flex flex-wrap justify-center gap-2">
+              <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-black text-primary">{roleLabel}</span>
               {hasUniversity && (
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-bold text-slate-700 dark:bg-white/10 dark:text-slate-200">
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700 dark:bg-white/10 dark:text-slate-200">
                   {universityShort}
                 </span>
               )}
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+                  isProfileComplete
+                    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300"
+                    : "bg-amber-100 text-amber-800 dark:bg-amber-400/15 dark:text-amber-200"
+                }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full ${isProfileComplete ? "bg-emerald-500" : "bg-amber-500"}`} />
+                {isProfileComplete ? "Profil tayyor" : `${profileProgress}% to'ldirilgan`}
+              </span>
             </div>
-            {universityFull && universityFull !== universityShort && (
-              <p className="mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-300">{universityFull}</p>
+
+            {universityFull && (
+              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{universityFull}</p>
             )}
             {universityLocation && (
-              <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">{universityLocation}</p>
+              <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">{universityLocation}</p>
             )}
             {user?.email && (
               <p className="mt-2 text-sm font-semibold text-slate-500 dark:text-slate-400">{user.email}</p>
             )}
             {savedBio && (
-              <p className="mt-3 max-w-md text-sm leading-7 text-slate-700 dark:text-slate-200">{savedBio}</p>
+              <p className="mt-3 rounded-2xl border border-slate-100 bg-slate-50/80 px-3 py-3 text-sm leading-6 text-slate-700 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-200">
+                {savedBio}
+              </p>
             )}
-          </div>
 
-          <div className="mt-5 flex gap-2 sm:gap-3">
-            <ProfileHeaderStat value={joinedChatCount} label="Chat" />
-            <ProfileHeaderStat value={`${profileProgress}%`} label="Profil" />
-            <ProfileHeaderStat value={hasAvatar ? "✓" : "—"} label="Rasm" />
-          </div>
-        </div>
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              <ProfileHeaderStat value={joinedChatCount} label="Chat" />
+              <ProfileHeaderStat value={`${profileProgress}%`} label="Profil" />
+              <ProfileHeaderStat value={hasAvatar ? "✓" : "—"} label="Rasm" />
+            </div>
 
-        <div className="border-t border-slate-100 px-4 py-4 dark:border-white/10 sm:px-6">
-          <div className="flex flex-wrap gap-2">
+            {!isProfileComplete && (
+              <div className="mt-4 rounded-2xl border border-amber-200/80 bg-amber-50/80 px-3 py-3 dark:border-amber-400/20 dark:bg-amber-400/10">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-[10px] font-black uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
+                    Keyingi qadam
+                  </p>
+                  <span className="text-xs font-black text-amber-800 dark:text-amber-200">
+                    {completedChecks}/{profileChecks.length}
+                  </span>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-amber-200/80 dark:bg-amber-400/20">
+                  <div
+                    className="h-full rounded-full bg-amber-500 transition-all"
+                    style={{ width: `${profileProgress}%` }}
+                  />
+                </div>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {profileChecks.map((item) => (
+                    <span
+                      key={item.label}
+                      className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${
+                        item.done
+                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-400/20 dark:text-emerald-300"
+                          : "bg-white text-amber-800 dark:bg-white/10 dark:text-amber-200"
+                      }`}
+                    >
+                      {item.done ? "✓" : "○"} {item.label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {hasAvatar && (
               <button
                 type="button"
                 onClick={handleAvatarDelete}
                 disabled={isAvatarDeleting}
-                className="min-h-11 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-black text-red-600 disabled:opacity-50 dark:border-red-400/30"
+                className="mt-4 min-h-10 w-full rounded-xl border border-red-200 px-4 py-2 text-xs font-black text-red-600 transition hover:bg-red-50 disabled:opacity-50 dark:border-red-400/30 dark:hover:bg-red-950/30"
               >
                 Rasmni o&apos;chirish
               </button>
             )}
-          </div>
 
-          {!isProfileComplete && (
-            <div className="mt-4 rounded-2xl bg-amber-50 px-4 py-4 dark:bg-amber-400/10">
-              <div className="flex items-center justify-between gap-2">
-                <p className={sectionLabelClass}>Profil to&apos;ldirish</p>
-                <span className="text-sm font-black text-amber-800 dark:text-amber-200">
-                  {completedChecks}/{profileChecks.length}
-                </span>
-              </div>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-amber-200/80 dark:bg-amber-400/20">
-                <div className="h-full rounded-full bg-amber-500 transition-all" style={{ width: `${profileProgress}%` }} />
-              </div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {profileChecks.map((item) => (
+            {avatarError && <p className="mt-3 text-sm font-semibold text-red-600">{avatarError}</p>}
+          </div>
+        </div>
+
+        <ProfileDigitalIdCard
+          userId={user?.id}
+          displayName={displayName}
+          displayAvatarUrl={displayAvatarUrl}
+          hasAvatar={hasAvatar}
+          showAvatarPublicly={showAvatarPublicly}
+          roleLabel={roleLabel}
+          universityShort={universityShort}
+          profileProgress={profileProgress}
+          isProfileComplete={isProfileComplete}
+          profileChecks={profileChecks}
+          isStudent={isStudent}
+          joinedChatCount={joinedChatCount}
+        />
+      </aside>
+
+      <div className="min-w-0 w-full space-y-4 sm:space-y-5">
+        <SettingsGroup title="Shaxsiy ma'lumotlar">
+          <div className="px-4 py-4 sm:px-5 sm:py-5">
+            <ProfileSettingsForm
+              key={`${profile?.full_name ?? ""}|${profile?.university ?? ""}`}
+              profile={profile}
+              universities={universities}
+              universityLabel={universityLabel}
+              universityPlaceholder={profileContent.universityPlaceholder}
+              universitySelectWarning={profileContent.universitySelectWarning}
+              inputClassName={profileFieldInputClass}
+              refreshUser={refreshUser}
+            />
+          </div>
+        </SettingsGroup>
+
+        <ProfileBioEditor
+          bio={savedBio}
+          bioDescription={profileContent.bioDescription}
+          isSaving={isBioSaving}
+          onSave={async (nextBio) => {
+            setAvatarError("");
+            setIsBioSaving(true);
+            try {
+              await updateProfileSettings({ bio: nextBio });
+              await refreshUser();
+            } catch {
+              setAvatarError("Bioni saqlab bo'lmadi.");
+              throw new Error("bio-save-failed");
+            } finally {
+              setIsBioSaving(false);
+            }
+          }}
+        />
+
+        <SettingsGroup title="Hisob">
+          <SettingsRow
+            label="Email"
+            hint={user?.email || "—"}
+            trailing={<CopyEmailButton email={user?.email} />}
+          />
+          <SettingsRow label={universityLabel} value={universityShort} hint={universityFull || undefined} />
+          <SettingsRow
+            label="Profil rasmi"
+            value={avatarVisibility === "private_only" ? "Shaxsiy" : "Ommaviy"}
+            hint={
+              avatarVisibility === "private_only"
+                ? profileContent.avatarVisibilityPrivate
+                : profileContent.avatarVisibilityPublic
+            }
+          />
+        </SettingsGroup>
+
+        <SettingsGroup title="Maxfiylik">
+          {avatarOptions.map((option) => {
+            const isActive = avatarVisibility === option.value;
+            return (
+              <SettingsRow
+                key={option.value}
+                label={option.title}
+                hint={option.hint}
+                active={isActive}
+                disabled={isSettingsSaving}
+                onClick={() => handleAvatarVisibilityChange(option.value)}
+                trailing={
                   <span
-                    key={item.label}
-                    className={`rounded-full px-3 py-1.5 text-xs font-bold ${
-                      item.done
-                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-400/20 dark:text-emerald-300"
-                        : "bg-white text-amber-800 dark:bg-white/10 dark:text-amber-200"
+                    className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 ${
+                      isActive ? "border-primary bg-primary" : "border-slate-300 dark:border-white/25"
                     }`}
                   >
-                    {item.done ? "✓" : "○"} {item.label}
+                    {isActive && <span className="h-2 w-2 rounded-full bg-white" />}
                   </span>
-                ))}
-              </div>
-            </div>
-          )}
+                }
+              />
+            );
+          })}
+        </SettingsGroup>
 
-          {avatarError && <p className="mt-3 text-sm font-semibold text-red-600">{avatarError}</p>}
-        </div>
+        <ChatColorPicker
+          displayName={displayName}
+          userId={user?.id}
+          selectedColor={profile?.chat_color || ""}
+          resolvedColor={profile?.chat_color_resolved}
+          isSaving={isColorSaving}
+          onSelect={handleChatColorChange}
+        />
+
+        {profile?.is_moderator ? (
+          <div className="overflow-hidden rounded-[1.75rem] border border-primary/20 bg-blue-50/50 p-4 shadow-soft dark:border-primary/30 dark:bg-primary/10 sm:p-5">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Moderator</p>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+              Shikoyatlarni ko&apos;rib chiqish va holatni yangilash.
+            </p>
+            <Link
+              to="/moderator"
+              className="mt-3 inline-flex rounded-xl bg-primary px-4 py-2 text-sm font-black text-white"
+            >
+              Moderator paneliga o&apos;tish
+            </Link>
+          </div>
+        ) : null}
       </div>
-
-      <ProfileDigitalIdCard
-        userId={user?.id}
-        displayName={displayName}
-        displayAvatarUrl={displayAvatarUrl}
-        hasAvatar={hasAvatar}
-        showAvatarPublicly={showAvatarPublicly}
-        roleLabel={roleLabel}
-        universityShort={universityShort}
-        profileProgress={profileProgress}
-        isProfileComplete={isProfileComplete}
-        profileChecks={profileChecks}
-        isStudent={isStudent}
-        joinedChatCount={joinedChatCount}
-      />
-
-      <SettingsGroup title="Shaxsiy ma'lumotlar">
-        <div className="px-4 py-4 sm:px-5 sm:py-5">
-          <ProfileSettingsForm
-            key={`${profile?.full_name ?? ""}|${profile?.university ?? ""}`}
-            profile={profile}
-            universities={universities}
-            universityLabel={universityLabel}
-            inputClassName={profileFieldInputClass}
-            refreshUser={refreshUser}
-          />
-        </div>
-      </SettingsGroup>
-
-      <ProfileBioEditor
-        bio={savedBio}
-        isSaving={isBioSaving}
-        onSave={async (nextBio) => {
-          setAvatarError("");
-          setIsBioSaving(true);
-          try {
-            await updateProfileSettings({ bio: nextBio });
-            await refreshUser();
-          } catch {
-            setAvatarError("Bioni saqlab bo'lmadi.");
-            throw new Error("bio-save-failed");
-          } finally {
-            setIsBioSaving(false);
-          }
-        }}
-      />
-
-      <SettingsGroup title="Hisob">
-        <SettingsRow
-          label="Email"
-          hint={user?.email || "—"}
-          trailing={<CopyEmailButton email={user?.email} />}
-        />
-        <SettingsRow label={universityLabel} value={universityShort} hint={universityFull || undefined} />
-        <SettingsRow
-          label="Profil rasmi"
-          value={avatarVisibility === "private_only" ? "Shaxsiy" : "Ommaviy"}
-          hint={
-            avatarVisibility === "private_only"
-              ? "Guruh chat va sharhlarda yashirin"
-              : "Barcha bo'limlarda ko'rinadi"
-          }
-        />
-      </SettingsGroup>
-
-      <SettingsGroup title="Maxfiylik">
-        {avatarOptions.map((option) => {
-          const isActive = avatarVisibility === option.value;
-          return (
-            <SettingsRow
-              key={option.value}
-              label={option.title}
-              hint={option.hint}
-              active={isActive}
-              disabled={isSettingsSaving}
-              onClick={() => handleAvatarVisibilityChange(option.value)}
-              trailing={
-                <span
-                  className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 ${
-                    isActive ? "border-primary bg-primary" : "border-slate-300 dark:border-white/25"
-                  }`}
-                >
-                  {isActive && <span className="h-2 w-2 rounded-full bg-white" />}
-                </span>
-              }
-            />
-          );
-        })}
-      </SettingsGroup>
-
-      <ChatColorPicker
-        displayName={displayName}
-        userId={user?.id}
-        selectedColor={profile?.chat_color || ""}
-        resolvedColor={profile?.chat_color_resolved}
-        isSaving={isColorSaving}
-        onSelect={handleChatColorChange}
-      />
     </section>
   );
 }
 
-function ProfileBioEditor({ bio, isSaving, onSave }) {
+function ProfileBioEditor({ bio, bioDescription, isSaving, onSave }) {
+  const toast = useToast();
   const [draft, setDraft] = useState(bio);
-  const [error, setError] = useState("");
 
   useEffect(() => {
     setDraft(bio || "");
@@ -446,19 +468,18 @@ function ProfileBioEditor({ bio, isSaving, onSave }) {
   async function handleSubmit(event) {
     event.preventDefault();
     if (isTooShort) {
-      setError(`Bio kamida ${BIO_MIN_LENGTH} belgi bo'lishi kerak.`);
+      toast.warning(`Bio kamida ${BIO_MIN_LENGTH} belgi bo'lishi kerak.`);
       return;
     }
     if (isTooLong) {
-      setError(`Bio ${BIO_MAX_LENGTH} belgidan oshmasligi kerak.`);
+      toast.warning(`Bio ${BIO_MAX_LENGTH} belgidan oshmasligi kerak.`);
       return;
     }
 
-    setError("");
     try {
       await onSave(trimmedDraft);
     } catch {
-      setError("Bioni saqlab bo'lmadi.");
+      toast.error("Bioni saqlab bo'lmadi.");
     }
   }
 
@@ -467,7 +488,7 @@ function ProfileBioEditor({ bio, isSaving, onSave }) {
       <div className="border-b border-slate-100 px-4 py-3 dark:border-white/10 sm:px-5">
         <p className={sectionLabelClass}>Bio</p>
         <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
-          Boshqa foydalanuvchilar profilingizda ko&apos;radi · {BIO_MIN_LENGTH}–{BIO_MAX_LENGTH} belgi
+          {bioDescription}
         </p>
       </div>
 
@@ -477,7 +498,6 @@ function ProfileBioEditor({ bio, isSaving, onSave }) {
             value={draft}
             onChange={(event) => {
               setDraft(event.target.value.slice(0, BIO_MAX_LENGTH));
-              setError("");
             }}
             rows={3}
             maxLength={BIO_MAX_LENGTH}
@@ -502,8 +522,6 @@ function ProfileBioEditor({ bio, isSaving, onSave }) {
           </div>
         </div>
 
-        {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
-
         <div className="flex flex-wrap items-center justify-end gap-3">
           {isDirty && (
             <span className="mr-auto text-sm font-bold text-amber-600 dark:text-amber-300">
@@ -515,15 +533,14 @@ function ProfileBioEditor({ bio, isSaving, onSave }) {
               type="button"
               disabled={isSaving}
               onClick={async () => {
-                setError("");
                 try {
                   await onSave("");
                   setDraft("");
                 } catch {
-                  setError("Bioni saqlab bo'lmadi.");
+                  toast.error("Bioni saqlab bo'lmadi.");
                 }
               }}
-              className="min-h-11 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-black text-slate-600 disabled:opacity-50 dark:border-white/15 dark:text-slate-300"
+              className="btn-modal-secondary min-h-11"
             >
               O&apos;chirish
             </button>
@@ -531,7 +548,7 @@ function ProfileBioEditor({ bio, isSaving, onSave }) {
           <button
             type="submit"
             disabled={isSaving || !isDirty || isTooShort || isTooLong}
-            className="min-h-11 rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-black text-white transition hover:bg-primary disabled:opacity-50 dark:bg-white dark:text-slate-950"
+            className="btn-modal-dark min-h-11 px-5 disabled:opacity-50"
           >
             {isSaving ? "Saqlanmoqda..." : "Saqlash"}
           </button>
@@ -562,21 +579,13 @@ function ProfileDigitalIdCard({
   const ringCircumference = 2 * Math.PI * ringRadius;
   const ringOffset = ringCircumference - (profileProgress / 100) * ringCircumference;
 
-  const narrative = (() => {
-    if (!isProfileComplete && nextStep) {
-      return `Profil ${profileProgress}% — ${nextStep.label.toLowerCase()} qo'shing va kartani to'liq faollashtiring.`;
-    }
-    if (isStudent) {
-      if (joinedChatCount > 0) {
-        return `${universityShort} talabasi sifatida ${joinedChatCount} ta chatda muloqot qilmoqdasiz.`;
-      }
-      return `${universityShort} talabasisiz — chatga qo'shilish uchun profilingiz tayyor.`;
-    }
-    if (joinedChatCount > 0) {
-      return `${universityShort} bo'yicha tanlov qilyapsiz va ${joinedChatCount} ta chatda savol beryapsiz.`;
-    }
-    return `${universityShort} haqida o'qiyapsiz — sharhlar va taqqoslash siz uchun ochiq.`;
-  })();
+  const narrative = getProfileDigitalIdNarrative(isStudent, {
+    isProfileComplete,
+    profileProgress,
+    nextStep,
+    universityShort,
+    joinedChatCount,
+  });
 
   return (
     <div className="overflow-hidden rounded-[1.75rem] border border-primary/20 bg-gradient-to-br from-blue-600/10 via-white to-violet-500/10 p-[1px] shadow-soft dark:border-primary/30 dark:from-blue-400/15 dark:via-white/[0.06] dark:to-violet-400/10">
@@ -691,16 +700,18 @@ function ProfileSettingsForm({
   profile,
   universities,
   universityLabel,
+  universityPlaceholder,
+  universitySelectWarning,
   inputClassName,
   refreshUser,
 }) {
+  const toast = useToast();
   const matchedUniversity = matchUniversityByText(universities, profile?.university);
   const [editName, setEditName] = useState(profile?.full_name || "");
   const [editUniversity, setEditUniversity] = useState(
     matchedUniversity?.name || profile?.university || ""
   );
   const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState("");
   const savedUniversity = matchedUniversity?.name || profile?.university || "";
   const isDirty =
     editName.trim() !== (profile?.full_name || "").trim() ||
@@ -710,22 +721,21 @@ function ProfileSettingsForm({
     event.preventDefault();
     const trimmedName = editName.trim();
     if (!trimmedName) {
-      setError("Ism bo'sh bo'lmasligi kerak.");
+      toast.warning("Ism bo'sh bo'lmasligi kerak.");
       return;
     }
 
     const matched = matchUniversityByText(universities, editUniversity);
     const universityToSave = matched?.name || editUniversity.trim();
     if (!universityToSave) {
-      setError("Universitetni ro'yxatdan tanlang.");
+      toast.warning(universitySelectWarning);
       return;
     }
     if (!matched) {
-      setError("Universitetni qidiruv natijasidan tanlang.");
+      toast.warning(universitySelectWarning);
       return;
     }
 
-    setError("");
     setIsSaving(true);
     try {
       await updateProfileSettings({
@@ -735,7 +745,7 @@ function ProfileSettingsForm({
       await refreshUser();
       setEditUniversity(universityToSave);
     } catch {
-      setError("Profilni saqlab bo'lmadi.");
+      toast.error("Profilni saqlab bo'lmadi.");
     } finally {
       setIsSaving(false);
     }
@@ -767,19 +777,11 @@ function ProfileSettingsForm({
               onChange={setEditUniversity}
               disabled={isSaving || universities.length === 0}
               inputClassName={inputClassName}
-              placeholder={
-                universities.length === 0
-                  ? "Yuklanmoqda..."
-                  : universityLabel === "Universitet"
-                    ? "Universitetni qidiring..."
-                    : "Qiziqilgan universitetni qidiring..."
-              }
+              placeholder={universities.length === 0 ? "Yuklanmoqda..." : universityPlaceholder}
             />
           </div>
         </div>
       </div>
-
-      {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
 
       <div className="flex flex-wrap items-center justify-end gap-3">
         {isDirty && (

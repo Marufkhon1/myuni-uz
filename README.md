@@ -25,8 +25,10 @@ python -m venv .venv
 pip install -r requirements.txt
 copy .env.example .env
 python manage.py migrate
-python manage.py runserver 127.0.0.1:8000
+.\manage.ps1 runserver 127.0.0.1:8000
 ```
+
+Windows da `python manage.py` o'rniga `.\manage.ps1` ishlatish tavsiya etiladi — u avtomatik `.venv` dan foydalanadi.
 
 ### Frontend
 

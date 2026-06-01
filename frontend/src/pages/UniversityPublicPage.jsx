@@ -1,40 +1,39 @@
-import { useEffect, useState } from "react";
-
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
+import UniversityPublicAdmission from "../components/catalog/UniversityPublicAdmission.jsx";
+import UniversityPublicContact, {
+  UniversityMapEmbed,
+} from "../components/catalog/UniversityPublicContact.jsx";
+import UniversityPublicFaculties from "../components/catalog/UniversityPublicFaculties.jsx";
+import UniversityPublicGallery from "../components/catalog/UniversityPublicGallery.jsx";
 import Footer from "../components/Footer.jsx";
-
 import Navbar from "../components/Navbar.jsx";
+import JsonLd from "../components/seo/JsonLd.jsx";
 import { PublicBackHomeButton } from "../components/PublicPageButtons.jsx";
-
 import ReviewAuthPromptModal from "../components/ReviewAuthPromptModal.jsx";
-
 import ReviewCard from "../components/dashboard/ReviewCard.jsx";
-
+import ReviewAspectRatings from "../components/reviews/ReviewAspectRatings.jsx";
+import ReviewInsightSummary from "../components/reviews/ReviewInsightSummary.jsx";
 import UniversityCampusBanner from "../components/UniversityCampusBanner.jsx";
-
 import UniversityRatingStars from "../components/dashboard/UniversityRatingStars.jsx";
-
+import EmptyState from "../components/ui/EmptyState.jsx";
+import { UniversityPublicPageSkeleton } from "../components/skeletons/PublicPageSkeletons.jsx";
+import { getUniversityOgImagePath } from "../utils/universityImage.js";
+import {
+  buildBreadcrumbSchema,
+  buildReviewSchemas,
+  buildUniversitySchema,
+} from "../utils/structuredData.js";
+import {
+  buildDashboardReviewsUniversityNext,
+  buildDashboardReviewsUniversityPath,
+} from "../utils/navigation.js";
 import { useAuth } from "../hooks/useAuth.js";
-
 import { useDarkMode } from "../hooks/useDarkMode.js";
-
 import { usePageMeta } from "../hooks/usePageMeta.js";
-
 import { getPublicUniversityBySlug } from "../services/publicService.js";
 
-import {
-
-  buildDashboardReviewsUniversityNext,
-
-  buildDashboardReviewsUniversityPath,
-
-} from "../utils/navigation.js";
-
-
-
 export default function UniversityPublicPage() {
-
   const { slug } = useParams();
 
   const navigate = useNavigate();
@@ -132,24 +131,58 @@ export default function UniversityPublicPage() {
 
 
   const metaTitle = detail
-
     ? `${detail.name} — sharhlar va reyting | MyUni.uz`
-
     : "Universitet | MyUni.uz";
-
   const metaDescription = detail
-
     ? `${detail.name} (${detail.location}): ${detail.review_count ?? 0} ta talaba sharhi, o'rtacha baho ${
-
         detail.average_rating ?? "—"
-
       }. MyUni.uz da o'qing.`
-
     : "O'zbekiston universitetlari haqida talabalar sharhlari.";
+  const metaImage = detail ? getUniversityOgImagePath(detail) : undefined;
+  const metaImageAlt = detail
+    ? `${detail.name} — MyUni.uz universitet sahifasi`
+    : undefined;
 
+  usePageMeta({
+    title: metaTitle,
+    description: metaDescription,
+    path: slug ? `/universitet/${slug}` : undefined,
+    image: metaImage,
+    imageAlt: metaImageAlt,
+    type: "website",
+  });
 
+  const universitySchema = useMemo(
+    () =>
+      buildUniversitySchema({
+        detail,
+        slug,
+        imagePath: detail ? getUniversityOgImagePath(detail) : undefined,
+      }),
+    [detail, slug]
+  );
 
-  usePageMeta({ title: metaTitle, description: metaDescription });
+  const breadcrumbSchema = useMemo(() => {
+    if (!detail || !slug) {
+      return null;
+    }
+    return buildBreadcrumbSchema([
+      { name: "Bosh sahifa", path: "/" },
+      { name: detail.name, path: `/universitet/${slug}` },
+    ]);
+  }, [detail, slug]);
+
+  const reviewSchemas = useMemo(
+    () =>
+      buildReviewSchemas({
+        reviews: detail?.reviews || [],
+        universityName: detail?.name,
+        slug,
+      }),
+    [detail, slug]
+  );
+
+  const seoReady = !loading && (Boolean(detail) || Boolean(error));
 
 
 
@@ -200,8 +233,13 @@ export default function UniversityPublicPage() {
 
 
   return (
-
-    <div className="min-h-screen bg-[#f5f7fb] text-slate-950 transition-colors dark:bg-slateNight dark:text-white">
+    <>
+      <JsonLd id="university-json-ld" data={universitySchema} />
+      <JsonLd id="university-breadcrumb-json-ld" data={breadcrumbSchema} />
+      {reviewSchemas.map((schema, index) => (
+        <JsonLd key={`review-${index}`} id={`university-review-json-ld-${index}`} data={schema} />
+      ))}
+      <div className="min-h-screen bg-[#f5f7fb] text-slate-950 transition-colors dark:bg-slateNight dark:text-white" data-seo-ready={seoReady ? "true" : undefined}>
 
       <Navbar
         isDark={isDark}
@@ -210,7 +248,7 @@ export default function UniversityPublicPage() {
         signupTo={isGuest ? signupTo : undefined}
       />
 
-      <main className="container-shell pb-12 pt-28 sm:pt-32">
+      <main className="container-shell pb-12 pt-24 sm:pt-28 lg:pt-32">
         {isGuest && !showRedirecting && (
           <div className="mb-5 w-fit">
             <PublicBackHomeButton />
@@ -219,11 +257,7 @@ export default function UniversityPublicPage() {
 
 
 
-        {(isAuthLoading || loading) && !error && (
-
-          <p className="mt-10 text-center font-black text-primary">Yuklanmoqda...</p>
-
-        )}
+        {(isAuthLoading || loading) && !error && <UniversityPublicPageSkeleton />}
 
 
 
@@ -237,7 +271,13 @@ export default function UniversityPublicPage() {
 
         {error && (
 
-          <p className="mt-10 text-center font-semibold text-red-600">{error}</p>
+          <EmptyState
+            variant="university"
+            title="Universitet topilmadi"
+            description="Bunday slug bilan ochiq sahifa mavjud emas yoki havola eskirgan."
+            action={{ label: "Bosh sahifaga", to: "/" }}
+            className="mt-10"
+          />
 
         )}
 
@@ -278,16 +318,39 @@ export default function UniversityPublicPage() {
 
 
             {detail.summary && (
-
               <p className="border-b border-slate-100 px-5 py-4 text-sm leading-7 text-slate-600 dark:border-white/10 dark:text-slate-300 sm:px-6">
-
                 {detail.summary}
-
               </p>
-
             )}
 
+            <UniversityPublicGallery urls={detail.gallery_urls} name={detail.name} />
+            <UniversityPublicContact detail={detail} />
+            <UniversityMapEmbed
+              latitude={detail.latitude}
+              longitude={detail.longitude}
+              name={detail.name}
+            />
+            <UniversityPublicFaculties faculties={detail.faculties} />
+            <UniversityPublicAdmission cycles={detail.admission_cycles} />
 
+            {(detail.review_insight_summary || detail.aspect_averages?.review_count > 0) && (
+              <div className="space-y-4 border-b border-slate-100 px-5 py-6 dark:border-white/10 sm:px-6">
+                {detail.review_insight_summary && (
+                  <ReviewInsightSummary
+                    summary={detail.review_insight_summary}
+                    reviewCount={detail.aspect_averages?.review_count ?? detail.review_count}
+                  />
+                )}
+                {detail.aspect_averages?.review_count > 0 && (
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-wide text-primary">
+                      Mezon bo&apos;yicha o&apos;rtacha
+                    </p>
+                    <ReviewAspectRatings averages={detail.aspect_averages} />
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="px-5 py-6 sm:px-6">
 
@@ -313,9 +376,8 @@ export default function UniversityPublicPage() {
 
                         item={item}
 
-                        onLike={() => {}}
-
-                        likeLabel="Like"
+                        hideLike
+                        showHelpfulCount
 
                         showStudentVoiceBadge
 
@@ -329,22 +391,22 @@ export default function UniversityPublicPage() {
 
               ) : (
 
-                <div className="mt-5 rounded-xl bg-slate-50 px-4 py-8 text-center dark:bg-white/5">
-
-                  <p className="font-black text-slate-800 dark:text-white">Hali sharh yo&apos;q</p>
-
-                  <p className="mt-1 text-sm text-slate-500">
-
-                    Birinchi sharhni talaba sifatida qoldiring.
-
-                  </p>
-
-                </div>
+                <EmptyState
+                  variant="reviews"
+                  title="Hali sharh yo'q"
+                  description="Birinchi sharhingizni qoldiring — abituriyentlar tanlov qilishda foydalanadi."
+                  action={{
+                    label: "Birinchi sharhingizni yozing",
+                    onClick: handleWriteReviewClick,
+                  }}
+                  className="mt-5"
+                />
 
               )}
 
 
 
+              {(detail.reviews?.length ?? 0) > 0 && (
               <div className="mt-8">
 
                 <button
@@ -370,6 +432,7 @@ export default function UniversityPublicPage() {
                 </p>
 
               </div>
+              )}
 
             </div>
 
@@ -398,9 +461,8 @@ export default function UniversityPublicPage() {
       />
 
     </div>
-
+    </>
   );
-
 }
 
 

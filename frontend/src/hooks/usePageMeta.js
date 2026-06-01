@@ -1,24 +1,101 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  DEFAULT_OG_IMAGE,
+  OG_IMAGE_HEIGHT,
+  OG_IMAGE_WIDTH,
+  SITE_LOCALE,
+  SITE_NAME,
+  TWITTER_HANDLE,
+  buildPageMeta,
+} from "../config/siteMeta.js";
 
-const DEFAULT_TITLE = "MyUni.uz | Universitetlar reytingi va talabalar sharhlari";
-const DEFAULT_DESCRIPTION =
-  "MyUni.uz — O'zbekiston universitetlari haqida talabalar sharhlari, reyting va tanlov uchun ochiq ma'lumot.";
-
-export function usePageMeta({ title, description } = {}) {
-  useEffect(() => {
-    document.title = title || DEFAULT_TITLE;
-
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", description || DEFAULT_DESCRIPTION);
-
-    return () => {
-      document.title = DEFAULT_TITLE;
-      meta.setAttribute("content", DEFAULT_DESCRIPTION);
-    };
-  }, [title, description]);
+function upsertMetaByName(name, content) {
+  let element = document.querySelector(`meta[name="${name}"]`);
+  if (!element) {
+    element = document.createElement("meta");
+    element.setAttribute("name", name);
+    document.head.appendChild(element);
+  }
+  element.setAttribute("content", content);
 }
+
+function upsertMetaByProperty(property, content) {
+  let element = document.querySelector(`meta[property="${property}"]`);
+  if (!element) {
+    element = document.createElement("meta");
+    element.setAttribute("property", property);
+    document.head.appendChild(element);
+  }
+  element.setAttribute("content", content);
+}
+
+function upsertLink(rel, href) {
+  let element = document.querySelector(`link[rel="${rel}"]`);
+  if (!element) {
+    element = document.createElement("link");
+    element.setAttribute("rel", rel);
+    document.head.appendChild(element);
+  }
+  element.setAttribute("href", href);
+}
+
+function applyPageMeta(meta) {
+  document.title = meta.title;
+
+  upsertMetaByName("description", meta.description);
+  upsertMetaByName("robots", meta.robots);
+
+  upsertMetaByProperty("og:site_name", SITE_NAME);
+  upsertMetaByProperty("og:title", meta.title);
+  upsertMetaByProperty("og:description", meta.description);
+  upsertMetaByProperty("og:url", meta.canonicalUrl);
+  upsertMetaByProperty("og:type", meta.type);
+  upsertMetaByProperty("og:locale", SITE_LOCALE);
+  upsertMetaByProperty("og:image", meta.absoluteImage);
+  upsertMetaByProperty("og:image:secure_url", meta.absoluteImage);
+  upsertMetaByProperty("og:image:alt", meta.imageAlt);
+  upsertMetaByProperty("og:image:width", String(OG_IMAGE_WIDTH));
+  upsertMetaByProperty("og:image:height", String(OG_IMAGE_HEIGHT));
+
+  upsertMetaByName("twitter:card", "summary_large_image");
+  upsertMetaByName("twitter:site", TWITTER_HANDLE);
+  upsertMetaByName("twitter:title", meta.title);
+  upsertMetaByName("twitter:description", meta.description);
+  upsertMetaByName("twitter:image", meta.absoluteImage);
+  upsertMetaByName("twitter:image:alt", meta.imageAlt);
+
+  upsertLink("canonical", meta.canonicalUrl);
+}
+
+/**
+ * Sahifa title, description, Open Graph va Twitter Card meta teglarini yangilaydi.
+ */
+export function usePageMeta(options = {}) {
+  const { pathname } = useLocation();
+  const {
+    title,
+    description,
+    path,
+    image = DEFAULT_OG_IMAGE,
+    imageAlt,
+    type,
+    robots,
+  } = options;
+
+  useEffect(() => {
+    applyPageMeta(
+      buildPageMeta({
+        title,
+        description,
+        path: path ?? pathname,
+        image,
+        imageAlt,
+        type,
+        robots,
+      })
+    );
+  }, [title, description, path, pathname, image, imageAlt, type, robots]);
+}
+
+export { applyPageMeta, buildPageMeta };

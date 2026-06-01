@@ -2,17 +2,27 @@ from django.contrib.auth import get_user_model
 from django.db.models import Avg, Count, Exists, OuterRef, Q
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.notifications_service import notify_review_liked, notify_review_pending
+from accounts.rate_limit_utils import rate_limit_response
 from accounts.avatar_access import avatar_url_for_viewer
 from accounts.profile_access import can_view_chat_profile
 from accounts.permissions import CanWriteStudentContent
 
 from django.utils import timezone
 
+from .catalog_utils import parse_compare_ids
+from .chat_community_utils import (
+    extract_hashtags,
+    filter_messages_by_tag,
+    filter_university_messages_for_viewer,
+    users_are_blocked,
+)
 from .compare_utils import build_compare_row, build_highlights
 from .chat_permissions import require_university_member, user_is_university_member
 from .chat_utils import annotate_direct_threads_both_replied, get_or_create_direct_thread
@@ -30,9 +40,18 @@ from .models import (
     DirectMessageReaction,
     DirectThread,
     Review,
+    ReviewImage,
     ReviewLike,
+    StudyDirection,
     University,
     UniversityFavorite,
+)
+from .review_trust_utils import (
+    MAX_REVIEW_IMAGES,
+    MAX_REVIEW_IMAGE_BYTES,
+    annotate_reviews_with_likes,
+    aspect_averages_for_university,
+    generate_review_insight_summary,
 )
 from .reaction_serializers import MessageReactionSerializer
 from .reaction_utils import toggle_message_reaction
@@ -63,26 +82,34 @@ class UniversityListView(generics.ListAPIView):
 
     def get_queryset(self):
         return University.objects.annotate(
-            member_count=Count("chat_memberships", distinct=True)
+            member_count=Count("chat_memberships", distinct=True),
+            review_count=Count(
+                "reviews",
+                filter=Q(reviews__status=Review.Status.APPROVED),
+                distinct=True,
+            ),
+            average_rating=Avg(
+                "reviews__rating",
+                filter=Q(reviews__status=Review.Status.APPROVED),
+            ),
         )
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        university_ids = list(queryset.values_list("id", flat=True))
+        joined_university_ids = set(
+            ChatMembership.objects.filter(user=request.user).values_list("university_id", flat=True)
+        )
         last_by_university = {}
 
-        if university_ids:
+        if joined_university_ids:
             for message in (
-                ChatMessage.objects.filter(university_id__in=university_ids)
+                ChatMessage.objects.filter(university_id__in=joined_university_ids)
                 .select_related("user", "user__profile")
                 .order_by("university_id", "-created_at")
             ):
                 if message.university_id not in last_by_university:
                     last_by_university[message.university_id] = message
 
-        joined_university_ids = set(
-            ChatMembership.objects.filter(user=request.user).values_list("university_id", flat=True)
-        )
         serializer = self.get_serializer(
             queryset,
             many=True,
@@ -100,6 +127,11 @@ class UniversityMembersView(APIView):
 
     def get(self, request, university_id):
         university = get_object_or_404(University, pk=university_id)
+        if not user_is_university_member(request.user, university_id):
+            return Response(
+                {"detail": "Avval universitet chatiga qo'shiling."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         memberships = ChatMembership.objects.filter(university=university).select_related(
             "user", "user__profile"
         )
@@ -137,28 +169,12 @@ class UniversityCompareView(APIView):
 
     def get(self, request):
         ids_param = request.query_params.get("ids", "")
-        try:
-            university_ids = [int(value) for value in ids_param.split(",") if value.strip()]
-        except ValueError:
-            return Response(
-                {"detail": "universities id lari noto'g'ri."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if len(university_ids) != 2:
-            return Response(
-                {"detail": "Taqqoslash uchun aynan 2 ta universitet tanlang."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if len(set(university_ids)) != 2:
-            return Response(
-                {"detail": "Bir xil universitetni ikki marta tanlab bo'lmaydi."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        university_ids, error = parse_compare_ids(ids_param)
+        if error:
+            return Response({"detail": error}, status=status.HTTP_400_BAD_REQUEST)
 
         universities = list(University.objects.filter(pk__in=university_ids))
-        if len(universities) != 2:
+        if len(universities) != len(university_ids):
             return Response(
                 {"detail": "Tanlangan universitetlardan biri topilmadi."},
                 status=status.HTTP_404_NOT_FOUND,
@@ -193,12 +209,21 @@ class UniversityDetailView(APIView):
         from .compare_utils import rating_distribution
 
         university = get_object_or_404(University, pk=university_id)
-        stats = Review.objects.filter(university=university).aggregate(
+        stats = Review.objects.filter(
+            university=university,
+            status=Review.Status.APPROVED,
+        ).aggregate(
             average_rating=Avg("rating"),
             review_count=Count("id"),
         )
         average = stats["average_rating"]
         member_count = ChatMembership.objects.filter(university=university).count()
+        aspects = aspect_averages_for_university(university.id)
+        directions = list(
+            StudyDirection.objects.filter(faculty__university=university)
+            .order_by("sort_order", "name")
+            .values("id", "name")
+        )
         return Response(
             {
                 **UniversitySerializer(university).data,
@@ -206,17 +231,30 @@ class UniversityDetailView(APIView):
                 "review_count": stats["review_count"] or 0,
                 "member_count": member_count,
                 "rating_distribution": rating_distribution(university.id),
+                "aspect_averages": aspects,
+                "review_insight_summary": generate_review_insight_summary(university.id),
+                "study_directions": directions,
             }
         )
 
 
-def annotate_reviews_with_likes(queryset, user):
-    return queryset.annotate(
-        like_count=Count("likes", distinct=True),
-        liked_by_me=Exists(
-            ReviewLike.objects.filter(review_id=OuterRef("pk"), user_id=user.id)
-        ),
-    )
+def _save_review_images(review, files):
+    if not files:
+        return
+    if len(files) > MAX_REVIEW_IMAGES:
+        raise ValidationError(
+            {"images": f"Bir sharhga ko'pi bilan {MAX_REVIEW_IMAGES} ta rasm biriktirish mumkin."}
+        )
+    for index, uploaded in enumerate(files):
+        if uploaded.size > MAX_REVIEW_IMAGE_BYTES:
+            raise ValidationError(
+                {"images": "Har bir rasm hajmi 5 MB dan oshmasligi kerak."}
+            )
+        ReviewImage.objects.create(
+            review=review,
+            image=uploaded,
+            sort_order=index,
+        )
 
 
 class PopularReviewListView(generics.ListAPIView):
@@ -225,8 +263,13 @@ class PopularReviewListView(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = Review.objects.filter(status=Review.Status.APPROVED).select_related(
-            "university", "user", "user__profile"
-        )
+            "university",
+            "user",
+            "user__profile",
+            "study_direction",
+            "official_reply",
+            "official_reply__author",
+        ).prefetch_related("images")
         return annotate_reviews_with_likes(queryset, self.request.user).order_by(
             "-like_count", "-created_at"
         )[:30]
@@ -234,9 +277,17 @@ class PopularReviewListView(generics.ListAPIView):
 
 class ReviewListCreateView(generics.ListCreateAPIView):
     serializer_class = ReviewSerializer
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
 
     def get_queryset(self):
-        queryset = Review.objects.select_related("university", "user", "user__profile")
+        queryset = Review.objects.select_related(
+            "university",
+            "user",
+            "user__profile",
+            "study_direction",
+            "official_reply",
+            "official_reply__author",
+        ).prefetch_related("images")
         university_id = self.request.query_params.get("university_id")
         if university_id:
             queryset = queryset.filter(university_id=university_id)
@@ -256,13 +307,7 @@ class ReviewListCreateView(generics.ListCreateAPIView):
             request, request.user.id
         )
         if not allowed:
-            return Response(
-                {
-                    "detail": limit_message,
-                    "retry_after_seconds": retry_after,
-                },
-                status=status.HTTP_429_TOO_MANY_REQUESTS,
-            )
+            return rate_limit_response(limit_message, retry_after)
 
         response = super().create(request, *args, **kwargs)
         if response.status_code == status.HTTP_201_CREATED:
@@ -272,18 +317,52 @@ class ReviewListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         status_value = initial_review_status()
         review = serializer.save(status=status_value)
+        files = self.request.FILES.getlist("images")
+        _save_review_images(review, files)
         if status_value == Review.Status.PENDING:
             notify_moderators_new_review(review)
+            notify_review_pending(review)
 
 
-class ReviewDetailView(generics.DestroyAPIView):
+class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthenticated, CanWriteStudentContent]
+    parser_classes = [JSONParser, MultiPartParser, FormParser]
     lookup_url_kwarg = "review_id"
 
     def get_queryset(self):
-        queryset = Review.objects.select_related("university", "user", "user__profile")
-        return reviews_visible_to_user(queryset, self.request.user)
+        queryset = Review.objects.select_related(
+            "university",
+            "user",
+            "user__profile",
+            "study_direction",
+            "official_reply",
+            "official_reply__author",
+        ).prefetch_related("images")
+        return annotate_reviews_with_likes(
+            reviews_visible_to_user(queryset, self.request.user),
+            self.request.user,
+        )
+
+    def get_permissions(self):
+        if self.request.method in ("PUT", "PATCH"):
+            return [IsAuthenticated(), CanWriteStudentContent()]
+        if self.request.method == "DELETE":
+            return [IsAuthenticated(), CanWriteStudentContent()]
+        return [IsAuthenticated()]
+
+    def perform_update(self, serializer):
+        review = self.get_object()
+        if review.user_id != self.request.user.id:
+            raise PermissionDenied("Faqat o'z sharhingizni tahrirlashingiz mumkin.")
+        status_value = initial_review_status() if moderation_enabled() else Review.Status.APPROVED
+        review = serializer.save(status=status_value)
+        files = self.request.FILES.getlist("images")
+        if files:
+            review.images.all().delete()
+            _save_review_images(review, files)
+        if status_value == Review.Status.PENDING:
+            notify_moderators_new_review(review)
+            notify_review_pending(review)
 
     def perform_destroy(self, instance):
         if instance.user_id != self.request.user.id:
@@ -304,6 +383,7 @@ class ReviewLikeToggleView(APIView):
         else:
             ReviewLike.objects.create(user=request.user, review=review)
             liked = True
+            notify_review_liked(review=review, liker=request.user)
 
         like_count = ReviewLike.objects.filter(review=review).count()
         return Response({"liked": liked, "like_count": like_count})
@@ -341,12 +421,21 @@ class UniversityMessageListCreateView(APIView):
         get_object_or_404(University, pk=university_id)
         from .pin_utils import get_pinned_university_message
 
+        if not user_is_university_member(request.user, university_id):
+            return Response({"messages": [], "pinned": None})
+
         messages = (
             ChatMessage.objects.filter(university_id=university_id, is_deleted=False)
             .select_related("user", "user__profile")
             .prefetch_related("reactions")
             .order_by("created_at")
         )
+        messages = filter_university_messages_for_viewer(
+            messages, request.user, university_id
+        )
+        tag = (request.query_params.get("tag") or "").strip().lstrip("#").lower()
+        if tag:
+            messages = filter_messages_by_tag(messages, tag)
         return Response(
             {
                 "messages": ChatMessageSerializer(
@@ -366,11 +455,16 @@ class UniversityMessageListCreateView(APIView):
 
         serializer = ChatMessageCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        text = serializer.validated_data["text"]
         message = ChatMessage.objects.create(
             university=university,
             user=request.user,
-            text=serializer.validated_data["text"],
+            text=text,
+            tags=extract_hashtags(text),
         )
+        from accounts.chat_notify import notify_group_chat_message
+
+        notify_group_chat_message(message)
         return Response(
             ChatMessageSerializer(message, context={"request": request}).data,
             status=status.HTTP_201_CREATED,
@@ -559,6 +653,11 @@ class DirectThreadListCreateView(APIView):
             thread, _ = get_or_create_direct_thread(request.user, other_user)
         except ValueError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        if users_are_blocked(request.user.id, other_user.id):
+            return Response(
+                {"detail": "Bu foydalanuvchi bilan shaxsiy chat ochib bo'lmaydi."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         thread.save(update_fields=["updated_at"])
         return Response(
@@ -577,14 +676,16 @@ class DirectMessageListCreateView(APIView):
         )
 
     def get(self, request, thread_id):
+        from .chat_community_utils import filter_direct_messages_for_viewer
         from .pin_utils import get_pinned_direct_message
 
         thread = self.get_thread_for_user(request, thread_id)
-        messages = (
+        messages = filter_direct_messages_for_viewer(
             DirectMessage.objects.filter(thread=thread, is_deleted=False)
             .select_related("sender", "sender__profile")
             .prefetch_related("reactions")
-            .order_by("created_at")
+            .order_by("created_at"),
+            request.user,
         )
         return Response(
             {
@@ -605,6 +706,9 @@ class DirectMessageListCreateView(APIView):
             text=serializer.validated_data["text"],
         )
         thread.save(update_fields=["updated_at"])
+        from accounts.chat_notify import notify_direct_chat_message
+
+        notify_direct_chat_message(message)
         return Response(
             DirectMessageSerializer(message, context={"request": request}).data,
             status=status.HTTP_201_CREATED,

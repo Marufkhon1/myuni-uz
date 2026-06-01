@@ -1,9 +1,20 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { AuthCheckSkeleton } from "../components/skeletons/DashboardSkeletons.jsx";
+import StatusPageLayout, {
+  StatusPrimaryButton,
+  StatusSecondaryButton,
+} from "../components/ui/StatusPageLayout.jsx";
+import { PAGE_META } from "../config/siteMeta.js";
 import { useAuth } from "../hooks/useAuth.js";
+import { usePageMeta } from "../hooks/usePageMeta.js";
+import { useToast } from "../hooks/useToast.js";
 
 export default function GoogleCallbackPage() {
+  usePageMeta(PAGE_META.googleCallback);
+
   const navigate = useNavigate();
+  const toast = useToast();
   const { completeGoogleAuth } = useAuth();
   const [error, setError] = useState("");
 
@@ -17,7 +28,9 @@ export default function GoogleCallbackPage() {
       sessionStorage.removeItem("myuni_auth_next");
 
       if (!access || !refresh) {
-        setError("Google orqali kirish tokenlari topilmadi.");
+        const message = "Google orqali kirish tokenlari topilmadi.";
+        setError(message);
+        toast.error(message);
         return;
       }
 
@@ -25,34 +38,27 @@ export default function GoogleCallbackPage() {
         await completeGoogleAuth({ access, refresh });
         navigate(next, { replace: true });
       } catch {
-        setError("Google orqali kirishda xatolik yuz berdi.");
+        const message = "Google orqali kirishda xatolik yuz berdi.";
+        setError(message);
+        toast.error(message);
       }
     }
 
     finishGoogleAuth();
-  }, [completeGoogleAuth, navigate]);
+  }, [completeGoogleAuth, navigate, toast]);
 
-  return (
-    <main className="grid min-h-screen place-items-center bg-slate-50 px-5 text-slate-950 dark:bg-slateNight dark:text-white">
-      <div className="w-full max-w-md rounded-[2rem] border border-slate-200 bg-white p-8 text-center shadow-soft dark:border-white/10 dark:bg-white/[0.06]">
-        <p className="text-sm font-black uppercase tracking-[0.18em] text-primary">
-          MyUni.uz
-        </p>
-        <h1 className="mt-4 text-3xl font-black">
-          {error ? "Kirish yakunlanmadi" : "Google orqali kirish tekshirilmoqda..."}
-        </h1>
-        {error && (
-          <>
-            <p className="mt-4 leading-7 text-slate-600 dark:text-slate-300">{error}</p>
-            <Link
-              to="/login"
-              className="mt-6 inline-flex rounded-full bg-primary px-6 py-3 font-black text-white"
-            >
-              Login sahifasiga qaytish
-            </Link>
-          </>
-        )}
-      </div>
-    </main>
-  );
+  if (error) {
+    return (
+      <StatusPageLayout
+        variant="error"
+        eyebrow="Google kirish"
+        title="Kirish yakunlanmadi"
+        description={error}
+        primaryAction={<StatusPrimaryButton to="/login">Login sahifasiga qaytish</StatusPrimaryButton>}
+        secondaryAction={<StatusSecondaryButton to="/">Bosh sahifaga</StatusSecondaryButton>}
+      />
+    );
+  }
+
+  return <AuthCheckSkeleton />;
 }

@@ -1,37 +1,33 @@
 import { expect, test } from "@playwright/test";
+import {
+  API,
+  E2E_PASSWORD,
+  WEB,
+  fetchUniversities,
+  loginViaUi,
+  registerAccount,
+} from "./helpers/auth.js";
 
-const API = "http://127.0.0.1:8000";
-const WEB = "http://127.0.0.1:5173";
-const PASSWORD = "TestPass123!";
 const suffix = `${Date.now()}`;
 const studentEmail = `e2e.student.${suffix}@sitecheck.test`;
 
 async function registerStudent(request) {
-  const universities = await request.get(`${API}/api/public/universities/`);
-  expect(universities.ok()).toBeTruthy();
-  const list = await universities.json();
-  expect(list.length).toBeGreaterThan(0);
-
-  const register = await request.post(`${API}/api/auth/register/`, {
-    data: {
-      full_name: "E2E Tekshiruv",
-      email: studentEmail,
-      password: PASSWORD,
-      role: "student",
-      university: list[0].name,
-    },
+  const list = await fetchUniversities(request);
+  const { access } = await registerAccount(request, {
+    email: studentEmail,
+    password: E2E_PASSWORD,
+    role: "student",
+    universityName: list[0].name,
   });
-  expect(register.status()).toBe(201);
-  const body = await register.json();
-  return { access: body.access, universities: list };
+  return { access, universities: list };
 }
 
 async function loginStudent(page) {
-  await page.goto(`${WEB}/login`);
-  await page.fill('input[name="email"]', studentEmail);
-  await page.fill('input[name="password"]', PASSWORD);
-  await page.getByRole("button", { name: /^kirish$/i }).click();
-  await page.waitForURL(/\/student\/dashboard/, { timeout: 20000 });
+  await loginViaUi(page, {
+    email: studentEmail,
+    password: E2E_PASSWORD,
+    dashboardPattern: /\/student\/dashboard/,
+  });
 }
 
 async function openReviewsSection(page) {
@@ -72,7 +68,7 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
 
   test("M10 — sharh yozish va o'chirish", async ({ page }) => {
     await loginStudent(page);
-    await expect(page.getByText(/Ma'lumotlar yuklanmoqda/i)).toHaveCount(0, { timeout: 30000 });
+    await expect(page.getByRole("heading", { name: /Salom/i })).toBeVisible({ timeout: 30000 });
     await openReviewsSection(page);
 
     const uni = seedUniversities[0];
@@ -86,7 +82,10 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     const reviewInput = page.locator('textarea[placeholder*="muhit"]');
     await expect(reviewInput).toBeVisible({ timeout: 20000 });
     await reviewInput.fill(reviewText);
-    await page.getByRole("button", { name: "5 yulduz" }).click();
+    await page.getByRole("button", { name: "5 yulduz", exact: true }).click();
+    for (const aspectLabel of ["O'qituvchilar", "Yotoqxona", "Infratuzilma"]) {
+      await page.getByRole("button", { name: new RegExp(`${aspectLabel} 5 yulduz`, "i") }).click();
+    }
     await page.getByRole("button", { name: /sharhni yuborish/i }).click();
     const postedReview = page
       .getByRole("article")
@@ -131,7 +130,7 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     await loginStudent(page);
     await page.getByRole("button", { name: /taqqoslash/i }).first().click();
     await expect(page.getByRole("heading", { name: /OTMlarni solishtiring/i })).toBeVisible();
-    await expect(page.getByText(/Ikkita turli universitet/i)).toBeVisible();
+    await expect(page.getByText(/Ikkita turli OTM/i)).toBeVisible();
   });
 
   test("M4 — qorong'u rejim", async ({ page }) => {
@@ -164,7 +163,7 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     });
 
     await page.reload();
-    await expect(page.getByText(/Ma'lumotlar yuklanmoqda/i)).toHaveCount(0, { timeout: 30000 });
+    await expect(page.getByRole("heading", { name: /Salom/i })).toBeVisible({ timeout: 30000 });
     await page.getByRole("navigation").getByRole("button", { name: /^chatlar/i }).click();
     await page.getByRole("button", { name: "Qo'shilgan", exact: true }).click();
     const uniPick = (uni.short_name || uni.name).slice(0, 12).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -188,7 +187,7 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     });
 
     await page.reload();
-    await expect(page.getByText(/Ma'lumotlar yuklanmoqda/i)).toHaveCount(0, { timeout: 30000 });
+    await expect(page.getByRole("heading", { name: /Salom/i })).toBeVisible({ timeout: 30000 });
     await page.getByRole("navigation").getByRole("button", { name: /^chatlar/i }).click();
     await page.getByRole("button", { name: "Qo'shilgan", exact: true }).click();
     const uni = seedUniversities[0];

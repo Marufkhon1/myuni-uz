@@ -1,6 +1,14 @@
 export default function DashboardIcon({ name }) {
   const common = "h-5 w-5";
 
+  if (name === "home") {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5Z" />
+      </svg>
+    );
+  }
+
   if (name === "reviews") {
     return (
       <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="2">
@@ -39,6 +47,15 @@ export default function DashboardIcon({ name }) {
     return (
       <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M4 6h7M4 12h11M4 18h7M14 6h6M14 12h6M14 18h6" />
+      </svg>
+    );
+  }
+
+  if (name === "bell") {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
       </svg>
     );
   }

@@ -1,4 +1,5 @@
 import UserAvatar from "./UserAvatar.jsx";
+import Skeleton from "../ui/Skeleton.jsx";
 
 export default function ProfileModal({
   profileUser,
@@ -16,7 +17,19 @@ export default function ProfileModal({
     <div className="fixed inset-0 z-50 grid place-items-center bg-slate-950/50 p-4 backdrop-blur-sm xl:col-span-2">
       <div className="w-full max-w-md rounded-[2rem] border border-slate-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-slate-900">
         {isProfileLoading ? (
-          <p className="font-black">Yuklanmoqda...</p>
+          <div className="space-y-4" aria-busy="true" aria-label="Profil yuklanmoqda">
+            <Skeleton className="h-4 w-16" />
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-16 w-16 rounded-2xl" />
+              <div className="space-y-2">
+                <Skeleton className="h-7 w-44" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+            </div>
+            <Skeleton className="h-5 w-56" />
+            <Skeleton className="h-24 w-full rounded-2xl" />
+            <Skeleton className="h-11 w-full rounded-2xl" />
+          </div>
         ) : (
           <>
             <p className="text-sm font-black uppercase tracking-[0.18em] text-primary">Profil</p>
@@ -47,7 +60,7 @@ export default function ProfileModal({
                 <button
                   type="button"
                   onClick={onPrivateMessage}
-                  className="min-w-[10rem] flex-1 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white dark:bg-white dark:text-slate-950"
+                  className="btn-modal-dark min-w-[10rem] flex-1"
                 >
                   Shaxsiy xabar
                 </button>
@@ -55,7 +68,7 @@ export default function ProfileModal({
               <button
                 type="button"
                 onClick={onClose}
-                className={`rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black dark:border-white/15 ${
+                className={`btn-modal-secondary-lg ${
                   profileUser.id === currentUserId || hidePrivateMessage ? "w-full" : ""
                 }`}
               >

@@ -1,30 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import UniversityAvatar from "../UniversityAvatar.jsx";
-
-export function matchUniversityByText(universities, text) {
-  if (!text?.trim() || !universities?.length) {
-    return null;
-  }
-
-  const query = text.trim().toLowerCase();
-
-  const exact = universities.find(
-    (university) =>
-      university.name.toLowerCase() === query ||
-      (university.short_name || "").toLowerCase() === query
-  );
-  if (exact) {
-    return exact;
-  }
-
-  return (
-    universities.find((university) => {
-      const name = university.name.toLowerCase();
-      const shortName = (university.short_name || "").toLowerCase();
-      return name.includes(query) || shortName.includes(query) || query.includes(shortName);
-    }) ?? null
-  );
-}
+import { matchUniversityByText } from "../../utils/universityMatch.js";
 
 function formatUniversityLabel(university) {
   if (!university) {

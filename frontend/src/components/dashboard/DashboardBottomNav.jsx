@@ -1,6 +1,13 @@
 function NavIcon({ name }) {
   const common = "h-5 w-5";
 
+  if (name === "home") {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9.5Z" />
+      </svg>
+    );
+  }
   if (name === "reviews") {
     return (
       <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="2">
@@ -58,7 +65,10 @@ export default function DashboardBottomNav({ items, activeSection, onSelect }) {
               }`}
             >
               <NavIcon name={item.id} />
-              <span className="w-full truncate text-center text-[10px] font-black leading-tight sm:text-xs">
+              <span className="w-full truncate text-center text-[10px] font-black leading-tight sm:hidden">
+                {item.shortLabel ?? item.label}
+              </span>
+              <span className="hidden w-full truncate text-center text-xs font-black leading-tight sm:inline">
                 {item.label}
               </span>
             </button>

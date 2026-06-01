@@ -5,6 +5,13 @@ from .pin_views import DirectMessagePinView, UniversityMessagePinView
 from .message_delete_views import DirectMessageDeleteView, UniversityMessageDeleteView
 from .message_edit_views import DirectMessageEditView, UniversityMessageEditView
 from .report_views import ChatMessageReportView, DirectMessageReportView
+from .review_report_views import ReviewReportView
+from .community_views import (
+    BlockedUsersListView,
+    UniversityChatTagsView,
+    UserBlockView,
+    UserMuteView,
+)
 from .views import (
     DirectMessageListCreateView,
     DirectMessageReactionView,
@@ -84,11 +91,15 @@ urlpatterns = [
         DirectMessageDeleteView.as_view(),
         name="direct-message-delete",
     ),
+    path("reviews/<int:review_id>/report/", ReviewReportView.as_view(), name="review-report"),
     path("reviews/<int:review_id>/like/", ReviewLikeToggleView.as_view(), name="review-like-toggle"),
     path("reviews/<int:review_id>/", ReviewDetailView.as_view(), name="review-detail"),
     path("reviews/popular/", PopularReviewListView.as_view(), name="popular-review-list"),
     path("reviews/", ReviewListCreateView.as_view(), name="review-list-create"),
     path("compare/", UniversityCompareView.as_view(), name="university-compare"),
+    path("community/blocked/", BlockedUsersListView.as_view(), name="blocked-users"),
+    path("community/users/<int:user_id>/block/", UserBlockView.as_view(), name="user-block"),
+    path("community/users/<int:user_id>/mute/", UserMuteView.as_view(), name="user-mute"),
     path("directs/", DirectThreadListCreateView.as_view(), name="direct-thread-list-create"),
     path(
         "directs/<int:thread_id>/messages/",
@@ -117,6 +128,7 @@ urlpatterns = [
     ),
     path("<int:university_id>/", UniversityDetailView.as_view(), name="university-detail"),
     path("<int:university_id>/members/", UniversityMembersView.as_view(), name="university-members"),
+    path("<int:university_id>/tags/", UniversityChatTagsView.as_view(), name="university-chat-tags"),
     path("<int:university_id>/join/", UniversityJoinView.as_view(), name="university-join"),
     path(
         "<int:university_id>/messages/",

@@ -13,9 +13,11 @@ export default function LandingHashScroll() {
 
     const runScroll = () => scrollToLandingSection(hash);
     runScroll();
-    const retry = window.setTimeout(runScroll, 120);
 
-    return () => window.clearTimeout(retry);
+    const timers = [120, 350, 700].map((delay) => window.setTimeout(runScroll, delay));
+    return () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
+    };
   }, [pathname, hash]);
 
   return null;

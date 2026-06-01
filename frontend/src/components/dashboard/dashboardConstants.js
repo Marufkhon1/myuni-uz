@@ -1,7 +1,7 @@
 export const chatTabs = [
-  { id: "joined", label: "Qo'shilgan" },
-  { id: "search", label: "Qidiruv" },
-  { id: "private", label: "Shaxsiy" },
+  { id: "joined", label: "Qo'shilgan", compactLabel: "Qo'sh." },
+  { id: "search", label: "Qidiruv", compactLabel: "Qidiruv" },
+  { id: "private", label: "Shaxsiy", compactLabel: "Shaxsiy" },
 ];
 
 export const menuItems = [

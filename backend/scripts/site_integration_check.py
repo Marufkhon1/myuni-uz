@@ -13,6 +13,12 @@ import requests
 API = "http://127.0.0.1:8000"
 WEB = "http://127.0.0.1:5173"
 
+REVIEW_ASPECT_PAYLOAD = {
+    "rating_teachers": 5,
+    "rating_dormitory": 4,
+    "rating_infrastructure": 4,
+}
+
 results: list[tuple[str, str, str]] = []  # id, status, note
 
 
@@ -58,7 +64,10 @@ def main() -> int:
     record("1.2-recent-reviews", r.status_code == 200, f"HTTP {r.status_code}")
 
     r = requests.get(f"{API}/api/public/universities/", timeout=10)
-    uni_list = r.json() if r.ok else []
+    payload = r.json() if r.ok else {}
+    uni_list = payload.get("results", payload) if isinstance(payload, dict) else payload
+    if not isinstance(uni_list, list):
+        uni_list = []
     record("1.5-signup-universities-api", r.ok and len(uni_list) > 0, f"{len(uni_list)} ta")
     uni_name = uni_list[0]["name"] if uni_list else "Test University"
 
@@ -247,7 +256,11 @@ def main() -> int:
             json={
                 "university_id": uni_id,
                 "rating": 5,
-                "text": f"Site check sharh {suffix}",
+                **REVIEW_ASPECT_PAYLOAD,
+                "text": (
+                    f"Site check sharh {suffix} — o'qish tajribam yaxshi, "
+                    "ustozlar yordam beradi va tavsiya qilaman."
+                ),
             },
             timeout=10,
         )

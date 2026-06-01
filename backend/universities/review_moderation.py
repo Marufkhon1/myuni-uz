@@ -3,6 +3,8 @@ from django.core.mail import send_mail
 from django.db.models import Q
 from django.utils import timezone
 
+from accounts.notifications_service import notify_review_status_change
+
 from .models import Review
 
 
@@ -108,4 +110,5 @@ def set_review_status(review: Review, status: str, *, note: str = "") -> Review:
     review.moderated_at = timezone.now()
     review.save(update_fields=["status", "moderation_note", "moderated_at"])
     notify_review_author(review, previous_status=previous)
+    notify_review_status_change(review, previous_status=previous)
     return review

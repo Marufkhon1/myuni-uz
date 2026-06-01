@@ -3,9 +3,11 @@ from urllib.parse import urlencode
 
 import requests
 from django.db.models import Q
+from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 from django.core import signing
 from django.shortcuts import redirect
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -17,6 +19,12 @@ from .chat_colors import CHAT_COLOR_SET
 from .models import Profile
 from .profile_access import can_view_chat_profile
 from .auth_cookies import clear_auth_cookies, set_auth_cookies
+from .email_verification import (
+    is_email_verified,
+    maybe_auto_verify_e2e_email,
+    record_verification_sent,
+    send_verification_email,
+)
 from .serializers import LoginSerializer, PublicUserSerializer, RegisterSerializer, UserSerializer
 
 User = get_user_model()
@@ -44,23 +52,63 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        refresh = RefreshToken.for_user(user)
-        response = Response(
-            {
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
-                "user": UserSerializer(user).data,
-            },
-            status=status.HTTP_201_CREATED,
-        )
-        set_auth_cookies(response, refresh)
-        return response
+        auto_verified = maybe_auto_verify_e2e_email(user)
+        email_sent = False if auto_verified else send_verification_email(user)
+        if email_sent:
+            record_verification_sent(user.id)
+
+        response_body = {
+            "detail": (
+                "Ro'yxatdan o'tdingiz. Hisob faollashtirildi (test rejimi)."
+                if auto_verified
+                else (
+                    "Ro'yxatdan o'tdingiz. Email manzilingizga tasdiqlash havolasi yuborildi. "
+                    "Hisobni faollashtirish uchun xatdagi havolani bosing."
+                    if email_sent
+                    else (
+                        "Ro'yxatdan o'tdingiz, lekin tasdiqlash xatini yuborib bo'lmadi. "
+                        "«Tasdiqlash xatini qayta yuborish» tugmasidan foydalaning."
+                    )
+                )
+            ),
+            "email": user.email,
+            "requires_email_verification": not auto_verified,
+            "email_sent": email_sent,
+        }
+        if auto_verified:
+            refresh = RefreshToken.for_user(user)
+            response_body["access"] = str(refresh.access_token)
+            response_body["refresh"] = str(refresh)
+            response_body["user"] = UserSerializer(user, context={"request": request}).data
+            response = Response(response_body, status=status.HTTP_201_CREATED)
+            set_auth_cookies(response, refresh)
+            return response
+
+        return Response(response_body, status=status.HTTP_201_CREATED)
 
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        email = str(request.data.get("email", "")).lower().strip()
+        password = request.data.get("password")
+        candidate = User.objects.filter(email=email).first()
+        if candidate:
+            authenticated_user = authenticate(username=candidate.username, password=password)
+            if authenticated_user and not is_email_verified(authenticated_user):
+                return Response(
+                    {
+                        "code": "email_not_verified",
+                        "detail": (
+                            "Email manzilingiz tasdiqlanmagan. Xatingizdagi havolani bosing "
+                            "yoki tasdiqlash xatini qayta yuboring."
+                        ),
+                        "email": authenticated_user.email,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
@@ -77,7 +125,10 @@ class MeView(APIView):
         return Response(UserSerializer(request.user, context={"request": request}).data)
 
     def patch(self, request):
-        profile = request.user.profile
+        profile, _ = Profile.objects.get_or_create(
+            user=request.user,
+            defaults={"full_name": request.user.first_name or request.user.email or ""},
+        )
         user = request.user
         update_fields = []
         user_update_fields = []
@@ -312,8 +363,13 @@ class GoogleAuthCallbackView(APIView):
                 "full_name": full_name,
                 "role": state.get("role", Profile.Role.APPLICANT),
                 "university": state.get("university", ""),
+                "email_verified_at": timezone.now(),
             },
         )
+        profile = user.profile
+        if not profile.email_verified_at:
+            profile.email_verified_at = timezone.now()
+            profile.save(update_fields=["email_verified_at", "updated_at"])
 
         refresh = RefreshToken.for_user(user)
         frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173").rstrip("/")

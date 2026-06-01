@@ -8,6 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .auth_cookies import clear_auth_cookies, set_auth_cookies
 from .authentication import get_refresh_token_from_request
+from .serializers import UserSerializer
 from .stream_tokens import issue_stream_token
 
 User = get_user_model()
@@ -63,20 +64,24 @@ class AuthSessionView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        access = (request.data.get("access") or "").strip()
         refresh_value = (request.data.get("refresh") or "").strip()
-        if not access or not refresh_value:
+        if not refresh_value:
             return Response({"detail": "Tokenlar topilmadi."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             refresh = RefreshToken(refresh_value)
-            if str(refresh.access_token) != access:
-                raise TokenError("Token mos emas")
             user = User.objects.get(pk=refresh["user_id"])
             session_refresh = RefreshToken.for_user(user)
         except (TokenError, InvalidToken, User.DoesNotExist):
             return Response({"detail": "Token yaroqsiz."}, status=status.HTTP_401_UNAUTHORIZED)
 
-        response = Response({"detail": "Sessiya o'rnatildi."})
+        response = Response(
+            {
+                "detail": "Sessiya o'rnatildi.",
+                "access": str(session_refresh.access_token),
+                "refresh": str(session_refresh),
+                "user": UserSerializer(user, context={"request": request}).data,
+            }
+        )
         set_auth_cookies(response, session_refresh)
         return response

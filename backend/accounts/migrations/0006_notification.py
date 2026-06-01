@@ -1,0 +1,52 @@
+# Generated manually for Notification model
+
+from django.conf import settings
+from django.db import migrations, models
+import django.db.models.deletion
+
+
+class Migration(migrations.Migration):
+
+    dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ("accounts", "0005_profile_bio"),
+    ]
+
+    operations = [
+        migrations.CreateModel(
+            name="Notification",
+            fields=[
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "kind",
+                    models.CharField(
+                        choices=[
+                            ("review_approved", "Sharh tasdiqlandi"),
+                            ("review_rejected", "Sharh rad etildi"),
+                            ("review_pending", "Sharh moderatsiyada"),
+                            ("review_liked", "Sharh yoqdi"),
+                            ("chat_unread", "O'qilmagan xabar"),
+                        ],
+                        max_length=32,
+                    ),
+                ),
+                ("title", models.CharField(max_length=200)),
+                ("body", models.TextField()),
+                ("link", models.CharField(blank=True, default="", max_length=255)),
+                ("is_read", models.BooleanField(default=False)),
+                ("metadata", models.JSONField(blank=True, default=dict)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="notifications",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+            ],
+            options={
+                "ordering": ["-created_at"],
+            },
+        ),
+    ]

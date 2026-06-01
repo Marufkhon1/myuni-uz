@@ -5,7 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 
 export default [
   {
-    ignores: ["dist"],
+    ignores: ["dist", "public/push-handler.js"],
   },
   js.configs.recommended,
   {
@@ -35,6 +35,7 @@ export default [
         URLSearchParams: "readonly",
         window: "readonly",
         process: "readonly",
+        HTMLElement: "readonly",
       },
     },
     plugins: {
@@ -55,6 +56,19 @@ export default [
       "jsx-a11y/heading-has-content": "warn",
       "jsx-a11y/label-has-associated-control": "warn",
       "jsx-a11y/no-static-element-interactions": "warn",
+    },
+  },
+  {
+    files: ["scripts/**/*.mjs"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        console: "readonly",
+        fetch: "readonly",
+        process: "readonly",
+        setTimeout: "readonly",
+      },
     },
   },
 ];

@@ -1,7 +1,11 @@
 import { Link, useSearchParams } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout.jsx";
+import { PAGE_META } from "../config/siteMeta.js";
+import { usePageMeta } from "../hooks/usePageMeta.js";
 
 export default function ForgotPasswordSentPage() {
+  usePageMeta(PAGE_META.forgotPasswordSent);
+
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email") || "";
 

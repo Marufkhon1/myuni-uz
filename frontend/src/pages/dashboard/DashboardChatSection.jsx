@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
+import ChatTagFilterBar from "../../components/chat/ChatTagFilterBar.jsx";
 import ChatComposeEditBar from "../../components/chat/ChatComposeEditBar.jsx";
 import ChatGroupJoinBar from "../../components/chat/ChatGroupJoinBar.jsx";
 import ChatGroupSearchPanel from "../../components/chat/ChatGroupSearchPanel.jsx";
 import PinnedMessageBar from "../../components/chat/PinnedMessageBar.jsx";
 import TypingUsersLine from "../../components/chat/TypingUsersLine.jsx";
 import ChatUniversityRow from "../../components/ChatUniversityRow.jsx";
+import EmptyState from "../../components/ui/EmptyState.jsx";
 import ChatMessageBubble from "../../components/dashboard/ChatMessageBubble.jsx";
 import DashboardIcon from "../../components/dashboard/DashboardIcon.jsx";
 import GroupInfoModal from "../../components/dashboard/GroupInfoModal.jsx";
@@ -12,6 +14,7 @@ import ProfileModal from "../../components/dashboard/ProfileModal.jsx";
 import UserAvatar from "../../components/dashboard/UserAvatar.jsx";
 import { chatTabs } from "../../components/dashboard/dashboardConstants.js";
 import { getAuthorColorClass } from "../../utils/chatAuthorColor.js";
+import { joinedUniversityIdsHas, sameUniversityId } from "../../utils/universityIds.js";
 
 export default function DashboardChatSection(p) {
   const privateInputRef = useRef(null);
@@ -29,6 +32,17 @@ export default function DashboardChatSection(p) {
     }
   }, [p.editingChatMessage]);
 
+  useEffect(() => {
+    if (!p.composerFocusToken) {
+      return;
+    }
+    if (p.chatPanel === "private") {
+      privateInputRef.current?.focus();
+      return;
+    }
+    groupInputRef.current?.focus();
+  }, [p.composerFocusToken, p.chatPanel]);
+
   return (
     <section
                 className={`grid gap-4 md:items-stretch md:gap-6 ${p.chatSectionGridClass}`}
@@ -43,31 +57,38 @@ export default function DashboardChatSection(p) {
                     <h2 className="mt-2 text-2xl font-black sm:text-3xl">Universitet tanlang</h2>
                   </div>
 
-                  <div className="mt-4 grid grid-cols-3 gap-2">
-                    {chatTabs.map((tab) => (
+                  <div className="mt-4 flex gap-1.5 sm:gap-2">
+                    {chatTabs.map((tab) => {
+                      const hasUnreadBadge =
+                        (tab.id === "joined" && p.totalJoinedUnread > 0) ||
+                        (tab.id === "private" && p.totalPrivateUnread > 0);
+                      const tabLabel = p.isWideChat ? tab.label : (tab.compactLabel ?? tab.label);
+
+                      return (
                       <button
                         key={tab.id}
                         type="button"
                         onClick={() => p.handleChatTabChange(tab.id)}
-                        className={`relative rounded-2xl px-3 py-2.5 text-xs font-black transition hover:-translate-y-0.5 ${
+                        className={`relative min-h-10 flex-1 rounded-2xl px-2 py-2 text-center text-[11px] font-black leading-tight transition hover:-translate-y-0.5 sm:px-3 sm:py-2.5 sm:text-xs xl:px-4 ${
                           p.chatListTab === tab.id
                             ? "bg-slate-950 text-white shadow-soft dark:bg-white dark:text-slate-950"
                             : "bg-slate-100 text-slate-600 hover:border-primary/30 hover:bg-slate-200 hover:text-slate-950 hover:shadow-sm dark:bg-white/10 dark:text-slate-300 dark:hover:bg-white/20 dark:hover:text-white"
-                        }`}
+                        } ${hasUnreadBadge ? "pt-3 sm:pt-3.5" : ""}`}
                       >
-                        {tab.label}
+                        <span>{tabLabel}</span>
                         {tab.id === "joined" && p.totalJoinedUnread > 0 && (
-                          <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-red-500 px-1 text-[10px] font-black text-white shadow-sm">
+                          <span className="absolute right-1.5 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-red-500 px-0.5 text-[9px] font-black leading-none text-white shadow-sm sm:h-5 sm:min-w-5 sm:px-1 sm:text-[10px]">
                             {p.totalJoinedUnread > 99 ? "99+" : p.totalJoinedUnread}
                           </span>
                         )}
                         {tab.id === "private" && p.totalPrivateUnread > 0 && (
-                          <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-red-500 px-1 text-[10px] font-black text-white shadow-sm">
+                          <span className="absolute right-1.5 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-red-500 px-0.5 text-[9px] font-black leading-none text-white shadow-sm sm:h-5 sm:min-w-5 sm:px-1 sm:text-[10px]">
                             {p.totalPrivateUnread > 99 ? "99+" : p.totalPrivateUnread}
                           </span>
                         )}
                       </button>
-                    ))}
+                      );
+                    })}
                   </div>
 
                   {p.chatListTab === "search" && (
@@ -82,25 +103,43 @@ export default function DashboardChatSection(p) {
                   <div className={p.chatListScrollClass}>
                     {p.chatListTab === "private" ? (
                       p.privateThreadList.length === 0 ? (
-                        <p className="rounded-3xl bg-slate-50 p-4 text-sm font-semibold text-slate-500 dark:bg-white/5">
-                          Hali shaxsiy xabar yo&apos;q. Guruh chatidan profilni ochib &quot;Shaxsiy xabar&quot; tugmasini bosing.
-                        </p>
+                        <EmptyState
+                          compact
+                          variant="messages"
+                          title="Shaxsiy xabar yo'q"
+                          description={'Guruh chatidan profilni ochib "Shaxsiy xabar" tugmasini bosing.'}
+                          className="mt-2 border-none bg-transparent dark:bg-transparent"
+                        />
                       ) : (
                         p.privateThreadList.map((thread) => p.renderPrivateThreadRow(thread))
                       )
                     ) : p.filteredUniversities.length === 0 ? (
-                      <p className="px-2 py-4 text-sm font-semibold text-slate-500">
-                        {p.chatListTab === "joined"
-                          ? "Hali qo'shilgan chat yo'q."
-                          : "Universitet topilmadi."}
-                      </p>
+                      <EmptyState
+                        compact
+                        variant={p.chatListTab === "joined" ? "chat" : "search"}
+                        title={p.chatListTab === "joined" ? "Qo'shilgan chat yo'q" : "Universitet topilmadi"}
+                        description={
+                          p.chatListTab === "joined"
+                            ? "Qidiruv bo'limidan universitet tanlang va guruh chatiga qo'shiling."
+                            : "Boshqa kalit so'z bilan qidirib ko'ring."
+                        }
+                        action={
+                          p.chatListTab === "joined"
+                            ? {
+                                label: "Universitet qidirish",
+                                onClick: () => p.handleChatTabChange("search"),
+                              }
+                            : undefined
+                        }
+                        className="mt-2 border-none bg-transparent dark:bg-transparent"
+                      />
                     ) : (
                       p.filteredUniversities.map((university) => (
                         <ChatUniversityRow
                           key={university.id}
                           university={university}
-                          isSelected={p.selectedUniversityId === university.id}
-                          isJoined={p.joinedUniversityIds.has(university.id)}
+                          isSelected={sameUniversityId(p.selectedUniversityId, university.id)}
+                          isJoined={joinedUniversityIdsHas(p.joinedUniversityIds, university.id)}
                           onSelect={p.selectUniversityChat}
                         />
                       ))
@@ -169,28 +208,36 @@ export default function DashboardChatSection(p) {
                         className={`bg-[#e8ecf4] px-4 py-4 sm:px-6 sm:py-5 dark:bg-slate-950/60 ${p.chatMessagesAreaClass}`}
                       >
                         {p.directMessages.length === 0 ? (
-                          <div className="grid h-full min-h-[12rem] place-items-center text-center text-slate-500">
-                            Birinchi shaxsiy xabaringizni yozing
-                          </div>
+                          <EmptyState
+                            compact
+                            variant="messages"
+                            title="Birinchi shaxsiy xabar"
+                            description="Suhbatni boshlang — xabaringiz shu yerda ko'rinadi."
+                            className="h-full min-h-[12rem] border-none bg-transparent dark:bg-transparent"
+                          />
                         ) : (
                           <div className="w-full space-y-3 pb-3">
                             {p.directMessages.map((item) => (
                               <ChatMessageBubble
                                 key={item.id}
-                                message={item}
+                                message={{
+                                  ...item,
+                                  is_mine: item.is_mine ?? item.sender_id === p.user?.id,
+                                }}
                                 formatTime={p.formatTime}
                                 onReact={p.handlePrivateReaction}
                                 onPin={p.handlePinPrivateMessage}
                                 onUnpin={p.handleUnpinPrivateMessage}
                                 isPinned={p.privatePinnedMessage?.id === item.id}
                                 onReport={(msg) => p.openMessageReport(msg, "private")}
+                                onMute={(msg) => p.onMuteChatUser?.(msg, "private")}
                                 onEdit={(msg) => p.openEditChatMessage(msg, "private")}
                                 onDelete={p.handleDeletePrivateMessage}
                                 onAuthorClick={(authorId, prefetch) =>
                                   p.openUserProfile(authorId, prefetch, {})
                                 }
                                 isReacting={p.reactingMessageId === item.id}
-                                containerClassName="max-w-[min(34rem,70%)]"
+                                containerClassName="max-w-[min(34rem,88%)] sm:max-w-[min(34rem,70%)]"
                               />
                             ))}
                           </div>
@@ -330,15 +377,29 @@ export default function DashboardChatSection(p) {
                         )}
                         onUnpin={p.handleUnpinGroupMessage}
                       />
+                      {p.hasJoinedSelectedChat ? (
+                        <ChatTagFilterBar
+                          tags={p.groupChatTags ?? []}
+                          activeTag={p.activeGroupTag ?? ""}
+                          onSelectTag={p.onSelectGroupTag}
+                          onClearTag={p.onClearGroupTag}
+                        />
+                      ) : null}
                       <div
                         className={`bg-[#e8ecf4] px-4 py-4 sm:px-6 sm:py-5 dark:bg-slate-950/60 ${p.chatMessagesAreaClass}`}
                       >
                         {p.groupMessages.length === 0 ? (
-                          <div className="grid h-full min-h-[12rem] place-items-center text-center text-slate-500">
-                            {p.hasJoinedSelectedChat
-                              ? "Birinchi xabarni yozing"
-                              : "Hali xabar yo'q. Pastdagi tugma orqali guruhga qo'shiling."}
-                          </div>
+                          <EmptyState
+                            compact
+                            variant="messages"
+                            title={p.hasJoinedSelectedChat ? "Birinchi xabaringiz" : "Guruh chatiga qo'shiling"}
+                            description={
+                              p.hasJoinedSelectedChat
+                                ? "Talabalarga savol bering — suhbat shu yerdan boshlanadi."
+                                : "Pastdagi tugma orqali chatga qo'shiling va muloqotni boshlang."
+                            }
+                            className="h-full min-h-[12rem] border-none bg-transparent dark:bg-transparent"
+                          />
                         ) : (
                           <div className="w-full space-y-3 pb-3">
                             {p.groupMessages.map((item) => (
@@ -368,11 +429,13 @@ export default function DashboardChatSection(p) {
                                   onUnpin={p.hasJoinedSelectedChat ? p.handleUnpinGroupMessage : undefined}
                                   isPinned={p.groupPinnedMessage?.id === item.id}
                                   onReport={(msg) => p.openMessageReport(msg, "group")}
+                                  onMute={(msg) => p.onMuteChatUser?.(msg, "group")}
+                                  onTagClick={p.onSelectGroupTag}
                                   onEdit={(msg) => p.openEditChatMessage(msg, "group")}
                                   onDelete={p.handleDeleteGroupMessage}
                                   onAuthorClick={p.openGroupChatAuthorProfile}
                                   isReacting={p.reactingMessageId === item.id}
-                                  containerClassName="max-w-[min(34rem,70%)]"
+                                  containerClassName="max-w-[min(34rem,88%)] sm:max-w-[min(34rem,70%)]"
                                 />
                               </div>
                             ))}
@@ -424,8 +487,8 @@ export default function DashboardChatSection(p) {
                             >
                               {p.editingChatMessage?.scope === "group" ? "Tahrirlash" : "Yuborish"}
                             </button>
-                          </div>
-                        </form>
+                        </div>
+                      </form>
                       ) : (
                         p.selectedUniversity && (
                           <ChatGroupJoinBar

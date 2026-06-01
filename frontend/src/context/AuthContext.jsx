@@ -6,6 +6,7 @@ import {
   login as loginRequest,
   logoutSession,
   register as registerRequest,
+  saveTokens,
 } from "../services/authService.js";
 import { AuthContext } from "./authContext.js";
 
@@ -53,9 +54,11 @@ export function AuthProvider({ children }) {
         return nextUser;
       },
       async register(payload) {
-        const nextUser = await registerRequest(payload);
-        setUser(nextUser);
-        return nextUser;
+        const data = await registerRequest(payload);
+        if (data.user) {
+          setUser(data.user);
+        }
+        return data;
       },
       async completeGoogleAuth(tokens) {
         await establishAuthSession(tokens);

@@ -29,8 +29,13 @@ class UniversityCompareTests(TestCase):
             location="Samarqand",
             founded_year=2000,
         )
+        other_user = User.objects.create_user(
+            username="compare-other@uni.test",
+            email="compare-other@uni.test",
+            password="test-pass-123",
+        )
         Review.objects.create(university=self.uni_a, user=self.user, rating=5, text="A joy")
-        Review.objects.create(university=self.uni_a, user=self.user, rating=4, text="A yana")
+        Review.objects.create(university=self.uni_a, user=other_user, rating=4, text="A yana")
         self.review_b = Review.objects.create(
             university=self.uni_b, user=self.user, rating=3, text="B bir"
         )
@@ -61,5 +66,16 @@ class UniversityCompareTests(TestCase):
         response = self.client.get(
             "/api/universities/compare/",
             {"ids": str(self.uni_a.id)},
+        )
+        self.assertEqual(response.status_code, 400)
+
+        uni_c = University.objects.create(
+            name="Compare University C",
+            short_name="CUC",
+            location="Buxoro",
+        )
+        response = self.client.get(
+            "/api/universities/compare/",
+            {"ids": f"{self.uni_a.id},{self.uni_b.id},{uni_c.id}"},
         )
         self.assertEqual(response.status_code, 400)

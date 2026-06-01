@@ -1,27 +1,22 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { createChatErrorReporter } from "./chatActionError.js";
 
 describe("createChatErrorReporter", () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it("sets message and clears after timeout", () => {
+  it("reports unique chat errors to the handler", () => {
     const messages = [];
-    const { reportChatError } = createChatErrorReporter((value) => messages.push(value));
+    const { reportChatError } = createChatErrorReporter((value, options) =>
+      messages.push({ value, options })
+    );
 
     reportChatError("Xabar yuborilmadi.");
-    expect(messages).toEqual(["Xabar yuborilmadi."]);
+    reportChatError("Xabar yuborilmadi.");
 
-    vi.advanceTimersByTime(8000);
-    expect(messages.at(-1)).toBe("");
+    expect(messages).toHaveLength(1);
+    expect(messages[0].value).toBe("Xabar yuborilmadi.");
+    expect(messages[0].options?.duration).toBe(8000);
   });
 
-  it("clearChatError resets immediately", () => {
+  it("clearChatError allows the same message to be reported again", () => {
     const messages = [];
     const { reportChatError, clearChatError } = createChatErrorReporter((value) =>
       messages.push(value)
@@ -29,6 +24,21 @@ describe("createChatErrorReporter", () => {
 
     reportChatError("Xatolik");
     clearChatError();
-    expect(messages.at(-1)).toBe("");
+    reportChatError("Xatolik");
+
+    expect(messages).toEqual(["Xatolik", "Xatolik"]);
+  });
+
+  it("ignores empty messages and clears pending state", () => {
+    const messages = [];
+    const { reportChatError, clearChatError } = createChatErrorReporter((value) =>
+      messages.push(value)
+    );
+
+    reportChatError("Xatolik");
+    clearChatError();
+    reportChatError("");
+
+    expect(messages).toEqual(["Xatolik"]);
   });
 });

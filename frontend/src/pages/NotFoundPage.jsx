@@ -1,21 +1,29 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { PAGE_META } from "../config/siteMeta.js";
+import { usePageMeta } from "../hooks/usePageMeta.js";
+import StatusPageLayout, {
+  StatusPrimaryButton,
+} from "../components/ui/StatusPageLayout.jsx";
 
 export default function NotFoundPage() {
+  const { pathname } = useLocation();
+  usePageMeta({ ...PAGE_META.notFound, path: pathname });
+
   return (
-    <main className="grid min-h-screen place-items-center bg-slate-50 px-6 dark:bg-slate-950">
-      <div className="max-w-md text-center">
-        <p className="text-sm font-black uppercase tracking-[0.2em] text-primary">404</p>
-        <h1 className="mt-4 text-4xl font-black text-slate-950 dark:text-white">Sahifa topilmadi</h1>
-        <p className="mt-4 font-semibold text-slate-600 dark:text-slate-300">
-          Havola noto'g'ri yoki sahifa o'chirilgan bo'lishi mumkin.
-        </p>
+    <StatusPageLayout
+      variant="notFound"
+      eyebrow="404"
+      title="Sahifa topilmadi"
+      description="Havola noto'g'ri yoki sahifa o'chirilgan bo'lishi mumkin. Bosh sahifadan qayta boshlang."
+      primaryAction={<StatusPrimaryButton to="/">Bosh sahifaga qaytish</StatusPrimaryButton>}
+      secondaryAction={
         <Link
-          to="/"
-          className="mt-8 inline-flex rounded-full bg-premium-gradient px-7 py-4 font-black text-white shadow-glow"
+          to="/login"
+          className="inline-flex items-center justify-center rounded-full px-7 py-3.5 text-sm font-black text-primary transition hover:underline"
         >
-          Bosh sahifaga qaytish
+          Kirish
         </Link>
-      </div>
-    </main>
+      }
+    />
   );
 }

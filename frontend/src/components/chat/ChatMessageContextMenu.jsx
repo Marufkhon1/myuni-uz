@@ -9,6 +9,7 @@ export default function ChatMessageContextMenu({
   onUnpin,
   isPinned,
   onReport,
+  onMute,
   onEdit,
   onDelete,
   onClose,
@@ -94,6 +95,19 @@ export default function ChatMessageContextMenu({
           >
             <span aria-hidden>⚠️</span>
             Shikoyat qilish
+          </button>
+        )}
+        {onMute && !isMine && (
+          <button
+            type="button"
+            onClick={() => {
+              onMute(message);
+              onClose();
+            }}
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-semibold text-white/90 transition hover:bg-white/5"
+          >
+            <span aria-hidden>🔇</span>
+            Bildirishnomalarni o&apos;chirish
           </button>
         )}
       </div>

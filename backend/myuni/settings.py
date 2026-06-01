@@ -11,6 +11,7 @@ _DEV_SECRET_KEY = "dev-only-secret-key-min-32-chars-long"
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", _DEV_SECRET_KEY)
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 SERVE_MEDIA = os.getenv("SERVE_MEDIA", "True") == "True"
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173").rstrip("/")
 
 if not DEBUG:
     if SECRET_KEY in (_DEV_SECRET_KEY, "development-only-secret-key", "change-me"):
@@ -32,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
+    "drf_spectacular",
     "accounts",
     "universities",
 ]
@@ -165,6 +167,12 @@ STREAM_TOKEN_TTL_SECONDS = int(os.getenv("STREAM_TOKEN_TTL_SECONDS", "300"))
 JWT_ACCESS_COOKIE_MAX_AGE = int(os.getenv("JWT_ACCESS_COOKIE_MAX_AGE", "3600"))
 JWT_REFRESH_COOKIE_MAX_AGE = int(os.getenv("JWT_REFRESH_COOKIE_MAX_AGE", "604800"))
 
+WEB_PUSH_VAPID_PUBLIC_KEY = os.getenv("WEB_PUSH_VAPID_PUBLIC_KEY", "")
+WEB_PUSH_VAPID_PRIVATE_KEY = os.getenv("WEB_PUSH_VAPID_PRIVATE_KEY", "")
+WEB_PUSH_VAPID_CLAIMS = {
+    "sub": os.getenv("WEB_PUSH_VAPID_SUBJECT", "mailto:hello@myuni.uz"),
+}
+
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -172,7 +180,31 @@ CACHES = {
     }
 }
 
+_redis_url = os.getenv("REDIS_URL", "").strip()
+if _redis_url:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": _redis_url,
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "SOCKET_CONNECT_TIMEOUT": 5,
+                "SOCKET_TIMEOUT": 5,
+                "IGNORE_EXCEPTIONS": True,
+                "LOG_IGNORED_EXCEPTIONS": True,
+            },
+            "KEY_PREFIX": "myuni",
+        }
+    }
+elif not DEBUG:
+    import logging
+
+    logging.getLogger(__name__).warning(
+        "REDIS_URL is not set in production — rate limits and SSE tokens are per-process only."
+    )
+
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
         "rest_framework.renderers.BrowsableAPIRenderer",
@@ -215,3 +247,25 @@ if DEBUG and os.getenv("DJANGO_ALLOW_LAN", "False") == "True":
         r"^https?://192\.168\.\d{1,3}\.\d{1,3}(:\d+)?$",
         r"^https?://10\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?$",
     ]
+
+ENABLE_API_DOCS = os.getenv("ENABLE_API_DOCS", "False") == "True"
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "MyUni.uz API",
+    "DESCRIPTION": "Universitetlar, sharhlar, chat va autentifikatsiya REST API.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SCHEMA_PATH_PREFIX": r"/api/",
+    "AUTHENTICATION_WHITELIST": ["accounts.authentication.CookieJWTAuthentication"],
+    "TAGS": [
+        {"name": "auth", "description": "Ro'yxatdan o'tish, login, profil"},
+        {"name": "universities", "description": "Universitetlar va sharhlar"},
+        {"name": "chat", "description": "Guruh va shaxsiy chat"},
+        {"name": "public", "description": "Ochiq (authsiz) endpointlar"},
+    ],
+}
+
+from myuni.observability import init_sentry
+
+init_sentry(debug=DEBUG)

@@ -8,16 +8,17 @@ import { scrollToLandingSection } from "../utils/landingScroll.js";
 
 const navLinks = [
   { label: "Bosh sahifa", href: "#home" },
+  { label: "Qanday ishlaydi", href: "#how-it-works" },
   { label: "Universitetlar", href: "#universities" },
   { label: "Sharhlar", href: "#reviews" },
-  { label: "Hamjamiyat", href: "#community" },
+  { label: "Savollar", href: "#faq" },
   { label: "Biz haqimizda", href: "#about" },
 ];
 
 const navLinkClass =
-  "text-sm font-semibold text-slate-600 transition hover:text-primary dark:text-slate-300 dark:hover:text-white";
+  "rounded-lg px-1 py-0.5 text-sm font-semibold text-slate-600 transition hover:text-primary dark:text-slate-300 dark:hover:text-white";
 const navLinkMobileClass =
-  "rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10";
+  "rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-100 hover:text-primary dark:text-slate-200 dark:hover:bg-white/10 dark:hover:text-white";
 
 export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guestHomeButtonOnly = false }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,7 +54,7 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-200/70 bg-white/80 backdrop-blur-xl transition-colors dark:border-white/10 dark:bg-slate-950/70">
       <nav
-        className="container-shell flex h-20 items-center justify-between"
+        className="container-shell flex h-16 items-center justify-between sm:h-20"
         aria-label="Asosiy navigatsiya"
       >
         <Link to="/" className="flex items-center gap-3" aria-label="MyUni.uz bosh sahifa">
@@ -67,7 +68,7 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
           </span>
         </Link>
 
-        <div className="hidden items-center gap-8 lg:flex">
+        <div className="hidden items-center gap-4 xl:gap-6 lg:flex">
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -111,7 +112,7 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
         <button
           type="button"
           onClick={() => setIsOpen((value) => !value)}
-          className="grid h-11 w-11 place-items-center rounded-2xl border border-slate-200 text-slate-900 lg:hidden dark:border-white/10 dark:text-white"
+          className="grid h-11 w-11 place-items-center rounded-2xl border border-slate-200 text-slate-900 transition hover:border-primary hover:bg-slate-50 dark:border-white/10 dark:text-white dark:hover:border-primary/40 dark:hover:bg-white/10 lg:hidden"
           aria-label="Navigatsiya menyusini ochish"
           aria-expanded={isOpen}
         >
@@ -149,7 +150,7 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
                 <button
                   type="button"
                   onClick={themeToggle}
-                  className="grid place-items-center rounded-2xl border border-slate-200 px-4 py-3 dark:border-white/10"
+                  className="grid place-items-center rounded-2xl border border-slate-200 px-4 py-3 transition hover:border-primary hover:bg-slate-50 dark:border-white/10 dark:hover:border-primary/40 dark:hover:bg-white/10"
                   aria-label="Rang rejimini almashtirish"
                 >
                   {ThemeIcon}

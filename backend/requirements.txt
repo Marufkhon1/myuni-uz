@@ -1,4 +1,4 @@
-django
+django>=5.1,<6
 djangorestframework
 djangorestframework-simplejwt
 django-cors-headers
@@ -9,3 +9,7 @@ Pillow
 gunicorn
 pytest-cov
 pip-audit
+pywebpush
+django-redis
+drf-spectacular
+sentry-sdk

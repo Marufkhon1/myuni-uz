@@ -1,10 +1,17 @@
 import { useMemo, useState } from "react";
+import EmptyState from "../ui/EmptyState.jsx";
 import ReviewCard from "./ReviewCard.jsx";
 import ReviewPanelPlaceholder from "./ReviewPanelPlaceholder.jsx";
-import ReviewRatingDistribution from "./ReviewRatingDistribution.jsx";
-import UniversityCampusBanner from "../UniversityCampusBanner.jsx";
-import UniversityRatingStars from "./UniversityRatingStars.jsx";
-import { formatUniversityMetaHeader } from "../UniversityMetaLine.jsx";
+import ReviewComposeForm from "../reviews/ReviewComposeForm.jsx";
+import ReviewSectionHeader from "../reviews/ReviewSectionHeader.jsx";
+import ReviewUniversityProfile from "./ReviewUniversityProfile.jsx";
+import {
+  ReviewFeedControls,
+  buildReviewFeedSummary,
+} from "../reviews/ReviewFeedControls.jsx";
+import { ReviewPanelSkeleton } from "../skeletons/DashboardSkeletons.jsx";
+import ReviewWorkspaceHero from "./ReviewWorkspaceHero.jsx";
+import { formatUniversityMetaHeader } from "../../utils/universityMetaFormat.js";
 import { getReviewPanelContent, getReviewSortOptions } from "../../utils/reviewRoleContent.js";
 
 function sortReviews(list, sortId) {
@@ -24,15 +31,15 @@ function sortReviews(list, sortId) {
 function StatChip({ label, value, highlight = false }) {
   return (
     <div
-      className={`rounded-2xl border px-3 py-2.5 ${
+      className={`rounded-xl px-3 py-2.5 ${
         highlight
-          ? "border-primary/20 bg-blue-50/90 dark:border-primary/25 dark:bg-blue-400/10"
-          : "border-slate-200/80 bg-white dark:border-white/10 dark:bg-white/[0.04]"
+          ? "bg-primary/10 ring-1 ring-primary/20 dark:bg-primary/15 dark:ring-primary/30"
+          : "bg-white ring-1 ring-slate-200/80 dark:bg-white/[0.04] dark:ring-white/10"
       }`}
     >
-      <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">{label}</p>
+      <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400">{label}</p>
       <p
-        className={`mt-1 text-base font-black leading-none ${
+        className={`mt-0.5 text-base font-black leading-none tabular-nums ${
           highlight ? "text-primary dark:text-blue-200" : "text-slate-800 dark:text-white"
         }`}
       >
@@ -55,82 +62,6 @@ function SidebarFact({ label, value }) {
   );
 }
 
-function QuickActionButton({ action, onClick, compact = false }) {
-  const isPrimary = action.variant === "primary";
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={
-        isPrimary
-          ? `w-full rounded-2xl bg-slate-950 px-4 font-black text-white shadow-soft transition hover:bg-primary dark:bg-white dark:text-slate-950 dark:hover:bg-primary dark:hover:text-white ${
-              compact ? "py-2.5 text-xs" : "py-3.5 text-sm"
-            }`
-          : `w-full rounded-2xl border border-slate-200 bg-white px-4 font-black text-slate-700 transition hover:border-primary hover:bg-slate-50 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:border-primary/40 ${
-              compact ? "py-2 text-xs" : "py-3 text-sm"
-            }`
-      }
-    >
-      {action.label}
-    </button>
-  );
-}
-
-function ReviewUniversityBanner({
-  university,
-  bannerEyebrow,
-  shortName,
-  location,
-  averageRating,
-  reviewCount,
-  metaHeader,
-  memberCount,
-}) {
-  return (
-    <div className="relative shrink-0 overflow-hidden">
-      <UniversityCampusBanner university={university} className="h-36 sm:h-40 lg:h-[13.5rem]" />
-      <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/40 to-transparent"
-        aria-hidden="true"
-      />
-      <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-200">{bannerEyebrow}</p>
-            {shortName && (
-              <span className="mt-1 inline-flex rounded-full bg-white/15 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-white backdrop-blur-sm">
-                {shortName}
-              </span>
-            )}
-            <h2 className="mt-1 text-lg font-black leading-snug text-white sm:text-xl">{university?.name}</h2>
-            {location && <p className="mt-0.5 text-xs font-semibold text-slate-200">{location}</p>}
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <UniversityRatingStars rating={averageRating} />
-            <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-[11px] font-black text-white backdrop-blur-sm">
-              {reviewCount} sharh
-            </span>
-          </div>
-        </div>
-        {(metaHeader || memberCount > 0) && (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {metaHeader && (
-              <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-semibold text-slate-200 backdrop-blur-sm">
-                {metaHeader}
-              </span>
-            )}
-            {memberCount > 0 && (
-              <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[10px] font-semibold text-slate-200 backdrop-blur-sm">
-                {memberCount} chat a&apos;zosi
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
 function OverviewSidebar({
   content,
   reviewUniversityDetail,
@@ -138,11 +69,7 @@ function OverviewSidebar({
   averageRating,
   totalLikes,
   memberCount,
-  distribution,
   isStudent,
-  onOpenSection,
-  onQuickAction,
-  visibleQuickActions,
 }) {
   const avgLikes =
     reviewCount > 0 ? (totalLikes / reviewCount).toFixed(1).replace(/\.0$/, "") : null;
@@ -151,10 +78,10 @@ function OverviewSidebar({
     : "Sharhlarni o'qing, taqqoslang va chatda savol bering.";
 
   return (
-    <aside className="chat-messages-scroll hidden w-full shrink-0 flex-col border-slate-100 bg-slate-50/40 dark:border-white/10 dark:bg-white/[0.02] lg:flex lg:max-h-full lg:w-72 lg:min-h-0 lg:self-stretch lg:overflow-y-auto lg:overscroll-contain lg:border-l xl:w-80">
-      <div className="space-y-4 p-4 sm:p-5">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.14em] text-primary">{content.statsTitle}</p>
+    <aside className="chat-messages-scroll relative z-10 hidden w-full shrink-0 flex-col overflow-x-hidden border-slate-200/60 bg-slate-50/80 dark:border-white/10 dark:bg-[#0b1220] @[960px]:flex @[960px]:max-h-full @[960px]:w-[280px] @[960px]:max-w-[280px] @[960px]:min-h-0 @[960px]:overflow-y-auto @[960px]:overscroll-contain @[960px]:border-l">
+      <div className="space-y-4 p-4">
+        <div className="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70 dark:bg-white/[0.04] dark:ring-white/10">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-primary">{content.statsTitle}</p>
           <div className="mt-3 grid grid-cols-2 gap-2.5">
             <StatChip
               label={content.statLabels.rating}
@@ -167,19 +94,8 @@ function OverviewSidebar({
           </div>
         </div>
 
-        {reviewCount > 0 && distribution && (
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]">
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-primary">
-              {content.distributionTitle}
-            </p>
-            <div className="mt-3">
-              <ReviewRatingDistribution distribution={distribution} reviewCount={reviewCount} />
-            </div>
-          </div>
-        )}
-
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]">
-          <p className="text-xs font-black uppercase tracking-[0.14em] text-primary">Asosiy ma&apos;lumot</p>
+        <div className="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70 dark:bg-white/[0.04] dark:ring-white/10">
+          <p className="text-xs font-bold uppercase tracking-wider text-primary">Asosiy ma&apos;lumot</p>
           <div className="mt-2 divide-y divide-slate-100 dark:divide-white/10">
             <SidebarFact label="Joylashuv" value={reviewUniversityDetail?.location} />
             <SidebarFact label="Turi" value={reviewUniversityDetail?.institution_type} />
@@ -191,35 +107,6 @@ function OverviewSidebar({
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{tip}</p>
         </div>
-
-        {onOpenSection && visibleQuickActions.length > 0 && (
-          <div className="space-y-2">
-            {visibleQuickActions
-              .filter((action) => action.variant === "primary")
-              .map((action) => (
-                <QuickActionButton
-                  key={action.id}
-                  action={action}
-                  compact
-                  onClick={() => onQuickAction(action.id)}
-                />
-              ))}
-            {visibleQuickActions.filter((action) => action.variant === "secondary").length > 0 && (
-              <div className="grid gap-2">
-                {visibleQuickActions
-                  .filter((action) => action.variant === "secondary")
-                  .map((action) => (
-                    <QuickActionButton
-                      key={action.id}
-                      action={action}
-                      compact
-                      onClick={() => onQuickAction(action.id)}
-                    />
-                  ))}
-              </div>
-            )}
-          </div>
-        )}
 
         {content.notice && (
           <p className="rounded-2xl border border-amber-200/80 bg-amber-50/80 px-3 py-3 text-xs leading-5 text-amber-900 dark:border-amber-400/20 dark:bg-amber-950/30 dark:text-amber-100">
@@ -242,13 +129,16 @@ export default function ReviewWorkspacePanel({
   onSubmitReview,
   rating,
   onRatingChange,
+  aspectRatings,
+  onAspectChange,
+  studyDirectionId,
+  onStudyDirectionChange,
   reviewText,
   onReviewTextChange,
   isReviewSubmitting,
-  reviewSubmitError,
   onLike,
   onDeleteReview,
-  stars,
+  onReportReview,
   onOpenSection,
   onOpenChat,
   className = "",
@@ -292,19 +182,17 @@ export default function ReviewWorkspacePanel({
     [reviews]
   );
 
-  const visibleQuickActions = content.quickActions.filter(
-    (action) => action.id !== "chat" || onOpenChat
-  );
-
-  function handleQuickAction(actionId) {
-    if (actionId === "chat" && onOpenChat) {
-      onOpenChat();
-      return;
-    }
-    if (onOpenSection) {
-      onOpenSection(actionId === "popular" ? "popular" : "compare");
-    }
-  }
+  const activeSortLabel =
+    sortOptions.find((option) => option.id === sortId)?.label ?? sortOptions[0]?.label ?? "";
+  const feedSummary =
+    reviews.length > 0
+      ? buildReviewFeedSummary({
+          filteredCount: filteredAndSortedReviews.length,
+          totalCount: reviews.length,
+          ratingFilter,
+          sortLabel: activeSortLabel,
+        })
+      : "";
 
   if (!reviewUniversity) {
     return (
@@ -316,14 +204,8 @@ export default function ReviewWorkspacePanel({
     );
   }
 
-  if (isReviewDetailLoading) {
-    return (
-      <div
-        className={`grid min-h-[min(420px,calc(100dvh-14rem))] place-items-center rounded-[2rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-white/[0.06] ${className}`}
-      >
-        <p className="font-black text-primary">Ma&apos;lumot yuklanmoqda...</p>
-      </div>
-    );
+  if (isReviewDetailLoading || (reviewUniversity && !reviewUniversityDetail)) {
+    return <ReviewPanelSkeleton className={className} />;
   }
 
   const shortName = reviewUniversityDetail?.short_name;
@@ -332,10 +214,13 @@ export default function ReviewWorkspacePanel({
   const memberCount = reviewUniversityDetail?.member_count ?? 0;
   const metaHeader = formatUniversityMetaHeader(reviewUniversityDetail);
   const distribution = reviewUniversityDetail?.rating_distribution;
+  const aspectAverages = reviewUniversityDetail?.aspect_averages;
+  const insightSummary = reviewUniversityDetail?.review_insight_summary;
+  const studyDirections = reviewUniversityDetail?.study_directions || [];
 
   return (
     <div
-      className={`flex min-w-0 flex-col rounded-[2rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-white/[0.06] lg:flex lg:max-h-[calc(100dvh-11rem)] lg:overflow-hidden ${className}`}
+      className={`flex min-w-0 w-full flex-col overflow-hidden rounded-[1.25rem] bg-white shadow-[0_12px_40px_-16px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70 dark:bg-[#0b1220]/80 dark:shadow-[0_12px_40px_-16px_rgba(0,0,0,0.5)] dark:ring-white/10 lg:flex lg:min-h-0 lg:max-h-[calc(100dvh-11rem)] lg:overflow-hidden ${className}`}
     >
       {isPhone && (
         <div className="shrink-0 border-b border-slate-100 px-5 py-3 dark:border-white/10">
@@ -349,229 +234,154 @@ export default function ReviewWorkspacePanel({
         </div>
       )}
 
-      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-        <div className="min-w-0 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:overscroll-contain">
-          <ReviewUniversityBanner
+      <div className="@container grid min-h-0 min-w-0 flex-1 grid-cols-1 overflow-x-hidden isolate @[960px]:grid-cols-[minmax(0,1fr)_280px]">
+        <div className="chat-messages-scroll relative z-0 min-w-0 overflow-x-hidden @[960px]:min-h-0 @[960px]:overflow-y-auto @[960px]:overscroll-contain">
+          <ReviewWorkspaceHero
             university={reviewUniversityDetail}
-            bannerEyebrow={content.bannerEyebrow}
+            eyebrow={content.bannerEyebrow}
             shortName={shortName}
             location={reviewUniversityDetail?.location}
+            summary={reviewUniversityDetail?.summary}
             averageRating={averageRating}
             reviewCount={reviewCount}
             metaHeader={metaHeader}
             memberCount={memberCount}
+            aspectAverages={aspectAverages}
+            distribution={distribution}
+            statLabels={content.statLabels}
+            ratingFilter={ratingFilter}
+            onRatingFilterChange={(value) => {
+              setRatingFilter(value);
+              document.getElementById("review-feed-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
           />
 
-          {reviewUniversityDetail?.summary && (
-            <p className="border-b border-slate-100 px-5 py-4 text-sm leading-7 text-slate-600 dark:border-white/10 dark:text-slate-300 sm:px-6">
-              {reviewUniversityDetail.summary}
-            </p>
-          )}
-
-          <div className="grid grid-cols-2 gap-2 border-b border-slate-100 px-5 py-4 dark:border-white/10 sm:grid-cols-4 lg:hidden">
-            <StatChip
-              label={content.statLabels.rating}
-              value={averageRating != null ? `${averageRating}/5` : "—"}
-              highlight
-            />
-            <StatChip label={content.statLabels.reviews} value={reviewCount} />
-            <StatChip label={content.statLabels.likes} value={totalLikes} />
-            <StatChip label={content.statLabels.chat} value={`${memberCount} a'zo`} />
-          </div>
-
-          {onOpenSection && visibleQuickActions.length > 0 && (
-            <div className="space-y-2 border-b border-slate-100 px-5 py-4 dark:border-white/10 lg:hidden">
-              {visibleQuickActions
-                .filter((action) => action.variant === "primary")
-                .map((action) => (
-                  <QuickActionButton
-                    key={action.id}
-                    action={action}
-                    compact
-                    onClick={() => handleQuickAction(action.id)}
-                  />
-                ))}
-              {visibleQuickActions.filter((action) => action.variant === "secondary").length > 0 && (
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {visibleQuickActions
-                    .filter((action) => action.variant === "secondary")
-                    .map((action) => (
-                      <QuickActionButton
-                        key={action.id}
-                        action={action}
-                        compact
-                        onClick={() => handleQuickAction(action.id)}
-                      />
-                    ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {content.notice && (
-            <div className="border-b border-amber-200/80 bg-amber-50 px-5 py-3.5 dark:border-amber-400/20 dark:bg-amber-400/10 sm:px-6">
-              <p className="text-sm font-semibold leading-6 text-amber-900 dark:text-amber-100">
-                {content.notice}
-              </p>
-            </div>
-          )}
-
-          {isStudent && (
-            <section className="border-b border-slate-100 px-5 py-5 dark:border-white/10 sm:px-6">
-              <form
+          <div className="space-y-5 px-5 pb-28 pt-4 sm:px-6 sm:pb-6 lg:pb-6">
+            {content.canWriteReview && content.formTitle && (
+              <ReviewComposeForm
+                title={content.formTitle}
+                subtitle={
+                  content.formSubtitle ||
+                  (shortName ? `${shortName} haqida sharh qoldiring` : "Tajribangizni ulashing")
+                }
+                placeholder={content.formPlaceholder}
+                overallLabel={content.formOverallLabel}
+                aspectHint={content.formAspectHint}
+                footerNote={content.formFooterNote}
+                rating={rating}
+                onRatingChange={onRatingChange}
+                aspectRatings={aspectRatings}
+                onAspectChange={onAspectChange}
+                studyDirectionId={studyDirectionId}
+                onStudyDirectionChange={onStudyDirectionChange}
+                directions={studyDirections}
+                reviewText={reviewText}
+                onReviewTextChange={onReviewTextChange}
+                isSubmitting={isReviewSubmitting}
                 onSubmit={onSubmitReview}
-                className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-white/[0.04]"
-              >
-                <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3 dark:border-white/10 dark:bg-white/[0.03] sm:px-5">
-                  <p className="text-xs font-black uppercase tracking-[0.14em] text-primary">
-                    {content.formTitle}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                    Tajribangizni baholang va batafsil yozing — moderatsiyadan o&apos;tgach ko&apos;rinadi.
-                  </p>
-                </div>
+              />
+            )}
 
-                <div className="space-y-4 px-4 py-4 sm:px-5 sm:py-5">
-                  <div>
-                    <p className="text-xs font-black uppercase tracking-wide text-slate-400">Baho</p>
-                    <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <div className="flex gap-1">
-                        {stars.map((star) => (
-                          <button
-                            key={star}
-                            type="button"
-                            onClick={() => onRatingChange(star)}
-                            className={`grid h-10 w-10 place-items-center rounded-xl border text-lg transition sm:h-11 sm:w-11 ${
-                              star <= rating
-                                ? "border-amber-300 bg-amber-50 text-amber-500 shadow-sm"
-                                : "border-slate-200 bg-white text-slate-300 hover:border-amber-200 dark:border-white/10 dark:bg-white/5"
-                            }`}
-                            aria-label={`${star} yulduz`}
-                          >
-                            ★
-                          </button>
-                        ))}
-                      </div>
-                      <span className="text-sm font-bold text-slate-500">
-                        {rating ? `${rating}/5` : "Baho tanlang"}
-                      </span>
-                    </div>
-                  </div>
+            <ReviewUniversityProfile insightSummary={insightSummary} reviewCount={reviewCount} />
 
-                  <div>
-                    <div className="flex items-center justify-between gap-3">
-                      <p className="text-xs font-black uppercase tracking-wide text-slate-400">Sharh matni</p>
-                      <span className="text-xs font-semibold text-slate-400">{reviewText.length}/1200</span>
-                    </div>
-                    <textarea
-                      value={reviewText}
-                      onChange={(event) => onReviewTextChange(event.target.value)}
-                      rows={5}
-                      maxLength={1200}
-                      placeholder={content.formPlaceholder}
-                      className="mt-2 min-h-[9rem] w-full resize-y rounded-2xl border border-slate-200 bg-white px-4 py-3 text-[15px] font-semibold leading-relaxed outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400/25"
-                    />
-                  </div>
-
-                  {reviewSubmitError && (
-                    <p className="text-sm font-semibold text-red-600">{reviewSubmitError}</p>
-                  )}
-
-                  <button
-                    type="submit"
-                    disabled={rating === 0 || !reviewText.trim() || isReviewSubmitting}
-                    className="w-full rounded-2xl bg-premium-gradient px-7 py-3.5 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-                  >
-                    {isReviewSubmitting ? "Saqlanmoqda..." : "Sharhni yuborish"}
-                  </button>
-                </div>
-              </form>
-            </section>
-          )}
-
-          <section className="px-5 py-5 pb-28 sm:px-6 sm:py-6 lg:pb-6">
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">
-                  {content.reviewsHeading}
+            {content.notice && (
+              <div className="rounded-xl border border-amber-200/60 bg-amber-50/90 px-4 py-3 dark:border-amber-400/20 dark:bg-amber-950/30">
+                <p className="text-sm font-medium leading-relaxed text-amber-900 dark:text-amber-100">
+                  {content.notice}
                 </p>
-                <h3 className="mt-0.5 text-base font-black text-slate-950 dark:text-white sm:text-lg">
-                  {shortName ? `${shortName} sharhlari` : content.reviewsSubheading}
-                </h3>
-              </div>
-              {reviews.length > 0 && (
-                <div className="flex flex-wrap items-center gap-2">
-                  <label className="sr-only" htmlFor="review-sort">
-                    Saralash
-                  </label>
-                  <select
-                    id="review-sort"
-                    value={sortId}
-                    onChange={(event) => setSortId(event.target.value)}
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:border-primary dark:border-white/15 dark:bg-slate-800 dark:text-slate-200"
-                  >
-                    {sortOptions.map((option) => (
-                      <option key={option.id} value={option.id}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-black text-slate-600 dark:bg-white/10 dark:text-slate-300">
-                    {filteredAndSortedReviews.length}
-                    {ratingFilter !== "all" ? ` / ${reviews.length}` : ""}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {reviews.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {["all", "5", "4", "3", "2", "1"].map((value) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setRatingFilter(value)}
-                    className={`rounded-full px-3 py-1 text-[11px] font-black transition ${
-                      ratingFilter === value
-                        ? "bg-slate-950 text-white dark:bg-white dark:text-slate-950"
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-white/10 dark:text-slate-300"
-                    }`}
-                  >
-                    {value === "all" ? "Hammasi" : `${value} ★`}
-                  </button>
-                ))}
               </div>
             )}
 
-            <div className="mt-4 space-y-4">
-              {reviews.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 px-6 py-10 text-center dark:border-white/10 dark:bg-white/[0.03]">
-                  <p className="text-lg font-black text-slate-800 dark:text-white">{content.emptyTitle}</p>
-                  <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">{content.emptyHint}</p>
+            <section id="review-feed-section" className="scroll-mt-4 border-t border-slate-100 pt-8 dark:border-white/10">
+              <ReviewSectionHeader
+                eyebrow={content.reviewsHeading}
+                title={shortName ? `${shortName} sharhlari` : content.reviewsSubheading}
+                description={reviews.length > 0 ? feedSummary : content.emptyHint}
+                action={
+                  reviews.length > 0 ? (
+                    <span className="inline-flex w-fit shrink-0 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-black tabular-nums text-slate-700 dark:bg-white/10 dark:text-slate-200">
+                      {filteredAndSortedReviews.length}
+                      {filteredAndSortedReviews.length !== reviews.length ? ` / ${reviews.length}` : ""} ta
+                    </span>
+                  ) : null
+                }
+              />
+
+              {reviews.length > 0 && (
+                <div className="mb-5 mt-5 rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-200/60 dark:bg-white/[0.03] dark:ring-white/10 sm:p-4">
+                  <ReviewFeedControls
+                    layout="stack"
+                    sortOptions={sortOptions}
+                    sortId={sortId}
+                    onSortChange={setSortId}
+                    ratingFilter={ratingFilter}
+                    onRatingFilterChange={setRatingFilter}
+                  />
                 </div>
+              )}
+
+              <div className="space-y-3">
+              {reviews.length === 0 ? (
+                <EmptyState
+                  variant="reviews"
+                  title={content.emptyTitle}
+                  description={content.emptyHint}
+                  action={
+                    isStudent
+                      ? {
+                          label: "Birinchi sharhingizni yozing",
+                          onClick: () =>
+                            document.getElementById("review-compose-form")?.scrollIntoView({
+                              behavior: "smooth",
+                              block: "start",
+                            }),
+                        }
+                      : onOpenChat
+                        ? {
+                            label: "Chatda savol berish",
+                            onClick: onOpenChat,
+                          }
+                        : undefined
+                  }
+                  secondaryAction={
+                    onOpenSection
+                      ? {
+                          label: "Taqqoslash",
+                          onClick: () => onOpenSection("compare"),
+                        }
+                      : undefined
+                  }
+                />
               ) : (
                 <>
                   {showFeaturedTop && (
-                    <div>
-                      <p className="mb-2 text-[11px] font-black uppercase tracking-wide text-primary">
-                        {content.featuredLabel}
-                      </p>
-                      <ReviewCard
-                        item={topLikedReview}
-                        onLike={onLike}
-                        onDelete={isStudent ? onDeleteReview : undefined}
-                        elevated
-                        likeLabel={content.likeButtonLabel}
-                        showMineBadge={isStudent}
-                        showStudentVoiceBadge={!isStudent}
-                      />
-                    </div>
+                    <ReviewCard
+                      item={topLikedReview}
+                      onLike={onLike}
+                      onDelete={isStudent ? onDeleteReview : undefined}
+                      onReport={onReportReview}
+                      featured
+                      featuredLabel={content.featuredLabel}
+                      likeLabel={content.likeButtonLabel}
+                      showMineBadge={isStudent}
+                      showStudentVoiceBadge={!isStudent}
+                    />
                   )}
 
                   {listReviews.length === 0 && !showFeaturedTop ? (
-                    <p className="rounded-xl bg-slate-50 px-4 py-6 text-center text-sm font-semibold text-slate-500 dark:bg-white/5">
-                      Bu bahoda sharh topilmadi.
-                    </p>
+                    <EmptyState
+                      compact
+                      variant="filter"
+                      title="Bu bahoda sharh topilmadi"
+                      description="Boshqa baho yoki saralash turini tanlab ko'ring."
+                      action={{
+                        label: "Filtrni tozalash",
+                        onClick: () => {
+                          setRatingFilter("all");
+                          setSortId(content.defaultSort);
+                        },
+                      }}
+                    />
                   ) : (
                     listReviews.length > 0 && (
                       <ul className="space-y-3">
@@ -581,6 +391,7 @@ export default function ReviewWorkspacePanel({
                               item={item}
                               onLike={onLike}
                               onDelete={isStudent ? onDeleteReview : undefined}
+                              onReport={onReportReview}
                               elevated
                               likeLabel={content.likeButtonLabel}
                               showMineBadge={isStudent}
@@ -593,8 +404,9 @@ export default function ReviewWorkspacePanel({
                   )}
                 </>
               )}
-            </div>
-          </section>
+              </div>
+            </section>
+          </div>
         </div>
 
         <OverviewSidebar
@@ -604,11 +416,7 @@ export default function ReviewWorkspacePanel({
           averageRating={averageRating}
           totalLikes={totalLikes}
           memberCount={memberCount}
-          distribution={distribution}
           isStudent={isStudent}
-          onOpenSection={onOpenSection}
-          onQuickAction={handleQuickAction}
-          visibleQuickActions={visibleQuickActions}
         />
       </div>
     </div>

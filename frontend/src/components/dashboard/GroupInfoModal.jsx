@@ -2,6 +2,7 @@ import UniversityCampusBanner from "../UniversityCampusBanner.jsx";
 import UniversityAvatar from "../UniversityAvatar.jsx";
 import UniversityMetaLine from "../UniversityMetaLine.jsx";
 import UserAvatar from "./UserAvatar.jsx";
+import ModalOverlay from "../ui/ModalOverlay.jsx";
 
 export default function GroupInfoModal({
   university,
@@ -21,14 +22,10 @@ export default function GroupInfoModal({
   const title = university.short_name || university.name || "Universitet";
 
   return (
-    <div
-      className="fixed inset-0 z-50 grid place-items-center bg-slate-950/50 p-4 backdrop-blur-sm"
-      onClick={onClose}
+    <ModalOverlay
+      onClose={onClose}
+      panelClassName="flex max-h-[min(720px,90dvh)] w-full max-w-md flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-slate-900"
     >
-      <div
-        className="flex max-h-[min(720px,90vh)] w-full max-w-md flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-slate-900"
-        onClick={(event) => event.stopPropagation()}
-      >
         <UniversityCampusBanner university={university} className="h-36 shrink-0" />
 
         <div className="min-h-0 flex-1 overflow-y-auto">
@@ -135,7 +132,7 @@ export default function GroupInfoModal({
             <button
               type="button"
               onClick={onJoin}
-              className="min-w-[10rem] flex-1 rounded-2xl bg-premium-gradient px-4 py-3 text-sm font-black text-white shadow-glow"
+              className="btn-modal-gradient min-w-[10rem] flex-1"
             >
               Qo&apos;shilish
             </button>
@@ -143,7 +140,7 @@ export default function GroupInfoModal({
             <button
               type="button"
               onClick={onLeave}
-              className="min-w-[10rem] flex-1 rounded-2xl border border-red-200 px-4 py-3 text-sm font-black text-red-600 transition hover:bg-red-50 dark:border-red-400/30 dark:text-red-400 dark:hover:bg-red-500/10"
+              className="btn-modal-danger-outline min-w-[10rem] flex-1"
             >
               Chiqish
             </button>
@@ -151,12 +148,11 @@ export default function GroupInfoModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-black dark:border-white/15"
+            className="btn-modal-secondary-lg"
           >
             Yopish
           </button>
         </div>
-      </div>
-    </div>
+    </ModalOverlay>
   );
 }

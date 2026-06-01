@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
 import {
   SUPPORT_EMAIL,
   SUPPORT_PHONE,
   SUPPORT_PHONE_DISPLAY,
 } from "../../config/siteContact.js";
-import { getSupportBotWelcome } from "./supportBot.js";
+import { useSupportChat } from "../../hooks/useSupportChat.js";
 import SupportChatModal from "./SupportChatModal.jsx";
 
 function SupportIcon({ children, className = "" }) {
@@ -38,14 +37,15 @@ function ContactLink({ href, label, value, icon }) {
 }
 
 export default function SupportPanel({ isStudent = false }) {
-  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
-  const [draft, setDraft] = useState("");
-  const [messages, setMessages] = useState(() => [getSupportBotWelcome(isStudent)]);
-
-  useEffect(() => {
-    setMessages([getSupportBotWelcome(isStudent)]);
-    setDraft("");
-  }, [isStudent]);
+  const {
+    isChatModalOpen,
+    openChatModal,
+    closeChatModal,
+    draft,
+    setDraft,
+    messages,
+    setMessages,
+  } = useSupportChat(isStudent);
 
   return (
     <>
@@ -64,7 +64,7 @@ export default function SupportPanel({ isStudent = false }) {
         <div className="space-y-2 p-3">
           <button
             type="button"
-            onClick={() => setIsChatModalOpen(true)}
+            onClick={openChatModal}
             className="group relative w-full overflow-hidden rounded-xl border border-primary/20 bg-gradient-to-br from-primary/10 via-white to-violet-500/10 p-3 text-left transition hover:border-primary/40 hover:shadow-md dark:border-primary/30 dark:from-primary/15 dark:via-white/[0.04] dark:to-violet-500/10"
           >
             <div className="flex items-center gap-3">
@@ -144,7 +144,7 @@ export default function SupportPanel({ isStudent = false }) {
       <SupportChatModal
         isOpen={isChatModalOpen}
         isStudent={isStudent}
-        onClose={() => setIsChatModalOpen(false)}
+        onClose={closeChatModal}
         messages={messages}
         onMessagesChange={setMessages}
         draft={draft}

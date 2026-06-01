@@ -1,29 +1,39 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DashboardBottomNav from "../components/dashboard/DashboardBottomNav.jsx";
+import DashboardMobileSupport from "../components/dashboard/DashboardMobileSupport.jsx";
 import { ratingStars as stars } from "../components/dashboard/dashboardConstants.js";
 import { dashboardPathForRole } from "../utils/navigation.js";
 import { getDashboardCabinetEyebrow, getDashboardMenuItems } from "../utils/dashboardRoleContent.js";
 import UniversityCompareSection from "../components/dashboard/UniversityCompareSection.jsx";
 import PopularReviewsSection from "../components/dashboard/PopularReviewsSection.jsx";
 import MessageReportDialog from "../components/MessageReportDialog.jsx";
+import ReviewReportDialog from "../components/reviews/ReviewReportDialog.jsx";
 import ConfirmDialog from "../components/ConfirmDialog.jsx";
+import OnboardingWizard from "../components/dashboard/OnboardingWizard.jsx";
 import ProfileSection from "../components/dashboard/ProfileSection.jsx";
 import DashboardChatSection from "./dashboard/DashboardChatSection.jsx";
+import DashboardHomeSection from "./dashboard/DashboardHomeSection.jsx";
 import DashboardReviewsSection from "./dashboard/DashboardReviewsSection.jsx";
 import DashboardSidebar from "./dashboard/DashboardSidebar.jsx";
+import DashboardHeader from "./dashboard/DashboardHeader.jsx";
+import DashboardSectionSkeleton from "../components/skeletons/DashboardSkeletons.jsx";
 import UserAvatar from "../components/dashboard/UserAvatar.jsx";
 import UnreadBadge from "../components/UnreadBadge.jsx";
-import ThemeToggle from "../components/ThemeToggle.jsx";
-import logo from "../assets/myuni-logo.png";
 import { useAuth } from "../hooks/useAuth.js";
 import { useBreakpoint } from "../hooks/useBreakpoint.js";
 import { useDarkMode } from "../hooks/useDarkMode.js";
+import { useToast } from "../hooks/useToast.js";
+import { usePageMeta } from "../hooks/usePageMeta.js";
+import { useDashboardKeyboardShortcuts } from "../hooks/useDashboardKeyboardShortcuts.js";
+import { useNotifications } from "../hooks/useNotifications.js";
+import { useWebPush } from "../hooks/useWebPush.js";
+import { useDashboardNavigation } from "../hooks/dashboard/useDashboardNavigation.js";
+import { useDashboardData } from "../hooks/dashboard/useDashboardData.js";
 import { mergeById, useMessageStream } from "../hooks/useMessageStream.js";
 import {
   getDirectMessages,
   getDirectThreads,
-  getJoinedUniversityIds,
   leaveUniversityChat,
   markDirectThreadRead,
   markUniversityChatRead,
@@ -48,29 +58,53 @@ import {
   unpinDirectMessage,
   unpinUniversityMessage,
 } from "../services/chatService.js";
+import {
+  getUniversityChatTags,
+  muteUser,
+} from "../services/communityService.js";
 import { getPublicUser } from "../services/userService.js";
 import { resolveMediaUrl } from "../utils/media.js";
 import {
+  aspectRatingsComplete,
+  buildDefaultAspectRatings,
+  flattenReviewPayload,
+} from "../utils/reviewAspects.js";
+import {
   createReview,
   deleteReview,
-  getUniversities,
   getUniversityDetail,
-  getPopularReviews,
   getReviews,
+  reportReview,
   toggleReviewLike,
 } from "../services/universityService.js";
 import { getApiErrorMessage } from "../utils/apiErrors.js";
 import { createChatErrorReporter } from "../utils/chatActionError.js";
 import { createThrottledTyping } from "../utils/throttledTyping.js";
+import { shouldOfferOnboarding, markOnboardingComplete, isOnboardingComplete } from "../utils/onboardingStorage.js";
+import { markApplicantChecklistStep } from "../utils/applicantChecklist.js";
+import {
+  findUniversityById,
+  joinedUniversityIdsHas,
+  sameUniversityId,
+} from "../utils/universityIds.js";
 
 export default function DashboardPage({ role }) {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { logout, user, refreshUser } = useAuth();
   const { isDark, setIsDark } = useDarkMode();
+  const toast = useToast();
+  const toastRef = useRef(toast);
+  toastRef.current = toast;
   const profileRole = user?.profile?.role;
   const isStudent = profileRole === "student";
   const profile = user?.profile;
+
+  usePageMeta({
+    title: isStudent ? "Talaba kabineti | MyUni.uz" : "Abituriyent kabineti | MyUni.uz",
+    description: "MyUni.uz shaxsiy kabineti.",
+    path: isStudent ? "/student/dashboard" : "/applicant/dashboard",
+    robots: "noindex, nofollow",
+  });
 
   useEffect(() => {
     if (!profileRole || profileRole === role) {
@@ -78,32 +112,34 @@ export default function DashboardPage({ role }) {
     }
     navigate(dashboardPathForRole(profileRole), { replace: true });
   }, [profileRole, role, navigate]);
+
   const displayName = profile?.full_name || user?.first_name || user?.email || "Foydalanuvchi";
-  const [universities, setUniversities] = useState([]);
-  const [isDataLoading, setIsDataLoading] = useState(true);
-  const [dataError, setDataError] = useState("");
-  const [chatError, setChatError] = useState("");
+  const [selectedUniversityId, setSelectedUniversityId] = useState(null);
+  const onDashboardLoadError = useCallback(() => {
+    toast.error("Ma'lumotlarni yuklashda xatolik yuz berdi.");
+  }, [toast]);
   const [isGroupSending, setIsGroupSending] = useState(false);
   const [isGroupJoining, setIsGroupJoining] = useState(false);
   const [isPrivateSending, setIsPrivateSending] = useState(false);
   const chatErrorReporterRef = useRef(null);
   if (!chatErrorReporterRef.current) {
-    chatErrorReporterRef.current = createChatErrorReporter(setChatError);
+    chatErrorReporterRef.current = createChatErrorReporter((message, options) =>
+      toastRef.current.error(message, options)
+    );
   }
   const { reportChatError, clearChatError } = chatErrorReporterRef.current;
   const groupTypingNotifyRef = useRef(() => {});
   const privateTypingNotifyRef = useRef(() => {});
 
-  const [activeSection, setActiveSection] = useState("chats");
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
+  const [composerFocusToken, setComposerFocusToken] = useState(0);
+  const onboardingOfferedRef = useRef(false);
   const [chatListTab, setChatListTab] = useState("search");
-  const [selectedUniversityId, setSelectedUniversityId] = useState(null);
-  const [joinedUniversityIds, setJoinedUniversityIds] = useState(new Set());
   const [universitySearch, setUniversitySearch] = useState("");
   const [groupMessage, setGroupMessage] = useState("");
   const [groupMessages, setGroupMessages] = useState([]);
   const [groupPinnedMessage, setGroupPinnedMessage] = useState(null);
   const [chatMembers, setChatMembers] = useState({ members: [], member_count: 0 });
-  const [directThreads, setDirectThreads] = useState([]);
   const [draftThread, setDraftThread] = useState(null);
   const [selectedThreadId, setSelectedThreadId] = useState(null);
   const [directMessages, setDirectMessages] = useState([]);
@@ -124,40 +160,143 @@ export default function DashboardPage({ role }) {
   const [reviewUniversitySearch, setReviewUniversitySearch] = useState("");
   const [isReviewDetailLoading, setIsReviewDetailLoading] = useState(false);
   const [rating, setRating] = useState(0);
+  const [aspectRatings, setAspectRatings] = useState(buildDefaultAspectRatings);
+  const [studyDirectionId, setStudyDirectionId] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [reviews, setReviews] = useState([]);
-  const [popularReviews, setPopularReviews] = useState([]);
   const [isReviewSubmitting, setIsReviewSubmitting] = useState(false);
-  const [reviewSubmitError, setReviewSubmitError] = useState("");
   const [editingChatMessage, setEditingChatMessage] = useState(null);
   const [reactingMessageId, setReactingMessageId] = useState(null);
   const [reportTarget, setReportTarget] = useState(null);
+  const [reviewReportTarget, setReviewReportTarget] = useState(null);
+  const [isReviewReportSubmitting, setIsReviewReportSubmitting] = useState(false);
   const [isReportSubmitting, setIsReportSubmitting] = useState(false);
   const [messageDeleteTarget, setMessageDeleteTarget] = useState(null);
   const [isMessageDeleting, setIsMessageDeleting] = useState(false);
   const [mobileChatScreen, setMobileChatScreen] = useState("list");
   const [mobileReviewScreen, setMobileReviewScreen] = useState("list");
   const [groupTypingUsers, setGroupTypingUsers] = useState([]);
-  const { isPhone, isTablet, isDesktop } = useBreakpoint();
-  const isCompactLayout = isPhone || isTablet;
   const [privateTypingUsers, setPrivateTypingUsers] = useState([]);
+  const [groupChatTags, setGroupChatTags] = useState([]);
+  const [activeGroupTag, setActiveGroupTag] = useState("");
+  const { isPhone, isTablet, isDesktop, isWideChat } = useBreakpoint();
+  const isCompactLayout = isPhone || isTablet;
+  const isReviewCompactLayout = isCompactLayout;
+  const [comparePrefill, setComparePrefill] = useState(null);
+  const [checklistVersion, setChecklistVersion] = useState(0);
+
+  const visibleMenuItems = useMemo(() => getDashboardMenuItems(isStudent), [isStudent]);
+  const cabinetEyebrow = getDashboardCabinetEyebrow(isStudent);
+  const dashboardPath = dashboardPathForRole(profileRole);
+
+  const {
+    universities,
+    isDataLoading,
+    joinedUniversityIds,
+    setJoinedUniversityIds,
+    directThreads,
+    setDirectThreads,
+    popularReviews,
+    setPopularReviews,
+    refreshChatSummaries,
+  } = useDashboardData({
+    profileUniversity: profile?.university,
+    onLoadError: onDashboardLoadError,
+    setSelectedUniversityId,
+  });
+
+  const {
+    activeSection,
+    changeSection: changeSectionBase,
+    openUniversityChat,
+    openUniversityReviews,
+    syncChatUniversityInUrl,
+    syncPrivateThreadInUrl,
+  } = useDashboardNavigation({
+    universities,
+    setReviewUniversity,
+    setMobileReviewScreen,
+    setSelectedUniversityId,
+    setSelectedThreadId,
+    setChatPanel,
+    setMobileChatScreen,
+    setChatListTab,
+  });
+
+  const changeSection = useCallback(
+    (sectionId) => {
+      changeSectionBase(sectionId);
+      if (sectionId === "reviews" || sectionId === "popular" || sectionId === "compare") {
+        setChecklistVersion((value) => value + 1);
+      }
+    },
+    [changeSectionBase]
+  );
+
+  const handleOpenComparePair = useCallback(
+    (anchor, other) => {
+      markApplicantChecklistStep("compare");
+      setChecklistVersion((value) => value + 1);
+      setComparePrefill({ anchorId: anchor.id, otherId: other.id });
+      changeSectionBase("compare");
+    },
+    [changeSectionBase]
+  );
+
+  const clearComparePrefill = useCallback(() => {
+    setComparePrefill(null);
+  }, []);
+
+  const handleOpenUniversityReviews = useCallback(
+    (universityId) => {
+      openUniversityReviews(universityId);
+      setChecklistVersion((value) => value + 1);
+    },
+    [openUniversityReviews]
+  );
+
+  const totalPrivateUnread = useMemo(
+    () => directThreads.reduce((sum, thread) => sum + (thread.unread_count ?? 0), 0),
+    [directThreads]
+  );
+
+  const totalJoinedUnread = useMemo(
+    () =>
+      universities.reduce((sum, university) => {
+        if (!joinedUniversityIdsHas(joinedUniversityIds, university.id)) {
+          return sum;
+        }
+        return sum + (university.unread_count ?? 0);
+      }, 0),
+    [universities, joinedUniversityIds]
+  );
+
+  const notifications = useNotifications({
+    enabled: !isDataLoading,
+    chatUnreadTotal: totalPrivateUnread + totalJoinedUnread,
+    dashboardPath,
+  });
+
+  useWebPush({ enabled: !isDataLoading && joinedUniversityIds.size > 0 });
 
   const userUniversity = profile?.university || universities[0]?.name || "";
   const savedAvatarUrl = resolveMediaUrl(profile?.avatar_url || "");
   const selectedUniversity =
-    universities.find((university) => university.id === selectedUniversityId) ?? universities[0];
+    selectedUniversityId != null
+      ? findUniversityById(universities, selectedUniversityId)
+      : universities[0] ?? null;
+  const hasJoinedSelectedChat = selectedUniversityId
+    ? joinedUniversityIdsHas(joinedUniversityIds, selectedUniversityId)
+    : false;
   const groupInfoUniversity = useMemo(() => {
     if (!selectedUniversity) {
       return null;
     }
-    if (groupInfoDetail?.id === selectedUniversity.id) {
+    if (sameUniversityId(groupInfoDetail?.id, selectedUniversity.id)) {
       return { ...selectedUniversity, ...groupInfoDetail };
     }
     return selectedUniversity;
   }, [selectedUniversity, groupInfoDetail]);
-  const hasJoinedSelectedChat = selectedUniversity
-    ? joinedUniversityIds.has(selectedUniversity.id)
-    : false;
   const selectedThread =
     directThreads.find((thread) => thread.id === selectedThreadId) ??
     (draftThread?.id === selectedThreadId ? draftThread : null);
@@ -170,28 +309,12 @@ export default function DashboardPage({ role }) {
     return items;
   }, [directThreads, draftThread]);
 
-  const totalPrivateUnread = useMemo(
-    () => directThreads.reduce((sum, thread) => sum + (thread.unread_count ?? 0), 0),
-    [directThreads]
-  );
-
-  const totalJoinedUnread = useMemo(
-    () =>
-      universities.reduce((sum, university) => {
-        if (!joinedUniversityIds.has(university.id)) {
-          return sum;
-        }
-        return sum + (university.unread_sender_count ?? 0);
-      }, 0),
-    [universities, joinedUniversityIds]
-  );
-
   const filteredUniversities = useMemo(() => {
     const query = universitySearch.trim().toLowerCase();
     let list = universities;
 
     if (chatListTab === "joined") {
-      list = list.filter((university) => joinedUniversityIds.has(university.id));
+      list = list.filter((university) => joinedUniversityIdsHas(joinedUniversityIds, university.id));
     }
 
     if (query) {
@@ -205,9 +328,6 @@ export default function DashboardPage({ role }) {
 
     return list;
   }, [universities, chatListTab, joinedUniversityIds, universitySearch]);
-
-  const visibleMenuItems = useMemo(() => getDashboardMenuItems(isStudent), [isStudent]);
-  const cabinetEyebrow = getDashboardCabinetEyebrow(isStudent);
 
   const groupChatSearchTrimmed = groupChatSearchQuery.trim().toLowerCase();
   const groupChatSearchResults = useMemo(() => {
@@ -380,126 +500,33 @@ export default function DashboardPage({ role }) {
     );
   }, [universities, reviewUniversitySearch]);
 
-  const applyDashboardDeepLink = useCallback(
-    (universityList) => {
-      const section = searchParams.get("section");
-      const universityName = searchParams.get("university");
-      const universityIdParam = searchParams.get("university_id");
-
-      if (section === "reviews") {
-        setActiveSection("reviews");
-      } else if (section === "popular") {
-        setActiveSection("popular");
-      } else if (section === "chats") {
-        setActiveSection("chats");
-      } else if (section === "profile") {
-        setActiveSection("profile");
-      }
-
-      let match = null;
-      if (universityIdParam) {
-        match = universityList.find((university) => String(university.id) === universityIdParam) ?? null;
-      }
-      if (!match && universityName) {
-        match = universityList.find(
-          (university) =>
-            university.name === universityName || university.short_name === universityName
-        );
-      }
-
-      if (!match) {
-        return;
-      }
-
-      if (section === "reviews") {
-        setReviewUniversity(String(match.id));
-        setMobileReviewScreen("detail");
-      } else if (section === "chats") {
-        setSelectedUniversityId(match.id);
-        setChatPanel("group");
-        setMobileChatScreen("chat");
-      }
-    },
-    [searchParams]
-  );
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadDashboardData() {
-      try {
-        const [universityList, joinedIds, threadList, popularList] = await Promise.all([
-          getUniversities(),
-          getJoinedUniversityIds(),
-          getDirectThreads(),
-          getPopularReviews(),
-        ]);
-
-        if (!isMounted) {
-          return;
-        }
-
-        setUniversities(universityList);
-        setJoinedUniversityIds(new Set(joinedIds));
-        setDirectThreads(threadList);
-        setPopularReviews(popularList);
-        const defaultUniversity =
-          universityList.find((university) => university.name === profile?.university) ?? universityList[0];
-
-        if (defaultUniversity) {
-          setSelectedUniversityId(defaultUniversity.id);
-        }
-
-        applyDashboardDeepLink(universityList);
-      } catch {
-        if (isMounted) {
-          setDataError("Ma'lumotlarni yuklashda xatolik yuz berdi.");
-        }
-      } finally {
-        if (isMounted) {
-          setIsDataLoading(false);
-        }
-      }
-    }
-
-    loadDashboardData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [profile?.university, searchParams, applyDashboardDeepLink]);
-
-  useEffect(() => {
-    if (universities.length === 0) {
-      return undefined;
-    }
-
-    const timer = window.setTimeout(() => {
-      applyDashboardDeepLink(universities);
-    }, 0);
-
-    return () => window.clearTimeout(timer);
-  }, [searchParams, universities, applyDashboardDeepLink]);
-
   useEffect(() => {
     if (!selectedUniversityId || chatPanel !== "group") {
       return;
+    }
+
+    if (!joinedUniversityIdsHas(joinedUniversityIds, selectedUniversityId)) {
+      setGroupMessages([]);
+      setGroupPinnedMessage(null);
+      setGroupChatTags([]);
+      setActiveGroupTag("");
+      return undefined;
     }
 
     let isMounted = true;
 
     async function loadMessages() {
       try {
-        const { messages, pinned } = await getUniversityMessages(selectedUniversityId);
+        const { messages, pinned } = await getUniversityMessages(selectedUniversityId, {
+          tag: activeGroupTag || undefined,
+        });
         if (isMounted) {
           setGroupMessages(messages);
           setGroupPinnedMessage(pinned);
         }
-        if (joinedUniversityIds.has(selectedUniversityId)) {
-          await markUniversityChatRead(selectedUniversityId);
-          if (isMounted) {
-            refreshChatSummaries();
-          }
+        await markUniversityChatRead(selectedUniversityId);
+        if (isMounted) {
+          refreshChatSummaries();
         }
       } catch {
         if (isMounted) {
@@ -513,7 +540,38 @@ export default function DashboardPage({ role }) {
     return () => {
       isMounted = false;
     };
-  }, [selectedUniversityId, chatPanel]);
+  }, [
+    selectedUniversityId,
+    chatPanel,
+    joinedUniversityIds,
+    activeGroupTag,
+    refreshChatSummaries,
+  ]);
+
+  useEffect(() => {
+    if (!selectedUniversityId || !joinedUniversityIdsHas(joinedUniversityIds, selectedUniversityId)) {
+      setGroupChatTags([]);
+      return undefined;
+    }
+
+    let isMounted = true;
+
+    getUniversityChatTags(selectedUniversityId)
+      .then((tags) => {
+        if (isMounted) {
+          setGroupChatTags(tags);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setGroupChatTags([]);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedUniversityId, joinedUniversityIds, groupMessages.length]);
 
   useEffect(() => {
     if (!selectedThreadId || chatPanel !== "private") {
@@ -545,7 +603,7 @@ export default function DashboardPage({ role }) {
     return () => {
       isMounted = false;
     };
-  }, [selectedThreadId, chatPanel]);
+  }, [selectedThreadId, chatPanel, refreshChatSummaries]);
 
   const activeChatMembers =
     selectedUniversityId && chatPanel === "group"
@@ -625,16 +683,6 @@ export default function DashboardPage({ role }) {
     };
   }, [reviewUniversity, activeSection]);
 
-  async function refreshChatSummaries() {
-    try {
-      const [universityList, threadList] = await Promise.all([getUniversities(), getDirectThreads()]);
-      setUniversities(universityList);
-      setDirectThreads(threadList);
-    } catch {
-      // ignore polling errors
-    }
-  }
-
   useEffect(() => {
     if (activeSection !== "chats" || isDataLoading) {
       return undefined;
@@ -642,17 +690,39 @@ export default function DashboardPage({ role }) {
 
     const intervalId = window.setInterval(refreshChatSummaries, 8000);
     return () => window.clearInterval(intervalId);
-  }, [activeSection, isDataLoading]);
+  }, [activeSection, isDataLoading, refreshChatSummaries]);
 
-  function changeSection(sectionId) {
-    setActiveSection(sectionId);
-    if (sectionId !== "chats") {
-      setMobileChatScreen("list");
+  useEffect(() => {
+    if (isDataLoading || !profile) {
+      return;
     }
-    if (sectionId !== "reviews") {
-      setMobileReviewScreen("list");
+
+    const needsOnboarding = shouldOfferOnboarding({
+      profile,
+      joinedChatCount: joinedUniversityIds.size,
+      universities,
+    });
+
+    if (!needsOnboarding) {
+      if (!isOnboardingComplete()) {
+        markOnboardingComplete();
+      }
+      return;
     }
-  }
+
+    if (!onboardingOfferedRef.current) {
+      onboardingOfferedRef.current = true;
+      setOnboardingOpen(true);
+    }
+  }, [isDataLoading, profile, joinedUniversityIds.size, universities]);
+
+  useDashboardKeyboardShortcuts({
+    enabled: !isDataLoading,
+    onFocusChatComposer: () => {
+      changeSection("chats");
+      setComposerFocusToken((value) => value + 1);
+    },
+  });
 
   function backToChatList() {
     setMobileChatScreen("list");
@@ -733,6 +803,8 @@ export default function DashboardPage({ role }) {
       setChatPanel("group");
       setChatListTab("joined");
       setMobileChatScreen("chat");
+      changeSectionBase("chats");
+      syncChatUniversityInUrl(universityId);
       try {
         const data = await getUniversityMembers(universityId);
         setChatMembers({
@@ -745,7 +817,9 @@ export default function DashboardPage({ role }) {
       await markUniversityChatRead(universityId);
       refreshChatSummaries();
     } catch (error) {
-      reportChatError(getApiErrorMessage(error, "Chatga qo'shilib bo'lmadi. Qayta urinib ko'ring."));
+      const message = getApiErrorMessage(error, "Chatga qo'shilib bo'lmadi. Qayta urinib ko'ring.");
+      reportChatError(message);
+      throw error;
     } finally {
       setIsGroupJoining(false);
     }
@@ -860,6 +934,27 @@ export default function DashboardPage({ role }) {
     setReportTarget({ message, scope });
   }
 
+  async function handleMuteChatUser(message, scope) {
+    const userId = message.author_id ?? message.sender_id;
+    if (!userId) {
+      return;
+    }
+    try {
+      await muteUser(
+        userId,
+        scope === "group" ? selectedUniversityId : null
+      );
+      toast.success("Bildirishnomalar o'chirildi. Xabarlar chatda qoladi.");
+      clearChatError();
+    } catch (error) {
+      reportChatError(getApiErrorMessage(error, "Mute amalga oshmadi."));
+    }
+  }
+
+  function handleSelectGroupTag(tag) {
+    setActiveGroupTag(tag || "");
+  }
+
   async function handlePinGroupMessage(message) {
     if (!selectedUniversityId || !hasJoinedSelectedChat) {
       return;
@@ -925,6 +1020,7 @@ export default function DashboardPage({ role }) {
       }
       setReportTarget(null);
       clearChatError();
+      toast.success("Shikoyat yuborildi. Moderatorlar ko'rib chiqadi.");
     } catch (error) {
       reportChatError(getApiErrorMessage(error, "Shikoyat yuborilmadi."));
     } finally {
@@ -1044,6 +1140,8 @@ export default function DashboardPage({ role }) {
     setChatPanel("group");
     setShowGroupInfoModal(false);
     setMobileChatScreen("chat");
+    changeSection("chats");
+    syncChatUniversityInUrl(universityId);
   }
 
   function selectPrivateThread(threadId) {
@@ -1051,6 +1149,12 @@ export default function DashboardPage({ role }) {
     setSelectedThreadId(threadId);
     setChatPanel("private");
     setMobileChatScreen("chat");
+    syncPrivateThreadInUrl(threadId);
+  }
+
+  function openPrivateThreadFromHome(threadId) {
+    setChatListTab("private");
+    selectPrivateThread(threadId);
   }
 
   function renderPrivateThreadRow(thread) {
@@ -1083,8 +1187,20 @@ export default function DashboardPage({ role }) {
   }
 
   function selectReviewUniversity(universityId) {
-    setReviewUniversity(String(universityId));
+    const nextId = String(universityId);
+
+    if (nextId === reviewUniversity) {
+      setMobileReviewScreen("detail");
+      if (reviewUniversityDetail) {
+        return;
+      }
+    }
+
+    setReviewUniversity(nextId);
     setRating(0);
+    setAspectRatings(buildDefaultAspectRatings());
+    setStudyDirectionId("");
+    setImageFiles([]);
     setReviewText("");
     setReviewUniversityDetail(null);
     setReviews([]);
@@ -1092,6 +1208,8 @@ export default function DashboardPage({ role }) {
   }
 
   function openReviewUniversityFromPopular(universityId) {
+    markApplicantChecklistStep("reviews");
+    setChecklistVersion((value) => value + 1);
     changeSection("reviews");
     selectReviewUniversity(universityId);
   }
@@ -1103,16 +1221,40 @@ export default function DashboardPage({ role }) {
     const id = Number(reviewUniversity);
     setSelectedUniversityId(id);
     setChatPanel("group");
-    setMobileChatScreen("group");
+    setMobileChatScreen("chat");
     changeSection("chats");
+    syncChatUniversityInUrl(id);
   }
 
   async function handleReviewLike(reviewId) {
     const result = await toggleReviewLike(reviewId);
     const updateItem = (item) =>
-      item.id === reviewId ? { ...item, liked_by_me: result.liked, like_count: result.like_count } : item;
+      item.id === reviewId
+        ? {
+            ...item,
+            liked_by_me: result.liked,
+            like_count: result.like_count,
+            helpful_count: result.like_count,
+          }
+        : item;
     setReviews((current) => current.map(updateItem));
     setPopularReviews((current) => current.map(updateItem));
+  }
+
+  async function submitReviewReport(payload) {
+    if (!reviewReportTarget) {
+      return;
+    }
+    setIsReviewReportSubmitting(true);
+    try {
+      await reportReview(reviewReportTarget.id, payload);
+      toast.success("Shikoyat qabul qilindi. Moderatorlar ko'rib chiqadi.");
+      setReviewReportTarget(null);
+    } catch (requestError) {
+      toast.error(getApiErrorMessage(requestError, "Shikoyat yuborilmadi."));
+    } finally {
+      setIsReviewReportSubmitting(false);
+    }
   }
 
   function requestDeleteGroupMessage(message) {
@@ -1185,47 +1327,54 @@ export default function DashboardPage({ role }) {
         const detail = await getUniversityDetail(reviewUniversity);
         setReviewUniversityDetail(detail);
       }
+      toast.success("Sharh o'chirildi.");
     } catch (requestError) {
-      setReviewSubmitError(
-        getApiErrorMessage(requestError, "Sharhni o'chirib bo'lmadi. Qayta urinib ko'ring.")
-      );
+      toast.error(getApiErrorMessage(requestError, "Sharhni o'chirib bo'lmadi. Qayta urinib ko'ring."));
     }
   }
 
   async function submitReview(event) {
     event.preventDefault();
 
-    if (!isStudent || !reviewUniversity || rating === 0 || !reviewText.trim()) {
+    if (
+      !isStudent ||
+      !reviewUniversity ||
+      rating === 0 ||
+      !reviewText.trim() ||
+      !aspectRatingsComplete(aspectRatings)
+    ) {
       return;
     }
 
     setIsReviewSubmitting(true);
-    setReviewSubmitError("");
     try {
-      const nextReview = await createReview({
-        university_id: Number(reviewUniversity),
+      const payload = flattenReviewPayload({
+        universityId: Number(reviewUniversity),
         rating,
-        text: reviewText.trim(),
+        aspectRatings,
+        reviewText,
+        studyDirectionId: studyDirectionId ? Number(studyDirectionId) : null,
       });
+      const nextReview = await createReview(payload);
       setReviews((current) => [
-        { ...nextReview, like_count: 0, liked_by_me: false },
+        { ...nextReview, like_count: 0, helpful_count: 0, liked_by_me: false },
         ...current,
       ]);
       setRating(0);
+      setAspectRatings(buildDefaultAspectRatings());
+      setStudyDirectionId("");
       setReviewText("");
       const detail = await getUniversityDetail(reviewUniversity);
       setReviewUniversityDetail(detail);
       if (nextReview.status === "pending") {
-        setReviewSubmitError(
+        toast.warning(
           "Sharh yuborildi. Moderator tasdiqlagach saytda ko'rinadi (email xabari yuboriladi)."
         );
       } else {
-        setReviewSubmitError("");
+        toast.success("Sharhingiz muvaffaqiyatli yuborildi.");
       }
     } catch (requestError) {
-      setReviewSubmitError(
-        getApiErrorMessage(requestError, "Sharh yuborilmadi. Qayta urinib ko'ring.")
-      );
+      toast.error(getApiErrorMessage(requestError, "Sharh yuborilmadi. Qayta urinib ko'ring."));
     } finally {
       setIsReviewSubmitting(false);
     }
@@ -1243,70 +1392,54 @@ export default function DashboardPage({ role }) {
         />
 
         <section className="min-w-0">
-          <header className="sticky top-0 z-40 border-b border-slate-200 bg-[#f5f7fb]/90 px-4 py-3 backdrop-blur-xl sm:px-6 sm:py-4 lg:px-8 dark:border-white/10 dark:bg-slateNight/85">
-            <div className="flex items-center justify-between gap-3 sm:gap-4">
-              <div className="flex min-w-0 items-center gap-3">
-                <Link to="/" className="grid shrink-0 lg:hidden">
-                  <img src={logo} alt="" className="h-10 w-10 rounded-xl object-cover shadow-glow sm:h-11 sm:w-11" />
-                </Link>
-                <div className="min-w-0">
-                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-primary sm:text-xs">
-                    {cabinetEyebrow} · {visibleMenuItems.find((item) => item.id === activeSection)?.label}
-                  </p>
-                  <h1 className="truncate text-lg font-black sm:text-2xl lg:text-3xl">
-                    Salom, {displayName}
-                  </h1>
-                  <p className="mt-0.5 truncate text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    {isStudent
-                      ? "Sharh yozing, chatda qatnashing va OTMlarni solishtiring."
-                      : "Sharhlarni o'qing, taqqoslang va chatda savol bering."}
-                  </p>
-                </div>
-              </div>
-              <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-                <ThemeToggle isDark={isDark} onToggle={() => setIsDark((value) => !value)} />
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="min-h-11 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-black shadow-soft transition hover:border-primary hover:text-primary sm:px-5 sm:text-sm dark:border-white/10 dark:bg-white/10"
-                >
-                  Chiqish
-                </button>
-              </div>
-            </div>
-          </header>
+          <DashboardHeader
+            cabinetEyebrow={cabinetEyebrow}
+            activeSectionLabel={visibleMenuItems.find((item) => item.id === activeSection)?.label}
+            displayName={displayName}
+            subtitle={
+              isStudent
+                ? "Sharh yozing, chatda qatnashing va OTMlarni solishtiring."
+                : "Sharhlarni o'qing, taqqoslang va chatda savol bering."
+            }
+            isDark={isDark}
+            onToggleTheme={() => setIsDark((value) => !value)}
+            onLogout={handleLogout}
+            notifications={notifications}
+          />
 
           <div
             className={`min-h-[calc(100vh-9rem)] pb-24 sm:pb-24 lg:pb-8 ${
-              isWideChatLayout || activeSection === "profile" || activeSection === "compare"
-                ? "p-3 sm:p-4 lg:px-6 lg:py-6"
-                : "p-4 sm:p-6 lg:p-8"
+              isWideChatLayout ? "p-3 sm:p-4 lg:px-6 lg:py-6" : "p-4 sm:p-6 lg:p-8"
             }`}
           >
-            {dataError && (
-              <div className="mb-5 rounded-3xl border border-red-200 bg-red-50 p-4 font-semibold text-red-700 dark:border-red-400/30 dark:bg-red-950/40 dark:text-red-200">
-                {dataError}
-              </div>
-            )}
-
-            {activeSection === "chats" && chatError && (
-              <div
-                className="mb-5 rounded-3xl border border-amber-200 bg-amber-50 p-4 font-semibold text-amber-900 dark:border-amber-400/30 dark:bg-amber-950/40 dark:text-amber-100"
-                role="alert"
-              >
-                {chatError}
-              </div>
-            )}
-
             {isDataLoading ? (
-              <div className="grid min-h-[calc(100vh-12rem)] place-items-center rounded-[2rem] border border-slate-200 bg-white p-8 text-center shadow-soft dark:border-white/10 dark:bg-white/[0.06]">
-                <p className="font-black">Ma'lumotlar yuklanmoqda...</p>
-              </div>
+              <DashboardSectionSkeleton section={activeSection} />
             ) : (
-              <div className="min-h-[calc(100vh-12rem)]">
+              <div className="min-h-[calc(100vh-12rem)]" data-dashboard-ready="true">
+            {activeSection === "home" && (
+              <DashboardHomeSection
+                displayName={displayName}
+                isStudent={isStudent}
+                profile={profile}
+                universities={universities}
+                joinedUniversityIds={joinedUniversityIds}
+                directThreads={directThreads}
+                popularReviews={popularReviews}
+                totalJoinedUnread={totalJoinedUnread}
+                totalPrivateUnread={totalPrivateUnread}
+                userUniversity={userUniversity}
+                checklistVersion={checklistVersion}
+                onOpenSection={changeSection}
+                onOpenUniversityChat={openUniversityChat}
+                onOpenUniversityReviews={handleOpenUniversityReviews}
+                onOpenComparePair={handleOpenComparePair}
+                onOpenPrivateThread={openPrivateThreadFromHome}
+              />
+            )}
+
             {activeSection === "chats" && (
               <DashboardChatSection
-                chatError={chatError}
+                composerFocusToken={composerFocusToken}
                 isPhone={isCompactLayout}
                 mobileChatScreen={mobileChatScreen}
                 chatSectionGridClass={chatSectionGridClass}
@@ -1327,6 +1460,7 @@ export default function DashboardPage({ role }) {
                 joinedUniversityIds={joinedUniversityIds}
                 selectUniversityChat={selectUniversityChat}
                 isWideChatLayout={isWideChatLayout}
+                isWideChat={isWideChat}
                 chatPanel={chatPanel}
                 selectedThread={selectedThread}
                 backToChatList={backToChatList}
@@ -1388,6 +1522,11 @@ export default function DashboardPage({ role }) {
                 cancelEditChatMessage={cancelEditChatMessage}
                 handleDeleteGroupMessage={requestDeleteGroupMessage}
                 handleDeletePrivateMessage={requestDeletePrivateMessage}
+                groupChatTags={groupChatTags}
+                activeGroupTag={activeGroupTag}
+                onSelectGroupTag={handleSelectGroupTag}
+                onClearGroupTag={() => setActiveGroupTag("")}
+                onMuteChatUser={handleMuteChatUser}
               />
             )}
 
@@ -1404,7 +1543,8 @@ export default function DashboardPage({ role }) {
             {activeSection === "reviews" && (
               <DashboardReviewsSection
                 isStudent={isStudent}
-                isPhone={isCompactLayout}
+                isPhone={isReviewCompactLayout}
+                isWideReview={isDesktop}
                 reviewUniversity={reviewUniversity}
                 reviewUniversitySearch={reviewUniversitySearch}
                 onReviewUniversitySearchChange={setReviewUniversitySearch}
@@ -1418,13 +1558,18 @@ export default function DashboardPage({ role }) {
                 onSubmitReview={submitReview}
                 rating={rating}
                 onRatingChange={setRating}
+                aspectRatings={aspectRatings}
+                onAspectChange={(field, value) =>
+                  setAspectRatings((current) => ({ ...current, [field]: value }))
+                }
+                studyDirectionId={studyDirectionId}
+                onStudyDirectionChange={setStudyDirectionId}
                 reviewText={reviewText}
                 onReviewTextChange={setReviewText}
                 isReviewSubmitting={isReviewSubmitting}
-                reviewSubmitError={reviewSubmitError}
                 onLike={handleReviewLike}
                 onDeleteReview={isStudent ? handleDeleteReview : undefined}
-                stars={stars}
+                onReportReview={(review) => setReviewReportTarget(review)}
                 onOpenSection={changeSection}
                 onOpenChat={openChatFromReviewUniversity}
               />
@@ -1450,6 +1595,8 @@ export default function DashboardPage({ role }) {
                 userUniversity={userUniversity}
                 isStudent={isStudent}
                 onViewReviews={selectReviewUniversity}
+                prefillPair={comparePrefill}
+                onPrefillConsumed={clearComparePrefill}
               />
             )}
               </div>
@@ -1464,11 +1611,20 @@ export default function DashboardPage({ role }) {
         onSelect={changeSection}
       />
 
+      <DashboardMobileSupport isStudent={isStudent} />
+
       <MessageReportDialog
         open={Boolean(reportTarget)}
         onClose={() => setReportTarget(null)}
         onSubmit={submitMessageReport}
         isSubmitting={isReportSubmitting}
+      />
+
+      <ReviewReportDialog
+        open={Boolean(reviewReportTarget)}
+        onClose={() => setReviewReportTarget(null)}
+        onSubmit={submitReviewReport}
+        isSubmitting={isReviewReportSubmitting}
       />
 
       <ConfirmDialog
@@ -1485,6 +1641,19 @@ export default function DashboardPage({ role }) {
         onConfirm={confirmMessageDelete}
         isSubmitting={isMessageDeleting}
         tone="danger"
+      />
+
+      <OnboardingWizard
+        open={onboardingOpen}
+        onClose={() => setOnboardingOpen(false)}
+        profile={profile}
+        displayName={displayName}
+        universities={universities}
+        isStudent={isStudent}
+        joinedChatCount={joinedUniversityIds.size}
+        onRefreshUser={refreshUser}
+        onJoinChat={handleJoin}
+        onGoToChats={() => changeSection("chats")}
       />
 
     </main>

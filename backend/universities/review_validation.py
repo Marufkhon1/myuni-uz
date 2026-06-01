@@ -6,6 +6,14 @@ REVIEW_TEXT_MIN_LENGTH = 30
 REVIEW_TEXT_MAX_LENGTH = 1200
 
 
+def validate_aspect_rating(value, label):
+    if value is None:
+        raise serializers.ValidationError(f"{label} bahosi tanlanishi kerak.")
+    if value < 1 or value > 5:
+        raise serializers.ValidationError(f"{label} bahosi 1–5 oralig'ida bo'lishi kerak.")
+    return value
+
+
 def validate_review_text(value):
     text = (value or "").strip()
     if not text:

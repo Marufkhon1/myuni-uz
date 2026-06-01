@@ -4,6 +4,7 @@ import ReviewWorkspacePanel from "../../components/dashboard/ReviewWorkspacePane
 export default function DashboardReviewsSection({
   isStudent,
   isPhone,
+  isWideReview = false,
   reviewUniversity,
   reviewUniversitySearch,
   onReviewUniversitySearchChange,
@@ -17,57 +18,66 @@ export default function DashboardReviewsSection({
   onSubmitReview,
   rating,
   onRatingChange,
+  aspectRatings,
+  onAspectChange,
+  studyDirectionId,
+  onStudyDirectionChange,
   reviewText,
   onReviewTextChange,
   isReviewSubmitting,
-  reviewSubmitError,
   onLike,
   onDeleteReview,
-  stars,
+  onReportReview,
   onOpenSection,
   onOpenChat,
 }) {
   return (
-    <section
-      className={`grid items-start gap-4 md:gap-6 ${
-        isPhone
-          ? "grid-cols-1"
-          : "lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] xl:grid-cols-[minmax(380px,420px)_1fr]"
-      }`}
-    >
-      <ReviewUniversityList
-        isStudent={isStudent}
-        search={reviewUniversitySearch}
-        onSearchChange={onReviewUniversitySearchChange}
-        universities={filteredReviewUniversities}
-        selectedId={reviewUniversity}
-        onSelect={onSelectReviewUniversity}
-        className={isPhone && mobileReviewScreen !== "list" ? "hidden" : ""}
-      />
+    <div className="mx-auto w-full min-w-0 max-w-[1600px]">
+      <section
+        className={`grid items-start gap-4 md:gap-5 ${
+          isWideReview
+            ? "lg:grid-cols-[300px_minmax(0,1fr)] lg:items-stretch lg:gap-6"
+            : "grid-cols-1"
+        }`}
+      >
+        <ReviewUniversityList
+          isStudent={isStudent}
+          search={reviewUniversitySearch}
+          onSearchChange={onReviewUniversitySearchChange}
+          universities={filteredReviewUniversities}
+          selectedId={reviewUniversity}
+          onSelect={onSelectReviewUniversity}
+          className={isPhone && mobileReviewScreen !== "list" ? "hidden" : ""}
+          isWideLayout={isWideReview}
+        />
 
-      <ReviewWorkspacePanel
-        key={`${reviewUniversity}-${isStudent ? "student" : "applicant"}`}
-        isStudent={isStudent}
-        isPhone={isPhone}
-        reviewUniversity={reviewUniversity}
-        reviewUniversityDetail={reviewUniversityDetail}
-        isReviewDetailLoading={isReviewDetailLoading}
-        reviews={reviews}
-        onBack={onBackToReviewList}
-        onSubmitReview={onSubmitReview}
-        rating={rating}
-        onRatingChange={onRatingChange}
-        reviewText={reviewText}
-        onReviewTextChange={onReviewTextChange}
-        isReviewSubmitting={isReviewSubmitting}
-        reviewSubmitError={reviewSubmitError}
-        onLike={onLike}
-      onDeleteReview={onDeleteReview}
-      stars={stars}
-        onOpenSection={onOpenSection}
-        onOpenChat={onOpenChat}
-        className={isPhone && mobileReviewScreen !== "detail" ? "hidden" : ""}
-      />
-    </section>
+        <ReviewWorkspacePanel
+          key={`${reviewUniversity}-${isStudent ? "student" : "applicant"}`}
+          isStudent={isStudent}
+          isPhone={isPhone}
+          reviewUniversity={reviewUniversity}
+          reviewUniversityDetail={reviewUniversityDetail}
+          isReviewDetailLoading={isReviewDetailLoading}
+          reviews={reviews}
+          onBack={onBackToReviewList}
+          onSubmitReview={onSubmitReview}
+          rating={rating}
+          onRatingChange={onRatingChange}
+          aspectRatings={aspectRatings}
+          onAspectChange={onAspectChange}
+          studyDirectionId={studyDirectionId}
+          onStudyDirectionChange={onStudyDirectionChange}
+          reviewText={reviewText}
+          onReviewTextChange={onReviewTextChange}
+          isReviewSubmitting={isReviewSubmitting}
+          onLike={onLike}
+          onDeleteReview={onDeleteReview}
+          onReportReview={onReportReview}
+          onOpenSection={onOpenSection}
+          onOpenChat={onOpenChat}
+          className={`min-w-0 w-full ${isPhone && mobileReviewScreen !== "detail" ? "hidden" : ""}`}
+        />
+      </section>
+    </div>
   );
 }

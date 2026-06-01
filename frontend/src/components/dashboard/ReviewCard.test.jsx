@@ -19,7 +19,7 @@ describe("ReviewCard", () => {
   it("renders review text and like button", () => {
     render(<ReviewCard item={baseItem} onLike={vi.fn()} />);
     expect(screen.getByText("Yaxshi universitet")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Yoqdi/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Foydali/i })).toBeInTheDocument();
   });
 
   it("calls onDelete for own review", () => {

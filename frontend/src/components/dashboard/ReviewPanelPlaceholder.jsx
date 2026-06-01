@@ -1,17 +1,17 @@
-import UniversityAvatar from "../UniversityAvatar.jsx";
+import EmptyState from "../ui/EmptyState.jsx";
 
-export default function ReviewPanelPlaceholder({ title, description, iconUniversity, className = "" }) {
+export default function ReviewPanelPlaceholder({ title, description, className = "" }) {
   return (
     <div
-      className={`flex min-h-[min(420px,calc(100dvh-14rem))] flex-col items-center justify-center rounded-[2rem] border border-dashed border-slate-200 bg-slate-50/50 px-8 py-12 text-center dark:border-white/15 dark:bg-white/[0.03] ${className}`}
+      className={`flex min-h-[min(440px,calc(100dvh-14rem))] flex-col items-center justify-center rounded-[1.25rem] bg-gradient-to-b from-slate-50 to-white p-8 ring-1 ring-dashed ring-slate-300/70 dark:from-white/[0.02] dark:to-transparent dark:ring-white/15 ${className}`}
     >
-      <div className="opacity-90">
-        <UniversityAvatar university={iconUniversity || { short_name: "?" }} size="xl" />
-      </div>
-      <h3 className="mt-6 max-w-sm text-xl font-black leading-snug text-slate-950 dark:text-white sm:text-2xl">
-        {title}
-      </h3>
-      <p className="mt-3 max-w-md text-sm leading-7 text-slate-500 dark:text-slate-400">{description}</p>
+      <div className="mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-3xl">🏛️</div>
+      <EmptyState
+        variant="university"
+        title={title}
+        description={description}
+        className="border-none bg-transparent p-0 shadow-none dark:bg-transparent"
+      />
     </div>
   );
 }

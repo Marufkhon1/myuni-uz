@@ -48,6 +48,9 @@ class ReviewModerationTests(TestCase):
             {
                 "university_id": self.university.id,
                 "rating": 5,
+                "rating_teachers": 5,
+                "rating_dormitory": 4,
+                "rating_infrastructure": 4,
                 "text": "Yangi sharh moderatsiyada — o'qish sharoiti yaxshi va zamonaviy.",
             },
             format="json",

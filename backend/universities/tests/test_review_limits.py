@@ -38,13 +38,28 @@ class ReviewSubmitLimitTests(TestCase):
             location="Toshkent",
             founded_year=2000,
         )
+        self.university_two = University.objects.create(
+            name="Limit Test University Two",
+            short_name="LT2",
+            location="Samarqand",
+            founded_year=2001,
+        )
+        self.university_three = University.objects.create(
+            name="Limit Test University Three",
+            short_name="LT3",
+            location="Buxoro",
+            founded_year=2002,
+        )
 
-    def _post_review(self, text="Bu universitetda o'qish tajribam juda yaxshi va foydali bo'ldi."):
+    def _post_review(self, university_id=None, text="Bu universitetda o'qish tajribam juda yaxshi va foydali bo'ldi."):
         return self.client.post(
             "/api/universities/reviews/",
             {
-                "university_id": self.university.id,
+                "university_id": university_id or self.university.id,
                 "rating": 5,
+                "rating_teachers": 5,
+                "rating_dormitory": 4,
+                "rating_infrastructure": 4,
                 "text": text,
             },
             format="json",
@@ -53,12 +68,18 @@ class ReviewSubmitLimitTests(TestCase):
     def test_first_reviews_allowed_then_cooldown(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")
 
-        first = self._post_review("Birinchi sharh — o'qish muhiti yaxshi, ustozlar yordam beradi.")
-        second = self._post_review("Ikkinchi sharh — yotoqxona va kutubxona ham qulay edi.")
+        first = self._post_review(self.university.id, "Birinchi sharh — o'qish muhiti yaxshi, ustozlar yordam beradi.")
+        second = self._post_review(
+            self.university_two.id,
+            "Ikkinchi sharh — yotoqxona va kutubxona ham qulay edi.",
+        )
         self.assertEqual(first.status_code, 201)
         self.assertEqual(second.status_code, 201)
 
-        third = self._post_review("Uchinchi sharh — sport va to'garaklar ham rivojlangan.")
+        third = self._post_review(
+            self.university_three.id,
+            "Uchinchi sharh — sport va to'garaklar ham rivojlangan.",
+        )
         self.assertEqual(third.status_code, 429)
         self.assertIn("retry_after_seconds", third.data)
         self.assertIn("detail", third.data)

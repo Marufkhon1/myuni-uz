@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout.jsx";
+import RateLimitNotice from "../components/RateLimitNotice.jsx";
+import { PAGE_META } from "../config/siteMeta.js";
+import { usePageMeta } from "../hooks/usePageMeta.js";
+import { useToast } from "../hooks/useToast.js";
 import { getGoogleAuthUrl } from "../services/authService.js";
+import { resendEmailVerification } from "../services/trustService.js";
 import { useAuth } from "../hooks/useAuth.js";
-import { getApiErrorMessage } from "../utils/apiErrors.js";
+import {
+  getApiErrorMessage,
+  getEmailNotVerifiedInfo,
+  getRateLimitInfo,
+} from "../utils/apiErrors.js";
 import { dashboardPathForRole } from "../utils/navigation.js";
 
 function resolveAfterAuthPath(user, nextParam) {
@@ -14,15 +23,28 @@ function resolveAfterAuthPath(user, nextParam) {
 }
 
 export default function LoginPage() {
+  usePageMeta(PAGE_META.login);
+
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const toast = useToast();
   const passwordResetSuccess = location.state?.reset === true;
   const { login, isAuthenticated, isLoading, user } = useAuth();
   const nextPath = searchParams.get("next");
   const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState(searchParams.get("google_error") || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailNotVerified, setEmailNotVerified] = useState(null);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [rateLimit, setRateLimit] = useState(null);
+  const [rateLimitActive, setRateLimitActive] = useState(false);
+
+  useEffect(() => {
+    const googleError = searchParams.get("google_error");
+    if (googleError) {
+      toast.error(googleError);
+    }
+  }, [searchParams, toast]);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -32,18 +54,28 @@ export default function LoginPage() {
 
   function updateField(event) {
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
+    setEmailNotVerified(null);
+    setRateLimit(null);
+    setRateLimitActive(false);
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
-    setError("");
     setIsSubmitting(true);
+    setEmailNotVerified(null);
+    setRateLimit(null);
+    setRateLimitActive(false);
 
     try {
       const loggedInUser = await login(form);
       navigate(resolveAfterAuthPath(loggedInUser, nextPath), { replace: true });
     } catch (requestError) {
-      setError(
+      const verifyInfo = getEmailNotVerifiedInfo(requestError);
+      if (verifyInfo) {
+        setEmailNotVerified(verifyInfo);
+        return;
+      }
+      toast.error(
         getApiErrorMessage(
           requestError,
           "Kirishda xatolik yuz berdi. Ma'lumotlarni tekshirib qayta urinib ko'ring."
@@ -54,9 +86,30 @@ export default function LoginPage() {
     }
   }
 
-  async function handleGoogleLogin() {
-    setError("");
+  async function handleResendVerification() {
+    const email = emailNotVerified?.email || form.email;
+    if (!email || resendLoading) {
+      return;
+    }
+    setResendLoading(true);
+    setRateLimit(null);
+    setRateLimitActive(false);
+    try {
+      await resendEmailVerification(email);
+      toast.success("Tasdiqlash xati yuborildi. Pochtangizni tekshiring.");
+    } catch (requestError) {
+      const limit = getRateLimitInfo(requestError);
+      if (limit) {
+        setRateLimit(limit);
+        setRateLimitActive(true);
+      }
+      toast.error(getApiErrorMessage(requestError, "Xat yuborilmadi."));
+    } finally {
+      setResendLoading(false);
+    }
+  }
 
+  async function handleGoogleLogin() {
     try {
       if (nextPath) {
         sessionStorage.setItem("myuni_auth_next", nextPath);
@@ -64,7 +117,7 @@ export default function LoginPage() {
       const authorizationUrl = await getGoogleAuthUrl({ flow: "login" });
       window.location.href = authorizationUrl;
     } catch (requestError) {
-      setError(
+      toast.error(
         getApiErrorMessage(
           requestError,
           "Google orqali kirish hozircha yoqilmagan. Email va parol bilan kiring yoki backend/.env da OAuth sozlang."
@@ -80,7 +133,7 @@ export default function LoginPage() {
       subtitle="Universitetlar, sharhlar va hamjamiyat imkoniyatlaridan foydalanishda davom eting."
     >
       <div>
-        <h1 className="text-3xl font-black tracking-tight">Kirish</h1>
+        <h1 className="text-2xl font-black tracking-tight sm:text-3xl">Kirish</h1>
         <p className="mt-3 text-slate-600 dark:text-slate-300">
           Email va parolingiz orqali davom eting.
         </p>
@@ -92,11 +145,39 @@ export default function LoginPage() {
         </div>
       )}
 
-      {error && (
-        <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">
-          {error}
+      {emailNotVerified ? (
+        <div className="mt-6 space-y-3">
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-900 dark:border-amber-400/30 dark:bg-amber-950/40 dark:text-amber-100">
+            {emailNotVerified.detail}
+          </div>
+          {rateLimit ? (
+            <RateLimitNotice
+              message={rateLimit.detail}
+              retryAfterSeconds={rateLimit.retryAfterSeconds}
+              onExpired={() => {
+                setRateLimitActive(false);
+                setRateLimit(null);
+              }}
+            />
+          ) : null}
+          <button
+            type="button"
+            onClick={handleResendVerification}
+            disabled={resendLoading || rateLimitActive}
+            className="w-full rounded-2xl border border-primary bg-blue-50 px-5 py-3 text-sm font-black text-primary disabled:opacity-50 dark:bg-primary/10"
+          >
+            {resendLoading ? "Yuborilmoqda..." : "Tasdiqlash xatini qayta yuborish"}
+          </button>
+          {emailNotVerified.email ? (
+            <Link
+              to={`/verify-email/pending?email=${encodeURIComponent(emailNotVerified.email)}`}
+              className="block text-center text-sm font-black text-primary"
+            >
+              Tasdiqlash ko&apos;rsatmalarini ko&apos;rish
+            </Link>
+          ) : null}
         </div>
-      )}
+      ) : null}
 
       <form onSubmit={handleSubmit} className="mt-7 space-y-5">
         <label className="block">
@@ -127,48 +208,33 @@ export default function LoginPage() {
             onChange={updateField}
             required
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold outline-none transition focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/10 dark:bg-white/10 dark:focus:ring-blue-400/10"
-            placeholder="Kamida 8 ta belgi"
+            placeholder="••••••••"
           />
         </label>
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full rounded-2xl bg-premium-gradient px-5 py-4 font-black text-white shadow-glow transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-2xl bg-slate-950 px-6 py-4 font-black text-white transition hover:-translate-y-0.5 disabled:opacity-50 dark:bg-white dark:text-slate-950"
         >
-          {isSubmitting ? "Tekshirilmoqda..." : "Kirish"}
+          {isSubmitting ? "Kirish..." : "Kirish"}
         </button>
       </form>
 
-      <div className="my-6 flex items-center gap-4">
-        <span className="h-px flex-1 bg-slate-200 dark:bg-white/10" />
-        <span className="text-xs font-black uppercase tracking-[0.18em] text-slate-400">yoki</span>
-        <span className="h-px flex-1 bg-slate-200 dark:bg-white/10" />
+      <div className="mt-6">
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          className="flex w-full items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white px-6 py-4 font-black text-slate-800 transition hover:border-primary dark:border-white/10 dark:bg-white/5 dark:text-white"
+        >
+          Google orqali kirish
+        </button>
       </div>
 
-      <button
-        type="button"
-        onClick={handleGoogleLogin}
-        className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 font-black text-slate-800 shadow-soft transition hover:-translate-y-0.5 hover:border-primary dark:border-white/10 dark:bg-white/10 dark:text-white"
-      >
-        <span className="inline-flex items-center justify-center gap-3">
-          <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-            <path fill="#4285F4" d="M21.6 12.23c0-.74-.07-1.45-.19-2.14H12v4.05h5.38a4.6 4.6 0 0 1-2 3.02v2.5h3.24c1.89-1.74 2.98-4.31 2.98-7.43Z" />
-            <path fill="#34A853" d="M12 22c2.7 0 4.96-.9 6.62-2.43l-3.24-2.5c-.9.6-2.04.95-3.38.95-2.6 0-4.8-1.76-5.59-4.12H3.07v2.58A10 10 0 0 0 12 22Z" />
-            <path fill="#FBBC05" d="M6.41 13.9a6 6 0 0 1 0-3.8V7.52H3.07a10 10 0 0 0 0 8.96l3.34-2.58Z" />
-            <path fill="#EA4335" d="M12 5.98c1.47 0 2.8.5 3.84 1.5l2.87-2.87A9.62 9.62 0 0 0 12 2a10 10 0 0 0-8.93 5.52l3.34 2.58C7.2 7.74 9.4 5.98 12 5.98Z" />
-          </svg>
-          Google
-        </span>
-      </button>
-
-      <p className="mt-7 text-center text-sm font-semibold text-slate-500 dark:text-slate-400">
-        Hali hisobingiz yo'qmi?{" "}
-        <Link
-          to={nextPath ? `/signup?next=${encodeURIComponent(nextPath)}` : "/signup"}
-          className="font-black text-primary"
-        >
-          Ro'yxatdan o'ting
+      <p className="mt-8 text-center text-sm font-semibold text-slate-500">
+        Hisobingiz yo&apos;qmi?{" "}
+        <Link to={nextPath ? `/signup?next=${encodeURIComponent(nextPath)}` : "/signup"} className="font-black text-primary">
+          Ro&apos;yxatdan o&apos;tish
         </Link>
       </p>
     </AuthLayout>

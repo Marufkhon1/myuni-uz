@@ -11,6 +11,7 @@ from rest_framework_simplejwt.exceptions import InvalidToken
 
 from accounts.stream_tokens import resolve_stream_token
 
+from .chat_community_utils import filter_university_messages_for_viewer
 from .chat_permissions import get_user_direct_thread, user_is_university_member
 from .models import ChatMessage, DirectMessage
 from .serializers import (
@@ -146,12 +147,13 @@ def university_message_stream(request, university_id):
         nonlocal since_id, change_since
         idle_ticks = 0
         base_qs = ChatMessage.objects.filter(university_id=university_id)
+        visible_qs = filter_university_messages_for_viewer(base_qs, user, university_id)
 
         while idle_ticks < 90:
             had_activity = False
 
             new_messages = list(
-                base_qs.filter(id__gt=since_id, is_deleted=False)
+                visible_qs.filter(id__gt=since_id, is_deleted=False)
                 .select_related("user", "user__profile")
                 .prefetch_related("reactions")
                 .order_by("id")[:50]
@@ -166,7 +168,7 @@ def university_message_stream(request, university_id):
 
             updated_payload, change_since = _poll_message_updates(
                 request,
-                base_qs.filter(is_deleted=False, id__lte=since_id),
+                visible_qs.filter(is_deleted=False, id__lte=since_id),
                 change_since,
             )
             if updated_payload:
@@ -197,6 +199,8 @@ def university_message_stream(request, university_id):
 
 
 def direct_message_stream(request, thread_id):
+    from .chat_community_utils import filter_direct_messages_for_viewer
+
     user = authenticate_stream_user(request)
     if not user:
         return unauthorized_response()
@@ -213,12 +217,13 @@ def direct_message_stream(request, thread_id):
         nonlocal since_id, change_since
         idle_ticks = 0
         base_qs = DirectMessage.objects.filter(thread_id=thread_id)
+        visible_qs = filter_direct_messages_for_viewer(base_qs, user)
 
         while idle_ticks < 90:
             had_activity = False
 
             new_messages = list(
-                base_qs.filter(id__gt=since_id, is_deleted=False)
+                visible_qs.filter(id__gt=since_id, is_deleted=False)
                 .select_related("sender", "sender__profile")
                 .prefetch_related("reactions")
                 .order_by("id")[:50]
@@ -233,7 +238,7 @@ def direct_message_stream(request, thread_id):
 
             updated_payload, change_since = _poll_message_updates(
                 request,
-                base_qs.filter(is_deleted=False, id__lte=since_id),
+                visible_qs.filter(is_deleted=False, id__lte=since_id),
                 change_since,
             )
             if updated_payload:

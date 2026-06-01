@@ -1,6 +1,6 @@
 import UniversityAvatar from "./UniversityAvatar.jsx";
 import UnreadBadge from "./UnreadBadge.jsx";
-import { formatUniversityPreview } from "./UniversityMetaLine.jsx";
+import { formatUniversityPreview } from "../utils/universityMetaFormat.js";
 
 function GroupIcon() {
   return (

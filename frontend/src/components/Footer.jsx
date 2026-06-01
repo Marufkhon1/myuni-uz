@@ -1,18 +1,64 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/myuni-logo.png";
+import { scrollToLandingSection } from "../utils/landingScroll.js";
+import { scrollPageToTop } from "./ScrollToTop.jsx";
 
 const footerLinks = {
   Platforma: [
-    { label: "Bosh sahifa", href: "/", isRouter: true },
-    { label: "Kirish", href: "/login", isRouter: true },
-    { label: "Ro'yxatdan o'tish", href: "/signup", isRouter: true },
+    { label: "Bosh sahifa", to: "/" },
+    { label: "Universitetlar", to: "/universitetlar" },
+    { label: "Xarita", to: "/universitetlar/xarita" },
+    { label: "Maqolalar", to: "/maqolalar" },
+    { label: "Qanday ishlaydi", to: "/", hash: "#how-it-works" },
+    { label: "Savollar (FAQ)", to: "/", hash: "#faq" },
   ],
   Huquqiy: [
-    { label: "Foydalanish shartlari", href: "/foydalanish-shartlari", isRouter: true },
-    { label: "Maxfiylik siyosati", href: "/maxfiylik-siyosati", isRouter: true },
-    { label: "Sharh qoidalari", href: "/sharh-qoidalari", isRouter: true },
+    { label: "Ishonch va xavfsizlik", to: "/ishonch-xavfsizlik" },
+    { label: "Foydalanish shartlari", to: "/foydalanish-shartlari" },
+    { label: "Maxfiylik siyosati", to: "/maxfiylik-siyosati" },
+    { label: "Sharh qoidalari", to: "/sharh-qoidalari" },
   ],
 };
+
+function FooterLink({ link }) {
+  const { pathname } = useLocation();
+  const className =
+    "text-sm font-semibold text-slate-500 transition hover:text-primary dark:text-slate-400 dark:hover:text-blue-200";
+
+  if (link.hash) {
+    const hash = link.hash.startsWith("#") ? link.hash : `#${link.hash}`;
+
+    return (
+      <Link
+        to={{ pathname: link.to, hash: hash.replace("#", "") }}
+        onClick={(event) => {
+          if (pathname === link.to) {
+            event.preventDefault();
+            scrollToLandingSection(hash);
+            window.history.replaceState(null, "", hash);
+          }
+        }}
+        className={className}
+      >
+        {link.label}
+      </Link>
+    );
+  }
+
+  return (
+    <Link
+      to={link.to}
+      onClick={() => {
+        if (pathname === link.to) {
+          scrollPageToTop();
+        }
+      }}
+      className={className}
+    >
+      {link.label}
+    </Link>
+  );
+}
 
 export default function Footer() {
   return (
@@ -20,7 +66,11 @@ export default function Footer() {
       <div className="container-shell">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_2fr]">
           <div>
-            <Link to="/" className="flex items-center gap-3" aria-label="MyUni.uz bosh sahifa">
+            <Link
+              to="/"
+              className="flex items-center gap-3 transition hover:opacity-90"
+              aria-label="MyUni.uz bosh sahifa"
+            >
               <img
                 src={logo}
                 alt="MyUni.uz logotipi"
@@ -45,21 +95,7 @@ export default function Footer() {
                 <ul className="mt-4 space-y-3">
                   {links.map((link) => (
                     <li key={link.label}>
-                      {link.isRouter ? (
-                        <Link
-                          to={link.href}
-                          className="text-sm font-semibold text-slate-500 transition hover:text-primary dark:text-slate-400"
-                        >
-                          {link.label}
-                        </Link>
-                      ) : (
-                        <a
-                          href={link.href}
-                          className="text-sm font-semibold text-slate-500 transition hover:text-primary dark:text-slate-400"
-                        >
-                          {link.label}
-                        </a>
-                      )}
+                      <FooterLink link={link} />
                     </li>
                   ))}
                 </ul>
@@ -71,7 +107,10 @@ export default function Footer() {
               </h2>
               <address className="mt-4 space-y-3 not-italic text-sm font-semibold text-slate-500 dark:text-slate-400">
                 <p>Samarqand, O&apos;zbekiston</p>
-                <a href="mailto:hello@myuni.uz" className="block hover:text-primary">
+                <a
+                  href="mailto:hello@myuni.uz"
+                  className="block transition hover:text-primary dark:hover:text-blue-200"
+                >
                   hello@myuni.uz
                 </a>
               </address>

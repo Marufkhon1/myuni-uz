@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.js";
-import UniversitySearchSelect, {
-  matchUniversityByText,
-} from "../components/dashboard/UniversitySearchSelect.jsx";
+import UniversitySearchSelect from "../components/dashboard/UniversitySearchSelect.jsx";
+import { matchUniversityByText } from "../utils/universityMatch.js";
 import AuthLayout from "../layouts/AuthLayout.jsx";
+import { PAGE_META } from "../config/siteMeta.js";
+import { usePageMeta } from "../hooks/usePageMeta.js";
+import { useToast } from "../hooks/useToast.js";
 import { getGoogleAuthUrl } from "../services/authService.js";
 import { getPublicUniversities } from "../services/publicService.js";
 import { getApiErrorMessage } from "../utils/apiErrors.js";
@@ -31,8 +33,11 @@ function resolveAfterAuthPath(user, nextParam) {
 }
 
 export default function SignupPage() {
+  usePageMeta(PAGE_META.signup);
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const toast = useToast();
   const { register, isAuthenticated, isLoading, user } = useAuth();
   const nextPath = searchParams.get("next");
   const [form, setForm] = useState({
@@ -42,24 +47,29 @@ export default function SignupPage() {
     role: "applicant",
     university: "",
   });
-  const [error, setError] = useState(searchParams.get("google_error") || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [universities, setUniversities] = useState([]);
-  const [universitiesError, setUniversitiesError] = useState("");
   const [isUniversitiesLoading, setIsUniversitiesLoading] = useState(true);
+
+  useEffect(() => {
+    const googleError = searchParams.get("google_error");
+    if (googleError) {
+      toast.error(googleError);
+    }
+  }, [searchParams, toast]);
 
   useEffect(() => {
     let isMounted = true;
 
     async function loadUniversities() {
       try {
-        const data = await getPublicUniversities();
+        const { results } = await getPublicUniversities();
         if (isMounted) {
-          setUniversities(data);
+          setUniversities(results);
         }
       } catch {
         if (isMounted) {
-          setUniversitiesError("Universitetlar ro'yxatini yuklab bo'lmadi. Keyinroq qayta urinib ko'ring.");
+          toast.error("Universitetlar ro'yxatini yuklab bo'lmadi. Keyinroq qayta urinib ko'ring.");
         }
       } finally {
         if (isMounted) {
@@ -72,7 +82,7 @@ export default function SignupPage() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
@@ -90,7 +100,7 @@ export default function SignupPage() {
 
   function ensureUniversitySelected() {
     if (!matchUniversityByText(universities, form.university)) {
-      setError("Ro'yxatdan universitetni tanlang.");
+      toast.warning("Ro'yxatdan universitetni tanlang.");
       return false;
     }
     return true;
@@ -98,17 +108,28 @@ export default function SignupPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    setError("");
     if (!ensureUniversitySelected()) {
       return;
     }
     setIsSubmitting(true);
 
     try {
-      const registeredUser = await register(form);
-      navigate(resolveAfterAuthPath(registeredUser, nextPath), { replace: true });
+      const result = await register(form);
+      if (result.requires_email_verification) {
+        if (result.email_sent === false) {
+          toast.warning(result.detail);
+        }
+        navigate(
+          `/verify-email/pending?email=${encodeURIComponent(result.email || form.email)}`,
+          { replace: true }
+        );
+        return;
+      }
+      if (result.user) {
+        navigate(resolveAfterAuthPath(result.user, nextPath), { replace: true });
+      }
     } catch (requestError) {
-      setError(getApiErrorMessage(requestError, "Ro'yxatdan o'tishda xatolik yuz berdi."));
+      toast.error(getApiErrorMessage(requestError, "Ro'yxatdan o'tishda xatolik yuz berdi."));
     } finally {
       setIsSubmitting(false);
     }
@@ -123,13 +144,14 @@ export default function SignupPage() {
     : "Tanlamoqchi universitetingizni tanlang";
 
   async function handleGoogleLogin() {
-    setError("");
-
     if (!ensureUniversitySelected()) {
       return;
     }
 
     try {
+      if (nextPath) {
+        sessionStorage.setItem("myuni_auth_next", nextPath);
+      }
       const authorizationUrl = await getGoogleAuthUrl({
         flow: "signup",
         role: form.role,
@@ -137,7 +159,7 @@ export default function SignupPage() {
       });
       window.location.href = authorizationUrl;
     } catch (requestError) {
-      setError(
+      toast.error(
         getApiErrorMessage(
           requestError,
           "Google orqali ro'yxatdan o'tish hozircha yoqilmagan. Email bilan ro'yxatdan o'ting."
@@ -153,17 +175,11 @@ export default function SignupPage() {
       subtitle="Universitetingizni tanlang va platformadan o'zingizga mos rol bilan foydalaning."
     >
       <div>
-        <h1 className="text-3xl font-black tracking-tight">Ro'yxatdan o'tish</h1>
+        <h1 className="text-2xl font-black tracking-tight sm:text-3xl">Ro'yxatdan o'tish</h1>
         <p className="mt-3 text-slate-600 dark:text-slate-300">
           MyUni.uz hisobingizni yarating.
         </p>
       </div>
-
-      {error && (
-        <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">
-          {error}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit} className="mt-7 space-y-5">
         <div className="grid gap-3 sm:grid-cols-2">
@@ -239,9 +255,6 @@ export default function SignupPage() {
               reserveHintSpace
             />
           </div>
-          {universitiesError && (
-            <p className="mt-2 text-sm font-semibold text-red-600">{universitiesError}</p>
-          )}
         </div>
 
         <button

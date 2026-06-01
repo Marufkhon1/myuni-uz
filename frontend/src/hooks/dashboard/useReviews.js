@@ -6,6 +6,11 @@ import {
   getReviews,
   toggleReviewLike,
 } from "../../services/universityService.js";
+import {
+  aspectRatingsComplete,
+  buildDefaultAspectRatings,
+  flattenReviewPayload,
+} from "../../utils/reviewAspects.js";
 import { getApiErrorMessage } from "../../utils/apiErrors.js";
 
 export function useReviews({ isStudent, activeSection, universities }) {
@@ -14,6 +19,8 @@ export function useReviews({ isStudent, activeSection, universities }) {
   const [reviewUniversitySearch, setReviewUniversitySearch] = useState("");
   const [isReviewDetailLoading, setIsReviewDetailLoading] = useState(false);
   const [rating, setRating] = useState(0);
+  const [aspectRatings, setAspectRatings] = useState(buildDefaultAspectRatings);
+  const [studyDirectionId, setStudyDirectionId] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [reviews, setReviews] = useState([]);
   const [isReviewSubmitting, setIsReviewSubmitting] = useState(false);
@@ -71,17 +78,27 @@ export function useReviews({ isStudent, activeSection, universities }) {
     setReviewUniversity(String(universityId));
     setMobileReviewScreen("detail");
     setReviewSubmitError("");
+    setStudyDirectionId("");
   }, []);
 
   const backToReviewList = useCallback(() => {
     setMobileReviewScreen("list");
   }, []);
 
+  const handleAspectChange = useCallback((field, value) => {
+    setAspectRatings((current) => ({ ...current, [field]: value }));
+  }, []);
+
   const handleReviewLike = useCallback(async (reviewId) => {
     const result = await toggleReviewLike(reviewId);
     const updateItem = (item) =>
       item.id === reviewId
-        ? { ...item, liked_by_me: result.liked, like_count: result.like_count }
+        ? {
+            ...item,
+            liked_by_me: result.liked,
+            like_count: result.like_count,
+            helpful_count: result.like_count,
+          }
         : item;
     setReviews((current) => current.map(updateItem));
     return updateItem;
@@ -111,22 +128,33 @@ export function useReviews({ isStudent, activeSection, universities }) {
   const submitReview = useCallback(
     async (event) => {
       event.preventDefault();
-      if (!isStudent || !reviewUniversity || rating === 0 || !reviewText.trim()) {
+      if (
+        !isStudent ||
+        !reviewUniversity ||
+        rating === 0 ||
+        !reviewText.trim() ||
+        !aspectRatingsComplete(aspectRatings)
+      ) {
         return;
       }
       setIsReviewSubmitting(true);
       setReviewSubmitError("");
       try {
-        const nextReview = await createReview({
-          university_id: Number(reviewUniversity),
+        const payload = flattenReviewPayload({
+          universityId: Number(reviewUniversity),
           rating,
-          text: reviewText.trim(),
+          aspectRatings,
+          reviewText,
+          studyDirectionId: studyDirectionId ? Number(studyDirectionId) : null,
         });
+        const nextReview = await createReview(payload);
         setReviews((current) => [
-          { ...nextReview, like_count: 0, liked_by_me: false },
+          { ...nextReview, like_count: 0, helpful_count: 0, liked_by_me: false },
           ...current,
         ]);
         setRating(0);
+        setAspectRatings(buildDefaultAspectRatings());
+        setStudyDirectionId("");
         setReviewText("");
         const detail = await getUniversityDetail(reviewUniversity);
         setReviewUniversityDetail(detail);
@@ -138,7 +166,14 @@ export function useReviews({ isStudent, activeSection, universities }) {
         setIsReviewSubmitting(false);
       }
     },
-    [isStudent, reviewUniversity, rating, reviewText]
+    [
+      isStudent,
+      reviewUniversity,
+      rating,
+      aspectRatings,
+      reviewText,
+      studyDirectionId,
+    ]
   );
 
   return {
@@ -150,6 +185,10 @@ export function useReviews({ isStudent, activeSection, universities }) {
     isReviewDetailLoading,
     rating,
     setRating,
+    aspectRatings,
+    handleAspectChange,
+    studyDirectionId,
+    setStudyDirectionId,
     reviewText,
     setReviewText,
     reviews,

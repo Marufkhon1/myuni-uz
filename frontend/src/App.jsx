@@ -1,9 +1,15 @@
 import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
+import AnalyticsProvider from "./components/analytics/AnalyticsProvider.jsx";
+import OfflineBanner from "./components/pwa/OfflineBanner.jsx";
+import PwaInstallPrompt from "./components/pwa/PwaInstallPrompt.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import { DashboardPageShellSkeleton } from "./components/skeletons/DashboardSkeletons.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { ToastProvider } from "./context/ToastContext.jsx";
 import DashboardRedirect from "./pages/DashboardRedirect.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 
 const DashboardPage = lazy(() => import("./pages/DashboardPage.jsx"));
 import GoogleCallbackPage from "./pages/GoogleCallbackPage.jsx";
@@ -16,11 +22,26 @@ import SignupPage from "./pages/SignupPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import LegalDocumentPage from "./pages/LegalDocumentPage.jsx";
 import UniversityPublicPage from "./pages/UniversityPublicPage.jsx";
+import UniversitiesDirectoryPage from "./pages/UniversitiesDirectoryPage.jsx";
+import UniversitiesMapPage from "./pages/UniversitiesMapPage.jsx";
+import BlogListPage from "./pages/BlogListPage.jsx";
+import BlogArticlePage from "./pages/BlogArticlePage.jsx";
+import FAQPage from "./pages/FAQPage.jsx";
+import FAQDetailPage from "./pages/FAQDetailPage.jsx";
+import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
+import VerifyEmailPendingPage from "./pages/VerifyEmailPendingPage.jsx";
+import TrustSafetyPage from "./pages/TrustSafetyPage.jsx";
+import ModeratorDashboardPage from "./pages/ModeratorDashboardPage.jsx";
 
 export default function App() {
   return (
     <ErrorBoundary>
+    <ToastProvider>
     <AuthProvider>
+      <ScrollToTop />
+      <OfflineBanner />
+      <PwaInstallPrompt />
+      <AnalyticsProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -28,19 +49,29 @@ export default function App() {
         <Route path="/forgot-password/sent" element={<ForgotPasswordSentPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/verify-email/pending" element={<VerifyEmailPendingPage />} />
+        <Route path="/ishonch-xavfsizlik" element={<TrustSafetyPage />} />
         <Route path="/universitet/:slug" element={<UniversityPublicPage />} />
+        <Route path="/universitetlar" element={<UniversitiesDirectoryPage />} />
+        <Route path="/universitetlar/xarita" element={<UniversitiesMapPage />} />
+        <Route path="/maqolalar" element={<BlogListPage />} />
+        <Route path="/maqolalar/:slug" element={<BlogArticlePage />} />
+        <Route path="/savollar-javob" element={<FAQPage />} />
+        <Route path="/savollar-javob/:slug" element={<FAQDetailPage />} />
         <Route path="/foydalanish-shartlari" element={<LegalDocumentPage />} />
         <Route path="/maxfiylik-siyosati" element={<LegalDocumentPage />} />
         <Route path="/sharh-qoidalari" element={<LegalDocumentPage />} />
         <Route path="/oauth/google/callback" element={<GoogleCallbackPage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardRedirect />} />
+          <Route path="/moderator" element={<ModeratorDashboardPage />} />
         </Route>
         <Route element={<ProtectedRoute allowedRoles={["applicant"]} />}>
           <Route
             path="/applicant/dashboard"
             element={
-              <Suspense fallback={<div className="p-8 text-center font-bold">Yuklanmoqda...</div>}>
+              <Suspense fallback={<DashboardPageShellSkeleton />}>
                 <DashboardPage role="applicant" />
               </Suspense>
             }
@@ -50,7 +81,7 @@ export default function App() {
           <Route
             path="/student/dashboard"
             element={
-              <Suspense fallback={<div className="p-8 text-center font-bold">Yuklanmoqda...</div>}>
+              <Suspense fallback={<DashboardPageShellSkeleton />}>
                 <DashboardPage role="student" />
               </Suspense>
             }
@@ -58,7 +89,9 @@ export default function App() {
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </AnalyticsProvider>
     </AuthProvider>
+    </ToastProvider>
     </ErrorBoundary>
   );
 }

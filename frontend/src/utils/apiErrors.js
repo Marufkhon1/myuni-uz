@@ -1,4 +1,53 @@
+export function getRateLimitInfo(error) {
+  const data = error?.response?.data;
+  if (error?.response?.status === 429 && data) {
+    return {
+      detail:
+        typeof data.detail === "string"
+          ? data.detail
+          : "So'rovlar limiti oshdi. Biroz kutib qayta urinib ko'ring.",
+      retryAfterSeconds: Math.max(0, Number(data.retry_after_seconds) || 0),
+      code: data.code || "rate_limited",
+    };
+  }
+  return null;
+}
+
+export function formatRateLimitMessage(info) {
+  if (!info) {
+    return "";
+  }
+  if (info.retryAfterSeconds > 0) {
+    return `${info.detail} Qayta urinish: ${info.retryAfterSeconds} soniyadan keyin.`;
+  }
+  return info.detail;
+}
+
+export function getEmailNotVerifiedInfo(error) {
+  const data = error?.response?.data;
+  if (data?.code === "email_not_verified") {
+    return {
+      detail:
+        typeof data.detail === "string"
+          ? data.detail
+          : "Email manzilingiz tasdiqlanmagan.",
+      email: data.email || "",
+    };
+  }
+  return null;
+}
+
 export function getApiErrorMessage(error, fallback) {
+  const rateLimit = getRateLimitInfo(error);
+  if (rateLimit) {
+    return formatRateLimitMessage(rateLimit);
+  }
+
+  const emailNotVerified = getEmailNotVerifiedInfo(error);
+  if (emailNotVerified) {
+    return emailNotVerified.detail;
+  }
+
   if (!error?.response) {
     if (error?.code === "ERR_NETWORK" || error?.message === "Network Error") {
       return "Backendga ulanib bo'lmadi. Backend server ishlayotganini tekshiring (terminalda: python manage.py runserver).";

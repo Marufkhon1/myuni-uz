@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout.jsx";
+import { PAGE_META } from "../config/siteMeta.js";
+import { usePageMeta } from "../hooks/usePageMeta.js";
+import { useToast } from "../hooks/useToast.js";
 import { confirmPasswordReset, getPasswordResetStatus } from "../services/authService.js";
 import { getApiErrorMessage } from "../utils/apiErrors.js";
 
@@ -11,13 +14,15 @@ function formatCountdown(totalSeconds) {
 }
 
 export default function ResetPasswordPage() {
+  usePageMeta(PAGE_META.resetPassword);
+
   const navigate = useNavigate();
+  const toast = useToast();
   const [searchParams] = useSearchParams();
   const uid = searchParams.get("uid") || "";
   const token = searchParams.get("token") || "";
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [secondsRemaining, setSecondsRemaining] = useState(0);
   const [sessionActive, setSessionActive] = useState(true);
@@ -69,15 +74,14 @@ export default function ResetPasswordPage() {
   async function handleSubmit(event) {
     event.preventDefault();
     if (!sessionActive) {
-      setError("30 daqiqa tugadi. Qayta parol tiklash havolasini so'rang.");
+      toast.error("30 daqiqa tugadi. Qayta parol tiklash havolasini so'rang.");
       return;
     }
     if (clientError) {
-      setError(clientError);
+      toast.warning(clientError);
       return;
     }
 
-    setError("");
     setIsSubmitting(true);
 
     try {
@@ -86,12 +90,12 @@ export default function ResetPasswordPage() {
     } catch (requestError) {
       const data = requestError.response?.data;
       if (data?.code === "same_as_old") {
-        setError("Yangi parol eskisiga o'xshash bo'lmasin.");
+        toast.error("Yangi parol eskisiga o'xshash bo'lmasin.");
       } else if (data?.code === "session_expired") {
         setSessionActive(false);
-        setError(data.detail);
+        toast.error(data.detail || "Sessiya tugadi.");
       } else {
-        setError(getApiErrorMessage(requestError, "Parol yangilanmadi."));
+        toast.error(getApiErrorMessage(requestError, "Parol yangilanmadi."));
       }
     } finally {
       setIsSubmitting(false);
@@ -169,8 +173,8 @@ export default function ResetPasswordPage() {
             className="mt-1.5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold outline-none focus:border-primary dark:border-white/15 dark:bg-slate-800 dark:text-white"
           />
         </div>
-        {(error || clientError) && (
-          <p className="text-sm font-semibold text-red-600">{error || clientError}</p>
+        {(clientError) && (
+          <p className="text-sm font-semibold text-amber-700 dark:text-amber-300">{clientError}</p>
         )}
         <button
           type="submit"

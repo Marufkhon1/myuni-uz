@@ -22,7 +22,7 @@ export function PublicLoginButton({ to = "/login", className = "", onClick }) {
     <Link
       to={to}
       onClick={onClick}
-      className={`${base} border border-slate-200 bg-white text-slate-700 hover:border-primary dark:border-white/15 dark:bg-white/10 dark:text-slate-200 ${className}`}
+      className={`${base} border border-slate-200 bg-white text-slate-700 hover:border-primary hover:bg-slate-50 dark:border-white/20 dark:bg-white/10 dark:text-slate-200 dark:hover:border-primary/50 dark:hover:bg-white/15 ${className}`}
     >
       Kirish
     </Link>

@@ -25,8 +25,9 @@ export async function joinUniversity(universityId) {
   return data;
 }
 
-export async function getUniversityMessages(universityId) {
-  const { data } = await api.get(`/universities/${universityId}/messages/`);
+export async function getUniversityMessages(universityId, { tag } = {}) {
+  const params = tag ? { tag } : undefined;
+  const { data } = await api.get(`/universities/${universityId}/messages/`, { params });
   return normalizeMessageListResponse(data);
 }
 

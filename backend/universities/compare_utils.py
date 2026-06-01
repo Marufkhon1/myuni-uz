@@ -3,6 +3,9 @@ from django.db.models import Avg, Count
 from .models import ChatMembership, Review, University, UniversityFavorite
 
 
+from .review_trust_utils import aspect_averages_for_university
+
+
 def approved_reviews_queryset(university):
     return Review.objects.filter(university=university, status=Review.Status.APPROVED)
 
@@ -57,10 +60,13 @@ def build_compare_row(university, joined_ids, favorite_ids):
                 "id",
                 "name",
                 "short_name",
+                "slug",
                 "location",
+                "city",
                 "description",
                 "founded_year",
                 "institution_type",
+                "ownership_type",
                 "summary",
                 "image_url",
             )
@@ -69,6 +75,7 @@ def build_compare_row(university, joined_ids, favorite_ids):
         "review_count": stats["review_count"] or 0,
         "member_count": member_count,
         "rating_distribution": rating_distribution(university.id),
+        "aspect_averages": aspect_averages_for_university(university.id),
         "sample_review": sample_review,
         "is_joined": university.id in joined_ids,
         "is_favorited": university.id in favorite_ids,

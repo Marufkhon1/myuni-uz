@@ -28,6 +28,11 @@ jobs:
         run: |
           coverage run --source=accounts,universities manage.py test
           coverage report --fail-under=55
+      - name: Validate OpenAPI schema
+        env:
+          DJANGO_SECRET_KEY: ci-test-secret-key-at-least-32-characters-long
+          DJANGO_DEBUG: "True"
+        run: python manage.py spectacular --validate
       - name: Security audit (pip-audit)
         run: pip-audit -r requirements.txt || true
 

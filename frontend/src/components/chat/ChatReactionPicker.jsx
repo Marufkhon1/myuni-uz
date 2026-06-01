@@ -32,6 +32,8 @@ export default function ChatReactionPicker({
 
   return (
     <div
+      role="toolbar"
+      aria-label="Reaksiya tanlash"
       className="flex flex-col items-center"
       onMouseLeave={handleHeartLeave}
       onMouseDown={(event) => event.stopPropagation()}

@@ -1,7 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import RateLimitNotice from "../RateLimitNotice.jsx";
 import { sendSupportMessage } from "../../services/supportService.js";
 import { getSupportBotReply, getSupportQuickQuestions } from "./supportBot.js";
+import { getRateLimitInfo } from "../../utils/apiErrors.js";
 
 export default function SupportChatModal({
   isOpen,
@@ -13,6 +15,9 @@ export default function SupportChatModal({
   isStudent = false,
 }) {
   const listRef = useRef(null);
+  const [rateLimit, setRateLimit] = useState(null);
+  const [rateLimitActive, setRateLimitActive] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
@@ -41,32 +46,65 @@ export default function SupportChatModal({
     }
   }, [messages, isOpen]);
 
-  function appendExchange(question, answer) {
-    onMessagesChange((current) => {
-      const stamp = Date.now();
-      return [
+  async function appendExchange(question, answer) {
+    const stamp = Date.now();
+    onMessagesChange((current) => [
+      ...current,
+      { id: `u-${stamp}`, from: "user", text: question },
+    ]);
+
+    setIsSending(true);
+    setRateLimit(null);
+    setRateLimitActive(false);
+    try {
+      await sendSupportMessage(question);
+      onMessagesChange((current) => [
         ...current,
-        { id: `u-${stamp}`, from: "user", text: question },
         { id: `b-${stamp + 1}`, from: "bot", text: answer },
-      ];
-    });
-    sendSupportMessage(question).catch(() => {
-      /* Bot javobi lokal; operatorga yuborish ixtiyoriy */
-    });
+      ]);
+    } catch (error) {
+      const limit = getRateLimitInfo(error);
+      if (limit) {
+        setRateLimit(limit);
+        setRateLimitActive(true);
+        onMessagesChange((current) => [
+          ...current,
+          {
+            id: `b-${stamp + 1}`,
+            from: "bot",
+            text: `${limit.detail} Operatorga xabar keyinroq yuboriladi.`,
+          },
+        ]);
+      } else {
+        onMessagesChange((current) => [
+          ...current,
+          {
+            id: `b-${stamp + 1}`,
+            from: "bot",
+            text: answer,
+          },
+        ]);
+      }
+    } finally {
+      setIsSending(false);
+    }
   }
 
-  function sendMessage(event) {
+  async function sendMessage(event) {
     event.preventDefault();
     const text = draft.trim();
-    if (!text) {
+    if (!text || isSending || rateLimitActive) {
       return;
     }
 
-    appendExchange(text, getSupportBotReply(text, { isStudent }));
     onDraftChange("");
+    await appendExchange(text, getSupportBotReply(text, { isStudent }));
   }
 
   function handleQuickQuestion(item) {
+    if (isSending || rateLimitActive) {
+      return;
+    }
     appendExchange(item.question, item.answer);
   }
 
@@ -137,7 +175,8 @@ export default function SupportChatModal({
                     key={item.id}
                     type="button"
                     onClick={() => handleQuickQuestion(item)}
-                    className="rounded-2xl border border-primary/25 bg-blue-50 px-3.5 py-2 text-left text-sm font-bold text-primary transition hover:border-primary hover:bg-blue-100 dark:border-primary/40 dark:bg-primary/15 dark:text-blue-200 dark:hover:bg-primary/25"
+                    disabled={isSending || rateLimitActive}
+                    className="rounded-2xl border border-primary/25 bg-blue-50 px-3.5 py-2 text-left text-sm font-bold text-primary transition hover:border-primary hover:bg-blue-100 disabled:opacity-50 dark:border-primary/40 dark:bg-primary/15 dark:text-blue-200 dark:hover:bg-primary/25"
                   >
                     {item.question}
                   </button>
@@ -149,22 +188,36 @@ export default function SupportChatModal({
 
         <form
           onSubmit={sendMessage}
-          className="shrink-0 flex gap-2 border-t border-slate-100 bg-white p-3 dark:border-white/10 dark:bg-slate-900"
+          className="shrink-0 flex flex-col gap-2 border-t border-slate-100 bg-white p-3 dark:border-white/10 dark:bg-slate-900"
         >
-          <input
-            value={draft}
-            onChange={(event) => onDraftChange(event.target.value)}
-            placeholder="Savolingizni yozing..."
-            autoFocus
-            className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400/25"
-          />
-          <button
-            type="submit"
-            disabled={!draft.trim()}
-            className="shrink-0 rounded-2xl bg-primary px-4 py-3 text-sm font-black text-white transition hover:bg-primary/90 disabled:opacity-50"
-          >
-            Yuborish
-          </button>
+          {rateLimit ? (
+            <RateLimitNotice
+              message={rateLimit.detail}
+              retryAfterSeconds={rateLimit.retryAfterSeconds}
+              className="text-xs"
+              onExpired={() => {
+                setRateLimitActive(false);
+                setRateLimit(null);
+              }}
+            />
+          ) : null}
+          <div className="flex gap-2">
+            <input
+              value={draft}
+              onChange={(event) => onDraftChange(event.target.value)}
+              placeholder="Savolingizni yozing..."
+              autoFocus
+              disabled={isSending || rateLimitActive}
+              className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 disabled:opacity-60 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400/25"
+            />
+            <button
+              type="submit"
+              disabled={!draft.trim() || isSending || rateLimitActive}
+              className="shrink-0 rounded-2xl bg-primary px-4 py-3 text-sm font-black text-white transition hover:bg-primary/90 disabled:opacity-50"
+            >
+              {isSending ? "..." : "Yuborish"}
+            </button>
+          </div>
         </form>
       </div>
     </div>,

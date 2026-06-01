@@ -1,24 +1,25 @@
-/** Sharhlar bo'limi — talaba va abituriyent matnlari. */
+/** Sharhlar bo'limi — talaba yozadi, abituriyent o'qiydi. */
 
 export function getReviewListContent(isStudent) {
   if (isStudent) {
     return {
       title: "Sharh yozish",
       subtitle: "O'qiyotgan yoki tanlangan OTM",
-      searchPlaceholder: "O'qiyotgan yoki boshqa OTM qidiring...",
+      searchPlaceholder: "OTM qidiring...",
     };
   }
 
   return {
     title: "Sharhlarni ko'rish",
     subtitle: "Qiziqayotgan universitet",
-    searchPlaceholder: "Tanlamoqchi universitetingizni qidiring...",
+    searchPlaceholder: "Universitet qidiring...",
   };
 }
 
 export function getReviewPanelContent(isStudent) {
   if (isStudent) {
     return {
+      canWriteReview: true,
       bannerEyebrow: "Sharh va tajriba",
       statsTitle: "Universitet ko'rsatkichlari",
       statLabels: {
@@ -35,21 +36,21 @@ export function getReviewPanelContent(isStudent) {
       emptyHint: "Birinchi sharhingizni qoldiring — keyin yana yozishingiz mumkin.",
       notice: null,
       defaultSort: "newest",
-      quickActions: [
-        { id: "chat", label: "Chatga o'tish", variant: "primary" },
-        { id: "compare", label: "Boshqa OTM bilan taqqoslash", variant: "secondary" },
-        { id: "popular", label: "Mashhur sharhlar", variant: "secondary" },
-      ],
-      likeButtonLabel: "Yoqdi",
+      likeButtonLabel: "Foydali",
       placeholderTitle: "Avval universitetni tanlang",
       placeholderDescription:
         "Chap ro'yxatdan universitetni tanlang — sharh yozish, statistika va talabalar fikri shu yerda.",
       formTitle: "Yangi sharh",
+      formSubtitle: null,
       formPlaceholder: "O'qish muhiti, ustozlar, yotoqxona, imkoniyatlar haqida yozing...",
+      formOverallLabel: "Qanday baho berasiz?",
+      formAspectHint: "Har bir yo'nalish alohida — aniqroq sharh beradi",
+      formFooterNote: "Sharh moderatsiyadan o'tadi. Shaxsiy ma'lumot yozmang.",
     };
   }
 
   return {
+    canWriteReview: false,
     bannerEyebrow: "Tanlov uchun",
     statsTitle: "Tanlov bo'yicha qisqa xulosa",
     statLabels: {
@@ -58,19 +59,14 @@ export function getReviewPanelContent(isStudent) {
       likes: "Ishonch (like)",
       chat: "Chat faolligi",
     },
-    distributionTitle: "Talabalar baholari",
+    distributionTitle: "Baholar taqsimoti",
     featuredLabel: "Tanlov uchun — eng ishonchli sharh",
     reviewsHeading: "Talabalar tajribasi",
     reviewsSubheading: "O'qish va tanlov uchun",
     emptyTitle: "Hali sharh yo'q",
     emptyHint: "Bu universitet haqida hali talaba sharhi kelmagan. Chatda savol berishingiz mumkin.",
-    notice: "Sharh yozish faqat talabalarga. Siz o'qishingiz va taqqoslashingiz mumkin.",
+    notice: "Sharh yozish faqat talabalarga. Siz sharhlarni o'qishingiz va taqqoslashingiz mumkin.",
     defaultSort: "likes",
-    quickActions: [
-      { id: "compare", label: "Boshqa OTM bilan taqqoslash", variant: "primary" },
-      { id: "chat", label: "Chatda savol berish", variant: "secondary" },
-      { id: "popular", label: "Mashhur sharhlar", variant: "secondary" },
-    ],
     likeButtonLabel: "Foydali",
     placeholderTitle: "Universitet tanlang",
     placeholderDescription:
@@ -82,18 +78,18 @@ export function getReviewPanelContent(isStudent) {
 
 export function getReviewSortOptions(isStudent) {
   const options = [
-    { id: "newest", label: "Eng yangi" },
     { id: "likes", label: "Eng ko'p like" },
-    { id: "rating_high", label: "Yuqori baho" },
+    { id: "rating_high", label: "Eng yuqori baho" },
+    { id: "newest", label: "Eng yangi" },
     { id: "oldest", label: "Eng eski" },
   ];
   if (!isStudent) {
-    return [
-      { id: "likes", label: "Eng ishonchli (like)" },
-      { id: "rating_high", label: "Yuqori baho" },
-      { id: "newest", label: "Eng yangi" },
-      { id: "oldest", label: "Eng eski" },
-    ];
+    return options;
   }
-  return options;
+  return [
+    { id: "newest", label: "Eng yangi" },
+    { id: "likes", label: "Eng ko'p like" },
+    { id: "rating_high", label: "Eng yuqori baho" },
+    { id: "oldest", label: "Eng eski" },
+  ];
 }

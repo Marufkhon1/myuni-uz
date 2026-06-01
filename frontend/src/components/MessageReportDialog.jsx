@@ -49,10 +49,8 @@ export default function MessageReportDialog({ open, onClose, onSubmit, isSubmitt
           {REASONS.map((item) => (
             <label
               key={item.id}
-              className={`flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
-                reason === item.id
-                  ? "border-primary bg-blue-50 dark:border-primary/40 dark:bg-blue-400/10"
-                  : "border-slate-200 dark:border-white/10"
+              className={`report-reason-option ${
+                reason === item.id ? "report-reason-option--active" : "report-reason-option--idle"
               }`}
             >
               <input
@@ -82,18 +80,14 @@ export default function MessageReportDialog({ open, onClose, onSubmit, isSubmitt
           </label>
         )}
 
-        <div className="mt-5 flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-black text-slate-600 dark:border-white/15"
-          >
+        <div className="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <button type="button" onClick={onClose} className="btn-modal-secondary">
             Bekor qilish
           </button>
           <button
             type="submit"
             disabled={isSubmitting || (reason === "other" && details.trim().length < 5)}
-            className="rounded-xl bg-slate-950 px-4 py-2 text-sm font-black text-white disabled:opacity-50 dark:bg-white dark:text-slate-950"
+            className="btn-modal-primary"
           >
             {isSubmitting ? "Yuborilmoqda..." : "Yuborish"}
           </button>

@@ -83,7 +83,7 @@ class ReviewDeleteTests(TestCase):
         response = self.client.post(
             "/api/universities/reviews/",
             {
-                "university": self.university.id,
+                "university_id": self.university.id,
                 "rating": 5,
                 "text": "Abituriyent sharh yozmoqchi — bu bloklanishi kerak.",
             },

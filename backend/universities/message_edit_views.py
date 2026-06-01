@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .chat_permissions import user_is_university_member
+from .chat_community_utils import extract_hashtags
 from .models import ChatMessage, DirectMessage
 from .serializers import ChatMessageCreateSerializer, ChatMessageSerializer, DirectMessageSerializer
 
@@ -34,8 +35,9 @@ class UniversityMessageEditView(APIView):
         serializer = ChatMessageCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         message.text = serializer.validated_data["text"]
+        message.tags = extract_hashtags(message.text)
         message.updated_at = timezone.now()
-        message.save(update_fields=["text", "updated_at"])
+        message.save(update_fields=["text", "tags", "updated_at"])
 
         return Response(ChatMessageSerializer(message, context={"request": request}).data)
 

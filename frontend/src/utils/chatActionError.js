@@ -1,14 +1,15 @@
 const CHAT_ERROR_DISPLAY_MS = 8000;
 
-export function createChatErrorReporter(setChatError) {
+export function createChatErrorReporter(showError) {
   let timerId = null;
+  let lastMessage = "";
 
   function clearChatError() {
     if (timerId !== null) {
       window.clearTimeout(timerId);
       timerId = null;
     }
-    setChatError("");
+    lastMessage = "";
   }
 
   function reportChatError(message) {
@@ -16,14 +17,13 @@ export function createChatErrorReporter(setChatError) {
       clearChatError();
       return;
     }
-    setChatError(message);
-    if (timerId !== null) {
-      window.clearTimeout(timerId);
+
+    if (message === lastMessage) {
+      return;
     }
-    timerId = window.setTimeout(() => {
-      timerId = null;
-      setChatError("");
-    }, CHAT_ERROR_DISPLAY_MS);
+
+    lastMessage = message;
+    showError(message, { duration: CHAT_ERROR_DISPLAY_MS });
   }
 
   return { reportChatError, clearChatError };

@@ -6,7 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .avatar_access import avatar_url_for_viewer
 from .chat_colors import resolve_chat_color_key
-from .models import Profile
+from .models import Notification, Profile
 
 User = get_user_model()
 
@@ -29,6 +29,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "avatar_visibility_label",
             "chat_color",
             "bio",
+            "is_moderator",
         ]
 
     def get_avatar_url(self, obj):
@@ -43,6 +44,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data["chat_color_resolved"] = resolve_chat_color_key(instance)
+        data["email_verified"] = bool(instance.email_verified_at)
         return data
 
 
@@ -164,3 +166,10 @@ class LoginSerializer(serializers.Serializer):
             "refresh": str(refresh),
             "user": UserSerializer(authenticated_user).data,
         }
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ["id", "kind", "title", "body", "link", "is_read", "metadata", "created_at"]
+        read_only_fields = fields

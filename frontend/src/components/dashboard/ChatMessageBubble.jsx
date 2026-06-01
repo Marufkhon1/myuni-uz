@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import ChatMessageContextMenu from "../chat/ChatMessageContextMenu.jsx";
+import ChatMessageText from "../chat/ChatMessageText.jsx";
 import ChatReactionPicker from "../chat/ChatReactionPicker.jsx";
 import { getAuthorColorClass } from "../../utils/chatAuthorColor.js";
 import { clampContextMenuPosition, getReactionPickerPosition } from "../../utils/chatMenuPosition.js";
@@ -17,6 +18,8 @@ export default function ChatMessageBubble({
   onEdit,
   onDelete,
   onReport,
+  onMute,
+  onTagClick,
   onPin,
   onUnpin,
   isPinned = false,
@@ -24,7 +27,7 @@ export default function ChatMessageBubble({
   isReacting = false,
   mineClassName = "bg-primary text-white",
   otherClassName = "bg-white text-slate-900 dark:bg-white/10 dark:text-white",
-  containerClassName = "max-w-[min(34rem,70%)]",
+  containerClassName = "max-w-[min(34rem,88%)] sm:max-w-[min(34rem,70%)]",
 }) {
   const isMine = message.is_mine;
   const authorId = message.author_id ?? message.sender_id;
@@ -287,6 +290,7 @@ export default function ChatMessageBubble({
           onPin={onPin}
           onUnpin={onUnpin}
           onReport={onReport}
+          onMute={onMute}
           onEdit={onEdit}
           onDelete={onDelete}
           onClose={closeMenu}
@@ -301,6 +305,8 @@ export default function ChatMessageBubble({
     createPortal(
       <div
         ref={pickerRef}
+        role="toolbar"
+        aria-label="Xabar reaksiyalari"
         className="fixed z-[190] p-2"
         style={{ top: pickerPosition.top, left: pickerPosition.left }}
         onMouseEnter={keepReactionUiVisible}
@@ -323,16 +329,19 @@ export default function ChatMessageBubble({
       <article
         ref={rootRef}
         className={`group relative w-full ${hasReactions ? "mb-5" : showHeartTrigger ? "mb-2" : ""}`}
-        onContextMenu={handleMessageContextMenu}
         onMouseEnter={handleArticleMouseEnter}
         onMouseLeave={handleArticleMouseLeave}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onTouchMove={handleTouchMove}
-        onTouchCancel={handleTouchEnd}
       >
         <div className={`flex w-full ${isMine ? "justify-end" : "justify-start"}`}>
-          <div ref={bubbleRef} className={`relative w-fit ${containerClassName}`}>
+          <div
+            ref={bubbleRef}
+            className={`relative w-fit ${containerClassName}`}
+            onContextMenu={handleMessageContextMenu}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchMove={handleTouchMove}
+            onTouchCancel={handleTouchEnd}
+          >
             <div
               className={`relative px-3 py-2 shadow-sm ${bubbleClass} ${
                 isMine ? "rounded-2xl rounded-br-md" : "rounded-2xl rounded-bl-md"
@@ -362,7 +371,7 @@ export default function ChatMessageBubble({
                   !isMine && displayName ? "mt-0.5" : ""
                 }`}
               >
-                {message.text}
+                <ChatMessageText text={message.text} onTagClick={onTagClick} />
               </p>
               <time
                 className={`mt-1 block text-[10px] font-semibold opacity-60 ${

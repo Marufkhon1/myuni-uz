@@ -27,7 +27,11 @@ export function hasRefreshToken() {
 }
 
 export async function establishAuthSession(tokens) {
-  await api.post("/auth/session/", tokens);
+  const { data } = await api.post("/auth/session/", tokens);
+  if (data.access) {
+    saveTokens({ access: data.access, refresh: data.refresh });
+  }
+  return data;
 }
 
 export async function logoutSession() {
@@ -43,7 +47,7 @@ export async function register(payload) {
   if (data.access) {
     saveTokens(data);
   }
-  return data.user;
+  return data;
 }
 
 export async function login(payload) {

@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /applicant/
+Disallow: /student/
+Disallow: /dashboard
+Disallow: /oauth/
 
-Sitemap: /api/public/sitemap.xml
+Sitemap: https://myuni.uz/api/public/sitemap.xml
