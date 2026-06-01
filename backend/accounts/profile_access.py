@@ -1,5 +1,5 @@
 from universities.chat_permissions import user_is_university_member
-from universities.models import ChatMessage, DirectThread
+from universities.models import ChatMembership, ChatMessage, DirectThread
 
 from .avatar_access import has_private_message_history
 
@@ -13,13 +13,17 @@ def target_posted_in_university_chat(target_user, university_id) -> bool:
     return ChatMessage.objects.filter(university_id=university_id, user=target_user).exists()
 
 
+def target_is_university_chat_member(target_user, university_id) -> bool:
+    return ChatMembership.objects.filter(user=target_user, university_id=university_id).exists()
+
+
 def can_view_chat_profile(viewer, target_user, university_id=None) -> bool:
     """
-    Profil faqat chat kontekstida:
+    Profil chat kontekstida ochiladi:
     - o'zingiz
-    - shaxsiy chat (thread) bo'lsa
-    - shaxsiy xabar tarixi bo'lsa
-    - guruh chatda shu universitetda kamida bitta xabar yozgan bo'lsa (ko'ruvchi a'zo)
+    - shaxsiy chat (thread) yoki shaxsiy xabar tarixi
+    - shu universitet chatida xabar yozgan foydalanuvchi
+    - shu universitet chatiga qo'shilgan a'zo
     """
     if not viewer or not getattr(viewer, "is_authenticated", False):
         return False
@@ -33,7 +37,10 @@ def can_view_chat_profile(viewer, target_user, university_id=None) -> bool:
     if university_id is None:
         return False
 
-    if not user_is_university_member(viewer, university_id):
-        return False
+    if target_posted_in_university_chat(target_user, university_id):
+        return True
 
-    return target_posted_in_university_chat(target_user, university_id)
+    if target_is_university_chat_member(target_user, university_id):
+        return True
+
+    return False

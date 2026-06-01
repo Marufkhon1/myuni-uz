@@ -65,6 +65,19 @@ function applyPageMeta(meta) {
   upsertMetaByName("twitter:image", meta.absoluteImage);
   upsertMetaByName("twitter:image:alt", meta.imageAlt);
 
+  if (meta.type === "article") {
+    if (meta.publishedTime) {
+      upsertMetaByProperty("article:published_time", meta.publishedTime);
+      upsertMetaByProperty("og:article:published_time", meta.publishedTime);
+    }
+    if (meta.modifiedTime) {
+      upsertMetaByProperty("article:modified_time", meta.modifiedTime);
+      upsertMetaByProperty("og:article:modified_time", meta.modifiedTime);
+    }
+    upsertMetaByProperty("og:article:author", meta.author);
+    upsertMetaByProperty("article:author", meta.author);
+  }
+
   upsertLink("canonical", meta.canonicalUrl);
 }
 
@@ -81,6 +94,9 @@ export function usePageMeta(options = {}) {
     imageAlt,
     type,
     robots,
+    publishedTime,
+    modifiedTime,
+    author,
   } = options;
 
   useEffect(() => {
@@ -93,9 +109,24 @@ export function usePageMeta(options = {}) {
         imageAlt,
         type,
         robots,
+        publishedTime,
+        modifiedTime,
+        author,
       })
     );
-  }, [title, description, path, pathname, image, imageAlt, type, robots]);
+  }, [
+    title,
+    description,
+    path,
+    pathname,
+    image,
+    imageAlt,
+    type,
+    robots,
+    publishedTime,
+    modifiedTime,
+    author,
+  ]);
 }
 
 export { applyPageMeta, buildPageMeta };

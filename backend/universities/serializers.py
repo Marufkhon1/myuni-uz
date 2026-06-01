@@ -1,5 +1,6 @@
 from accounts.avatar_access import avatar_url_for_request, avatar_url_for_viewer
 from accounts.chat_colors import resolve_chat_color_key
+from accounts.presence import is_user_online, resolve_user_last_seen
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import serializers
 
@@ -350,6 +351,9 @@ class MessageReportSerializer(serializers.Serializer):
 class ChatMessageSerializer(serializers.ModelSerializer):
     author_id = serializers.IntegerField(source="user.id", read_only=True)
     author = serializers.SerializerMethodField()
+    author_avatar_url = serializers.SerializerMethodField()
+    author_is_online = serializers.SerializerMethodField()
+    author_last_seen_at = serializers.SerializerMethodField()
     author_color = serializers.SerializerMethodField()
     university_id = serializers.IntegerField(source="university.id", read_only=True)
     is_mine = serializers.SerializerMethodField()
@@ -364,6 +368,9 @@ class ChatMessageSerializer(serializers.ModelSerializer):
             "university_id",
             "author_id",
             "author",
+            "author_avatar_url",
+            "author_is_online",
+            "author_last_seen_at",
             "author_color",
             "text",
             "tags",
@@ -378,6 +385,21 @@ class ChatMessageSerializer(serializers.ModelSerializer):
 
     def get_author(self, obj):
         return display_name_for_user(obj.user)
+
+    def get_author_avatar_url(self, obj):
+        request = self.context.get("request")
+        if not request:
+            return None
+        return avatar_url_for_viewer(request.user, obj.user, request=request)
+
+    def get_author_is_online(self, obj):
+        profile = getattr(obj.user, "profile", None)
+        last_seen_at = profile.last_seen_at if profile else None
+        return is_user_online(last_seen_at)
+
+    def get_author_last_seen_at(self, obj):
+        resolved = resolve_user_last_seen(obj.user)
+        return resolved.isoformat() if resolved else None
 
     def get_author_color(self, obj):
         return chat_color_for_user(obj.user)
@@ -460,6 +482,8 @@ class DirectThreadSerializer(serializers.ModelSerializer):
     other_user_id = serializers.SerializerMethodField()
     other_user_name = serializers.SerializerMethodField()
     other_user_avatar_url = serializers.SerializerMethodField()
+    other_user_is_online = serializers.SerializerMethodField()
+    other_user_last_seen_at = serializers.SerializerMethodField()
     last_message = serializers.SerializerMethodField()
     unread_count = serializers.SerializerMethodField()
     both_replied = serializers.SerializerMethodField()
@@ -473,6 +497,8 @@ class DirectThreadSerializer(serializers.ModelSerializer):
             "other_user_id",
             "other_user_name",
             "other_user_avatar_url",
+            "other_user_is_online",
+            "other_user_last_seen_at",
             "last_message",
             "updated_at",
             "unread_count",
@@ -513,6 +539,19 @@ class DirectThreadSerializer(serializers.ModelSerializer):
         if should_hide_avatar_due_to_block(other.id, request.user.id):
             return None
         return avatar_url_for_viewer(request.user, other, request=request)
+
+    def get_other_user_is_online(self, obj):
+        other = self.get_other_user(obj)
+        if not other:
+            return False
+        return is_user_online(resolve_user_last_seen(other))
+
+    def get_other_user_last_seen_at(self, obj):
+        other = self.get_other_user(obj)
+        if not other:
+            return None
+        seen_at = resolve_user_last_seen(other)
+        return seen_at.isoformat() if seen_at else None
 
     def get_other_user_blocked_by_me(self, obj):
         from .chat_community_utils import user_has_blocked_other

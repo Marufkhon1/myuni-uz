@@ -1,11 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import UniversityPublicAdmission from "../components/catalog/UniversityPublicAdmission.jsx";
-import UniversityPublicContact, {
-  UniversityMapEmbed,
-} from "../components/catalog/UniversityPublicContact.jsx";
+import UniversityPublicContact from "../components/catalog/UniversityPublicContact.jsx";
 import UniversityPublicFaculties from "../components/catalog/UniversityPublicFaculties.jsx";
-import UniversityPublicGallery from "../components/catalog/UniversityPublicGallery.jsx";
 import Footer from "../components/Footer.jsx";
 import Navbar from "../components/Navbar.jsx";
 import JsonLd from "../components/seo/JsonLd.jsx";
@@ -235,11 +232,10 @@ export default function UniversityPublicPage() {
 
   return (
     <>
-      <JsonLd id="university-json-ld" data={universitySchema} />
-      <JsonLd id="university-breadcrumb-json-ld" data={breadcrumbSchema} />
-      {reviewSchemas.map((schema, index) => (
-        <JsonLd key={`review-${index}`} id={`university-review-json-ld-${index}`} data={schema} />
-      ))}
+      <JsonLd
+        id="university-json-ld"
+        schemas={[universitySchema, breadcrumbSchema, ...reviewSchemas].filter(Boolean)}
+      />
       <div className="min-h-screen bg-[#f5f7fb] text-slate-950 transition-colors dark:bg-slateNight dark:text-white" data-seo-ready={seoReady ? "true" : undefined}>
 
       <Navbar
@@ -324,13 +320,7 @@ export default function UniversityPublicPage() {
               </p>
             )}
 
-            <UniversityPublicGallery urls={detail.gallery_urls} name={detail.name} />
             <UniversityPublicContact detail={detail} />
-            <UniversityMapEmbed
-              latitude={detail.latitude}
-              longitude={detail.longitude}
-              name={detail.name}
-            />
             <UniversityPublicFaculties faculties={detail.faculties} />
             <UniversityPublicAdmission cycles={detail.admission_cycles} />
 

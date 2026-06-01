@@ -3,6 +3,7 @@ import ReviewAspectRatings from "../reviews/ReviewAspectRatings.jsx";
 import { formatStarRatingLabel } from "../../utils/starRatingA11y.js";
 import { getUniversityImageUrl } from "../../utils/universityImage.js";
 import ReviewRatingDistribution from "./ReviewRatingDistribution.jsx";
+import { FractionalStars } from "../ui/StarRatingDisplay.jsx";
 
 function formatDecimalRating(value) {
   if (value == null) {
@@ -26,20 +27,11 @@ function MetaPill({ children }) {
 function StarDisplay({ rating, size = "sm" }) {
   const starSize = size === "lg" ? "text-lg" : "text-sm";
   return (
-    <div className={`flex gap-0.5 ${starSize}`} aria-hidden="true">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span
-          key={star}
-          className={
-            rating != null && star <= Math.round(rating)
-              ? "text-amber-400"
-              : "text-slate-200 dark:text-slate-700"
-          }
-        >
-          ★
-        </span>
-      ))}
-    </div>
+    <FractionalStars
+      rating={rating}
+      starClassName={starSize}
+      emptyStarClassName="text-slate-200 dark:text-slate-700"
+    />
   );
 }
 

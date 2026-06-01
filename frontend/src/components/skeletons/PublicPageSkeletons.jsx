@@ -23,10 +23,10 @@ export function UniversityPublicPageSkeleton() {
   );
 }
 
-export function BlogListSkeleton() {
+export function BlogListSkeleton({ className = "" }) {
   return (
     <ul
-      className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      className={`mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 ${className}`.trim()}
       aria-busy="true"
       aria-label="Maqolalar yuklanmoqda"
     >

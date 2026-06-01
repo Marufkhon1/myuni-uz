@@ -38,16 +38,26 @@ class CommunityChatTests(TestCase):
         self.other_token = str(RefreshToken.for_user(self.other_member).access_token)
         self.outsider_token = str(RefreshToken.for_user(self.outsider).access_token)
 
-    def test_non_member_gets_empty_messages(self):
+    def test_non_member_can_read_messages(self):
+        ChatMessage.objects.create(
+            university=self.university,
+            user=self.member,
+            text="Ko'rish uchun ochiq xabar",
+        )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.outsider_token}")
         response = self.client.get(f"/api/universities/{self.university.id}/messages/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"messages": [], "pinned": None})
+        payload = response.json()
+        self.assertEqual(len(payload["messages"]), 1)
+        self.assertEqual(payload["messages"][0]["text"], "Ko'rish uchun ochiq xabar")
 
-    def test_non_member_cannot_view_members(self):
+    def test_non_member_can_view_members(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.outsider_token}")
         response = self.client.get(f"/api/universities/{self.university.id}/members/")
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["member_count"], 2)
+        self.assertEqual(len(payload["members"]), 2)
 
     def test_message_extracts_hashtags(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.member_token}")
@@ -215,3 +225,16 @@ class CommunityChatTests(TestCase):
         )
         response = self.client.get("/api/public/sitemap.xml")
         self.assertIn("sitemap-savol", response.content.decode())
+
+    def test_joined_chats_typing_lists_other_member(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.other_token}")
+        typing_response = self.client.post(f"/api/universities/{self.university.id}/typing/")
+        self.assertEqual(typing_response.status_code, 200)
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.member_token}")
+        response = self.client.get("/api/universities/joined/typing/")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        users = payload["typing"][str(self.university.id)]
+        self.assertEqual(len(users), 1)
+        self.assertEqual(users[0]["id"], self.other_member.id)

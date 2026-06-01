@@ -94,12 +94,19 @@ export default function UniversitiesDirectoryPage() {
     applyFilters({ ...DEFAULT_CATALOG_FILTERS });
   }
 
+  const seoReady = !loading;
+
   return (
     <MainLayout>
-      <JsonLd id="universities-breadcrumb-json-ld" data={breadcrumbSchema} />
-      <JsonLd id="universities-webpage-json-ld" data={webPageSchema} />
+      <JsonLd
+        id="universities-json-ld"
+        schemas={[breadcrumbSchema, webPageSchema].filter(Boolean)}
+      />
 
-      <div className="container-shell pb-16 pt-24 sm:pt-28 lg:pt-32">
+      <div
+        className="container-shell pb-16 pt-24 sm:pt-28 lg:pt-32"
+        data-seo-ready={seoReady ? "true" : undefined}
+      >
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Katalog</p>

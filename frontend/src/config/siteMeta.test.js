@@ -3,6 +3,7 @@ import {
   buildCanonicalUrl,
   buildPageMeta,
   normalizeCanonicalPath,
+  resolveArticleCoverImage,
   truncateMetaDescription,
 } from "../config/siteMeta.js";
 
@@ -35,5 +36,12 @@ describe("siteMeta", () => {
     expect(meta.title).toBe("Test | MyUni.uz");
     expect(meta.absoluteImage).toContain("/images/campuses/campus-02.jpg");
     expect(meta.imageAlt).toBe("Test university");
+  });
+
+  it("resolveArticleCoverImage normalizes production URLs to local paths", () => {
+    expect(resolveArticleCoverImage("https://myuni.uz/images/campuses/campus-02.jpg")).toBe(
+      "/images/campuses/campus-02.jpg"
+    );
+    expect(resolveArticleCoverImage("")).toContain("/images/campuses/");
   });
 });

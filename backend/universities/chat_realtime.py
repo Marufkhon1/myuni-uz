@@ -87,6 +87,7 @@ def get_typing_users(cache_key, exclude_user_id=None):
                     "id": int(user_id),
                     "name": item["name"],
                     "color": item.get("color"),
+                    "at": item.get("at"),
                 }
             )
     return active
@@ -187,8 +188,7 @@ def university_message_stream(request, university_id):
                 idle_ticks += 1
 
             typing = get_typing_users(typing_cache_key(university_id), exclude_user_id=user.id)
-            if typing:
-                yield sse_event("typing", {"users": typing})
+            yield sse_event("typing", {"users": typing})
 
             time.sleep(0.8)
 
@@ -257,8 +257,7 @@ def direct_message_stream(request, thread_id):
                 idle_ticks += 1
 
             typing = get_typing_users(direct_typing_cache_key(thread_id), exclude_user_id=user.id)
-            if typing:
-                yield sse_event("typing", {"users": typing})
+            yield sse_event("typing", {"users": typing})
 
             time.sleep(0.8)
 

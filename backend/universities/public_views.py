@@ -463,7 +463,6 @@ class PublicSitemapView(APIView):
             "signup",
             "universitetlar",
             "universitetlar/xarita",
-            "maqolalar",
             "savollar-javob",
             "foydalanish-shartlari",
             "maxfiylik-siyosati",
@@ -477,13 +476,6 @@ class PublicSitemapView(APIView):
         for slug in University.objects.order_by("name").values_list("slug", flat=True):
             urls.append(
                 f"  <url><loc>{base}/universitet/{slug}</loc><changefreq>weekly</changefreq></url>"
-            )
-
-        for slug in Article.objects.filter(status=Article.Status.PUBLISHED).values_list(
-            "slug", flat=True
-        ):
-            urls.append(
-                f"  <url><loc>{base}/maqolalar/{slug}</loc><changefreq>monthly</changefreq></url>"
             )
 
         for slug in FAQItem.objects.filter(is_published=True).values_list("slug", flat=True):

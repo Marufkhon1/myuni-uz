@@ -15,6 +15,16 @@ export async function getJoinedUniversityIds() {
   return data.university_ids ?? [];
 }
 
+export async function getJoinedChatsTyping() {
+  const { data } = await api.get("/universities/joined/typing/");
+  return data;
+}
+
+export async function getDirectThreadsTyping() {
+  const { data } = await api.get("/universities/directs/typing/");
+  return data;
+}
+
 export async function getUniversityMembers(universityId) {
   const { data } = await api.get(`/universities/${universityId}/members/`);
   return data;

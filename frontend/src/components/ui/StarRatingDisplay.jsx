@@ -1,5 +1,51 @@
 import { formatStarRatingLabel } from "../../utils/starRatingA11y.js";
 
+export function FractionalStars({
+  rating,
+  max = 5,
+  starClassName = "",
+  emptyStarClassName = "text-amber-200 dark:text-amber-500/25",
+  filledStarClassName = "text-amber-400",
+}) {
+  const clamped = Math.min(max, Math.max(0, Number(rating) || 0));
+
+  return (
+    <span className="inline-flex items-center leading-none" aria-hidden="true">
+      {Array.from({ length: max }, (_, index) => {
+        const fill = Math.min(1, Math.max(0, clamped - index));
+
+        if (fill >= 1) {
+          return (
+            <span key={index} className={`${filledStarClassName} ${starClassName}`}>
+              ★
+            </span>
+          );
+        }
+
+        if (fill <= 0) {
+          return (
+            <span key={index} className={`${emptyStarClassName} ${starClassName}`}>
+              ★
+            </span>
+          );
+        }
+
+        return (
+          <span key={index} className={`relative inline-block leading-none ${starClassName}`}>
+            <span className={emptyStarClassName}>★</span>
+            <span
+              className={`absolute inset-y-0 left-0 overflow-hidden whitespace-nowrap ${filledStarClassName}`}
+              style={{ width: `${fill * 100}%` }}
+            >
+              ★
+            </span>
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
 export default function StarRatingDisplay({
   rating,
   max = 5,
@@ -19,7 +65,6 @@ export default function StarRatingDisplay({
   }
 
   const numeric = Number(rating);
-  const filled = Math.min(max, Math.max(0, Math.round(numeric)));
   const label = formatStarRatingLabel(numeric, { max, emptyLabel });
   const formatted = numeric % 1 === 0 ? String(numeric) : numeric.toFixed(1);
 
@@ -30,10 +75,7 @@ export default function StarRatingDisplay({
         role="img"
         aria-label={label}
       >
-        <span className={`leading-none text-amber-400 ${starClassName}`} aria-hidden="true">
-          {"★".repeat(filled)}
-          {"☆".repeat(max - filled)}
-        </span>
+        <FractionalStars rating={numeric} max={max} starClassName={starClassName} />
         {showNumeric && (
           <span className={numericClassName} aria-hidden="true">
             {formatted}/{max}
@@ -45,9 +87,7 @@ export default function StarRatingDisplay({
 
   return (
     <span className={`inline-flex items-center ${className}`} role="img" aria-label={label}>
-      <span className={`text-amber-400 ${starClassName}`} aria-hidden="true">
-        {"★".repeat(filled)}
-      </span>
+      <FractionalStars rating={numeric} max={max} starClassName={starClassName} />
       {showNumeric && (
         <span className={numericClassName} aria-hidden="true">
           {formatted}/{max}

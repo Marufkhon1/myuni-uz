@@ -1,3 +1,5 @@
+import OfficeMapEmbed from "../OfficeMapEmbed.jsx";
+
 export default function UniversityPublicContact({ detail }) {
   const items = [
     { label: "Manzil", value: detail.address || detail.location, href: null },
@@ -42,25 +44,16 @@ export default function UniversityPublicContact({ detail }) {
 }
 
 export function UniversityMapEmbed({ latitude, longitude, name }) {
-  if (latitude == null || longitude == null) {
-    return null;
-  }
-
-  const delta = 0.04;
-  const bbox = [longitude - delta, latitude - delta, longitude + delta, latitude + delta].join("%2C");
-  const src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${latitude}%2C${longitude}`;
-
   return (
     <section className="border-b border-slate-100 px-5 py-5 dark:border-white/10 sm:px-6">
       <p className="text-xs font-black uppercase tracking-wide text-primary">Xarita</p>
-      <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10">
-        <iframe
-          title={`${name} joylashuvi`}
-          src={src}
-          className="h-64 w-full border-0 sm:h-80"
-          loading="lazy"
-        />
-      </div>
+      <OfficeMapEmbed
+        latitude={latitude}
+        longitude={longitude}
+        title={`${name} joylashuvi`}
+        className="mt-3"
+        frameClassName="h-64 w-full border-0 sm:h-80"
+      />
     </section>
   );
 }

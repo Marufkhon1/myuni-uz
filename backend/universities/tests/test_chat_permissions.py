@@ -31,12 +31,21 @@ class ChatPermissionTests(TestCase):
         self.outsider_token = str(RefreshToken.for_user(self.outsider).access_token)
 
     def test_non_member_can_preview_university_messages(self):
+        from universities.models import ChatMessage
+
+        ChatMessage.objects.create(
+            university=self.university,
+            user=self.member,
+            text="Preview xabar",
+        )
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.outsider_token}")
         response = self.client.get(
             f"/api/universities/{self.university.id}/messages/"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"messages": [], "pinned": None})
+        payload = response.json()
+        self.assertEqual(len(payload["messages"]), 1)
+        self.assertEqual(payload["messages"][0]["text"], "Preview xabar")
 
     def test_non_member_cannot_post_university_message(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.outsider_token}")

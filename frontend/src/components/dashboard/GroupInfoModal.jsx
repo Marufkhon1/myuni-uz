@@ -1,7 +1,7 @@
 import UniversityCampusBanner from "../UniversityCampusBanner.jsx";
 import UniversityAvatar from "../UniversityAvatar.jsx";
 import UniversityMetaLine from "../UniversityMetaLine.jsx";
-import UserAvatar from "./UserAvatar.jsx";
+import UserAvatarWithPresence from "./UserAvatarWithPresence.jsx";
 import ModalOverlay from "../ui/ModalOverlay.jsx";
 
 export default function GroupInfoModal({
@@ -71,12 +71,16 @@ export default function GroupInfoModal({
             ) : (
               <ul className="mt-3 divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 dark:divide-white/10 dark:border-white/10">
                 {members.map((member) => {
+                  const showPresence = hasJoined && member.has_joined_chat;
                   const rowContent = (
                     <>
-                      <UserAvatar
+                      <UserAvatarWithPresence
                         name={member.display_name}
                         avatarUrl={member.avatar_url}
                         size="md"
+                        isOnline={member.is_online}
+                        lastSeenAt={member.last_seen_at}
+                        showPresence={showPresence}
                       />
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-black">{member.display_name}</p>
@@ -93,13 +97,8 @@ export default function GroupInfoModal({
                             {member.bio}
                           </p>
                         )}
-                        {!member.can_open_profile && !member.is_me && (
-                          <p className="mt-1 text-xs font-semibold text-slate-400">
-                            Hali chatda xabar yo&apos;q
-                          </p>
-                        )}
                       </div>
-                      {member.can_open_profile && (
+                      {!member.is_me && (
                         <span className="shrink-0 text-slate-400">›</span>
                       )}
                     </>
@@ -107,7 +106,11 @@ export default function GroupInfoModal({
 
                   return (
                     <li key={member.id}>
-                      {member.can_open_profile ? (
+                      {member.is_me ? (
+                        <div className="flex w-full items-center gap-4 px-4 py-3 text-left opacity-90">
+                          {rowContent}
+                        </div>
+                      ) : (
                         <button
                           type="button"
                           onClick={() => onMemberClick(member)}
@@ -115,10 +118,6 @@ export default function GroupInfoModal({
                         >
                           {rowContent}
                         </button>
-                      ) : (
-                        <div className="flex w-full items-center gap-4 px-4 py-3 text-left opacity-90">
-                          {rowContent}
-                        </div>
                       )}
                     </li>
                   );

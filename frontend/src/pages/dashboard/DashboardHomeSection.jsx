@@ -99,6 +99,7 @@ export default function DashboardHomeSection({
   onOpenUniversityReviews,
   onOpenComparePair,
   onOpenPrivateThread,
+  getUniversityTypingUsers,
 }) {
   const homeContent = getDashboardHomeContent();
   const quickActions = getDashboardHomeQuickActions(isStudent);
@@ -159,6 +160,7 @@ export default function DashboardHomeSection({
                     isSelected={false}
                     isJoined
                     onSelect={onOpenUniversityChat}
+                    typingUsers={getUniversityTypingUsers?.(university.id) ?? []}
                   />
                 ))}
               </div>

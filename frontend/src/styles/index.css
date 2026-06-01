@@ -64,6 +64,43 @@ body {
     @apply inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-semibold text-primary dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-200;
   }
 
+  .nav-links {
+    @apply flex max-w-full items-center justify-center gap-0.5 overflow-x-auto [scrollbar-width:none] 2xl:gap-2 [&::-webkit-scrollbar]:hidden;
+  }
+
+  .nav-link {
+    @apply relative inline-flex shrink-0 whitespace-nowrap px-2 py-1.5 text-[13px] font-semibold text-slate-600 transition-colors duration-200 2xl:px-2.5 2xl:text-sm dark:text-slate-300;
+  }
+
+  .nav-link::after {
+    content: "";
+    @apply absolute inset-x-2 -bottom-0.5 h-0.5 scale-x-0 rounded-full bg-primary transition-transform duration-200 dark:bg-blue-300;
+  }
+
+  .nav-link:hover {
+    @apply text-primary dark:text-white;
+  }
+
+  .nav-link:hover::after {
+    @apply scale-x-100;
+  }
+
+  .nav-link-active {
+    @apply font-bold text-primary dark:text-blue-200;
+  }
+
+  .nav-link-active::after {
+    @apply scale-x-100;
+  }
+
+  .nav-link-mobile {
+    @apply flex items-center rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:text-primary dark:text-slate-200 dark:hover:text-white;
+  }
+
+  .nav-link-mobile-active {
+    @apply font-bold text-primary dark:text-blue-200;
+  }
+
   .custom-select-menu {
     scrollbar-width: thin;
     scrollbar-color: rgba(37, 99, 235, 0.35) transparent;
@@ -380,6 +417,80 @@ body {
     @apply -translate-y-1 border-primary/30 shadow-glow;
   }
 
+  .partner-logo-card:hover .partner-logo-image {
+    @apply grayscale-0 opacity-100;
+  }
+
+  .partners-marquee {
+    overflow: hidden;
+    mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  }
+
+  .partners-track {
+    display: flex;
+    width: max-content;
+    gap: 1rem;
+    animation: partners-scroll 48s linear infinite;
+  }
+
+  .partners-track--reverse {
+    animation-direction: reverse;
+    animation-duration: 54s;
+  }
+
+  .partners-marquee:hover .partners-track {
+    animation-play-state: paused;
+  }
+
+  .partner-logo-image {
+    @apply grayscale opacity-90 transition duration-300;
+  }
+
+  .demo-device-shell {
+    @apply relative mx-auto w-full max-w-[min(100%,420px)] rounded-[2rem] border-[6px] border-slate-900/90 bg-slate-900 p-2 shadow-2xl dark:border-slate-700 lg:max-w-none lg:rounded-[1.35rem] lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none;
+  }
+
+  .demo-device-notch {
+    @apply mx-auto mb-2 h-1.5 w-16 rounded-full bg-slate-800 lg:hidden;
+  }
+
+  .demo-stage {
+    @apply relative overflow-hidden rounded-[2rem] border border-slate-200/80 bg-gradient-to-br from-slate-50 via-white to-blue-50/40 p-1 shadow-[0_24px_80px_-24px_rgba(37,99,235,0.25)] dark:border-white/10 dark:from-slate-900 dark:via-slateNight dark:to-blue-950/30;
+  }
+
+  .demo-stage-glow {
+    @apply pointer-events-none absolute -inset-px rounded-[2rem] bg-gradient-to-br from-blue-500/20 via-violet-500/10 to-cyan-400/10 opacity-80 blur-sm;
+  }
+
+  .demo-window {
+    @apply relative overflow-hidden rounded-[1.25rem] border border-slate-200/90 bg-white/95 shadow-glow backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/95;
+  }
+
+  .demo-window-grid {
+    background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.18) 1px, transparent 0);
+    background-size: 20px 20px;
+  }
+
+  .demo-timeline-segment {
+    @apply h-1 flex-1 overflow-hidden rounded-full bg-slate-200/90 dark:bg-white/10;
+  }
+
+  .demo-timeline-fill {
+    @apply h-full rounded-full bg-premium-gradient transition-[width] duration-100 ease-linear;
+  }
+
+  .demo-step-rail {
+    @apply absolute left-[1.65rem] top-10 bottom-10 w-px bg-gradient-to-b from-primary/40 via-slate-200 to-transparent dark:via-white/10;
+  }
+
+  .demo-scene-progress {
+    @apply h-1 overflow-hidden rounded-full bg-slate-200 dark:bg-white/10;
+  }
+
+  .demo-scene-progress-fill {
+    @apply h-full rounded-full bg-premium-gradient transition-[width] duration-100 ease-linear;
+  }
+
   .demo-panel-scroll {
     scrollbar-width: thin;
     scrollbar-color: rgba(148, 163, 184, 0.38) transparent;
@@ -492,6 +603,15 @@ body {
   }
 }
 
+@keyframes partners-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -527,6 +647,17 @@ body {
   }
 
   .social-proof-marquee {
+    mask-image: none;
+  }
+
+  .partners-track {
+    animation: none;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .partners-marquee {
     mask-image: none;
   }
 }

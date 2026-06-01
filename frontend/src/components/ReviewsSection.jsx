@@ -295,7 +295,11 @@ export default function ReviewsSection() {
                   <ReviewAspectRatings item={review} variant="chip" />
                 </div>
                 <div className="mt-5 flex shrink-0 items-center justify-between gap-3">
-                  <StarRatingDisplay rating={review.rating} />
+                  <StarRatingDisplay
+                    rating={review.rating}
+                    starClassName="text-base leading-none tracking-tight"
+                    numericClassName="ml-2 text-xs font-black text-slate-500 dark:text-slate-400"
+                  />
                   <p className="text-xs font-bold text-slate-500">
                     Foydali: {review.helpful_count ?? review.like_count ?? 0}
                   </p>

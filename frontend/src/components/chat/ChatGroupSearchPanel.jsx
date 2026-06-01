@@ -8,13 +8,16 @@ export default function ChatGroupSearchPanel({
   onQueryChange,
   onClose,
   university,
+  thread,
   results,
   onSelectMessage,
   isPhone = false,
   className = "",
 }) {
   const trimmedQuery = query.trim();
-  const groupTitle = university?.short_name || university?.name || "Guruh";
+  const contextTitle = thread
+    ? thread.other_user_name || "Shaxsiy chat"
+    : university?.short_name || university?.name || "Guruh";
 
   return (
     <aside
@@ -69,9 +72,17 @@ export default function ChatGroupSearchPanel({
 
         <p className="mt-3 text-xs font-semibold text-slate-500 dark:text-slate-400">Xabarlarni qidirish</p>
         <div className="mt-2 flex items-center gap-2 rounded-xl bg-slate-50 px-2 py-2 dark:bg-[#242f3d]">
-          {university && <UniversityAvatar university={university} size="xs" />}
+          {thread ? (
+            <UserAvatar
+              name={thread.other_user_name}
+              avatarUrl={thread.other_user_avatar_url}
+              size="xs"
+            />
+          ) : (
+            university && <UniversityAvatar university={university} size="xs" />
+          )}
           <span className="min-w-0 flex-1 truncate text-sm font-black text-slate-800 dark:text-white">
-            {groupTitle}
+            {contextTitle}
           </span>
         </div>
       </div>
@@ -104,14 +115,14 @@ export default function ChatGroupSearchPanel({
                     className="flex w-full gap-3 px-4 py-3 text-left transition hover:bg-slate-50 dark:hover:bg-[#202b36]"
                   >
                     <UserAvatar
-                      name={item.author}
-                      avatarUrl={item.author_avatar_url}
+                      name={item.author || item.sender_name}
+                      avatarUrl={item.author_avatar_url || item.sender_avatar_url}
                       size="sm"
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
                         <span className="truncate font-black text-slate-900 dark:text-white">
-                          {item.author || "Foydalanuvchi"}
+                          {item.author || item.sender_name || "Foydalanuvchi"}
                         </span>
                         <time
                           dateTime={item.created_at}

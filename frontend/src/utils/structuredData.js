@@ -2,6 +2,7 @@ import {
   DEFAULT_DESCRIPTION,
   SITE_NAME,
   buildCanonicalUrl,
+  resolveArticleCoverImage,
   resolveAbsoluteUrl,
   truncateMetaDescription,
 } from "../config/siteMeta.js";
@@ -21,7 +22,12 @@ export function buildOrganizationSchema({
   };
 }
 
-export function buildWebSiteSchema({ description } = {}) {
+export function buildWebSiteSchema({ description, searchPath = "/universitetlar" } = {}) {
+  const searchUrl = buildCanonicalUrl(searchPath);
+  const searchTarget = searchUrl.includes("?")
+    ? `${searchUrl}&q={search_term_string}`
+    : `${searchUrl}?q={search_term_string}`;
+
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -33,6 +39,14 @@ export function buildWebSiteSchema({ description } = {}) {
       "@type": "Organization",
       name: SITE_NAME,
       url: buildCanonicalUrl("/"),
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: searchTarget,
+      },
+      "query-input": "required name=search_term_string",
     },
   };
 }
@@ -131,7 +145,7 @@ export function buildArticleSchema({ article, slug }) {
   if (!article || !slug) {
     return null;
   }
-  const image = article.cover_image || "/images/campuses/campus-01.jpg";
+  const image = resolveArticleCoverImage(article.cover_image);
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -176,5 +190,62 @@ export function buildWebPageSchema({ title, description, path }) {
       name: SITE_NAME,
       url: buildCanonicalUrl("/"),
     },
+  };
+}
+
+export function buildBlogListSchema(articles = []) {
+  if (!articles.length) {
+    return null;
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "MyUni.uz maqolalari",
+    url: buildCanonicalUrl("/maqolalar"),
+    numberOfItems: articles.length,
+    itemListElement: articles.map((article, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: buildCanonicalUrl(`/maqolalar/${article.slug}`),
+      item: {
+        "@type": "BlogPosting",
+        headline: article.title,
+        description: article.excerpt || truncateMetaDescription(article.body),
+        url: buildCanonicalUrl(`/maqolalar/${article.slug}`),
+        datePublished: article.published_at || article.created_at,
+        image: resolveAbsoluteUrl(resolveArticleCoverImage(article.cover_image)),
+      },
+    })),
+  };
+}
+
+/** XSS-safe JSON-LD serialization (Next.js / Google tavsiyasi). */
+export function serializeJsonLd(data) {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
+/** Bir nechta schema.org obyektini bitta @graph ga birlashtiradi. */
+export function buildJsonLdGraph(schemas = []) {
+  const nodes = schemas
+    .filter(Boolean)
+    .map((schema) => {
+      const copy = { ...schema };
+      delete copy["@context"];
+      return copy;
+    });
+
+  if (!nodes.length) {
+    return null;
+  }
+  if (nodes.length === 1) {
+    return {
+      "@context": "https://schema.org",
+      ...nodes[0],
+    };
+  }
+  return {
+    "@context": "https://schema.org",
+    "@graph": nodes,
   };
 }

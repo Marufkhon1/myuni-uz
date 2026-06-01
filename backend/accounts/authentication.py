@@ -2,9 +2,21 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import AuthenticationFailed, InvalidToken
 
 from .auth_cookies import ACCESS_COOKIE_NAME, REFRESH_COOKIE_NAME
+from .presence import touch_user_last_seen
 
 
-class CookieJWTAuthentication(JWTAuthentication):
+def _touch_presence(result):
+    if result is not None:
+        touch_user_last_seen(result[0])
+    return result
+
+
+class PresenceJWTAuthentication(JWTAuthentication):
+    def authenticate(self, request):
+        return _touch_presence(super().authenticate(request))
+
+
+class CookieJWTAuthentication(PresenceJWTAuthentication):
     """JWT from Authorization header or httpOnly access cookie."""
 
     def authenticate(self, request):
@@ -24,7 +36,9 @@ class CookieJWTAuthentication(JWTAuthentication):
         except InvalidToken:
             return None
 
-        return self.get_user(validated_token), validated_token
+        user = self.get_user(validated_token)
+        touch_user_last_seen(user)
+        return user, validated_token
 
 
 def get_refresh_token_from_request(request):

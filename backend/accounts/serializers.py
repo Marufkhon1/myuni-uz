@@ -7,6 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .avatar_access import avatar_url_for_viewer
 from .chat_colors import resolve_chat_color_key
 from .models import Notification, Profile
+from .presence import is_user_online, resolve_user_last_seen
 
 User = get_user_model()
 
@@ -73,6 +74,8 @@ class PublicUserSerializer(serializers.ModelSerializer):
     university = serializers.CharField(source="profile.university", read_only=True)
     study_program = serializers.CharField(source="profile.study_program", read_only=True)
     bio = serializers.CharField(source="profile.bio", read_only=True)
+    last_seen_at = serializers.SerializerMethodField()
+    is_online = serializers.SerializerMethodField()
     blocked_by_me = serializers.SerializerMethodField()
     has_block_relationship = serializers.SerializerMethodField()
 
@@ -87,6 +90,8 @@ class PublicUserSerializer(serializers.ModelSerializer):
             "university",
             "study_program",
             "bio",
+            "last_seen_at",
+            "is_online",
             "blocked_by_me",
             "has_block_relationship",
         ]
@@ -100,6 +105,16 @@ class PublicUserSerializer(serializers.ModelSerializer):
         if should_hide_avatar_due_to_block(obj.id, request.user.id):
             return None
         return avatar_url_for_viewer(request.user, obj, request=request)
+
+    def get_last_seen_at(self, obj):
+        seen_at = resolve_user_last_seen(obj)
+        return seen_at.isoformat() if seen_at else None
+
+    def get_is_online(self, obj):
+        profile = getattr(obj, "profile", None)
+        if profile and profile.last_seen_at:
+            return is_user_online(profile.last_seen_at)
+        return False
 
     def get_blocked_by_me(self, obj):
         request = self.context.get("request")

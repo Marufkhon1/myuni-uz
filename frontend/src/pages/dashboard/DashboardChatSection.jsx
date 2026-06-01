@@ -5,13 +5,14 @@ import ChatGroupJoinBar from "../../components/chat/ChatGroupJoinBar.jsx";
 import ChatGroupSearchPanel from "../../components/chat/ChatGroupSearchPanel.jsx";
 import PinnedMessageBar from "../../components/chat/PinnedMessageBar.jsx";
 import TypingUsersLine from "../../components/chat/TypingUsersLine.jsx";
+import PrivateChatHeaderStatus from "../../components/chat/PrivateChatHeaderStatus.jsx";
 import ChatUniversityRow from "../../components/ChatUniversityRow.jsx";
 import EmptyState from "../../components/ui/EmptyState.jsx";
 import ChatMessageBubble from "../../components/dashboard/ChatMessageBubble.jsx";
 import DashboardIcon from "../../components/dashboard/DashboardIcon.jsx";
 import GroupInfoModal from "../../components/dashboard/GroupInfoModal.jsx";
 import ProfileModal from "../../components/dashboard/ProfileModal.jsx";
-import UserAvatar from "../../components/dashboard/UserAvatar.jsx";
+import UserAvatarWithPresence from "../../components/dashboard/UserAvatarWithPresence.jsx";
 import { chatTabs } from "../../components/dashboard/dashboardConstants.js";
 import { getAuthorColorClass } from "../../utils/chatAuthorColor.js";
 import { joinedUniversityIdsHas, sameUniversityId } from "../../utils/universityIds.js";
@@ -19,6 +20,9 @@ import { joinedUniversityIdsHas, sameUniversityId } from "../../utils/university
 export default function DashboardChatSection(p) {
   const privateInputRef = useRef(null);
   const groupInputRef = useRef(null);
+  const isPrivateThreadMuted =
+    Boolean(p.selectedThread?.other_user_id) &&
+    Boolean(p.isChatUserMuted?.(p.selectedThread.other_user_id, "private"));
 
   useEffect(() => {
     if (p.editingChatMessage?.scope === "private") {
@@ -141,6 +145,7 @@ export default function DashboardChatSection(p) {
                           isSelected={sameUniversityId(p.selectedUniversityId, university.id)}
                           isJoined={joinedUniversityIdsHas(p.joinedUniversityIds, university.id)}
                           onSelect={p.selectUniversityChat}
+                          typingUsers={p.getUniversityTypingUsers?.(university.id) ?? []}
                         />
                       ))
                     )}
@@ -155,8 +160,15 @@ export default function DashboardChatSection(p) {
                   }`}
                 >
                   {p.chatPanel === "private" && p.selectedThread ? (
-                    <div className={p.chatPanelInnerClass}>
-                      <div className="border-b border-slate-200 p-4 sm:p-6 dark:border-white/10">
+                    <div
+                      className={`${p.chatPanelInnerClass} ${
+                        p.isPrivateChatSearchOpen && !p.isPhone ? "md:flex-row" : ""
+                      }`}
+                    >
+                      {!(p.isPhone && p.isPrivateChatSearchOpen) && (
+                        <>
+                    <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+                      <div className="border-b border-slate-200 p-4 sm:px-5 dark:border-white/10">
                         {p.isPhone && (
                           <button
                             type="button"
@@ -166,34 +178,96 @@ export default function DashboardChatSection(p) {
                             ← Ro&apos;yxat
                           </button>
                         )}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (p.selectedThread.other_user_id) {
-                              p.openUserProfile(
-                                p.selectedThread.other_user_id,
-                                {
-                                  display_name: p.selectedThread.other_user_name,
-                                  avatar_url: p.selectedThread.other_user_avatar_url,
-                                },
-                                {}
-                              );
-                            }
-                          }}
-                          className="flex w-full items-center gap-4 rounded-2xl text-left transition hover:bg-slate-50 dark:hover:bg-white/5"
-                        >
-                          <UserAvatar
-                            name={p.selectedThread.other_user_name}
-                            avatarUrl={p.selectedThread.other_user_avatar_url}
-                            size="lg"
-                          />
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-black uppercase tracking-[0.18em] text-primary">Shaxsiy chat</p>
-                            <h2 className="mt-1 truncate text-2xl font-black sm:text-3xl hover:text-primary">
-                              {p.selectedThread.other_user_name}
-                            </h2>
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (p.selectedThread.other_user_id) {
+                                p.openUserProfile(
+                                  p.selectedThread.other_user_id,
+                                  {
+                                    display_name: p.selectedThread.other_user_name,
+                                    avatar_url: p.selectedThread.other_user_avatar_url,
+                                  },
+                                  {}
+                                );
+                              }
+                            }}
+                            className="flex min-w-0 flex-1 items-center gap-3 rounded-2xl text-left transition hover:bg-slate-50 dark:hover:bg-white/5 sm:gap-4"
+                          >
+                            <UserAvatarWithPresence
+                              name={p.selectedThread.other_user_name}
+                              avatarUrl={p.selectedThread.other_user_avatar_url}
+                              size="lg"
+                              isOnline={p.selectedThread.other_user_is_online}
+                              lastSeenAt={p.selectedThread.other_user_last_seen_at}
+                              showPresence
+                            />
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-black uppercase tracking-[0.18em] text-primary sm:text-sm">
+                                Shaxsiy chat
+                              </p>
+                              <h2 className="mt-1 truncate text-xl font-black sm:text-2xl lg:text-3xl hover:text-primary">
+                                {p.selectedThread.other_user_name}
+                              </h2>
+                              <PrivateChatHeaderStatus
+                                isTyping={p.privateTypingUsers?.length > 0}
+                                isOnline={p.selectedThread.other_user_is_online}
+                                lastSeenAt={p.selectedThread.other_user_last_seen_at}
+                              />
+                            </div>
+                          </button>
+
+                          <div className="flex shrink-0 items-center gap-2">
+                            {p.selectedThread?.other_user_id ? (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  p.onMuteChatUser?.(
+                                    { author_id: p.selectedThread.other_user_id },
+                                    "private"
+                                  )
+                                }
+                                className={`grid h-10 w-10 place-items-center rounded-full transition ${
+                                  isPrivateThreadMuted
+                                    ? "bg-primary/15 text-primary"
+                                    : "text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/10"
+                                }`}
+                                title={
+                                  isPrivateThreadMuted
+                                    ? "Bildirishnomalarni yoqish"
+                                    : "Bildirishnomalarni o'chirish"
+                                }
+                                aria-label={
+                                  isPrivateThreadMuted
+                                    ? "Bildirishnomalarni yoqish"
+                                    : "Bildirishnomalarni o'chirish"
+                                }
+                                aria-pressed={isPrivateThreadMuted}
+                              >
+                                <DashboardIcon name={isPrivateThreadMuted ? "bell-off" : "bell"} />
+                              </button>
+                            ) : null}
+
+                            <button
+                              type="button"
+                              onClick={() =>
+                                p.isPrivateChatSearchOpen
+                                  ? p.closePrivateChatSearch()
+                                  : p.openPrivateChatSearch()
+                              }
+                              className={`grid h-10 w-10 shrink-0 place-items-center rounded-full transition ${
+                                p.isPrivateChatSearchOpen
+                                  ? "bg-primary/15 text-primary"
+                                  : "text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/10"
+                              }`}
+                              title="Xabarlarni qidirish"
+                              aria-pressed={p.isPrivateChatSearchOpen}
+                            >
+                              <DashboardIcon name="search" />
+                            </button>
                           </div>
-                        </button>
+                        </div>
                       </div>
                       <PinnedMessageBar
                         message={p.privatePinnedMessage}
@@ -226,8 +300,22 @@ export default function DashboardChatSection(p) {
                         ) : (
                           <div className="w-full space-y-3 pb-3">
                             {p.directMessages.map((item) => (
-                              <ChatMessageBubble
+                              <div
                                 key={item.id}
+                                ref={(element) => {
+                                  if (element) {
+                                    p.privateMessageRefs.current[item.id] = element;
+                                  } else {
+                                    delete p.privateMessageRefs.current[item.id];
+                                  }
+                                }}
+                                className={`rounded-2xl transition ${
+                                  p.highlightedPrivateMessageId === item.id
+                                    ? "ring-2 ring-primary ring-offset-2 ring-offset-[#e8ecf4] dark:ring-offset-slate-950"
+                                    : ""
+                                }`}
+                              >
+                              <ChatMessageBubble
                                 message={{
                                   ...item,
                                   is_mine: item.is_mine ?? item.sender_id === p.user?.id,
@@ -251,14 +339,11 @@ export default function DashboardChatSection(p) {
                                 isReacting={p.reactingMessageId === item.id}
                                 containerClassName="max-w-[min(34rem,88%)] sm:max-w-[min(34rem,70%)]"
                               />
+                              </div>
                             ))}
                           </div>
                         )}
                       </div>
-                      <TypingUsersLine
-                        users={p.privateTypingUsers}
-                        className="shrink-0 border-t border-slate-200 px-4 py-2 text-xs text-slate-500 dark:border-white/10"
-                      />
                       {p.selectedThread?.other_user_blocked_by_me ? (
                         <div className="shrink-0 border-t border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900/90">
                           <button
@@ -311,6 +396,22 @@ export default function DashboardChatSection(p) {
                       </form>
                       )}
                     </div>
+                        </>
+                      )}
+
+                      {p.isPrivateChatSearchOpen && p.selectedThread && (
+                        <ChatGroupSearchPanel
+                          query={p.privateChatSearchQuery}
+                          onQueryChange={p.setPrivateChatSearchQuery}
+                          onClose={p.closePrivateChatSearch}
+                          thread={p.selectedThread}
+                          results={p.privateChatSearchResults}
+                          onSelectMessage={p.jumpToPrivateMessage}
+                          isPhone={p.isPhone}
+                          className={p.isPhone ? "min-h-0 flex-1" : "max-h-full"}
+                        />
+                      )}
+                    </div>
                   ) : p.chatPanel === "private" ? (
                     <div className="grid min-h-[280px] flex-1 place-items-center bg-slate-50 p-8 text-center md:min-h-[420px] dark:bg-slate-950/40">
                       <p className="text-slate-500 dark:text-slate-400">Chap ro'yxatdan suhbat tanlang</p>
@@ -360,6 +461,13 @@ export default function DashboardChatSection(p) {
                                   {p.selectedUniversity.location}
                                 </p>
                               )}
+                              {p.hasJoinedSelectedChat && p.groupTypingUsers?.length > 0 ? (
+                                <TypingUsersLine
+                                  users={p.groupTypingUsers}
+                                  mode="group"
+                                  className="mt-1 text-sm"
+                                />
+                              ) : null}
                             </div>
                           </button>
 
@@ -400,7 +508,7 @@ export default function DashboardChatSection(p) {
                           p.groupPinnedMessage?.author_id,
                           p.groupPinnedMessage?.author_color
                         )}
-                        onUnpin={p.handleUnpinGroupMessage}
+                        onUnpin={p.hasJoinedSelectedChat ? p.handleUnpinGroupMessage : undefined}
                       />
                       {p.hasJoinedSelectedChat ? (
                         <ChatTagFilterBar
@@ -417,11 +525,15 @@ export default function DashboardChatSection(p) {
                           <EmptyState
                             compact
                             variant="messages"
-                            title={p.hasJoinedSelectedChat ? "Birinchi xabaringiz" : "Guruh chatiga qo'shiling"}
+                            title={
+                              p.hasJoinedSelectedChat
+                                ? "Birinchi xabaringiz"
+                                : "Hozircha xabar yo'q"
+                            }
                             description={
                               p.hasJoinedSelectedChat
                                 ? "Talabalarga savol bering — suhbat shu yerdan boshlanadi."
-                                : "Pastdagi tugma orqali chatga qo'shiling va muloqotni boshlang."
+                                : "Chatga qo'shilsangiz, xabar yozish va real vaqtda yangilanish ochiladi."
                             }
                             className="h-full min-h-[12rem] border-none bg-transparent dark:bg-transparent"
                           />
@@ -449,20 +561,35 @@ export default function DashboardChatSection(p) {
                                     is_mine: item.is_mine ?? item.author_id === p.user?.id,
                                   }}
                                   formatTime={p.formatTime}
-                                  onReact={p.handleGroupReaction}
+                                  onReact={p.hasJoinedSelectedChat ? p.handleGroupReaction : undefined}
                                   onPin={p.hasJoinedSelectedChat ? p.handlePinGroupMessage : undefined}
                                   onUnpin={p.hasJoinedSelectedChat ? p.handleUnpinGroupMessage : undefined}
                                   isPinned={p.groupPinnedMessage?.id === item.id}
-                                  onReport={(msg) => p.openMessageReport(msg, "group")}
-                                  onMute={(msg) => p.onMuteChatUser?.(msg, "group")}
+                                  onReport={
+                                    p.hasJoinedSelectedChat
+                                      ? (msg) => p.openMessageReport(msg, "group")
+                                      : undefined
+                                  }
+                                  onMute={
+                                    p.hasJoinedSelectedChat
+                                      ? (msg) => p.onMuteChatUser?.(msg, "group")
+                                      : undefined
+                                  }
                                   isAuthorMuted={p.isChatUserMuted?.(
                                     item.author_id ?? item.sender_id,
                                     "group"
                                   )}
-                                  onTagClick={p.onSelectGroupTag}
-                                  onEdit={(msg) => p.openEditChatMessage(msg, "group")}
-                                  onDelete={p.handleDeleteGroupMessage}
+                                  onTagClick={p.hasJoinedSelectedChat ? p.onSelectGroupTag : undefined}
+                                  onEdit={
+                                    p.hasJoinedSelectedChat
+                                      ? (msg) => p.openEditChatMessage(msg, "group")
+                                      : undefined
+                                  }
+                                  onDelete={
+                                    p.hasJoinedSelectedChat ? p.handleDeleteGroupMessage : undefined
+                                  }
                                   onAuthorClick={p.openGroupChatAuthorProfile}
+                                  showAuthorAvatar
                                   isReacting={p.reactingMessageId === item.id}
                                   containerClassName="max-w-[min(34rem,88%)] sm:max-w-[min(34rem,70%)]"
                                 />
@@ -471,13 +598,6 @@ export default function DashboardChatSection(p) {
                           </div>
                         )}
                       </div>
-
-                      {p.hasJoinedSelectedChat && (
-                        <TypingUsersLine
-                          users={p.groupTypingUsers}
-                          className="shrink-0 border-t border-slate-200 px-4 py-2 text-xs text-slate-500 dark:border-white/10"
-                        />
-                      )}
 
                       {p.hasJoinedSelectedChat ? (
                         <form

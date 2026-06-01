@@ -1,6 +1,6 @@
-import UserAvatar from "./UserAvatar.jsx";
 import Skeleton from "../ui/Skeleton.jsx";
 import ModalOverlay from "../ui/ModalOverlay.jsx";
+import UserAvatarWithPresence from "./UserAvatarWithPresence.jsx";
 
 export default function ProfileModal({
   profileUser,
@@ -25,6 +25,7 @@ export default function ProfileModal({
     isBlockedByMe ||
     profileUser.blocked_by_me;
   const blockedByMe = isBlockedByMe || profileUser.blocked_by_me;
+  const isOwnProfile = profileUser.id === currentUserId;
 
   return (
     <ModalOverlay
@@ -57,10 +58,13 @@ export default function ProfileModal({
         ) : (
           <>
             <div className="mt-4 flex items-center gap-4">
-            <UserAvatar
+            <UserAvatarWithPresence
               name={profileUser.display_name}
               avatarUrl={profileUser.avatar_url}
               size="lg"
+              isOnline={isOwnProfile ? true : profileUser.is_online}
+              lastSeenAt={profileUser.last_seen_at}
+              showPresence
             />
             <div className="min-w-0">
               <h3 className="text-2xl font-black">{profileUser.display_name}</h3>

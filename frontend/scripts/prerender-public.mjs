@@ -32,7 +32,6 @@ const STATIC_ROUTES = [
   "/sharh-qoidalari",
   "/ishonch-xavfsizlik",
   "/savollar-javob",
-  "/maqolalar",
 ];
 
 function ensureDistExists() {
@@ -152,16 +151,6 @@ async function fetchDynamicRoutes() {
     console.warn("[prerender] FAQ yuklanmadi:", error.message);
   }
 
-  try {
-    const articles = await fetchJson(`${apiUrl}/api/public/articles/`);
-    if (Array.isArray(articles)) {
-      routes.push(...articles.map((item) => `/maqolalar/${item.slug}`));
-    }
-  } catch (error) {
-    failures.push(`articles: ${error.message}`);
-    console.warn("[prerender] Maqolalar yuklanmadi:", error.message);
-  }
-
   if (requireApi && failures.length > 0) {
     throw new Error(
       `PRERENDER_REQUIRE_API=1: dinamik yo'llar yuklanmadi (${failures.join("; ")}). Backend ${apiUrl} ishlayotganini tekshiring.`
@@ -182,7 +171,18 @@ function routeToOutputFile(route) {
 async function prerenderRoute(page, route) {
   const url = route === "/" ? `${previewBase}/` : `${previewBase}${route}`;
   await page.goto(url, { waitUntil: "networkidle", timeout: 60000 });
-  await page.waitForSelector('[data-seo-ready="true"]', { timeout: 30000 });
+  await page.waitForSelector('[data-seo-ready="true"]', {
+    timeout: 30000,
+    state: "attached",
+  });
+  await page.waitForSelector('script[type="application/ld+json"]', {
+    timeout: 15000,
+    state: "attached",
+  });
+  await page.waitForSelector('link[rel="canonical"]', {
+    timeout: 15000,
+    state: "attached",
+  });
 
   const html = await page.content();
   const outputFile = routeToOutputFile(route);
@@ -208,6 +208,21 @@ async function main() {
     for (const route of routes) {
       await prerenderRoute(page, route);
     }
+
+    const manifest = {
+      generatedAt: new Date().toISOString(),
+      apiUrl,
+      staticRoutes: STATIC_ROUTES.length,
+      dynamicRoutes: dynamicRoutes.length,
+      totalRoutes: routes.length,
+      routes,
+    };
+    fs.writeFileSync(
+      path.join(distDir, "prerender-manifest.json"),
+      `${JSON.stringify(manifest, null, 2)}\n`,
+      "utf8"
+    );
+    console.log(`[prerender] Manifest: dist/prerender-manifest.json (${routes.length} ta yo'l)`);
   } finally {
     await browser.close();
     preview.kill("SIGTERM");

@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import ChatMessageContextMenu from "../chat/ChatMessageContextMenu.jsx";
 import ChatMessageText from "../chat/ChatMessageText.jsx";
 import ChatReactionPicker from "../chat/ChatReactionPicker.jsx";
+import UserAvatarWithPresence from "./UserAvatarWithPresence.jsx";
 import { getAuthorColorClass } from "../../utils/chatAuthorColor.js";
 import { clampContextMenuPosition, getReactionPickerPosition } from "../../utils/chatMenuPosition.js";
 
@@ -25,6 +26,7 @@ export default function ChatMessageBubble({
   onUnpin,
   isPinned = false,
   onAuthorClick,
+  showAuthorAvatar = false,
   isReacting = false,
   mineClassName = "bg-primary text-white",
   otherClassName = "bg-white text-slate-900 dark:bg-white/10 dark:text-white",
@@ -274,6 +276,11 @@ export default function ChatMessageBubble({
 
   const hasReactions = message.reactions?.length > 0;
   const displayName = message.author || message.sender_name;
+  const authorAvatarUrl = message.author_avatar_url || message.sender_avatar_url;
+  const authorPrefetch = {
+    display_name: displayName,
+    avatar_url: authorAvatarUrl,
+  };
   const reactionCornerClass = isMine
     ? "bottom-0 left-1 -translate-x-1 translate-y-1/2"
     : "bottom-0 right-1 translate-x-1 translate-y-1/2";
@@ -334,7 +341,37 @@ export default function ChatMessageBubble({
         onMouseEnter={handleArticleMouseEnter}
         onMouseLeave={handleArticleMouseLeave}
       >
-        <div className={`flex w-full ${isMine ? "justify-end" : "justify-start"}`}>
+        <div className={`flex w-full gap-2 ${isMine ? "justify-end" : "justify-start"}`}>
+          {!isMine && showAuthorAvatar && displayName ? (
+            <div className="w-9 shrink-0 self-end pb-0.5">
+              {onAuthorClick && authorId ? (
+                <button
+                  type="button"
+                  onClick={() => onAuthorClick(authorId, authorPrefetch)}
+                  className="rounded-full transition hover:opacity-90"
+                  aria-label={`${displayName} profili`}
+                >
+                  <UserAvatarWithPresence
+                    name={displayName}
+                    avatarUrl={authorAvatarUrl}
+                    size="sm"
+                    isOnline={message.author_is_online}
+                    lastSeenAt={message.author_last_seen_at}
+                    showPresence
+                  />
+                </button>
+              ) : (
+                <UserAvatarWithPresence
+                  name={displayName}
+                  avatarUrl={authorAvatarUrl}
+                  size="sm"
+                  isOnline={message.author_is_online}
+                  lastSeenAt={message.author_last_seen_at}
+                  showPresence
+                />
+              )}
+            </div>
+          ) : null}
           <div
             ref={bubbleRef}
             className={`relative w-fit ${containerClassName}`}
@@ -356,9 +393,7 @@ export default function ChatMessageBubble({
                   <button
                     type="button"
                     onClick={() =>
-                      onAuthorClick(authorId, {
-                        display_name: displayName,
-                      })
+                      onAuthorClick(authorId, authorPrefetch)
                     }
                     className={`text-left text-[11px] font-bold tracking-wide transition hover:underline ${authorColorClass}`}
                   >

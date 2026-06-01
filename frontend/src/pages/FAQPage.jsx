@@ -83,13 +83,16 @@ export default function FAQPage() {
     []
   );
 
+  const seoReady = !loading;
+
   return (
     <MainLayout>
-      <JsonLd data={breadcrumbSchema} />
-      <JsonLd data={faqSchema} />
-      <JsonLd data={webPageSchema} />
+      <JsonLd
+        id="faq-list-json-ld"
+        schemas={[breadcrumbSchema, faqSchema, webPageSchema].filter(Boolean)}
+      />
 
-      <section className="section-padding">
+      <section className="section-padding" data-seo-ready={seoReady ? "true" : undefined}>
         <div className="container-shell max-w-4xl">
           <span className="eyebrow">Savol-javob</span>
           <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-950 dark:text-white sm:text-5xl">

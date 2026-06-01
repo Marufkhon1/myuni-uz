@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createThrottledTyping } from "./throttledTyping.js";
+import { createActiveTypingNotifier, createThrottledTyping } from "./throttledTyping.js";
 
 describe("createThrottledTyping", () => {
   beforeEach(() => {
@@ -45,5 +45,31 @@ describe("createThrottledTyping", () => {
     await vi.runAllTimersAsync();
 
     expect(onError).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("createActiveTypingNotifier", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("stops sending after typing becomes idle", async () => {
+    const send = vi.fn().mockResolvedValue(undefined);
+    const notify = createActiveTypingNotifier(send, { intervalMs: 2000, idleMs: 1800 });
+
+    notify();
+    vi.advanceTimersByTime(2000);
+    notify();
+    vi.advanceTimersByTime(2500);
+    await vi.runAllTimersAsync();
+
+    const countAfterBurst = send.mock.calls.length;
+    vi.advanceTimersByTime(5000);
+    await vi.runAllTimersAsync();
+    expect(send.mock.calls.length).toBe(countAfterBurst);
   });
 });

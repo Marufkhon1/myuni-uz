@@ -20,6 +20,8 @@ import DashboardSidebar from "./dashboard/DashboardSidebar.jsx";
 import DashboardHeader from "./dashboard/DashboardHeader.jsx";
 import DashboardSectionSkeleton from "../components/skeletons/DashboardSkeletons.jsx";
 import UserAvatar from "../components/dashboard/UserAvatar.jsx";
+import UserAvatarWithPresence from "../components/dashboard/UserAvatarWithPresence.jsx";
+import AnimatedTypingDots from "../components/chat/AnimatedTypingDots.jsx";
 import UnreadBadge from "../components/UnreadBadge.jsx";
 import { useAuth } from "../hooks/useAuth.js";
 import { useBreakpoint } from "../hooks/useBreakpoint.js";
@@ -31,6 +33,8 @@ import { useNotifications } from "../hooks/useNotifications.js";
 import { useWebPush } from "../hooks/useWebPush.js";
 import { useDashboardNavigation } from "../hooks/dashboard/useDashboardNavigation.js";
 import { useDashboardData } from "../hooks/dashboard/useDashboardData.js";
+import { useJoinedChatsTyping } from "../hooks/useJoinedChatsTyping.js";
+import { useDirectThreadsTyping } from "../hooks/useDirectThreadsTyping.js";
 import { mergeById, maxMessageId, useMessageStream } from "../hooks/useMessageStream.js";
 import {
   getDirectMessages,
@@ -85,7 +89,7 @@ import {
 } from "../services/universityService.js";
 import { getApiErrorMessage } from "../utils/apiErrors.js";
 import { createChatErrorReporter } from "../utils/chatActionError.js";
-import { createThrottledTyping } from "../utils/throttledTyping.js";
+import { createActiveTypingNotifier } from "../utils/throttledTyping.js";
 import { buildMuteKey, isChatUserMuted } from "../utils/chatMute.js";
 import { shouldOfferOnboarding, markOnboardingComplete, isOnboardingComplete } from "../utils/onboardingStorage.js";
 import { markApplicantChecklistStep } from "../utils/applicantChecklist.js";
@@ -157,8 +161,12 @@ export default function DashboardPage({ role }) {
   const [showGroupInfoModal, setShowGroupInfoModal] = useState(false);
   const [isGroupChatSearchOpen, setIsGroupChatSearchOpen] = useState(false);
   const [groupChatSearchQuery, setGroupChatSearchQuery] = useState("");
+  const [isPrivateChatSearchOpen, setIsPrivateChatSearchOpen] = useState(false);
+  const [privateChatSearchQuery, setPrivateChatSearchQuery] = useState("");
   const [highlightedGroupMessageId, setHighlightedGroupMessageId] = useState(null);
+  const [highlightedPrivateMessageId, setHighlightedPrivateMessageId] = useState(null);
   const groupMessageRefs = useRef({});
+  const privateMessageRefs = useRef({});
   const [groupInfoDetail, setGroupInfoDetail] = useState(null);
   const [isGroupInfoDetailLoading, setIsGroupInfoDetailLoading] = useState(false);
   const [chatPanel, setChatPanel] = useState("group");
@@ -368,14 +376,41 @@ export default function DashboardPage({ role }) {
     );
   }, [groupMessages, isGroupChatSearchOpen, groupChatSearchTrimmed]);
 
+  const privateChatSearchTrimmed = privateChatSearchQuery.trim().toLowerCase();
+  const privateChatSearchResults = useMemo(() => {
+    if (!isPrivateChatSearchOpen) {
+      return [];
+    }
+    if (!privateChatSearchTrimmed) {
+      return directMessages.slice(-50).reverse();
+    }
+    return directMessages.filter((item) => {
+      const text = (item.text || "").toLowerCase();
+      const author = (item.author || item.sender_name || "").toLowerCase();
+      return text.includes(privateChatSearchTrimmed) || author.includes(privateChatSearchTrimmed);
+    });
+  }, [directMessages, isPrivateChatSearchOpen, privateChatSearchTrimmed]);
+
   function closeGroupChatSearch() {
     setIsGroupChatSearchOpen(false);
     setGroupChatSearchQuery("");
   }
 
+  function closePrivateChatSearch() {
+    setIsPrivateChatSearchOpen(false);
+    setPrivateChatSearchQuery("");
+  }
+
   function openGroupChatSearch() {
+    closePrivateChatSearch();
     setIsGroupChatSearchOpen(true);
     setGroupChatSearchQuery("");
+  }
+
+  function openPrivateChatSearch() {
+    closeGroupChatSearch();
+    setIsPrivateChatSearchOpen(true);
+    setPrivateChatSearchQuery("");
   }
 
   function jumpToGroupMessage(messageId) {
@@ -385,6 +420,15 @@ export default function DashboardPage({ role }) {
       scrollElementIntoView(groupMessageRefs.current[messageId], { block: "center" });
     });
     window.setTimeout(() => setHighlightedGroupMessageId(null), 2600);
+  }
+
+  function jumpToPrivateMessage(messageId) {
+    closePrivateChatSearch();
+    setHighlightedPrivateMessageId(messageId);
+    window.requestAnimationFrame(() => {
+      scrollElementIntoView(privateMessageRefs.current[messageId], { block: "center" });
+    });
+    window.setTimeout(() => setHighlightedPrivateMessageId(null), 2600);
   }
 
   const hidePrivateMessageButton = useMemo(() => {
@@ -483,9 +527,11 @@ export default function DashboardPage({ role }) {
   }, [privatePinnedMessage]);
 
   useEffect(() => {
-    groupTypingNotifyRef.current = createThrottledTyping(
+    groupTypingNotifyRef.current = createActiveTypingNotifier(
       () => sendUniversityTyping(selectedUniversityId),
       {
+        intervalMs: 2000,
+        idleMs: 1800,
         onError: (error) =>
           reportChatError(
             getApiErrorMessage(error, "Yozish holati yuborilmadi. Chatga qo'shilganingizni tekshiring.")
@@ -495,9 +541,11 @@ export default function DashboardPage({ role }) {
   }, [selectedUniversityId, reportChatError]);
 
   useEffect(() => {
-    privateTypingNotifyRef.current = createThrottledTyping(
+    privateTypingNotifyRef.current = createActiveTypingNotifier(
       () => sendDirectTyping(selectedThreadId),
       {
+        intervalMs: 2000,
+        idleMs: 1800,
         onError: (error) =>
           reportChatError(getApiErrorMessage(error, "Yozish holati yuborilmadi.")),
       }
@@ -524,9 +572,19 @@ export default function DashboardPage({ role }) {
 
   useEffect(() => {
     closeGroupChatSearch();
+    closePrivateChatSearch();
     setHighlightedGroupMessageId(null);
+    setHighlightedPrivateMessageId(null);
     groupMessageRefs.current = {};
+    privateMessageRefs.current = {};
+    setGroupTypingUsers([]);
   }, [selectedUniversityId]);
+
+  useEffect(() => {
+    closePrivateChatSearch();
+    setHighlightedPrivateMessageId(null);
+    privateMessageRefs.current = {};
+  }, [selectedThreadId]);
 
   const { resetSinceId: resetGroupStreamSinceId } = useMessageStream({
     streamUrl: groupStreamUrl,
@@ -559,6 +617,76 @@ export default function DashboardPage({ role }) {
   const resetPrivateStreamSinceIdRef = useRef(resetPrivateStreamSinceId);
   resetPrivateStreamSinceIdRef.current = resetPrivateStreamSinceId;
 
+  const polledJoinedChatsTyping = useJoinedChatsTyping({
+    enabled:
+      !isDataLoading &&
+      joinedUniversityIds.size > 0 &&
+      (activeSection === "chats" || activeSection === "home"),
+    refreshMs: 1500,
+  });
+
+  const polledDirectThreadsTyping = useDirectThreadsTyping({
+    enabled:
+      !isDataLoading &&
+      directThreads.length > 0 &&
+      (activeSection === "chats" || activeSection === "home"),
+    refreshMs: 1500,
+  });
+
+  const joinedChatsTypingByUniversity = useMemo(() => {
+    const merged = { ...polledJoinedChatsTyping };
+    const canUseLiveTyping =
+      activeSection === "chats" &&
+      chatPanel === "group" &&
+      groupStreamReady &&
+      selectedUniversityId;
+
+    if (canUseLiveTyping) {
+      merged[String(selectedUniversityId)] = groupTypingUsers;
+    }
+
+    return merged;
+  }, [
+    polledJoinedChatsTyping,
+    selectedUniversityId,
+    chatPanel,
+    groupTypingUsers,
+    groupStreamReady,
+    activeSection,
+  ]);
+
+  const getUniversityTypingUsers = useCallback(
+    (universityId) => joinedChatsTypingByUniversity[String(universityId)] ?? [],
+    [joinedChatsTypingByUniversity]
+  );
+
+  const directThreadsTypingById = useMemo(() => {
+    const merged = { ...polledDirectThreadsTyping };
+    const canUseLiveTyping =
+      activeSection === "chats" &&
+      chatPanel === "private" &&
+      privateStreamReady &&
+      selectedThreadId;
+
+    if (canUseLiveTyping) {
+      merged[String(selectedThreadId)] = privateTypingUsers;
+    }
+
+    return merged;
+  }, [
+    polledDirectThreadsTyping,
+    selectedThreadId,
+    chatPanel,
+    privateTypingUsers,
+    privateStreamReady,
+    activeSection,
+  ]);
+
+  const getThreadTypingUsers = useCallback(
+    (threadId) => directThreadsTypingById[String(threadId)] ?? [],
+    [directThreadsTypingById]
+  );
+
   const filteredReviewUniversities = useMemo(() => {
     const query = reviewUniversitySearch.trim().toLowerCase();
     if (!query) {
@@ -575,34 +703,27 @@ export default function DashboardPage({ role }) {
   useEffect(() => {
     if (!selectedUniversityId || chatPanel !== "group") {
       setGroupStreamReady(false);
-      return;
-    }
-
-    if (!joinedUniversityIdsHas(joinedUniversityIds, selectedUniversityId)) {
-      setGroupMessages([]);
-      setGroupPinnedMessage(null);
-      setGroupChatTags([]);
-      setActiveGroupTag("");
-      setGroupStreamReady(false);
       return undefined;
     }
 
+    const isMember = joinedUniversityIdsHas(joinedUniversityIds, selectedUniversityId);
     let isMounted = true;
     setGroupStreamReady(false);
 
     async function loadMessages() {
       try {
         const { messages, pinned } = await getUniversityMessages(selectedUniversityId, {
-          tag: activeGroupTag || undefined,
+          tag: isMember && activeGroupTag ? activeGroupTag : undefined,
         });
-        if (isMounted) {
-          setGroupMessages(messages);
-          setGroupPinnedMessage(pinned);
+        if (!isMounted) {
+          return;
+        }
+        setGroupMessages(messages);
+        setGroupPinnedMessage(pinned);
+        if (isMember) {
           resetGroupStreamSinceIdRef.current(maxMessageId(messages));
           setGroupStreamReady(true);
-        }
-        await markUniversityChatRead(selectedUniversityId);
-        if (isMounted) {
+          await markUniversityChatRead(selectedUniversityId);
           refreshChatSummariesRef.current();
         }
       } catch {
@@ -793,7 +914,13 @@ export default function DashboardPage({ role }) {
 
   const activeChatMembers =
     selectedUniversityId && chatPanel === "group"
-      ? chatMembers
+      ? {
+          members: chatMembers.members,
+          member_count:
+            chatMembers.member_count > 0
+              ? chatMembers.member_count
+              : (selectedUniversity?.member_count ?? 0),
+        }
       : { members: [], member_count: 0 };
 
   useEffect(() => {
@@ -949,6 +1076,7 @@ export default function DashboardPage({ role }) {
     setMobileChatScreen("list");
     setShowGroupInfoModal(false);
     closeGroupChatSearch();
+    closePrivateChatSearch();
   }
 
   function backToReviewList() {
@@ -1455,7 +1583,7 @@ export default function DashboardPage({ role }) {
     } catch (error) {
       setProfileUser(null);
       reportChatError(
-        getApiErrorMessage(error, "Profil faqat chatda xabar yozgan foydalanuvchilar uchun ochiladi.")
+        getApiErrorMessage(error, "Profil ochib bo'lmadi. Chat kontekstida qayta urinib ko'ring.")
       );
     } finally {
       setIsProfileLoading(false);
@@ -1518,6 +1646,7 @@ export default function DashboardPage({ role }) {
     const previewText = thread.is_draft
       ? "Yangi suhbat — xabar yozing"
       : thread.last_message?.text || "";
+    const isTyping = !thread.is_draft && getThreadTypingUsers(thread.id).length > 0;
 
     return (
       <button
@@ -1530,10 +1659,24 @@ export default function DashboardPage({ role }) {
             : "hover:bg-slate-100 dark:hover:bg-white/5"
         }`}
       >
-        <UserAvatar name={thread.other_user_name} avatarUrl={thread.other_user_avatar_url} />
+        <UserAvatarWithPresence
+          name={thread.other_user_name}
+          avatarUrl={thread.other_user_avatar_url}
+          size="sm"
+          isOnline={thread.other_user_is_online}
+          lastSeenAt={thread.other_user_last_seen_at}
+          showPresence
+        />
         <div className="min-w-0 flex-1">
           <p className="truncate font-bold">{thread.other_user_name}</p>
-          <p className="mt-0.5 truncate text-sm text-slate-500">{previewText}</p>
+          {isTyping ? (
+            <p className="mt-0.5 flex items-center truncate text-sm font-medium text-primary">
+              Yozmoqda
+              <AnimatedTypingDots className="text-primary/85" />
+            </p>
+          ) : (
+            <p className="mt-0.5 truncate text-sm text-slate-500">{previewText}</p>
+          )}
         </div>
         <span className="grid h-6 min-w-6 shrink-0 place-items-center">
           {!thread.is_draft && <UnreadBadge count={thread.unread_count ?? 0} />}
@@ -1789,6 +1932,7 @@ export default function DashboardPage({ role }) {
                 onOpenUniversityReviews={handleOpenUniversityReviews}
                 onOpenComparePair={handleOpenComparePair}
                 onOpenPrivateThread={openPrivateThreadFromHome}
+                getUniversityTypingUsers={getUniversityTypingUsers}
               />
             )}
 
@@ -1814,6 +1958,7 @@ export default function DashboardPage({ role }) {
                 selectedUniversityId={selectedUniversityId}
                 joinedUniversityIds={joinedUniversityIds}
                 selectUniversityChat={selectUniversityChat}
+                getUniversityTypingUsers={getUniversityTypingUsers}
                 isWideChatLayout={isWideChatLayout}
                 isWideChat={isWideChat}
                 chatPanel={chatPanel}
@@ -1838,6 +1983,15 @@ export default function DashboardPage({ role }) {
                 isGroupChatSearchOpen={isGroupChatSearchOpen}
                 closeGroupChatSearch={closeGroupChatSearch}
                 openGroupChatSearch={openGroupChatSearch}
+                isPrivateChatSearchOpen={isPrivateChatSearchOpen}
+                closePrivateChatSearch={closePrivateChatSearch}
+                openPrivateChatSearch={openPrivateChatSearch}
+                privateChatSearchQuery={privateChatSearchQuery}
+                setPrivateChatSearchQuery={setPrivateChatSearchQuery}
+                privateChatSearchResults={privateChatSearchResults}
+                jumpToPrivateMessage={jumpToPrivateMessage}
+                highlightedPrivateMessageId={highlightedPrivateMessageId}
+                privateMessageRefs={privateMessageRefs}
                 selectedUniversity={selectedUniversity}
                 openGroupInfoModal={openGroupInfoModal}
                 activeChatMembers={activeChatMembers}

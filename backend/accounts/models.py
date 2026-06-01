@@ -38,6 +38,7 @@ class Profile(models.Model):
     )
     bio = models.CharField(max_length=70, blank=True, default="")
     email_verified_at = models.DateTimeField(null=True, blank=True)
+    last_seen_at = models.DateTimeField(null=True, blank=True)
     is_moderator = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

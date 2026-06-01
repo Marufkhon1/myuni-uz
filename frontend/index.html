@@ -42,6 +42,35 @@
     <meta name="twitter:image:alt" content="MyUni.uz — universitet sharhlari va reyting platformasi" />
 
     <link rel="canonical" href="https://myuni.uz/" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": ["Organization", "EducationalOrganization"],
+            "name": "MyUni.uz",
+            "url": "https://myuni.uz/",
+            "logo": "https://myuni.uz/favicon.png",
+            "description": "MyUni.uz — O'zbekiston universitetlari haqida talabalar sharhlari, reyting va tanlov uchun ochiq ma'lumot platformasi.",
+            "inLanguage": "uz"
+          },
+          {
+            "@type": "WebSite",
+            "name": "MyUni.uz",
+            "url": "https://myuni.uz/",
+            "inLanguage": "uz",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://myuni.uz/universitetlar?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          }
+        ]
+      }
+    </script>
     <link rel="icon" type="image/png" href="/pwa-192.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>MyUni.uz | Universitetlar reytingi va talabalar sharhlari</title>

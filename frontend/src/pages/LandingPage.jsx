@@ -56,9 +56,10 @@ export default function LandingPage() {
   return (
     <MainLayout>
       <div data-seo-ready="true">
-      <JsonLd id="organization-json-ld" data={organizationSchema} />
-      <JsonLd id="website-json-ld" data={websiteSchema} />
-      {faqItems.length > 0 ? <JsonLd id="faq-json-ld" data={faqSchema} /> : null}
+      <JsonLd
+        id="landing-json-ld"
+        schemas={[organizationSchema, websiteSchema, faqSchema].filter(Boolean)}
+      />
       <LandingHashScroll />
       <HeroSection />
       <SocialProofSection />

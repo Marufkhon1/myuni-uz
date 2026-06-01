@@ -26,8 +26,6 @@ import LegalDocumentPage from "./pages/LegalDocumentPage.jsx";
 import UniversityPublicPage from "./pages/UniversityPublicPage.jsx";
 import UniversitiesDirectoryPage from "./pages/UniversitiesDirectoryPage.jsx";
 import UniversitiesMapPage from "./pages/UniversitiesMapPage.jsx";
-import BlogListPage from "./pages/BlogListPage.jsx";
-import BlogArticlePage from "./pages/BlogArticlePage.jsx";
 import FAQPage from "./pages/FAQPage.jsx";
 import FAQDetailPage from "./pages/FAQDetailPage.jsx";
 import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
@@ -59,8 +57,6 @@ export default function App() {
         <Route path="/universitet/:slug" element={<UniversityPublicPage />} />
         <Route path="/universitetlar" element={<UniversitiesDirectoryPage />} />
         <Route path="/universitetlar/xarita" element={<UniversitiesMapPage />} />
-        <Route path="/maqolalar" element={<BlogListPage />} />
-        <Route path="/maqolalar/:slug" element={<BlogArticlePage />} />
         <Route path="/savollar-javob" element={<FAQPage />} />
         <Route path="/savollar-javob/:slug" element={<FAQDetailPage />} />
         <Route path="/foydalanish-shartlari" element={<LegalDocumentPage />} />

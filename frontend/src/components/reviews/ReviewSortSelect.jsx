@@ -85,8 +85,8 @@ export default function ReviewSortSelect({ options, value, onChange, disabled = 
         aria-expanded={isOpen}
         aria-controls={listId}
         onClick={() => setIsOpen((current) => !current)}
-        className={`inline-flex w-auto max-w-full items-center gap-2 rounded-xl border border-slate-200 bg-white text-left outline-none transition hover:border-primary/30 focus:border-primary focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/15 dark:bg-slate-900/80 dark:hover:border-primary/40 dark:focus:border-primary/60 dark:focus:ring-blue-400/20 ${
-          compact ? "h-8 py-0 pl-2 pr-8" : "py-2.5 pl-3 pr-11"
+        className={`inline-flex w-full min-w-[12.5rem] max-w-full items-center gap-2 rounded-xl border border-slate-200 bg-white text-left outline-none transition hover:border-primary/30 focus:border-primary focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/15 dark:bg-slate-900/80 dark:hover:border-primary/40 dark:focus:border-primary/60 dark:focus:ring-blue-400/20 ${
+          compact ? "h-9 py-0 pl-2 pr-8" : "py-2.5 pl-3 pr-11"
         }`}
       >
         <SortOptionIcon icon={selectedIcon} active compact={compact} />

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import UniversityAvatar from "../UniversityAvatar.jsx";
 import UniversityIdentity from "../UniversityIdentity.jsx";
-import StarRatingDisplay from "../ui/StarRatingDisplay.jsx";
+import StarRatingDisplay, { FractionalStars } from "../ui/StarRatingDisplay.jsx";
 import { CompareResultsSkeleton } from "../skeletons/DashboardSkeletons.jsx";
 import { useToast } from "../../hooks/useToast.js";
 import { addFavoriteUniversity, removeFavoriteUniversity } from "../../services/favoriteService.js";
@@ -226,9 +226,11 @@ function CompareVsSide({ university, placeholder, tint, align }) {
                   role="img"
                   aria-label={formatStarRatingLabel(university.average_rating)}
                 >
-                  <span className="text-sm leading-none text-amber-400" aria-hidden="true">
-                    {"★".repeat(Math.min(5, Math.max(0, Math.round(Number(university.average_rating)))))}
-                  </span>
+                  <FractionalStars
+                    rating={university.average_rating}
+                    starClassName="text-sm"
+                    emptyStarClassName="text-amber-200"
+                  />
                   <span className="text-[11px] font-black tabular-nums text-slate-700">
                     {university.average_rating}/5
                   </span>
@@ -820,20 +822,29 @@ export default function UniversityCompareSection({
     if (universities.length < 2) {
       return [];
     }
+
     const sorted = [...universities].sort((a, b) => (b.member_count ?? 0) - (a.member_count ?? 0));
+    const top = sorted.slice(0, Math.min(10, sorted.length));
     const pairs = [];
-    const used = new Set();
+    const usedKeys = new Set();
+    const anchorUseCount = new Map();
+
+    function pairKey(left, right) {
+      return [String(left.id), String(right.id)].sort().join("-");
+    }
 
     function addPair(anchor, other) {
       if (!anchor || !other || anchor.id === other.id) {
-        return;
+        return false;
       }
-      const key = [anchor.id, other.id].sort((a, b) => a - b).join("-");
-      if (used.has(key)) {
-        return;
+      const key = pairKey(anchor, other);
+      if (usedKeys.has(key)) {
+        return false;
       }
-      used.add(key);
+      usedKeys.add(key);
       pairs.push({ anchor, other });
+      anchorUseCount.set(anchor.id, (anchorUseCount.get(anchor.id) ?? 0) + 1);
+      return true;
     }
 
     if (myUniversity) {
@@ -843,10 +854,33 @@ export default function UniversityCompareSection({
       }
     }
 
-    for (let i = 0; i < sorted.length && pairs.length < 5; i += 1) {
-      for (let j = i + 1; j < sorted.length && pairs.length < 5; j += 1) {
-        addPair(sorted[i], sorted[j]);
+    const candidates = [];
+    for (let i = 0; i < top.length; i += 1) {
+      for (let j = i + 1; j < top.length; j += 1) {
+        candidates.push({
+          anchor: top[i],
+          other: top[j],
+          weight: (top[i].member_count ?? 0) + (top[j].member_count ?? 0),
+        });
       }
+    }
+    candidates.sort((left, right) => right.weight - left.weight);
+
+    for (const candidate of candidates) {
+      if (pairs.length >= 5) {
+        break;
+      }
+      if ((anchorUseCount.get(candidate.anchor.id) ?? 0) >= 1) {
+        continue;
+      }
+      addPair(candidate.anchor, candidate.other);
+    }
+
+    for (const candidate of candidates) {
+      if (pairs.length >= 5) {
+        break;
+      }
+      addPair(candidate.anchor, candidate.other);
     }
 
     return pairs.slice(0, 5);
@@ -964,24 +998,36 @@ export default function UniversityCompareSection({
           {!canCompare && quickCompareSuggestions.length > 0 && (
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">{content.quickPickLabel}</p>
-              <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
-                {quickCompareSuggestions.map(({ anchor, other }) => (
-                  <button
-                    key={`${anchor.id}-${other.id}`}
-                    type="button"
-                    onClick={() => {
-                      setFirstId(String(anchor.id));
-                      setSecondId(String(other.id));
-                    }}
-                    className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 ring-1 ring-slate-200/70 transition hover:ring-primary dark:bg-white/[0.04] dark:text-slate-200 dark:ring-white/10"
-                  >
-                    <UniversityAvatar university={anchor} size="xs" />
-                    <span>{anchor.short_name}</span>
-                    <span className="font-black text-slate-300">vs</span>
-                    <UniversityAvatar university={other} size="xs" />
-                    <span>{other.short_name}</span>
-                  </button>
-                ))}
+              <div className="mt-2 flex flex-wrap gap-2">
+                {quickCompareSuggestions.map(({ anchor, other }) => {
+                  const isActive =
+                    (firstId === String(anchor.id) && secondId === String(other.id)) ||
+                    (firstId === String(other.id) && secondId === String(anchor.id));
+
+                  return (
+                    <button
+                      key={`${anchor.id}-${other.id}`}
+                      type="button"
+                      onClick={() => {
+                        setFirstId(String(anchor.id));
+                        setSecondId(String(other.id));
+                      }}
+                      className={`inline-flex max-w-full items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-[11px] font-bold transition ${
+                        isActive
+                          ? "bg-primary/5 text-primary ring-2 ring-primary/35 dark:bg-primary/10"
+                          : "bg-slate-50 text-slate-700 ring-1 ring-slate-200/70 hover:ring-primary/25 dark:bg-white/[0.04] dark:text-slate-200 dark:ring-white/10"
+                      }`}
+                    >
+                      <UniversityAvatar university={anchor} size="2xs" />
+                      <span className="max-w-[5.5rem] truncate">{anchor.short_name}</span>
+                      <span className="shrink-0 text-[10px] font-black uppercase tracking-wide text-slate-300">
+                        vs
+                      </span>
+                      <UniversityAvatar university={other} size="2xs" />
+                      <span className="max-w-[5.5rem] truncate">{other.short_name}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}

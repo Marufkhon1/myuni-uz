@@ -171,11 +171,11 @@ export default function ReviewWorkspacePanel({
     ratingFilter === "all" &&
     (sortId === "newest" || sortId === "likes");
 
-  const listReviews = useMemo(() => {
-    if (!showFeaturedTop) {
-      return filteredAndSortedReviews;
-    }
-    return filteredAndSortedReviews.filter((item) => item.id !== topLikedReview.id);
+  const renderedReviews = useMemo(() => {
+    return filteredAndSortedReviews.map((item) => ({
+      item,
+      featured: showFeaturedTop && item.id === topLikedReview.id,
+    }));
   }, [filteredAndSortedReviews, showFeaturedTop, topLikedReview]);
 
   const totalLikes = useMemo(
@@ -236,7 +236,7 @@ export default function ReviewWorkspacePanel({
       )}
 
       <div className="@container grid min-h-0 min-w-0 flex-1 grid-cols-1 overflow-x-hidden isolate @[960px]:grid-cols-[minmax(0,1fr)_280px]">
-        <div className="chat-messages-scroll relative z-0 min-w-0 overflow-x-hidden @[960px]:min-h-0 @[960px]:overflow-y-auto @[960px]:overscroll-contain">
+        <div className="chat-messages-scroll relative z-0 min-w-0 overflow-x-hidden [overflow-anchor:auto] @[960px]:min-h-0 @[960px]:overflow-y-auto @[960px]:overscroll-contain">
           <ReviewWorkspaceHero
             university={reviewUniversityDetail}
             eyebrow={content.bannerEyebrow}
@@ -251,10 +251,7 @@ export default function ReviewWorkspacePanel({
             distribution={distribution}
             statLabels={content.statLabels}
             ratingFilter={ratingFilter}
-            onRatingFilterChange={(value) => {
-              setRatingFilter(value);
-              scrollElementIntoView(document.getElementById("review-feed-section"), { block: "start" });
-            }}
+            onRatingFilterChange={setRatingFilter}
           />
 
           <div className="space-y-5 px-5 pb-28 pt-4 sm:px-6 sm:pb-6 lg:pb-6">
@@ -354,21 +351,7 @@ export default function ReviewWorkspacePanel({
                 />
               ) : (
                 <>
-                  {showFeaturedTop && (
-                    <ReviewCard
-                      item={topLikedReview}
-                      onLike={onLike}
-                      onDelete={isStudent ? onDeleteReview : undefined}
-                      onReport={onReportReview}
-                      featured
-                      featuredLabel={content.featuredLabel}
-                      likeLabel={content.likeButtonLabel}
-                      showMineBadge={isStudent}
-                      showStudentVoiceBadge={!isStudent}
-                    />
-                  )}
-
-                  {listReviews.length === 0 && !showFeaturedTop ? (
+                  {renderedReviews.length === 0 ? (
                     <EmptyState
                       compact
                       variant="filter"
@@ -383,24 +366,24 @@ export default function ReviewWorkspacePanel({
                       }}
                     />
                   ) : (
-                    listReviews.length > 0 && (
-                      <ul className="space-y-3">
-                        {listReviews.map((item) => (
-                          <li key={item.id}>
-                            <ReviewCard
-                              item={item}
-                              onLike={onLike}
-                              onDelete={isStudent ? onDeleteReview : undefined}
-                              onReport={onReportReview}
-                              elevated
-                              likeLabel={content.likeButtonLabel}
-                              showMineBadge={isStudent}
-                              showStudentVoiceBadge={!isStudent}
-                            />
-                          </li>
-                        ))}
-                      </ul>
-                    )
+                    <ul className="space-y-3">
+                      {renderedReviews.map(({ item, featured }) => (
+                        <li key={item.id}>
+                          <ReviewCard
+                            item={item}
+                            onLike={onLike}
+                            onDelete={isStudent ? onDeleteReview : undefined}
+                            onReport={onReportReview}
+                            featured={featured}
+                            featuredLabel={content.featuredLabel}
+                            elevated={!featured}
+                            likeLabel={content.likeButtonLabel}
+                            showMineBadge={isStudent}
+                            showStudentVoiceBadge={!isStudent}
+                          />
+                        </li>
+                      ))}
+                    </ul>
                   )}
                 </>
               )}

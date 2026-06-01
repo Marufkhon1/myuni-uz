@@ -61,6 +61,28 @@ export function resolveAbsoluteUrl(pathOrUrl) {
   return `${base}${path}`;
 }
 
+/** Maqola cover — localhost va productionda ishlaydigan nisbiy yo'l. */
+export function resolveArticleCoverImage(coverImage, fallback = DEFAULT_OG_IMAGE) {
+  const raw = String(coverImage || "").trim();
+  if (!raw) {
+    return fallback;
+  }
+  if (raw.startsWith("/")) {
+    return raw;
+  }
+  try {
+    const { pathname } = new URL(raw);
+    if (pathname.startsWith("/images/")) {
+      return pathname;
+    }
+  } catch {
+    if (raw.startsWith("images/")) {
+      return `/${raw}`;
+    }
+  }
+  return fallback;
+}
+
 export function buildPageMeta({
   title = DEFAULT_TITLE,
   description = DEFAULT_DESCRIPTION,
@@ -69,6 +91,9 @@ export function buildPageMeta({
   imageAlt = DEFAULT_OG_IMAGE_ALT,
   type = "website",
   robots = "index, follow",
+  publishedTime,
+  modifiedTime,
+  author = SITE_NAME,
 } = {}) {
   const safeTitle = String(title || DEFAULT_TITLE).trim() || DEFAULT_TITLE;
   const safeDescription = truncateMetaDescription(description);
@@ -83,6 +108,9 @@ export function buildPageMeta({
     imageAlt: String(imageAlt || DEFAULT_OG_IMAGE_ALT).trim() || DEFAULT_OG_IMAGE_ALT,
     type: type || "website",
     robots: robots || "index, follow",
+    publishedTime: publishedTime || null,
+    modifiedTime: modifiedTime || null,
+    author: String(author || SITE_NAME).trim() || SITE_NAME,
   };
 }
 
@@ -153,12 +181,6 @@ export const PAGE_META = {
     description:
       "MyUni.uz da foydalanuvchi xavfsizligi, moderatsiya, shikoyatlar va ma'lumotlaringiz himoyasi.",
     path: "/ishonch-xavfsizlik",
-  },
-  blogList: {
-    title: "Maqolalar | MyUni.uz",
-    description:
-      "Universitet tanlash, sharhlar va MyUni.uz platformasidan foydalanish bo'yicha foydali maqolalar.",
-    path: "/maqolalar",
   },
   faqList: {
     title: "Savol-javob (FAQ) | MyUni.uz",

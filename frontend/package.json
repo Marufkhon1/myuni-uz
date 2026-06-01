@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "dev:lan": "vite --host 0.0.0.0 --port 5173",
-    "build": "vite build",
+    "build": "node scripts/build-production.mjs",
+    "build:spa": "vite build",
     "build:prerender": "vite build && node scripts/prerender-public.mjs",
     "preview": "vite preview",
     "prerender": "node scripts/prerender-public.mjs",

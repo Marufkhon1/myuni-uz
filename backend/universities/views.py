@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from accounts.notifications_service import notify_review_liked, notify_review_pending
 from accounts.rate_limit_utils import rate_limit_response
 from accounts.avatar_access import avatar_url_for_viewer
+from accounts.presence import is_user_online, resolve_user_last_seen
 from accounts.profile_access import can_view_chat_profile
 from accounts.permissions import CanWriteStudentContent
 
@@ -29,6 +30,7 @@ from .chat_utils import annotate_direct_threads_both_replied, get_or_create_dire
 from .unread_utils import mark_direct_thread_read, mark_university_read
 from .chat_realtime import (
     direct_typing_cache_key,
+    get_typing_users,
     set_typing_user,
     typing_cache_key,
 )
@@ -127,11 +129,7 @@ class UniversityMembersView(APIView):
 
     def get(self, request, university_id):
         university = get_object_or_404(University, pk=university_id)
-        if not user_is_university_member(request.user, university_id):
-            return Response(
-                {"detail": "Avval universitet chatiga qo'shiling."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        viewer_is_member = user_is_university_member(request.user, university_id)
         memberships = ChatMembership.objects.filter(university=university).select_related(
             "user", "user__profile"
         )
@@ -141,20 +139,27 @@ class UniversityMembersView(APIView):
             can_open_profile = can_view_chat_profile(
                 request.user, membership.user, university_id=university.id
             )
-            members.append(
-                {
-                    "id": membership.user.id,
-                    "display_name": display_name_for_user(membership.user),
-                    "avatar_url": avatar_url_for_viewer(
-                        request.user, membership.user, request=request
-                    ),
-                    "role_label": profile.get_role_display() if profile else "",
-                    "university": (profile.university if profile else "") or "",
-                    "bio": (profile.bio if profile else "") or "",
-                    "is_me": membership.user.id == request.user.id,
-                    "can_open_profile": can_open_profile,
-                }
-            )
+            last_seen_at = profile.last_seen_at if profile else None
+            member_payload = {
+                "id": membership.user.id,
+                "display_name": display_name_for_user(membership.user),
+                "avatar_url": avatar_url_for_viewer(
+                    request.user, membership.user, request=request
+                ),
+                "role_label": profile.get_role_display() if profile else "",
+                "university": (profile.university if profile else "") or "",
+                "bio": (profile.bio if profile else "") or "",
+                "is_me": membership.user.id == request.user.id,
+                "can_open_profile": can_open_profile,
+                "has_joined_chat": True,
+            }
+            if viewer_is_member:
+                resolved_last_seen = resolve_user_last_seen(membership.user)
+                member_payload["is_online"] = is_user_online(last_seen_at)
+                member_payload["last_seen_at"] = (
+                    resolved_last_seen.isoformat() if resolved_last_seen else None
+                )
+            members.append(member_payload)
         return Response(
             {
                 "university": UniversitySerializer(university).data,
@@ -399,6 +404,42 @@ class JoinedUniversityListView(APIView):
         return Response({"university_ids": list(university_ids)})
 
 
+class JoinedChatsTypingView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        university_ids = ChatMembership.objects.filter(user=request.user).values_list(
+            "university_id", flat=True
+        )
+        typing = {}
+        for university_id in university_ids:
+            users = get_typing_users(
+                typing_cache_key(university_id),
+                exclude_user_id=request.user.id,
+            )
+            if users:
+                typing[str(university_id)] = users
+        return Response({"typing": typing})
+
+
+class DirectThreadsTypingView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        threads = DirectThread.objects.filter(
+            Q(user_one=request.user) | Q(user_two=request.user)
+        )
+        typing = {}
+        for thread in threads:
+            users = get_typing_users(
+                direct_typing_cache_key(thread.id),
+                exclude_user_id=request.user.id,
+            )
+            if users:
+                typing[str(thread.id)] = users
+        return Response({"typing": typing})
+
+
 class UniversityJoinView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -420,9 +461,6 @@ class UniversityMessageListCreateView(APIView):
     def get(self, request, university_id):
         get_object_or_404(University, pk=university_id)
         from .pin_utils import get_pinned_university_message
-
-        if not user_is_university_member(request.user, university_id):
-            return Response({"messages": [], "pinned": None})
 
         messages = (
             ChatMessage.objects.filter(university_id=university_id, is_deleted=False)

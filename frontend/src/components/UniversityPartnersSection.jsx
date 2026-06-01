@@ -1,33 +1,105 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import UniversityAvatar from "./UniversityAvatar.jsx";
 import Skeleton from "./ui/Skeleton.jsx";
-import { getPublicFeaturedUniversities } from "../services/publicService.js";
+import StarRatingDisplay from "./ui/StarRatingDisplay.jsx";
+import {
+  getPublicFeaturedUniversities,
+  getPublicPlatformStats,
+} from "../services/publicService.js";
+import { formatLandingRating, formatLandingStat } from "../utils/landingStats.js";
 import { buildUniversityPublicPath } from "../utils/navigation.js";
 
 function PartnersSkeleton() {
   return (
-    <div
-      className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6"
-      aria-busy="true"
-      aria-label="Universitet logotiplari yuklanmoqda"
-    >
-      {Array.from({ length: 6 }, (_, index) => (
-        <div
-          key={index}
-          className="flex flex-col items-center rounded-[1.5rem] border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]"
-        >
-          <Skeleton className="h-16 w-16 rounded-full" />
-          <Skeleton className="mt-3 h-4 w-20" />
+    <div className="mt-10 space-y-4" aria-busy="true" aria-label="Universitet logotiplari yuklanmoqda">
+      {Array.from({ length: 2 }, (_, row) => (
+        <div key={row} className="flex gap-4 overflow-hidden">
+          {Array.from({ length: 6 }, (__, index) => (
+            <div
+              key={index}
+              className="w-44 shrink-0 rounded-[1.35rem] border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]"
+            >
+              <Skeleton className="mx-auto h-16 w-16 rounded-full" />
+              <Skeleton className="mx-auto mt-3 h-4 w-24" />
+              <Skeleton className="mx-auto mt-2 h-3 w-16" />
+            </div>
+          ))}
         </div>
       ))}
     </div>
   );
 }
 
+function PartnerLogoCard({ university, rankIndex }) {
+  const publicPath = buildUniversityPublicPath(university);
+  const rating = formatLandingRating(university.average_rating);
+  const isTop = rankIndex >= 0 && rankIndex < 3;
+
+  return (
+    <Link
+      to={publicPath}
+      className="partner-logo-card group flex w-44 shrink-0 flex-col items-center rounded-[1.35rem] border border-slate-200 bg-white px-4 py-5 text-center shadow-soft transition dark:border-white/10 dark:bg-white/[0.05]"
+    >
+      {isTop && (
+        <span className="mb-2 inline-flex rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-amber-800 dark:bg-amber-400/15 dark:text-amber-200">
+          Top {rankIndex + 1}
+        </span>
+      )}
+      <div className="partner-logo-image">
+        <UniversityAvatar university={university} size="lg" />
+      </div>
+      <p className="mt-3 line-clamp-2 min-h-[2.5rem] text-sm font-black leading-snug text-slate-800 transition group-hover:text-primary dark:text-slate-100">
+        {university.short_name || university.name}
+      </p>
+      {rating != null && (
+        <StarRatingDisplay
+          rating={Number(rating)}
+          variant="pill"
+          showNumeric
+          className="mt-2 px-2 py-0.5"
+          starClassName="text-[11px]"
+          numericClassName="text-[10px] font-black text-amber-700 dark:text-amber-200"
+        />
+      )}
+      <p className="mt-2 text-[11px] font-semibold leading-4 text-slate-500 dark:text-slate-400">
+        {university.review_count > 0 && `${formatLandingStat(university.review_count)} sharh`}
+        {university.review_count > 0 && university.member_count > 0 && " · "}
+        {university.member_count > 0 && `${formatLandingStat(university.member_count)} a'zo`}
+      </p>
+    </Link>
+  );
+}
+
+function PartnerMarqueeRow({ universities, reverse = false, ariaLabel }) {
+  const trackItems = useMemo(
+    () => (universities.length > 0 ? [...universities, ...universities] : []),
+    [universities]
+  );
+
+  if (trackItems.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="partners-marquee" aria-label={ariaLabel}>
+      <div className={`partners-track ${reverse ? "partners-track--reverse" : ""}`}>
+        {trackItems.map((university, index) => (
+          <PartnerLogoCard
+            key={`${university.id}-${index}`}
+            university={university}
+            rankIndex={index < universities.length ? index : -1}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function UniversityPartnersSection() {
   const [universities, setUniversities] = useState([]);
+  const [stats, setStats] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -35,13 +107,18 @@ export default function UniversityPartnersSection() {
 
     async function load() {
       try {
-        const data = await getPublicFeaturedUniversities(12);
+        const [featured, platformStats] = await Promise.all([
+          getPublicFeaturedUniversities(16),
+          getPublicPlatformStats(),
+        ]);
         if (isMounted) {
-          setUniversities(data);
+          setUniversities(featured);
+          setStats(platformStats);
         }
       } catch {
         if (isMounted) {
           setUniversities([]);
+          setStats(null);
         }
       } finally {
         if (isMounted) {
@@ -56,59 +133,91 @@ export default function UniversityPartnersSection() {
     };
   }, []);
 
+  const { rowA, rowB } = useMemo(() => {
+    if (universities.length === 0) {
+      return { rowA: [], rowB: [] };
+    }
+    const midpoint = Math.ceil(universities.length / 2);
+    return {
+      rowA: universities.slice(0, midpoint),
+      rowB: universities.slice(midpoint),
+    };
+  }, [universities]);
+
   if (!isLoading && universities.length === 0) {
     return null;
   }
 
   return (
-    <section id="partners" className="section-padding border-y border-slate-200/70 bg-slate-50/70 dark:border-white/10 dark:bg-slate-900/30">
+    <section
+      id="partners"
+      className="section-padding overflow-hidden border-y border-slate-200/70 bg-gradient-to-b from-slate-50/90 via-white to-slate-50/70 dark:border-white/10 dark:from-slate-900/40 dark:via-slateNight dark:to-slate-900/30"
+    >
       <div className="container-shell">
         <div className="mx-auto max-w-3xl text-center">
           <span className="eyebrow">Platformadagi OTMlar</span>
-          <h2 className="mt-5 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl dark:text-white">
-            O&apos;zbekiston universitetlari bir joyda.
+          <h2 className="mt-5 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl lg:text-5xl dark:text-white">
+            O&apos;zbekiston universitetlari bir joyda
           </h2>
-          <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">
-            Har bir universitet uchun alohida sharhlar, reyting va talabalar chat jamoasi mavjud.
-            Logotiplar ma&apos;lumot ko&apos;rinishi uchun — rasmiy hamkorlik emas.
+          <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg dark:text-slate-300">
+            Har bir universitet uchun sharhlar, reyting va talabalar chat jamoasi. Logotiplar
+            ma&apos;lumot ko&apos;rinishi uchun — rasmiy hamkorlik emas.
           </p>
+          {stats && (
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <span className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-800 shadow-sm dark:border-white/10 dark:bg-white/[0.06] dark:text-white">
+                {formatLandingStat(stats.university_count)} ta OTM
+              </span>
+              <span className="rounded-full border border-primary/20 bg-blue-50 px-4 py-2 text-sm font-black text-primary dark:border-primary/30 dark:bg-blue-400/10 dark:text-blue-200">
+                {formatLandingStat(stats.review_count)} ta sharh
+              </span>
+              <span className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-black text-slate-800 shadow-sm dark:border-white/10 dark:bg-white/[0.06] dark:text-white">
+                {formatLandingStat(stats.member_count)} foydalanuvchi
+              </span>
+            </div>
+          )}
         </div>
 
         {isLoading && <PartnersSkeleton />}
 
         {!isLoading && universities.length > 0 && (
-          <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-            {universities.map((university, index) => {
-              const publicPath = buildUniversityPublicPath(university);
-
-              return (
-                <motion.div
-                  key={university.id}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ delay: index * 0.04, duration: 0.45 }}
-                >
-                  <Link
-                    to={publicPath}
-                    className="partner-logo-card group flex h-full min-h-[10.5rem] flex-col items-center justify-center rounded-[1.5rem] border border-slate-200 bg-white p-4 text-center shadow-soft transition dark:border-white/10 dark:bg-white/[0.04]"
-                  >
-                    <UniversityAvatar university={university} size="lg" />
-                    <p className="mt-3 line-clamp-2 text-sm font-black text-slate-800 transition group-hover:text-primary dark:text-slate-100">
-                      {university.short_name || university.name}
-                    </p>
-                    {(university.review_count > 0 || university.member_count > 0) && (
-                      <p className="mt-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                        {university.review_count > 0 && `${university.review_count} sharh`}
-                        {university.review_count > 0 && university.member_count > 0 && " · "}
-                        {university.member_count > 0 && `${university.member_count} a'zo`}
-                      </p>
-                    )}
-                  </Link>
-                </motion.div>
-              );
-            })}
+          <div className="mt-10 space-y-4">
+            <PartnerMarqueeRow
+              universities={rowA}
+              ariaLabel="Faol universitetlar — birinchi qator"
+            />
+            {rowB.length > 0 && (
+              <PartnerMarqueeRow
+                universities={rowB}
+                reverse
+                ariaLabel="Faol universitetlar — ikkinchi qator"
+              />
+            )}
           </div>
+        )}
+
+        {!isLoading && universities.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.45 }}
+            className="mt-10 flex flex-col items-center gap-4 text-center"
+          >
+            <p className="max-w-2xl text-xs leading-6 text-slate-500 dark:text-slate-400">
+              Universitet logotiplari va nomlari faqat ma&apos;lumot berish maqsadida ko&apos;rsatiladi.
+              Rasmiy hamkorlik yoki tasdiq bildirilmaydi. OTM vakillari o&apos;zgartirish yoki olib
+              tashlashni so&apos;rashlari mumkin.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link to="/universitetlar" className="landing-btn-gradient px-7 py-3.5 text-sm">
+                Barcha universitetlar
+              </Link>
+              <Link to="/universitetlar/xarita" className="landing-btn-outline px-7 py-3.5 text-sm">
+                Xaritada ko&apos;rish
+              </Link>
+            </div>
+          </motion.div>
         )}
       </div>
     </section>

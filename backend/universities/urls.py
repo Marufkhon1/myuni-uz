@@ -18,9 +18,11 @@ from .views import (
     DirectMessageReactionView,
     DirectThreadListCreateView,
     DirectThreadMarkReadView,
+    DirectThreadsTypingView,
     DirectTypingView,
     FavoriteUniversityDetailView,
     FavoriteUniversityListView,
+    JoinedChatsTypingView,
     JoinedUniversityListView,
     PopularReviewListView,
     ReviewDetailView,
@@ -41,6 +43,7 @@ from .views import (
 urlpatterns = [
     path("", UniversityListView.as_view(), name="university-list"),
     path("joined/", JoinedUniversityListView.as_view(), name="joined-universities"),
+    path("joined/typing/", JoinedChatsTypingView.as_view(), name="joined-chats-typing"),
     path("favorites/", FavoriteUniversityListView.as_view(), name="favorite-universities"),
     path(
         "favorites/<int:university_id>/",
@@ -103,6 +106,7 @@ urlpatterns = [
     path("community/users/<int:user_id>/block/", UserBlockView.as_view(), name="user-block"),
     path("community/users/<int:user_id>/mute/", UserMuteView.as_view(), name="user-mute"),
     path("directs/", DirectThreadListCreateView.as_view(), name="direct-thread-list-create"),
+    path("directs/typing/", DirectThreadsTypingView.as_view(), name="direct-threads-typing"),
     path(
         "directs/<int:thread_id>/messages/",
         DirectMessageListCreateView.as_view(),

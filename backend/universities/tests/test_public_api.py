@@ -146,6 +146,9 @@ class PublicApiTests(TestCase):
         response = self.client.get("/api/public/articles/")
         self.assertEqual(response.status_code, 200)
         self.assertIsInstance(response.json(), list)
+        slugs = [item["slug"] for item in response.json()]
+        self.assertIn("2026-qabul-tdiu-vs-tatu", slugs)
+        self.assertGreaterEqual(len(slugs), 10)
 
     def test_public_articles_detail_and_sitemap(self):
         article = Article.objects.create(
@@ -166,8 +169,9 @@ class PublicApiTests(TestCase):
         self.assertIn("body", detail_response.json())
 
         sitemap_response = self.client.get("/api/public/sitemap.xml")
-        self.assertIn("test-maqola", sitemap_response.content.decode())
-        self.assertIn("/maqolalar", sitemap_response.content.decode())
+        sitemap_body = sitemap_response.content.decode()
+        self.assertNotIn("/maqolalar", sitemap_body)
+        self.assertNotIn("test-maqola", sitemap_body)
 
         share_response = self.client.get("/api/public/share-preview/?path=/maqolalar/test-maqola/")
         self.assertEqual(share_response.status_code, 200)

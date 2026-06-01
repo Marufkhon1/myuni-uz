@@ -1,14 +1,21 @@
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/myuni-logo.png";
+import OfficeMapEmbed from "./OfficeMapEmbed.jsx";
+import {
+  OFFICE_ADDRESS,
+  OFFICE_LATITUDE,
+  OFFICE_LONGITUDE,
+  OFFICE_NAME,
+  SUPPORT_EMAIL,
+} from "../config/siteContact.js";
 import { scrollToLandingSection } from "../utils/landingScroll.js";
 import { scrollPageToTop } from "./ScrollToTop.jsx";
-
 const footerLinks = {
   Platforma: [
     { label: "Bosh sahifa", to: "/" },
     { label: "Universitetlar", to: "/universitetlar" },
+    { label: "Sharhlar", to: "/", hash: "#reviews" },
     { label: "Xarita", to: "/universitetlar/xarita" },
-    { label: "Maqolalar", to: "/maqolalar" },
     { label: "Qanday ishlaydi", to: "/", hash: "#how-it-works" },
     { label: "Savollar (FAQ)", to: "/", hash: "#faq" },
   ],
@@ -106,16 +113,25 @@ export default function Footer() {
                 Aloqa
               </h2>
               <address className="mt-4 space-y-3 not-italic text-sm font-semibold text-slate-500 dark:text-slate-400">
-                <p>Samarqand, O&apos;zbekiston</p>
+                <p>{OFFICE_ADDRESS}</p>
                 <a
-                  href="mailto:hello@myuni.uz"
+                  href={`mailto:${SUPPORT_EMAIL}`}
                   className="block transition hover:text-primary dark:hover:text-blue-200"
                 >
-                  hello@myuni.uz
+                  {SUPPORT_EMAIL}
                 </a>
               </address>
-            </div>
-          </div>
+              <div className="mt-4">
+                <p className="mb-2 text-[10px] font-black uppercase tracking-wide text-primary">
+                  Ofis xaritasi
+                </p>
+                <OfficeMapEmbed
+                  latitude={OFFICE_LATITUDE}
+                  longitude={OFFICE_LONGITUDE}
+                  title={OFFICE_NAME}
+                />
+              </div>
+            </div>          </div>
         </div>
 
         <div className="mt-12 flex flex-col justify-between gap-4 border-t border-slate-200 pt-8 text-sm font-semibold text-slate-500 sm:flex-row dark:border-white/10 dark:text-slate-400">

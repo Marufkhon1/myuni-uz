@@ -25,6 +25,7 @@ from .email_verification import (
     record_verification_sent,
     send_verification_email,
 )
+from .presence import touch_user_last_seen
 from .serializers import LoginSerializer, PublicUserSerializer, RegisterSerializer, UserSerializer
 
 User = get_user_model()
@@ -176,6 +177,10 @@ class LoginView(APIView):
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
+        user_data = data.get("user") or {}
+        user_id = user_data.get("id")
+        if user_id:
+            touch_user_last_seen(User.objects.filter(pk=user_id).first(), force=True)
         refresh = RefreshToken(data["refresh"])
         response = Response(data)
         set_auth_cookies(response, refresh)
@@ -292,7 +297,7 @@ class UserPublicView(APIView):
         if not can_view_chat_profile(request.user, user, university_id=parsed_university_id):
             return Response(
                 {
-                    "detail": "Profil faqat chatda xabar yozgan foydalanuvchilar uchun ochiladi."
+                    "detail": "Profil ochib bo'lmadi. Chat kontekstida qayta urinib ko'ring."
                 },
                 status=status.HTTP_403_FORBIDDEN,
             )

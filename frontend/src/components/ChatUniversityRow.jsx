@@ -1,5 +1,6 @@
 import UniversityAvatar from "./UniversityAvatar.jsx";
 import UnreadBadge from "./UnreadBadge.jsx";
+import ChatListPreviewLine from "./chat/ChatListPreviewLine.jsx";
 import { formatUniversityPreview } from "../utils/universityMetaFormat.js";
 
 function GroupIcon() {
@@ -20,9 +21,16 @@ function formatListTime(value) {
   });
 }
 
-export default function ChatUniversityRow({ university, isSelected, isJoined, onSelect, showUnread = true }) {
+export default function ChatUniversityRow({
+  university,
+  isSelected,
+  isJoined,
+  onSelect,
+  showUnread = true,
+  typingUsers = [],
+}) {
   const unreadCount = showUnread && isJoined ? university.unread_count ?? 0 : 0;
-  const preview = university.last_message
+  const messagePreview = university.last_message
     ? `${university.last_message.author}: ${university.last_message.text}`
     : formatUniversityPreview(university)?.slice(0, 80) || `${university.member_count ?? 0} a'zo`;
 
@@ -52,9 +60,11 @@ export default function ChatUniversityRow({ university, isSelected, isJoined, on
             )}
           </div>
         </div>
-        <p className="mt-0.5 truncate text-sm font-medium text-slate-500 dark:text-slate-400">
-          {preview}
-        </p>
+        <ChatListPreviewLine
+          typingUsers={isJoined ? typingUsers : []}
+          messagePreview={messagePreview}
+          className="mt-0.5"
+        />
         {isJoined && (
           <span className="mt-1 inline-block text-xs font-bold text-emerald-600">Qo'shilgansiz</span>
         )}

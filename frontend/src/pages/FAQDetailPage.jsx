@@ -97,13 +97,16 @@ export default function FAQDetailPage() {
     [item, pageMeta.description, pageMeta.title]
   );
 
+  const seoReady = !loading && (Boolean(item) || Boolean(error));
+
   return (
     <MainLayout>
-      <JsonLd data={breadcrumbSchema} />
-      <JsonLd data={faqSchema} />
-      <JsonLd data={webPageSchema} />
+      <JsonLd
+        id="faq-detail-json-ld"
+        schemas={[breadcrumbSchema, faqSchema, webPageSchema].filter(Boolean)}
+      />
 
-      <section className="section-padding">
+      <section className="section-padding" data-seo-ready={seoReady ? "true" : undefined}>
         <div className="container-shell max-w-3xl">
           <Link to="/savollar-javob" className="text-sm font-black text-primary hover:underline">
             ← Barcha savollar

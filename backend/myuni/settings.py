@@ -211,7 +211,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "accounts.authentication.CookieJWTAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "accounts.authentication.PresenceJWTAuthentication",
     ],
 }
 
