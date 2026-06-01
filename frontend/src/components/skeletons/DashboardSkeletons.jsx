@@ -1,4 +1,5 @@
 import Skeleton from "../ui/Skeleton.jsx";
+import { mainContentProps } from "../../utils/mainContent.js";
 
 export function DashboardChatSkeleton() {
   return (
@@ -204,7 +205,7 @@ export default function DashboardSectionSkeleton({ section = "default" }) {
 
 export function DashboardPageShellSkeleton() {
   return (
-    <main className="min-h-screen bg-[#f5f7fb] text-slate-950 dark:bg-slateNight dark:text-white">
+    <main {...mainContentProps} className="min-h-screen bg-[#f5f7fb] text-slate-950 dark:bg-slateNight dark:text-white">
       <div className="grid min-h-screen lg:grid-cols-[292px_1fr]">
         <aside className="hidden border-r border-slate-200 bg-white/90 p-5 lg:block dark:border-white/10 dark:bg-slate-950/80">
           <div className="flex items-center gap-3">
@@ -269,7 +270,7 @@ export function CompareResultsSkeleton() {
 
 export function AuthCheckSkeleton() {
   return (
-    <div className="grid min-h-screen place-items-center bg-white dark:bg-slateNight">
+    <main {...mainContentProps} className="grid min-h-screen place-items-center bg-white dark:bg-slateNight">
       <div
         className="w-full max-w-sm rounded-3xl border border-slate-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-white/[0.06]"
         aria-busy="true"
@@ -279,6 +280,6 @@ export function AuthCheckSkeleton() {
         <Skeleton className="mx-auto mt-4 h-7 w-44" />
         <Skeleton className="mt-6 h-11 w-full rounded-2xl" />
       </div>
-    </div>
+    </main>
   );
 }

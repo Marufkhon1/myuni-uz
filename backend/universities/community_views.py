@@ -117,7 +117,43 @@ class BlockedUsersListView(APIView):
             }
             for block in blocks
         ]
-        return Response({"blocked_users": payload})
+        blocked_me = (
+            UserBlock.objects.filter(blocked_id=request.user.id)
+            .select_related("blocker", "blocker__profile")
+            .order_by("-created_at")
+        )
+        blocked_me_payload = [
+            {
+                "id": block.blocker_id,
+                "display_name": display_name_for_user(block.blocker),
+                "blocked_at": block.created_at,
+            }
+            for block in blocked_me
+        ]
+        return Response({"blocked_users": payload, "blocked_me_users": blocked_me_payload})
+
+
+class MutedUsersListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        from .serializers import display_name_for_user
+
+        mutes = (
+            UserMute.objects.filter(muter=request.user)
+            .select_related("muted_user", "muted_user__profile")
+            .order_by("-created_at")
+        )
+        payload = [
+            {
+                "id": mute.muted_user_id,
+                "display_name": display_name_for_user(mute.muted_user),
+                "university_id": mute.university_id,
+                "muted_at": mute.created_at,
+            }
+            for mute in mutes
+        ]
+        return Response({"muted_users": payload})
 
 
 class UniversityChatTagsView(APIView):

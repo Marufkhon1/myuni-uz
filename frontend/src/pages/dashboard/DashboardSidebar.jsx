@@ -20,12 +20,14 @@ export default function DashboardSidebar({
         </div>
       </Link>
 
-      <nav className="mt-8 flex-1 space-y-2 overflow-y-auto">
+      <nav className="mt-8 flex-1 space-y-2 overflow-y-auto" aria-label="Kabinet bo'limlari">
         {visibleMenuItems.map((item) => (
           <button
             key={item.id}
             type="button"
             onClick={() => onChangeSection(item.id)}
+            aria-current={activeSection === item.id ? "page" : undefined}
+            aria-label={item.label}
             className={`flex min-h-[4.5rem] w-full items-center gap-4 rounded-3xl p-4 text-left transition ${
               activeSection === item.id
                 ? "bg-slate-950 text-white shadow-soft dark:bg-white dark:text-slate-950"

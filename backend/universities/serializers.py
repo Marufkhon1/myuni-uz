@@ -463,6 +463,8 @@ class DirectThreadSerializer(serializers.ModelSerializer):
     last_message = serializers.SerializerMethodField()
     unread_count = serializers.SerializerMethodField()
     both_replied = serializers.SerializerMethodField()
+    other_user_blocked_by_me = serializers.SerializerMethodField()
+    has_block_relationship = serializers.SerializerMethodField()
 
     class Meta:
         model = DirectThread
@@ -475,6 +477,8 @@ class DirectThreadSerializer(serializers.ModelSerializer):
             "updated_at",
             "unread_count",
             "both_replied",
+            "other_user_blocked_by_me",
+            "has_block_relationship",
         ]
 
     def get_unread_count(self, obj):
@@ -504,10 +508,45 @@ class DirectThreadSerializer(serializers.ModelSerializer):
         other = self.get_other_user(obj)
         if not request or not other:
             return None
+        from .chat_community_utils import should_hide_avatar_due_to_block
+
+        if should_hide_avatar_due_to_block(other.id, request.user.id):
+            return None
         return avatar_url_for_viewer(request.user, other, request=request)
 
+    def get_other_user_blocked_by_me(self, obj):
+        from .chat_community_utils import user_has_blocked_other
+
+        request = self.context.get("request")
+        other = self.get_other_user(obj)
+        if not request or not other:
+            return False
+        return user_has_blocked_other(request.user.id, other.id)
+
+    def get_has_block_relationship(self, obj):
+        from .chat_community_utils import users_are_blocked
+
+        request = self.context.get("request")
+        other = self.get_other_user(obj)
+        if not request or not other:
+            return False
+        return users_are_blocked(request.user.id, other.id)
+
     def get_last_message(self, obj):
-        last = obj.messages.order_by("-created_at").first()
+        from .chat_community_utils import filter_direct_messages_for_viewer
+
+        request = self.context.get("request")
+        if not request:
+            return None
+
+        last = (
+            filter_direct_messages_for_viewer(
+                DirectMessage.objects.filter(thread_id=obj.id, is_deleted=False),
+                request.user,
+            )
+            .order_by("-created_at")
+            .first()
+        )
         if not last:
             return None
         return {

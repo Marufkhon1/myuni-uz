@@ -10,6 +10,7 @@ export default function ChatMessageContextMenu({
   isPinned,
   onReport,
   onMute,
+  isMuted = false,
   onEdit,
   onDelete,
   onClose,
@@ -106,8 +107,8 @@ export default function ChatMessageContextMenu({
             }}
             className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm font-semibold text-white/90 transition hover:bg-white/5"
           >
-            <span aria-hidden>🔇</span>
-            Bildirishnomalarni o&apos;chirish
+            <span aria-hidden>{isMuted ? "🔔" : "🔇"}</span>
+            {isMuted ? "Bildirishnomalarni yoqish" : "Bildirishnomalarni o'chirish"}
           </button>
         )}
       </div>

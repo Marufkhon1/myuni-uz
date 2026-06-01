@@ -11,6 +11,7 @@ import {
 } from "../services/moderatorService.js";
 import { getApiErrorMessage } from "../utils/apiErrors.js";
 import { dashboardPathForRole } from "../utils/navigation.js";
+import { mainContentProps } from "../utils/mainContent.js";
 import logo from "../assets/myuni-logo.png";
 
 const STATUS_OPTIONS = [
@@ -261,7 +262,7 @@ export default function ModeratorDashboardPage() {
         </div>
       </header>
 
-      <main className="container-shell py-8 sm:py-10">
+      <main {...mainContentProps} className="container-shell py-8 sm:py-10">
         <div className="mb-6 flex flex-wrap gap-3">
           <select
             value={statusFilter}

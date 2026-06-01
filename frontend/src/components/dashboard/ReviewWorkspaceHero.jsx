@@ -1,5 +1,6 @@
 import UniversityIdentity from "../UniversityIdentity.jsx";
 import ReviewAspectRatings from "../reviews/ReviewAspectRatings.jsx";
+import { formatStarRatingLabel } from "../../utils/starRatingA11y.js";
 import { getUniversityImageUrl } from "../../utils/universityImage.js";
 import ReviewRatingDistribution from "./ReviewRatingDistribution.jsx";
 
@@ -133,8 +134,10 @@ export default function ReviewWorkspaceHero({
 
             <div className="h-11 w-px shrink-0 bg-slate-200 dark:bg-white/10" aria-hidden="true" />
 
-            <div className="min-w-0 shrink-0">
-              <StarDisplay rating={averageRating} size="lg" />
+            <div className="min-w-0 shrink-0" role="img" aria-label={formatStarRatingLabel(averageRating)}>
+              <div aria-hidden="true">
+                <StarDisplay rating={averageRating} size="lg" />
+              </div>
               <p className="mt-1.5 text-sm font-bold text-slate-800 dark:text-white">
                 {hasReviews ? `${reviewCount} ${statLabels.reviews.toLowerCase()}` : "Hali sharh yo'q"}
               </p>

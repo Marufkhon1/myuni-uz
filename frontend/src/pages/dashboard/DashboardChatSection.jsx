@@ -211,8 +211,16 @@ export default function DashboardChatSection(p) {
                           <EmptyState
                             compact
                             variant="messages"
-                            title="Birinchi shaxsiy xabar"
-                            description="Suhbatni boshlang — xabaringiz shu yerda ko'rinadi."
+                            title={
+                              p.selectedThread?.other_user_blocked_by_me
+                                ? "Bloklangan foydalanuvchi xabarlari yashirilgan"
+                                : "Birinchi shaxsiy xabar"
+                            }
+                            description={
+                              p.selectedThread?.other_user_blocked_by_me
+                                ? "Blokdan ochsangiz, yashirilgan xabarlar ham ko'rinadi."
+                                : "Suhbatni boshlang — xabaringiz shu yerda ko'rinadi."
+                            }
                             className="h-full min-h-[12rem] border-none bg-transparent dark:bg-transparent"
                           />
                         ) : (
@@ -231,6 +239,10 @@ export default function DashboardChatSection(p) {
                                 isPinned={p.privatePinnedMessage?.id === item.id}
                                 onReport={(msg) => p.openMessageReport(msg, "private")}
                                 onMute={(msg) => p.onMuteChatUser?.(msg, "private")}
+                                isAuthorMuted={p.isChatUserMuted?.(
+                                  item.sender_id ?? item.author_id,
+                                  "private"
+                                )}
                                 onEdit={(msg) => p.openEditChatMessage(msg, "private")}
                                 onDelete={p.handleDeletePrivateMessage}
                                 onAuthorClick={(authorId, prefetch) =>
@@ -247,6 +259,18 @@ export default function DashboardChatSection(p) {
                         users={p.privateTypingUsers}
                         className="shrink-0 border-t border-slate-200 px-4 py-2 text-xs text-slate-500 dark:border-white/10"
                       />
+                      {p.selectedThread?.other_user_blocked_by_me ? (
+                        <div className="shrink-0 border-t border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900/90">
+                          <button
+                            type="button"
+                            onClick={p.onUnblockPrivateChatUser}
+                            disabled={p.isBlockActionSubmitting}
+                            className="min-h-12 w-full rounded-2xl bg-premium-gradient px-6 py-3 text-base font-black text-white shadow-glow transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            {p.isBlockActionSubmitting ? "Kutilmoqda..." : "Blokdan ochish"}
+                          </button>
+                        </div>
+                      ) : (
                       <form
                         onSubmit={p.sendPrivateChatMessage}
                         className="shrink-0 border-t border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900/90"
@@ -285,6 +309,7 @@ export default function DashboardChatSection(p) {
                           </button>
                         </div>
                       </form>
+                      )}
                     </div>
                   ) : p.chatPanel === "private" ? (
                     <div className="grid min-h-[280px] flex-1 place-items-center bg-slate-50 p-8 text-center md:min-h-[420px] dark:bg-slate-950/40">
@@ -430,6 +455,10 @@ export default function DashboardChatSection(p) {
                                   isPinned={p.groupPinnedMessage?.id === item.id}
                                   onReport={(msg) => p.openMessageReport(msg, "group")}
                                   onMute={(msg) => p.onMuteChatUser?.(msg, "group")}
+                                  isAuthorMuted={p.isChatUserMuted?.(
+                                    item.author_id ?? item.sender_id,
+                                    "group"
+                                  )}
                                   onTagClick={p.onSelectGroupTag}
                                   onEdit={(msg) => p.openEditChatMessage(msg, "group")}
                                   onDelete={p.handleDeleteGroupMessage}
@@ -547,7 +576,12 @@ export default function DashboardChatSection(p) {
                   isProfileLoading={p.isProfileLoading}
                   currentUserId={p.user?.id}
                   hidePrivateMessage={p.hidePrivateMessageButton}
+                  isBlockedByMe={p.isProfileUserBlockedByMe}
+                  hasBlockRelationship={p.hasProfileBlockRelationship}
+                  isBlockSubmitting={p.isBlockActionSubmitting}
                   onPrivateMessage={() => p.openPrivateChatWithUser(p.profileUser.id)}
+                  onBlock={p.onBlockProfileUser}
+                  onUnblock={p.onUnblockProfileUser}
                   onClose={() => p.setProfileUser(null)}
                 />
     </section>

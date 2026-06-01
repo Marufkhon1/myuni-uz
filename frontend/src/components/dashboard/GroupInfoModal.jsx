@@ -24,6 +24,7 @@ export default function GroupInfoModal({
   return (
     <ModalOverlay
       onClose={onClose}
+      labelledBy="group-info-modal-title"
       panelClassName="flex max-h-[min(720px,90dvh)] w-full max-w-md flex-col overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-slate-900"
     >
         <UniversityCampusBanner university={university} className="h-36 shrink-0" />
@@ -34,7 +35,7 @@ export default function GroupInfoModal({
             <div className="mt-3 flex items-start gap-4">
               <UniversityAvatar university={university} size="lg" />
               <div className="min-w-0 flex-1">
-                <h3 className="text-2xl font-black leading-tight">{title}</h3>
+                <h3 id="group-info-modal-title" className="text-2xl font-black leading-tight">{title}</h3>
                 {university.name && university.name !== title && (
                   <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">
                     {university.name}

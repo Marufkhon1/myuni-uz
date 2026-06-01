@@ -34,7 +34,9 @@ GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 
 
 def frontend_redirect(path, **params):
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173").rstrip("/")
+    from django.conf import settings
+
+    frontend_url = settings.FRONTEND_URL.rstrip("/")
     query = urlencode({key: value for key, value in params.items() if value})
     separator = "&" if "?" in path else "?"
     return redirect(f"{frontend_url}{path}{separator}{query}" if query else f"{frontend_url}{path}")
@@ -43,6 +45,68 @@ def frontend_redirect(path, **params):
 def dashboard_path_for(user):
     role = getattr(getattr(user, "profile", None), "role", Profile.Role.APPLICANT)
     return "/student/dashboard" if role == Profile.Role.STUDENT else "/applicant/dashboard"
+
+
+def _google_oauth_error_message(token_response):
+    try:
+        payload = token_response.json()
+    except ValueError:
+        return "Google token olishda xatolik."
+    detail = payload.get("error_description") or payload.get("error")
+    if detail:
+        return f"Google token xatosi: {detail}"
+    return "Google token olishda xatolik."
+
+
+def resolve_or_create_google_user(*, email, full_name, state):
+    """Google OAuth: mavjud foydalanuvchini topish yoki yangi hisob yaratish."""
+    user = User.objects.filter(email=email).first()
+    if user:
+        profile, _ = Profile.objects.get_or_create(
+            user=user,
+            defaults={
+                "full_name": full_name,
+                "role": Profile.Role.APPLICANT,
+                "university": "",
+                "email_verified_at": timezone.now(),
+            },
+        )
+        profile_updates = []
+        if not profile.email_verified_at:
+            profile.email_verified_at = timezone.now()
+            profile_updates.append("email_verified_at")
+        if full_name and not (profile.full_name or "").strip():
+            profile.full_name = full_name
+            profile_updates.append("full_name")
+        if profile_updates:
+            profile_updates.append("updated_at")
+            profile.save(update_fields=profile_updates)
+        return user, None
+
+    flow = state.get("flow", "login")
+    if flow == "signup":
+        university = (state.get("university") or "").strip()
+        if not university:
+            return None, (
+                "/signup",
+                "Google orqali ro'yxatdan o'tish uchun avval universitet tanlang.",
+            )
+        role = state.get("role", Profile.Role.APPLICANT)
+    else:
+        role = Profile.Role.APPLICANT
+        university = ""
+
+    user = User(username=email, email=email, first_name=full_name)
+    user.set_unusable_password()
+    user.save()
+    Profile.objects.create(
+        user=user,
+        full_name=full_name,
+        role=role,
+        university=university,
+        email_verified_at=timezone.now(),
+    )
+    return user, None
 
 
 class RegisterView(APIView):
@@ -320,7 +384,7 @@ class GoogleAuthCallbackView(APIView):
         )
 
         if token_response.status_code != 200:
-            return frontend_redirect("/login", google_error="Google token olishda xatolik.")
+            return frontend_redirect("/login", google_error=_google_oauth_error_message(token_response))
 
         google_tokens = token_response.json()
         userinfo_response = requests.get(
@@ -340,39 +404,19 @@ class GoogleAuthCallbackView(APIView):
         if not email or not is_verified:
             return frontend_redirect("/login", google_error="Google email tasdiqlanmagan.")
 
-        user = User.objects.filter(email=email).first()
-        if not user:
-            if state.get("flow") != "signup" or not state.get("university"):
-                return frontend_redirect(
-                    "/signup",
-                    google_error="Avval rol va universitetni tanlang.",
-                )
-
-            user = User.objects.create_user(
-                username=email,
-                email=email,
-                password=None,
-                first_name=full_name,
-            )
-            user.set_unusable_password()
-            user.save(update_fields=["password"])
-
-        Profile.objects.get_or_create(
-            user=user,
-            defaults={
-                "full_name": full_name,
-                "role": state.get("role", Profile.Role.APPLICANT),
-                "university": state.get("university", ""),
-                "email_verified_at": timezone.now(),
-            },
+        user, provision_error = resolve_or_create_google_user(
+            email=email,
+            full_name=full_name,
+            state=state,
         )
-        profile = user.profile
-        if not profile.email_verified_at:
-            profile.email_verified_at = timezone.now()
-            profile.save(update_fields=["email_verified_at", "updated_at"])
+        if provision_error:
+            redirect_path, error_message = provision_error
+            return frontend_redirect(redirect_path, google_error=error_message)
 
         refresh = RefreshToken.for_user(user)
-        frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173").rstrip("/")
+        from django.conf import settings
+
+        frontend_url = settings.FRONTEND_URL.rstrip("/")
         fragment = urlencode(
             {
                 "access": str(refresh.access_token),

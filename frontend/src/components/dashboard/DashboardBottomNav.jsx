@@ -58,6 +58,8 @@ export default function DashboardBottomNav({ items, activeSection, onSelect }) {
               key={item.id}
               type="button"
               onClick={() => onSelect(item.id)}
+              aria-current={isActive ? "page" : undefined}
+              aria-label={item.label}
               className={`flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2.5 transition sm:gap-1.5 sm:px-2 ${
                 isActive
                   ? "bg-slate-950 text-white dark:bg-white dark:text-slate-950"

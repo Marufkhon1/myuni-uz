@@ -35,6 +35,24 @@ function interFontPreloadPlugin() {
   };
 }
 
+function configureApiProxy(proxy) {
+  proxy.on("proxyReq", (proxyReq, req) => {
+    if (req.url?.includes("/stream/")) {
+      proxyReq.setHeader("Accept", "text/event-stream");
+    }
+  });
+  proxy.on("proxyRes", (proxyRes, req) => {
+    if (!req.url?.includes("/stream/")) {
+      return;
+    }
+    proxyRes.headers["cache-control"] = "no-cache";
+    proxyRes.headers["x-accel-buffering"] = "no";
+    if (proxyRes.headers["content-type"]?.includes("text/event-stream")) {
+      delete proxyRes.headers["content-length"];
+    }
+  });
+}
+
 export default defineConfig({
   plugins: [
     react(),
@@ -123,6 +141,7 @@ export default defineConfig({
       "/api": {
         target: "http://127.0.0.1:8000",
         changeOrigin: true,
+        configure: configureApiProxy,
       },
       "/media": {
         target: "http://127.0.0.1:8000",
@@ -136,6 +155,7 @@ export default defineConfig({
       "/api": {
         target: process.env.PRERENDER_API_URL || "http://127.0.0.1:8000",
         changeOrigin: true,
+        configure: configureApiProxy,
       },
       "/media": {
         target: process.env.PRERENDER_API_URL || "http://127.0.0.1:8000",

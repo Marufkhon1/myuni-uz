@@ -35,6 +35,22 @@ def blocked_user_ids_for(viewer_id):
     return set(blocked_by_me) | set(blocked_me)
 
 
+def users_blocked_by_me(viewer_id):
+    from .models import UserBlock
+
+    return set(
+        UserBlock.objects.filter(blocker_id=viewer_id).values_list("blocked_id", flat=True)
+    )
+
+
+def user_has_blocked_other(blocker_id, blocked_id):
+    if not blocker_id or not blocked_id or blocker_id == blocked_id:
+        return False
+    from .models import UserBlock
+
+    return UserBlock.objects.filter(blocker_id=blocker_id, blocked_id=blocked_id).exists()
+
+
 def muted_user_ids_for(viewer_id, university_id=None):
     from .models import UserMute
 
@@ -55,18 +71,39 @@ def users_are_blocked(user_a_id, user_b_id):
     ).exists()
 
 
+def should_hide_avatar_due_to_block(profile_user_id, viewer_id):
+    """Rasm faqat profil egasi ko'ruvchini bloklaganda yashiriladi."""
+    return user_has_blocked_other(profile_user_id, viewer_id)
+
+
 def filter_university_messages_for_viewer(queryset, viewer, university_id):
-    blocked = blocked_user_ids_for(viewer.id)
-    if blocked:
-        queryset = queryset.exclude(user_id__in=blocked)
     return queryset
 
 
 def filter_direct_messages_for_viewer(queryset, viewer):
-    blocked = blocked_user_ids_for(viewer.id)
-    if blocked:
-        queryset = queryset.exclude(sender_id__in=blocked)
-    return queryset
+    from .models import UserBlock
+
+    blocks = list(
+        UserBlock.objects.filter(blocker_id=viewer.id).values_list("blocked_id", "created_at")
+    )
+    if not blocks:
+        return queryset
+
+    exclusion = Q()
+    for blocked_id, blocked_at in blocks:
+        exclusion |= Q(sender_id=blocked_id, created_at__gt=blocked_at)
+
+    return queryset.exclude(exclusion)
+
+
+def should_notify_direct_message(recipient_id, sender_id):
+    if not recipient_id or not sender_id or recipient_id == sender_id:
+        return False
+    if user_has_blocked_other(recipient_id, sender_id):
+        return False
+    if sender_id in muted_user_ids_for(recipient_id, university_id=None):
+        return False
+    return True
 
 
 def should_notify_viewer_about_sender(viewer_id, sender_id, *, university_id=None):

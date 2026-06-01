@@ -1,4 +1,5 @@
 import axios from "axios";
+import { isGoogleOAuthCallbackPath } from "../utils/authPaths.js";
 
 const ACCESS_TOKEN_KEY = "myuni_access_token";
 const REFRESH_TOKEN_KEY = "myuni_refresh_token";
@@ -39,6 +40,10 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    if (isGoogleOAuthCallbackPath()) {
+      return Promise.reject(error);
+    }
+
     originalRequest._retry = true;
 
     try {
@@ -54,8 +59,10 @@ api.interceptors.response.use(
       }
       return api(originalRequest);
     } catch (refreshError) {
-      localStorage.removeItem(ACCESS_TOKEN_KEY);
-      localStorage.removeItem(REFRESH_TOKEN_KEY);
+      if (!isGoogleOAuthCallbackPath()) {
+        localStorage.removeItem(ACCESS_TOKEN_KEY);
+        localStorage.removeItem(REFRESH_TOKEN_KEY);
+      }
       return Promise.reject(refreshError);
     }
   }

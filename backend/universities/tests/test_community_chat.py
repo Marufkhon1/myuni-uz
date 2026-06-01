@@ -83,18 +83,28 @@ class CommunityChatTests(TestCase):
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0]["tags"], ["qabul2026"])
 
-    def test_block_hides_messages(self):
+    def test_block_keeps_group_messages_visible(self):
         message = ChatMessage.objects.create(
             university=self.university,
             user=self.other_member,
-            text="Bloklanadigan xabar",
+            text="Bloklangan bo'lsa ham ko'rinsin",
         )
         UserBlock.objects.create(blocker=self.member, blocked=self.other_member)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.member_token}")
         response = self.client.get(f"/api/universities/{self.university.id}/messages/")
         self.assertEqual(response.status_code, 200)
         ids = [item["id"] for item in response.json()["messages"]]
-        self.assertNotIn(message.id, ids)
+        self.assertIn(message.id, ids)
+
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.other_token}")
+        own_message = ChatMessage.objects.create(
+            university=self.university,
+            user=self.member,
+            text="Bloklagan odamning xabari",
+        )
+        response = self.client.get(f"/api/universities/{self.university.id}/messages/")
+        ids = [item["id"] for item in response.json()["messages"]]
+        self.assertIn(own_message.id, ids)
 
     def test_mute_keeps_messages_visible_in_university(self):
         message = ChatMessage.objects.create(

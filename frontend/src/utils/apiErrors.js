@@ -50,7 +50,7 @@ export function getApiErrorMessage(error, fallback) {
 
   if (!error?.response) {
     if (error?.code === "ERR_NETWORK" || error?.message === "Network Error") {
-      return "Backendga ulanib bo'lmadi. Backend server ishlayotganini tekshiring (terminalda: python manage.py runserver).";
+      return "Backendga ulanib bo'lmadi. Backend server ishlayotganini tekshiring (backend papkada: .\\manage.ps1 runserver).";
     }
     return error?.message || fallback;
   }

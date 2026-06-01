@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { fetchStreamToken } from "../services/authService.js";
 
 function mergeById(current, incoming) {
@@ -7,6 +7,12 @@ function mergeById(current, incoming) {
   return [...map.values()].sort((a, b) => a.id - b.id);
 }
 
+export function maxMessageId(messages) {
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return 0;
+  }
+  return messages.reduce((max, item) => (item.id > max ? item.id : max), 0);
+}
 export function useMessageStream({
   streamUrl,
   enabled,
@@ -36,6 +42,10 @@ export function useMessageStream({
   useEffect(() => {
     onTypingRef.current = onTyping;
   }, [onTyping]);
+
+  useEffect(() => {
+    sinceIdRef.current = 0;
+  }, [streamUrl]);
 
   useEffect(() => {
     if (!enabled || !streamUrl) {
@@ -130,10 +140,12 @@ export function useMessageStream({
     };
   }, [streamUrl, enabled]);
 
+  const resetSinceId = useCallback((maxId = 0) => {
+    sinceIdRef.current = maxId;
+  }, []);
+
   return {
-    resetSinceId(maxId = 0) {
-      sinceIdRef.current = maxId;
-    },
+    resetSinceId,
   };
 }
 

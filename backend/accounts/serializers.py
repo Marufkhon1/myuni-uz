@@ -73,6 +73,8 @@ class PublicUserSerializer(serializers.ModelSerializer):
     university = serializers.CharField(source="profile.university", read_only=True)
     study_program = serializers.CharField(source="profile.study_program", read_only=True)
     bio = serializers.CharField(source="profile.bio", read_only=True)
+    blocked_by_me = serializers.SerializerMethodField()
+    has_block_relationship = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -85,13 +87,35 @@ class PublicUserSerializer(serializers.ModelSerializer):
             "university",
             "study_program",
             "bio",
+            "blocked_by_me",
+            "has_block_relationship",
         ]
 
     def get_avatar_url(self, obj):
         request = self.context.get("request")
         if not request:
             return None
+        from universities.chat_community_utils import should_hide_avatar_due_to_block
+
+        if should_hide_avatar_due_to_block(obj.id, request.user.id):
+            return None
         return avatar_url_for_viewer(request.user, obj, request=request)
+
+    def get_blocked_by_me(self, obj):
+        request = self.context.get("request")
+        if not request or not request.user.is_authenticated:
+            return False
+        from universities.chat_community_utils import user_has_blocked_other
+
+        return user_has_blocked_other(request.user.id, obj.id)
+
+    def get_has_block_relationship(self, obj):
+        request = self.context.get("request")
+        if not request or not request.user.is_authenticated:
+            return False
+        from universities.chat_community_utils import users_are_blocked
+
+        return users_are_blocked(request.user.id, obj.id)
 
     def get_display_name(self, obj):
         profile = getattr(obj, "profile", None)

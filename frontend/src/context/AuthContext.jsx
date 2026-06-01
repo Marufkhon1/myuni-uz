@@ -8,6 +8,7 @@ import {
   register as registerRequest,
 } from "../services/authService.js";
 import { AuthContext } from "./authContext.js";
+import { isGoogleOAuthCallbackPath, readGoogleOAuthHashTokens } from "../utils/authPaths.js";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -17,13 +18,23 @@ export function AuthProvider({ children }) {
     let isMounted = true;
 
     async function bootstrapAuth() {
+      if (isGoogleOAuthCallbackPath()) {
+        const { access, refresh } = readGoogleOAuthHashTokens();
+        if (access && refresh) {
+          if (isMounted) {
+            setIsLoading(false);
+          }
+          return;
+        }
+      }
+
       try {
         const currentUser = await getCurrentUser();
         if (isMounted) {
           setUser(currentUser);
         }
       } catch {
-        if (isMounted) {
+        if (isMounted && !isGoogleOAuthCallbackPath()) {
           clearTokens();
           setUser(null);
         }
@@ -60,8 +71,8 @@ export function AuthProvider({ children }) {
         return data;
       },
       async completeGoogleAuth(tokens) {
-        await establishAuthSession(tokens);
-        const nextUser = await getCurrentUser();
+        const session = await establishAuthSession(tokens);
+        const nextUser = session.user || (await getCurrentUser());
         setUser(nextUser);
         return nextUser;
       },

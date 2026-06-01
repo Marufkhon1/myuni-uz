@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import DashboardBottomNav from "../components/dashboard/DashboardBottomNav.jsx";
 import DashboardMobileSupport from "../components/dashboard/DashboardMobileSupport.jsx";
 import { dashboardPathForRole } from "../utils/navigation.js";
+import { mainContentProps } from "../utils/mainContent.js";
+import { scrollElementIntoView } from "../utils/scrollIntoView.js";
 import { getDashboardCabinetEyebrow, getDashboardMenuItems } from "../utils/dashboardRoleContent.js";
 import UniversityCompareSection from "../components/dashboard/UniversityCompareSection.jsx";
 import PopularReviewsSection from "../components/dashboard/PopularReviewsSection.jsx";
@@ -29,7 +31,7 @@ import { useNotifications } from "../hooks/useNotifications.js";
 import { useWebPush } from "../hooks/useWebPush.js";
 import { useDashboardNavigation } from "../hooks/dashboard/useDashboardNavigation.js";
 import { useDashboardData } from "../hooks/dashboard/useDashboardData.js";
-import { mergeById, useMessageStream } from "../hooks/useMessageStream.js";
+import { mergeById, maxMessageId, useMessageStream } from "../hooks/useMessageStream.js";
 import {
   getDirectMessages,
   getDirectThreads,
@@ -58,8 +60,13 @@ import {
   unpinUniversityMessage,
 } from "../services/chatService.js";
 import {
+  blockUser,
+  getBlockedUsers,
+  getMutedUsers,
   getUniversityChatTags,
   muteUser,
+  unmuteUser,
+  unblockUser,
 } from "../services/communityService.js";
 import { getPublicUser } from "../services/userService.js";
 import { resolveMediaUrl } from "../utils/media.js";
@@ -79,6 +86,7 @@ import {
 import { getApiErrorMessage } from "../utils/apiErrors.js";
 import { createChatErrorReporter } from "../utils/chatActionError.js";
 import { createThrottledTyping } from "../utils/throttledTyping.js";
+import { buildMuteKey, isChatUserMuted } from "../utils/chatMute.js";
 import { shouldOfferOnboarding, markOnboardingComplete, isOnboardingComplete } from "../utils/onboardingStorage.js";
 import { markApplicantChecklistStep } from "../utils/applicantChecklist.js";
 import {
@@ -178,11 +186,20 @@ export default function DashboardPage({ role }) {
   const [privateTypingUsers, setPrivateTypingUsers] = useState([]);
   const [groupChatTags, setGroupChatTags] = useState([]);
   const [activeGroupTag, setActiveGroupTag] = useState("");
+  const [groupStreamReady, setGroupStreamReady] = useState(false);
+  const [privateStreamReady, setPrivateStreamReady] = useState(false);
+  const [privateMessagesReloadNonce, setPrivateMessagesReloadNonce] = useState(0);
+  const privateThreadLoadRef = useRef(null);
+  const privateSyncRequestRef = useRef(0);
   const { isPhone, isTablet, isDesktop, isWideChat } = useBreakpoint();
   const isCompactLayout = isPhone || isTablet;
   const isReviewCompactLayout = isCompactLayout;
   const [comparePrefill, setComparePrefill] = useState(null);
   const [checklistVersion, setChecklistVersion] = useState(0);
+  const [blockedUserIds, setBlockedUserIds] = useState(new Set());
+  const [blockedMeUserIds, setBlockedMeUserIds] = useState(new Set());
+  const [mutedUserKeys, setMutedUserKeys] = useState(new Set());
+  const [isBlockActionSubmitting, setIsBlockActionSubmitting] = useState(false);
 
   const visibleMenuItems = useMemo(() => getDashboardMenuItems(isStudent), [isStudent]);
   const cabinetEyebrow = getDashboardCabinetEyebrow(isStudent);
@@ -203,6 +220,9 @@ export default function DashboardPage({ role }) {
     onLoadError: onDashboardLoadError,
     setSelectedUniversityId,
   });
+
+  const refreshChatSummariesRef = useRef(refreshChatSummaries);
+  refreshChatSummariesRef.current = refreshChatSummaries;
 
   const {
     activeSection,
@@ -362,7 +382,7 @@ export default function DashboardPage({ role }) {
     closeGroupChatSearch();
     setHighlightedGroupMessageId(messageId);
     window.requestAnimationFrame(() => {
-      groupMessageRefs.current[messageId]?.scrollIntoView({ behavior: "smooth", block: "center" });
+      scrollElementIntoView(groupMessageRefs.current[messageId], { block: "center" });
     });
     window.setTimeout(() => setHighlightedGroupMessageId(null), 2600);
   }
@@ -375,6 +395,46 @@ export default function DashboardPage({ role }) {
     const thread = directThreads.find((item) => item.other_user_id === profileUser.id);
     return Boolean(thread?.both_replied);
   }, [profileUser?.id, directThreads]);
+
+  const isProfileUserBlockedByMe = useMemo(() => {
+    if (!profileUser?.id) {
+      return false;
+    }
+
+    if (profileUser.blocked_by_me) {
+      return true;
+    }
+
+    const thread = directThreads.find((item) => item.other_user_id === profileUser.id);
+    if (thread?.other_user_blocked_by_me) {
+      return true;
+    }
+
+    return blockedUserIds.has(profileUser.id);
+  }, [profileUser?.id, profileUser?.blocked_by_me, directThreads, blockedUserIds]);
+
+  const hasProfileBlockRelationship = useMemo(() => {
+    if (!profileUser?.id) {
+      return false;
+    }
+
+    if (profileUser.has_block_relationship) {
+      return true;
+    }
+
+    const thread = directThreads.find((item) => item.other_user_id === profileUser.id);
+    if (thread?.has_block_relationship) {
+      return true;
+    }
+
+    return blockedUserIds.has(profileUser.id) || blockedMeUserIds.has(profileUser.id);
+  }, [
+    profileUser?.id,
+    profileUser?.has_block_relationship,
+    directThreads,
+    blockedUserIds,
+    blockedMeUserIds,
+  ]);
 
   const groupStreamUrl =
     selectedUniversityId && chatPanel === "group"
@@ -404,10 +464,10 @@ export default function DashboardPage({ role }) {
     }
   }, [groupPinnedMessage]);
 
-  const mergePrivateMessages = useCallback(
-    (incoming) => setDirectMessages((current) => mergeById(current, incoming)),
-    []
-  );
+  const mergePrivateMessages = useCallback((incoming) => {
+    setDirectMessages((current) => mergeById(current, incoming));
+    refreshChatSummariesRef.current();
+  }, []);
 
   const mergePrivateUpdated = useCallback(
     (incoming) => setDirectMessages((current) => mergeById(current, incoming)),
@@ -468,23 +528,36 @@ export default function DashboardPage({ role }) {
     groupMessageRefs.current = {};
   }, [selectedUniversityId]);
 
-  useMessageStream({
+  const { resetSinceId: resetGroupStreamSinceId } = useMessageStream({
     streamUrl: groupStreamUrl,
-    enabled: activeSection === "chats" && chatPanel === "group" && hasJoinedSelectedChat,
+    enabled:
+      activeSection === "chats" &&
+      chatPanel === "group" &&
+      hasJoinedSelectedChat &&
+      groupStreamReady,
     onMessages: mergeMessages,
     onMessageUpdated: mergeGroupUpdated,
     onMessageDeleted: removeGroupMessages,
     onTyping: setGroupTypingUsers,
   });
 
-  useMessageStream({
+  const { resetSinceId: resetPrivateStreamSinceId } = useMessageStream({
     streamUrl: privateStreamUrl,
-    enabled: activeSection === "chats" && chatPanel === "private" && Boolean(selectedThreadId),
+    enabled:
+      activeSection === "chats" &&
+      chatPanel === "private" &&
+      Boolean(selectedThreadId) &&
+      privateStreamReady,
     onMessages: mergePrivateMessages,
     onMessageUpdated: mergePrivateUpdated,
     onMessageDeleted: removePrivateMessages,
     onTyping: setPrivateTypingUsers,
   });
+
+  const resetGroupStreamSinceIdRef = useRef(resetGroupStreamSinceId);
+  resetGroupStreamSinceIdRef.current = resetGroupStreamSinceId;
+  const resetPrivateStreamSinceIdRef = useRef(resetPrivateStreamSinceId);
+  resetPrivateStreamSinceIdRef.current = resetPrivateStreamSinceId;
 
   const filteredReviewUniversities = useMemo(() => {
     const query = reviewUniversitySearch.trim().toLowerCase();
@@ -501,6 +574,7 @@ export default function DashboardPage({ role }) {
 
   useEffect(() => {
     if (!selectedUniversityId || chatPanel !== "group") {
+      setGroupStreamReady(false);
       return;
     }
 
@@ -509,10 +583,12 @@ export default function DashboardPage({ role }) {
       setGroupPinnedMessage(null);
       setGroupChatTags([]);
       setActiveGroupTag("");
+      setGroupStreamReady(false);
       return undefined;
     }
 
     let isMounted = true;
+    setGroupStreamReady(false);
 
     async function loadMessages() {
       try {
@@ -522,15 +598,18 @@ export default function DashboardPage({ role }) {
         if (isMounted) {
           setGroupMessages(messages);
           setGroupPinnedMessage(pinned);
+          resetGroupStreamSinceIdRef.current(maxMessageId(messages));
+          setGroupStreamReady(true);
         }
         await markUniversityChatRead(selectedUniversityId);
         if (isMounted) {
-          refreshChatSummaries();
+          refreshChatSummariesRef.current();
         }
       } catch {
         if (isMounted) {
           setGroupMessages([]);
           setGroupPinnedMessage(null);
+          setGroupStreamReady(false);
         }
       }
     }
@@ -538,13 +617,13 @@ export default function DashboardPage({ role }) {
     loadMessages();
     return () => {
       isMounted = false;
+      setGroupStreamReady(false);
     };
   }, [
     selectedUniversityId,
     chatPanel,
     joinedUniversityIds,
     activeGroupTag,
-    refreshChatSummaries,
   ]);
 
   useEffect(() => {
@@ -574,26 +653,43 @@ export default function DashboardPage({ role }) {
 
   useEffect(() => {
     if (!selectedThreadId || chatPanel !== "private") {
-      return;
+      setPrivateStreamReady(false);
+      privateThreadLoadRef.current = null;
+      return undefined;
     }
 
+    const isNewThread = privateThreadLoadRef.current !== selectedThreadId;
+    privateThreadLoadRef.current = selectedThreadId;
+
     let isMounted = true;
+    setPrivateStreamReady(false);
+
+    if (isNewThread) {
+      setDirectMessages([]);
+      setPrivatePinnedMessage(null);
+    }
 
     async function loadPrivateMessages() {
       try {
         const { messages, pinned } = await getDirectMessages(selectedThreadId);
-        if (isMounted) {
-          setDirectMessages(messages);
-          setPrivatePinnedMessage(pinned);
+        if (!isMounted) {
+          return;
         }
+        setDirectMessages((current) => (isNewThread ? messages : mergeById(current, messages)));
+        setPrivatePinnedMessage(pinned);
+        resetPrivateStreamSinceIdRef.current(maxMessageId(messages));
+        setPrivateStreamReady(true);
         await markDirectThreadRead(selectedThreadId);
         if (isMounted) {
-          refreshChatSummaries();
+          refreshChatSummariesRef.current();
         }
       } catch {
         if (isMounted) {
-          setDirectMessages([]);
-          setPrivatePinnedMessage(null);
+          if (isNewThread) {
+            setDirectMessages([]);
+            setPrivatePinnedMessage(null);
+          }
+          setPrivateStreamReady(false);
         }
       }
     }
@@ -602,7 +698,98 @@ export default function DashboardPage({ role }) {
     return () => {
       isMounted = false;
     };
-  }, [selectedThreadId, chatPanel, refreshChatSummaries]);
+  }, [selectedThreadId, chatPanel, privateMessagesReloadNonce]);
+
+  useEffect(() => {
+    if (
+      !privateStreamReady ||
+      !selectedThreadId ||
+      chatPanel !== "private" ||
+      activeSection !== "chats"
+    ) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    let pollVersion = 0;
+
+    async function pollPrivateMessages() {
+      const version = ++pollVersion;
+      try {
+        const { messages, pinned } = await getDirectMessages(selectedThreadId);
+        if (cancelled || version !== pollVersion) {
+          return;
+        }
+        setDirectMessages((current) => {
+          const merged = mergeById(current, messages);
+          resetPrivateStreamSinceIdRef.current(maxMessageId(merged));
+          return merged;
+        });
+        setPrivatePinnedMessage(pinned);
+      } catch {
+        // ignore polling errors
+      }
+    }
+
+    pollPrivateMessages();
+    const intervalId = window.setInterval(pollPrivateMessages, 3000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+    };
+  }, [privateStreamReady, selectedThreadId, chatPanel, activeSection]);
+
+  useEffect(() => {
+    if (!selectedThreadId || chatPanel !== "private" || !privateStreamReady) {
+      return undefined;
+    }
+
+    const thread = directThreads.find((item) => item.id === selectedThreadId);
+    if (!thread?.last_message?.created_at) {
+      return undefined;
+    }
+
+    const remoteTime = new Date(thread.last_message.created_at).getTime();
+    const localMaxTime = directMessages.reduce(
+      (max, message) => Math.max(max, new Date(message.created_at).getTime()),
+      0
+    );
+
+    if (remoteTime <= localMaxTime + 500) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    const requestId = ++privateSyncRequestRef.current;
+
+    async function syncPrivateMessagesFromThreadSummary() {
+      try {
+        const { messages, pinned } = await getDirectMessages(selectedThreadId);
+        if (cancelled || requestId !== privateSyncRequestRef.current) {
+          return;
+        }
+        setDirectMessages((current) => {
+          const merged = mergeById(current, messages);
+          resetPrivateStreamSinceIdRef.current(maxMessageId(merged));
+          return merged;
+        });
+        setPrivatePinnedMessage(pinned);
+      } catch {
+        // ignore sync errors
+      }
+    }
+
+    syncPrivateMessagesFromThreadSummary();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    directThreads,
+    selectedThreadId,
+    chatPanel,
+    privateStreamReady,
+    directMessages,
+  ]);
 
   const activeChatMembers =
     selectedUniversityId && chatPanel === "group"
@@ -683,13 +870,48 @@ export default function DashboardPage({ role }) {
   }, [reviewUniversity, activeSection]);
 
   useEffect(() => {
-    if (activeSection !== "chats" || isDataLoading) {
+    if (isDataLoading) {
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    getBlockedUsers()
+      .then(({ blockedUsers, blockedMeUsers }) => {
+        if (!cancelled) {
+          setBlockedUserIds(new Set(blockedUsers.map((item) => item.id)));
+          setBlockedMeUserIds(new Set(blockedMeUsers.map((item) => item.id)));
+        }
+      })
+      .catch(() => {
+        // ignore
+      });
+
+    getMutedUsers()
+      .then((users) => {
+        if (!cancelled) {
+          setMutedUserKeys(
+            new Set(users.map((item) => buildMuteKey(item.id, item.university_id)))
+          );
+        }
+      })
+      .catch(() => {
+        // ignore
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isDataLoading]);
+
+  useEffect(() => {
+    if (isDataLoading) {
       return undefined;
     }
 
     const intervalId = window.setInterval(refreshChatSummaries, 8000);
     return () => window.clearInterval(intervalId);
-  }, [activeSection, isDataLoading, refreshChatSummaries]);
+  }, [isDataLoading, refreshChatSummaries]);
 
   useEffect(() => {
     if (isDataLoading || !profile) {
@@ -848,6 +1070,7 @@ export default function DashboardPage({ role }) {
       } else {
         const created = await sendUniversityMessage(selectedUniversityId, trimmed);
         setGroupMessages((current) => [...current, created]);
+        resetGroupStreamSinceIdRef.current(created.id);
         setGroupMessage("");
         setGroupTypingUsers([]);
       }
@@ -933,21 +1156,147 @@ export default function DashboardPage({ role }) {
     setReportTarget({ message, scope });
   }
 
+  const checkChatUserMuted = useCallback(
+    (userId, scope) => isChatUserMuted(mutedUserKeys, userId, scope, selectedUniversityId),
+    [mutedUserKeys, selectedUniversityId]
+  );
+
   async function handleMuteChatUser(message, scope) {
     const userId = message.author_id ?? message.sender_id;
     if (!userId) {
       return;
     }
+
+    const universityId = scope === "group" ? selectedUniversityId : null;
+    const globallyMuted = mutedUserKeys.has(buildMuteKey(userId, null));
+    const universityMuted =
+      scope === "group" && selectedUniversityId
+        ? mutedUserKeys.has(buildMuteKey(userId, selectedUniversityId))
+        : false;
+    const isMuted = globallyMuted || universityMuted;
+
     try {
-      await muteUser(
-        userId,
-        scope === "group" ? selectedUniversityId : null
-      );
-      toast.success("Bildirishnomalar o'chirildi. Xabarlar chatda qoladi.");
+      if (isMuted) {
+        if (scope === "group" && universityMuted) {
+          await unmuteUser(userId, selectedUniversityId);
+          setMutedUserKeys((current) => {
+            const next = new Set(current);
+            next.delete(buildMuteKey(userId, selectedUniversityId));
+            return next;
+          });
+        } else if (globallyMuted) {
+          await unmuteUser(userId, null);
+          setMutedUserKeys((current) => {
+            const next = new Set(current);
+            next.delete(buildMuteKey(userId, null));
+            return next;
+          });
+        }
+        toast.success("Bildirishnomalar yoqildi.");
+      } else {
+        await muteUser(userId, universityId);
+        setMutedUserKeys((current) => new Set(current).add(buildMuteKey(userId, universityId)));
+        toast.success("Bildirishnomalar o'chirildi. Xabarlar chatda qoladi.");
+      }
       clearChatError();
     } catch (error) {
-      reportChatError(getApiErrorMessage(error, "Mute amalga oshmadi."));
+      reportChatError(
+        getApiErrorMessage(error, isMuted ? "Bildirishnomalarni yoqib bo'lmadi." : "Mute amalga oshmadi.")
+      );
     }
+  }
+
+  async function handleUnblockUser(userId, displayName = "Foydalanuvchi") {
+    if (!userId || isBlockActionSubmitting) {
+      return;
+    }
+
+    setIsBlockActionSubmitting(true);
+    try {
+      await unblockUser(userId);
+      setBlockedUserIds((current) => {
+        const next = new Set(current);
+        next.delete(userId);
+        return next;
+      });
+      if (profileUser?.id === userId) {
+        try {
+          const profileData = await getPublicUser(userId);
+          setProfileUser(profileData);
+        } catch {
+          setProfileUser((current) =>
+            current
+              ? {
+                  ...current,
+                  blocked_by_me: false,
+                  has_block_relationship: false,
+                }
+              : current
+          );
+        }
+      }
+      toast.success(`${displayName} blokdan olindi. Yashirilgan xabarlar qayta ko'rinadi.`);
+      clearChatError();
+      await refreshChatSummaries();
+      setPrivateMessagesReloadNonce((value) => value + 1);
+    } catch (error) {
+      reportChatError(getApiErrorMessage(error, "Blokdan olib bo'lmadi."));
+    } finally {
+      setIsBlockActionSubmitting(false);
+    }
+  }
+
+  async function handleBlockUser(userId, displayName = "Foydalanuvchi") {
+    if (!userId || isBlockActionSubmitting) {
+      return;
+    }
+
+    setIsBlockActionSubmitting(true);
+    try {
+      await blockUser(userId);
+      setBlockedUserIds((current) => new Set(current).add(userId));
+      if (profileUser?.id === userId) {
+        setProfileUser((current) =>
+          current
+            ? {
+                ...current,
+                blocked_by_me: true,
+                has_block_relationship: true,
+              }
+            : current
+        );
+      }
+      toast.success(`${displayName} bloklandi.`);
+      clearChatError();
+      await refreshChatSummaries();
+      setPrivateMessagesReloadNonce((value) => value + 1);
+    } catch (error) {
+      reportChatError(getApiErrorMessage(error, "Blok qilib bo'lmadi."));
+    } finally {
+      setIsBlockActionSubmitting(false);
+    }
+  }
+
+  async function handleUnblockPrivateChatUser() {
+    const otherUserId = selectedThread?.other_user_id;
+    if (!otherUserId) {
+      return;
+    }
+    await handleUnblockUser(otherUserId, selectedThread?.other_user_name);
+  }
+
+  async function handleBlockProfileUser() {
+    if (!profileUser?.id) {
+      return;
+    }
+    await handleBlockUser(profileUser.id, profileUser.display_name);
+  }
+
+  async function handleUnblockProfileUser() {
+    if (!profileUser?.id) {
+      return;
+    }
+    await handleUnblockUser(profileUser.id, profileUser.display_name);
   }
 
   function handleSelectGroupTag(tag) {
@@ -1062,7 +1411,8 @@ export default function DashboardPage({ role }) {
         setPrivateMessage("");
       } else {
         const created = await sendDirectMessage(selectedThreadId, trimmed);
-        setDirectMessages((current) => [...current, created]);
+        setDirectMessages((current) => mergeById(current, [created]));
+        resetPrivateStreamSinceIdRef.current(created.id);
         setPrivateMessage("");
         const threads = await getDirectThreads();
         setDirectThreads(threads);
@@ -1082,14 +1432,19 @@ export default function DashboardPage({ role }) {
 
   async function openUserProfile(userId, prefetch = null, options = {}) {
     const { universityId = null } = options;
+    const hideAvatarDueToBlock = blockedMeUserIds.has(userId);
+    const hasBlockRelationship =
+      blockedUserIds.has(userId) || blockedMeUserIds.has(userId);
     if (prefetch) {
       setProfileUser({
         id: userId,
         display_name: prefetch.display_name,
-        avatar_url: prefetch.avatar_url,
+        avatar_url: hideAvatarDueToBlock ? null : prefetch.avatar_url,
         role_label: prefetch.role_label,
         university: prefetch.university,
         study_program: prefetch.study_program,
+        blocked_by_me: blockedUserIds.has(userId),
+        has_block_relationship: hasBlockRelationship,
       });
     }
     setIsProfileLoading(true);
@@ -1118,13 +1473,13 @@ export default function DashboardPage({ role }) {
     const thread = await startDirectThread(userId);
     setDraftThread(thread);
     setSelectedThreadId(thread.id);
-    setDirectMessages([]);
     setPrivateMessage("");
     setChatListTab("private");
     setChatPanel("private");
     setProfileUser(null);
     setShowGroupInfoModal(false);
     setMobileChatScreen("chat");
+    syncPrivateThreadInUrl(thread.id);
   }
 
   function formatTime(value) {
@@ -1145,9 +1500,11 @@ export default function DashboardPage({ role }) {
 
   function selectPrivateThread(threadId) {
     setDraftThread(null);
+    setPrivateTypingUsers([]);
     setSelectedThreadId(threadId);
     setChatPanel("private");
     setMobileChatScreen("chat");
+    setPrivateMessagesReloadNonce((value) => value + 1);
     syncPrivateThreadInUrl(threadId);
   }
 
@@ -1379,7 +1736,7 @@ export default function DashboardPage({ role }) {
   }
 
   return (
-    <main className="min-h-screen bg-[#f5f7fb] text-slate-950 dark:bg-slateNight dark:text-white">
+    <main {...mainContentProps} className="min-h-screen bg-[#f5f7fb] text-slate-950 dark:bg-slateNight dark:text-white">
       <div className="grid min-h-screen lg:grid-cols-[292px_1fr]">
         <DashboardSidebar
           cabinetEyebrow={cabinetEyebrow}
@@ -1525,6 +1882,13 @@ export default function DashboardPage({ role }) {
                 onSelectGroupTag={handleSelectGroupTag}
                 onClearGroupTag={() => setActiveGroupTag("")}
                 onMuteChatUser={handleMuteChatUser}
+                isChatUserMuted={checkChatUserMuted}
+                onUnblockPrivateChatUser={handleUnblockPrivateChatUser}
+                isProfileUserBlockedByMe={isProfileUserBlockedByMe}
+                hasProfileBlockRelationship={hasProfileBlockRelationship}
+                onBlockProfileUser={handleBlockProfileUser}
+                onUnblockProfileUser={handleUnblockProfileUser}
+                isBlockActionSubmitting={isBlockActionSubmitting}
               />
             )}
 

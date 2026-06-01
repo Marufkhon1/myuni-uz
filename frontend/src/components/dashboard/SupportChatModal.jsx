@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import RateLimitNotice from "../RateLimitNotice.jsx";
+import useFocusTrap from "../../hooks/useFocusTrap.js";
 import { sendSupportMessage } from "../../services/supportService.js";
 import { getSupportBotReply, getSupportQuickQuestions } from "./supportBot.js";
 import { getRateLimitInfo } from "../../utils/apiErrors.js";
@@ -15,30 +16,12 @@ export default function SupportChatModal({
   isStudent = false,
 }) {
   const listRef = useRef(null);
+  const trapRef = useRef(null);
   const [rateLimit, setRateLimit] = useState(null);
   const [rateLimitActive, setRateLimitActive] = useState(false);
   const [isSending, setIsSending] = useState(false);
 
-  useEffect(() => {
-    if (!isOpen) {
-      return undefined;
-    }
-
-    function handleKeyDown(event) {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    }
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, onClose]);
+  useFocusTrap(isOpen, trapRef, { onEscape: onClose });
 
   useEffect(() => {
     if (isOpen && listRef.current) {
@@ -117,19 +100,23 @@ export default function SupportChatModal({
 
   return createPortal(
     <div
+      ref={trapRef}
       className="fixed inset-0 z-[200] flex items-end justify-center bg-slate-950/55 p-0 backdrop-blur-sm sm:items-center sm:p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="support-chat-title"
     >
-      <button
-        type="button"
+      <div
+        role="presentation"
+        aria-hidden="true"
         className="absolute inset-0 cursor-default"
-        aria-label="Yopish"
         onClick={onClose}
       />
 
-      <div className="relative flex max-h-[min(92dvh,640px)] w-full max-w-lg flex-col overflow-hidden rounded-t-[1.75rem] border border-slate-200 bg-white shadow-2xl sm:rounded-[1.75rem] dark:border-white/10 dark:bg-slate-900">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="support-chat-title"
+        tabIndex={-1}
+        className="relative flex max-h-[min(92dvh,640px)] w-full max-w-lg flex-col overflow-hidden rounded-t-[1.75rem] border border-slate-200 bg-white shadow-2xl sm:rounded-[1.75rem] dark:border-white/10 dark:bg-slate-900"
+      >
         <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-white/10">
           <div className="flex items-center gap-3">
             <span className="grid h-11 w-11 place-items-center rounded-full bg-gradient-to-br from-primary to-violet-500 text-lg font-black text-white">
@@ -206,7 +193,6 @@ export default function SupportChatModal({
               value={draft}
               onChange={(event) => onDraftChange(event.target.value)}
               placeholder="Savolingizni yozing..."
-              autoFocus
               disabled={isSending || rateLimitActive}
               className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 disabled:opacity-60 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400/25"
             />

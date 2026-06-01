@@ -15,6 +15,11 @@ export async function unblockUser(userId) {
   return data;
 }
 
+export async function getMutedUsers() {
+  const { data } = await api.get("/universities/community/muted/");
+  return data.muted_users ?? [];
+}
+
 export async function muteUser(userId, universityId = null) {
   const payload = universityId ? { university_id: universityId } : {};
   const { data } = await api.post(`/universities/community/users/${userId}/mute/`, payload);
@@ -31,5 +36,8 @@ export async function unmuteUser(userId, universityId = null) {
 
 export async function getBlockedUsers() {
   const { data } = await api.get("/universities/community/blocked/");
-  return data.blocked_users ?? [];
+  return {
+    blockedUsers: data.blocked_users ?? [],
+    blockedMeUsers: data.blocked_me_users ?? [],
+  };
 }

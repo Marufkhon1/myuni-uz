@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ModalOverlay from "./ui/ModalOverlay.jsx";
 
 const REASONS = [
   { id: "insult", label: "Haqorat" },
@@ -28,12 +29,7 @@ export default function MessageReportDialog({ open, onClose, onSubmit, isSubmitt
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 grid place-items-center bg-slate-950/50 p-4 backdrop-blur-sm"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="report-dialog-title"
-    >
+    <ModalOverlay onClose={onClose} labelledBy="report-dialog-title">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-xl dark:border-white/10 dark:bg-slate-900"
@@ -93,6 +89,6 @@ export default function MessageReportDialog({ open, onClose, onSubmit, isSubmitt
           </button>
         </div>
       </form>
-    </div>
+    </ModalOverlay>
   );
 }

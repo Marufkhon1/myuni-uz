@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { mainContentProps } from "../../utils/mainContent.js";
 
 const illustrations = {
   notFound: (
@@ -36,7 +37,7 @@ export default function StatusPageLayout({
   const illustration = illustrations[variant] || illustrations.notFound;
 
   return (
-    <main className="grid min-h-screen place-items-center bg-[#f5f7fb] px-6 py-16 dark:bg-slateNight">
+    <main {...mainContentProps} className="grid min-h-screen place-items-center bg-[#f5f7fb] px-6 py-16 dark:bg-slateNight">
       <div className="w-full max-w-lg rounded-[2rem] border border-slate-200 bg-white p-8 text-center shadow-soft sm:p-10 dark:border-white/10 dark:bg-white/[0.06]">
         {illustration}
         {eyebrow && (

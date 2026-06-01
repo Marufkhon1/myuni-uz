@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthCheckSkeleton } from "../components/skeletons/DashboardSkeletons.jsx";
 import StatusPageLayout, {
@@ -9,6 +9,21 @@ import { PAGE_META } from "../config/siteMeta.js";
 import { useAuth } from "../hooks/useAuth.js";
 import { usePageMeta } from "../hooks/usePageMeta.js";
 import { useToast } from "../hooks/useToast.js";
+import {
+  clearGoogleOAuthHash,
+  readGoogleOAuthHashTokens,
+} from "../utils/authPaths.js";
+import { dashboardPathForRole } from "../utils/navigation.js";
+
+function resolvePostAuthPath(user, nextParam, storedNext) {
+  if (storedNext && storedNext.startsWith("/")) {
+    return storedNext;
+  }
+  if (nextParam && nextParam.startsWith("/")) {
+    return nextParam;
+  }
+  return dashboardPathForRole(user?.profile?.role);
+}
 
 export default function GoogleCallbackPage() {
   usePageMeta(PAGE_META.googleCallback);
@@ -17,15 +32,19 @@ export default function GoogleCallbackPage() {
   const toast = useToast();
   const { completeGoogleAuth } = useAuth();
   const [error, setError] = useState("");
+  const handledRef = useRef(false);
 
   useEffect(() => {
+    if (handledRef.current) {
+      return undefined;
+    }
+    handledRef.current = true;
+
     async function finishGoogleAuth() {
-      const params = new URLSearchParams(window.location.hash.replace("#", ""));
-      const access = params.get("access");
-      const refresh = params.get("refresh");
+      const { access, refresh, next: nextFromHash } = readGoogleOAuthHashTokens();
       const storedNext = sessionStorage.getItem("myuni_auth_next");
-      const next = params.get("next") || storedNext || "/dashboard";
       sessionStorage.removeItem("myuni_auth_next");
+      clearGoogleOAuthHash();
 
       if (!access || !refresh) {
         const message = "Google orqali kirish tokenlari topilmadi.";
@@ -35,8 +54,9 @@ export default function GoogleCallbackPage() {
       }
 
       try {
-        await completeGoogleAuth({ access, refresh });
-        navigate(next, { replace: true });
+        const user = await completeGoogleAuth({ access, refresh });
+        const destination = resolvePostAuthPath(user, nextFromHash, storedNext);
+        navigate(destination, { replace: true });
       } catch {
         const message = "Google orqali kirishda xatolik yuz berdi.";
         setError(message);

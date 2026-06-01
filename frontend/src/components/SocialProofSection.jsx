@@ -3,6 +3,7 @@ import UserAvatar from "./dashboard/UserAvatar.jsx";
 import Skeleton from "./ui/Skeleton.jsx";
 import { getPublicPlatformStats, getPublicRecentReviews } from "../services/publicService.js";
 import { buildSocialProofHighlights, excerptReviewText } from "../utils/landingStats.js";
+import { formatStarRatingLabel } from "../utils/starRatingA11y.js";
 import { resolveMediaUrl } from "../utils/media.js";
 
 function SocialProofCard({ review }) {
@@ -27,9 +28,13 @@ function SocialProofCard({ review }) {
       <p className="mt-4 flex-1 line-clamp-4 text-sm leading-7 text-slate-600 dark:text-slate-300">
         &ldquo;{quote}&rdquo;
       </p>
-      <p className="mt-4 shrink-0 text-amber-400" aria-label={`${review.rating} yulduz`}>
-        {"★".repeat(review.rating)}
-        <span className="ml-2 text-xs font-black text-slate-400">{review.rating}/5</span>
+      <p className="mt-4 shrink-0" role="img" aria-label={formatStarRatingLabel(review.rating)}>
+        <span className="text-amber-400" aria-hidden="true">
+          {"★".repeat(review.rating)}
+        </span>
+        <span className="ml-2 text-xs font-black text-slate-400" aria-hidden="true">
+          {review.rating}/5
+        </span>
       </p>
     </article>
   );

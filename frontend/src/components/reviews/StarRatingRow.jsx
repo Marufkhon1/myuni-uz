@@ -68,6 +68,41 @@ export default function StarRatingRow({
 
   const isMinimal = variant === "minimal";
 
+  function handleKeyDown(event) {
+    const keys = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"];
+    if (!keys.includes(event.key)) {
+      return;
+    }
+
+    event.preventDefault();
+    let next = value || 1;
+
+    if (event.key === "Home") {
+      next = 1;
+    } else if (event.key === "End") {
+      next = 5;
+    } else if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+      next = value >= 5 ? 5 : Math.max(1, (value || 0) + 1);
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+      if (!value || value <= 1) {
+        next = 0;
+      } else {
+        next = value - 1;
+      }
+    }
+
+    onChange(next);
+  }
+
+  function handleStarKeyDown(event, star) {
+    if (event.key !== " " && event.key !== "Enter") {
+      return;
+    }
+
+    event.preventDefault();
+    onChange(star === value ? 0 : star);
+  }
+
 
 
   return (
@@ -100,6 +135,10 @@ export default function StarRatingRow({
 
         aria-label={label || "Baho"}
 
+        aria-describedby={hint ? `${id || "rating"}-hint` : undefined}
+
+        onKeyDown={handleKeyDown}
+
         onMouseLeave={() => setHover(0)}
 
       >
@@ -123,6 +162,8 @@ export default function StarRatingRow({
               aria-checked={star === value}
 
               onClick={() => onChange(star === value ? 0 : star)}
+
+              onKeyDown={(event) => handleStarKeyDown(event, star)}
 
               onMouseEnter={() => setHover(star)}
 
@@ -161,6 +202,8 @@ export default function StarRatingRow({
       {hint && (
 
         <p
+
+          id={`${id || "rating"}-hint`}
 
           className={`mt-3 font-semibold text-amber-600 dark:text-amber-400 ${
 

@@ -12,6 +12,7 @@ import {
 import { ReviewPanelSkeleton } from "../skeletons/DashboardSkeletons.jsx";
 import ReviewWorkspaceHero from "./ReviewWorkspaceHero.jsx";
 import { formatUniversityMetaHeader } from "../../utils/universityMetaFormat.js";
+import { scrollElementIntoView } from "../../utils/scrollIntoView.js";
 import { getReviewPanelContent, getReviewSortOptions } from "../../utils/reviewRoleContent.js";
 
 function sortReviews(list, sortId) {
@@ -252,7 +253,7 @@ export default function ReviewWorkspacePanel({
             ratingFilter={ratingFilter}
             onRatingFilterChange={(value) => {
               setRatingFilter(value);
-              document.getElementById("review-feed-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              scrollElementIntoView(document.getElementById("review-feed-section"), { block: "start" });
             }}
           />
 
@@ -331,8 +332,7 @@ export default function ReviewWorkspacePanel({
                       ? {
                           label: "Birinchi sharhingizni yozing",
                           onClick: () =>
-                            document.getElementById("review-compose-form")?.scrollIntoView({
-                              behavior: "smooth",
+                            scrollElementIntoView(document.getElementById("review-compose-form"), {
                               block: "start",
                             }),
                         }

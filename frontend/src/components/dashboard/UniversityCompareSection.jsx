@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import UniversityAvatar from "../UniversityAvatar.jsx";
 import UniversityIdentity from "../UniversityIdentity.jsx";
+import StarRatingDisplay from "../ui/StarRatingDisplay.jsx";
 import { CompareResultsSkeleton } from "../skeletons/DashboardSkeletons.jsx";
 import { useToast } from "../../hooks/useToast.js";
 import { addFavoriteUniversity, removeFavoriteUniversity } from "../../services/favoriteService.js";
 import { getUniversityCompare } from "../../services/universityService.js";
+import { formatStarRatingLabel } from "../../utils/starRatingA11y.js";
 import { formatUniversityMetaHeader } from "../../utils/universityMetaFormat.js";
 import { matchUniversityByText } from "../../utils/universityMatch.js";
 import { getUniversityImageUrl } from "../../utils/universityImage.js";
@@ -105,21 +107,19 @@ function StarRatingSticker({ rating, size = "md" }) {
     return <span className="text-base font-black text-slate-300 dark:text-slate-600">—</span>;
   }
 
-  const numeric = Number(rating);
-  const filled = Math.min(5, Math.max(0, Math.round(numeric)));
-  const starClass = size === "sm" ? "text-xs" : "text-sm";
   const pillClass = size === "sm" ? "px-2 py-0.5" : "px-2.5 py-1";
+  const starClass = size === "sm" ? "text-xs" : "text-sm";
+  const numericClass =
+    "text-[11px] font-black tabular-nums text-amber-700 dark:text-amber-300";
 
   return (
-    <span className={`inline-flex items-center gap-1.5 rounded-full bg-amber-50 ring-1 ring-amber-200/70 dark:bg-amber-400/10 dark:ring-amber-400/20 ${pillClass}`}>
-      <span className={`leading-none text-amber-400 ${starClass}`} aria-hidden="true">
-        {"★".repeat(filled)}
-        {"☆".repeat(5 - filled)}
-      </span>
-      <span className="text-[11px] font-black tabular-nums text-amber-700 dark:text-amber-300">
-        {numeric % 1 === 0 ? numeric : numeric.toFixed(1)}/5
-      </span>
-    </span>
+    <StarRatingDisplay
+      rating={rating}
+      variant="pill"
+      className={pillClass}
+      starClassName={starClass}
+      numericClassName={numericClass}
+    />
   );
 }
 
@@ -221,7 +221,11 @@ function CompareVsSide({ university, placeholder, tint, align }) {
                 <p className="text-[10px] font-medium text-blue-200/80">/ 5</p>
               </div>
               <div className={align === "right" ? "text-left" : "text-right"}>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 shadow-sm ring-1 ring-white/20">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white/95 px-2.5 py-1 shadow-sm ring-1 ring-white/20"
+                  role="img"
+                  aria-label={formatStarRatingLabel(university.average_rating)}
+                >
                   <span className="text-sm leading-none text-amber-400" aria-hidden="true">
                     {"★".repeat(Math.min(5, Math.max(0, Math.round(Number(university.average_rating)))))}
                   </span>

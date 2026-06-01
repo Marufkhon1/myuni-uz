@@ -10,6 +10,7 @@ import {
   buildBreadcrumbSchema,
   buildWebPageSchema,
 } from "../utils/structuredData.js";
+import { mainContentProps } from "../utils/mainContent.js";
 
 const pathToDoc = {
   "/foydalanish-shartlari": legalDocuments.terms,
@@ -57,7 +58,7 @@ export default function LegalDocumentPage() {
     return (
       <div className="min-h-screen bg-[#f5f7fb] dark:bg-slateNight">
         <Navbar />
-        <main className="container-shell pb-16 pt-24 text-center sm:pt-28">
+        <main {...mainContentProps} className="container-shell pb-16 pt-24 text-center sm:pt-28">
           <h1 className="text-2xl font-black">Sahifa topilmadi</h1>
           <Link to="/" className="mt-4 inline-block font-bold text-primary">
             Bosh sahifaga
@@ -72,7 +73,7 @@ export default function LegalDocumentPage() {
       <JsonLd id="legal-breadcrumb-json-ld" data={breadcrumbSchema} />
       <JsonLd id="legal-webpage-json-ld" data={webPageSchema} />
       <Navbar />
-      <main className="container-shell pb-16 pt-24 sm:pb-20 sm:pt-28 lg:pb-24 lg:pt-32">
+      <main {...mainContentProps} className="container-shell pb-16 pt-24 sm:pb-20 sm:pt-28 lg:pb-24 lg:pt-32">
         <div className="max-w-3xl">
           <header className="space-y-4 sm:space-y-5">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-primary sm:text-sm">

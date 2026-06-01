@@ -10,6 +10,7 @@ import {
   buildBreadcrumbSchema,
   buildWebPageSchema,
 } from "../utils/structuredData.js";
+import { mainContentProps } from "../utils/mainContent.js";
 
 export default function TrustSafetyPage() {
   const doc = trustSafetyDocument;
@@ -49,7 +50,7 @@ export default function TrustSafetyPage() {
       <JsonLd id="trust-breadcrumb-json-ld" data={breadcrumbSchema} />
       <JsonLd id="trust-webpage-json-ld" data={webPageSchema} />
       <Navbar />
-      <main className="container-shell pb-16 pt-24 sm:pb-20 sm:pt-28 lg:pb-24 lg:pt-32">
+      <main {...mainContentProps} className="container-shell pb-16 pt-24 sm:pb-20 sm:pt-28 lg:pb-24 lg:pt-32">
         <div className="max-w-3xl">
           <header className="space-y-4 sm:space-y-5">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-primary sm:text-sm">

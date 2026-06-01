@@ -1,10 +1,15 @@
 import ReviewSortSelect from "./ReviewSortSelect.jsx";
+import { formatStarFilterLabel } from "../../utils/starRatingA11y.js";
 
 const CONTROL_LABEL_CLASS = "mb-2 text-[11px] font-bold uppercase tracking-wide text-slate-400";
 
 export function RatingFilterGroup({ value, onChange, compact = true }) {
   return (
-    <div className="flex h-9 w-full flex-nowrap items-center gap-1.5 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div
+      className="flex h-9 w-full flex-nowrap items-center gap-1.5 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      role="group"
+      aria-label="Baho bo'yicha filtrlash"
+    >
       {["all", "5", "4", "3", "2", "1"].map((ratingValue) => {
         const isStar = ratingValue !== "all";
         const isActive = value === ratingValue;
@@ -14,6 +19,8 @@ export function RatingFilterGroup({ value, onChange, compact = true }) {
             key={ratingValue}
             type="button"
             onClick={() => onChange(ratingValue)}
+            aria-pressed={isActive}
+            aria-label={formatStarFilterLabel(ratingValue)}
             className={`inline-flex h-9 shrink-0 items-center rounded-full font-bold transition ${
               compact ? "px-3 text-[11px] sm:text-xs" : "px-3.5 py-1.5 text-xs"
             } ${

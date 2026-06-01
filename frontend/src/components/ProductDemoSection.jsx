@@ -5,6 +5,7 @@ import UserAvatar from "./dashboard/UserAvatar.jsx";
 import Skeleton from "./ui/Skeleton.jsx";
 import { getPublicLandingPreview } from "../services/publicService.js";
 import { excerptReviewText, formatLandingRating, formatLandingStat } from "../utils/landingStats.js";
+import StarRatingDisplay from "./ui/StarRatingDisplay.jsx";
 import { resolveMediaUrl } from "../utils/media.js";
 import { scrollToLandingSection } from "../utils/landingScroll.js";
 
@@ -142,11 +143,19 @@ function BrowseScene({ universities }) {
             <p className="mt-0.5 truncate text-xs font-semibold text-slate-500">{university.location}</p>
           </div>
           <div className="shrink-0 text-right">
-            <p className="text-sm font-black text-amber-500">
-              {formatLandingRating(university.average_rating)
-                ? `★ ${formatLandingRating(university.average_rating)}`
-                : "★ —"}
-            </p>
+            {formatLandingRating(university.average_rating) ? (
+              <StarRatingDisplay
+                rating={Number(university.average_rating)}
+                showNumeric
+                className="justify-end"
+                starClassName="text-sm"
+                numericClassName="text-sm font-black text-amber-500"
+              />
+            ) : (
+              <p className="text-sm font-black text-amber-500" role="img" aria-label="Baho berilmagan">
+                ★ —
+              </p>
+            )}
             <p className="mt-0.5 text-xs font-semibold text-slate-500">
               {formatLandingStat(university.review_count)} sharh
             </p>
@@ -192,9 +201,7 @@ function ReviewsScene({ review }) {
       </div>
 
       <div className="mt-auto flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3.5 dark:border-white/10 sm:pt-4">
-        <p className="text-base text-amber-400 sm:text-lg" aria-label={`${review.rating} yulduz`}>
-          {"★".repeat(review.rating)}
-        </p>
+        <StarRatingDisplay rating={review.rating} starClassName="text-base sm:text-lg" showNumeric={false} />
         <span className="shrink-0 rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-black text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300">
           Tasdiqlangan sharh
         </span>
@@ -229,11 +236,17 @@ function CompareScene({ universities }) {
               {university.location}
             </p>
             <div className="mt-auto pt-4">
-              <p className="text-sm font-black text-amber-500">
-                {formatLandingRating(university.average_rating)
-                  ? `★ ${formatLandingRating(university.average_rating)}`
-                  : "★ —"}
-              </p>
+              {formatLandingRating(university.average_rating) ? (
+                <StarRatingDisplay
+                  rating={Number(university.average_rating)}
+                  starClassName="text-sm"
+                  numericClassName="text-sm font-black text-amber-500"
+                />
+              ) : (
+                <p className="text-sm font-black text-amber-500" role="img" aria-label="Baho berilmagan">
+                  ★ —
+                </p>
+              )}
               <p className="mt-1 text-xs font-semibold text-slate-500">
                 {formatLandingStat(university.review_count)} sharh
               </p>

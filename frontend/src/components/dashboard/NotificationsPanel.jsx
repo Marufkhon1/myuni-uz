@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import EmptyState from "../ui/EmptyState.jsx";
 import { NotificationsListSkeleton } from "../skeletons/PublicPageSkeletons.jsx";
+import useFocusTrap from "../../hooks/useFocusTrap.js";
 
 function formatWhen(value) {
   if (!value) {
@@ -49,6 +50,9 @@ export default function NotificationsPanel({
   onMarkOneRead,
 }) {
   const navigate = useNavigate();
+  const panelRef = useRef(null);
+
+  useFocusTrap(open, panelRef, { onEscape: onClose, lockScroll: false });
 
   useEffect(() => {
     if (!open) {
@@ -61,17 +65,9 @@ export default function NotificationsPanel({
       }
     }
 
-    function onKeyDown(event) {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    }
-
     document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
     };
   }, [open, onClose, containerRef]);
 
@@ -101,9 +97,12 @@ export default function NotificationsPanel({
 
   return (
     <div
+      ref={panelRef}
       className="absolute right-0 top-[calc(100%+0.5rem)] z-50 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-2xl dark:border-white/10 dark:bg-slate-900"
       role="dialog"
+      aria-modal="true"
       aria-label="Bildirishnomalar"
+      tabIndex={-1}
     >
       <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3 dark:border-white/10">
         <div className="min-w-0">

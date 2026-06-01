@@ -28,6 +28,7 @@ import {
   buildDashboardReviewsUniversityNext,
   buildDashboardReviewsUniversityPath,
 } from "../utils/navigation.js";
+import { mainContentProps } from "../utils/mainContent.js";
 import { useAuth } from "../hooks/useAuth.js";
 import { useDarkMode } from "../hooks/useDarkMode.js";
 import { usePageMeta } from "../hooks/usePageMeta.js";
@@ -248,7 +249,7 @@ export default function UniversityPublicPage() {
         signupTo={isGuest ? signupTo : undefined}
       />
 
-      <main className="container-shell pb-12 pt-24 sm:pt-28 lg:pt-32">
+      <main {...mainContentProps} className="container-shell pb-12 pt-24 sm:pt-28 lg:pt-32">
         {isGuest && !showRedirecting && (
           <div className="mb-5 w-fit">
             <PublicBackHomeButton />

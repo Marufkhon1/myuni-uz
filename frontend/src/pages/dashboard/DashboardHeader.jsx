@@ -22,7 +22,7 @@ export default function DashboardHeader({
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-[#f5f7fb]/90 px-4 py-3 backdrop-blur-xl sm:px-6 sm:py-4 lg:px-8 dark:border-white/10 dark:bg-slateNight/85">
       <div className="flex items-center justify-between gap-3 sm:gap-4">
         <div className="flex min-w-0 items-center gap-3">
-          <Link to="/" className="grid shrink-0 lg:hidden">
+          <Link to="/" className="grid shrink-0 lg:hidden" aria-label="MyUni.uz bosh sahifa">
             <img src={logo} alt="" className="h-10 w-10 rounded-xl object-cover shadow-glow sm:h-11 sm:w-11" />
           </Link>
           <div className="min-w-0">

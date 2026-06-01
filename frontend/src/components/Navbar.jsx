@@ -1,10 +1,33 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/myuni-logo.png";
 import { useAuth } from "../hooks/useAuth.js";
+import useFocusTrap from "../hooks/useFocusTrap.js";
 import { PublicBackHomeButton, PublicLoginButton, PublicSignupButton } from "./PublicPageButtons.jsx";
 import { scrollToLandingSection } from "../utils/landingScroll.js";
+
+function resolveLandingNavCurrent(pathname, hash, linkHref) {
+  if (pathname !== "/") {
+    return undefined;
+  }
+  const active = hash || "#home";
+  if (linkHref === active) {
+    return "page";
+  }
+  if (linkHref === "#home" && !hash) {
+    return "page";
+  }
+  return undefined;
+}
+
+function isDashboardPath(pathname) {
+  return (
+    pathname.startsWith("/applicant/dashboard") ||
+    pathname.startsWith("/student/dashboard") ||
+    pathname === "/moderator"
+  );
+}
 
 const navLinks = [
   { label: "Bosh sahifa", href: "#home" },
@@ -22,11 +45,17 @@ const navLinkMobileClass =
 
 export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guestHomeButtonOnly = false }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { pathname } = useLocation();
+  const mobileMenuRef = useRef(null);
+  const { pathname, hash } = useLocation();
   const navigate = useNavigate();
   const { isAuthenticated, isLoading, role } = useAuth();
   const dashboardPath = role === "student" ? "/student/dashboard" : "/applicant/dashboard";
   const themeToggle = onToggleTheme ? () => onToggleTheme() : undefined;
+
+  useFocusTrap(isOpen, mobileMenuRef, {
+    onEscape: () => setIsOpen(false),
+    lockScroll: false,
+  });
 
   function goToLandingSection(event, hash) {
     event.preventDefault();
@@ -75,6 +104,7 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
               href={link.href}
               onClick={(event) => goToLandingSection(event, link.href)}
               className={navLinkClass}
+              aria-current={resolveLandingNavCurrent(pathname, hash, link.href)}
             >
               {link.label}
             </a>
@@ -96,6 +126,7 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
             <Link
               to={dashboardPath}
               className="rounded-full bg-slate-950 px-5 py-2.5 text-sm font-bold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-primary dark:bg-white dark:text-slate-950"
+              aria-current={isDashboardPath(pathname) ? "page" : undefined}
             >
               Kabinet
             </Link>
@@ -113,8 +144,9 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
           type="button"
           onClick={() => setIsOpen((value) => !value)}
           className="grid h-11 w-11 place-items-center rounded-2xl border border-slate-200 text-slate-900 transition hover:border-primary hover:bg-slate-50 dark:border-white/10 dark:text-white dark:hover:border-primary/40 dark:hover:bg-white/10 lg:hidden"
-          aria-label="Navigatsiya menyusini ochish"
+          aria-label={isOpen ? "Navigatsiya menyusini yopish" : "Navigatsiya menyusini ochish"}
           aria-expanded={isOpen}
+          aria-controls="mobile-nav-menu"
         >
           <span className="space-y-1.5">
             <span className="block h-0.5 w-5 rounded-full bg-current" />
@@ -132,7 +164,15 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
             exit={{ opacity: 0, y: -12 }}
             className="container-shell pb-5 lg:hidden"
           >
-            <div className="glass-card rounded-3xl p-4">
+            <div
+              id="mobile-nav-menu"
+              ref={mobileMenuRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Mobil navigatsiya"
+              tabIndex={-1}
+              className="glass-card rounded-3xl p-4"
+            >
               <div className="grid gap-2">
                 {navLinks.map((link) => (
                   <a
@@ -140,6 +180,7 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
                     href={link.href}
                     onClick={(event) => goToLandingSection(event, link.href)}
                     className={navLinkMobileClass}
+                    aria-current={resolveLandingNavCurrent(pathname, hash, link.href)}
                   >
                     {link.label}
                   </a>
@@ -160,6 +201,7 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
                   <Link
                     to={dashboardPath}
                     className="rounded-2xl bg-primary px-4 py-3 text-center text-sm font-bold text-white"
+                    aria-current={isDashboardPath(pathname) ? "page" : undefined}
                   >
                     Kabinet
                   </Link>

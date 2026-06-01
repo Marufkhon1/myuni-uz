@@ -21,7 +21,7 @@ from .chat_community_utils import (
     extract_hashtags,
     filter_messages_by_tag,
     filter_university_messages_for_viewer,
-    users_are_blocked,
+    user_has_blocked_other,
 )
 from .compare_utils import build_compare_row, build_highlights
 from .chat_permissions import require_university_member, user_is_university_member
@@ -653,9 +653,9 @@ class DirectThreadListCreateView(APIView):
             thread, _ = get_or_create_direct_thread(request.user, other_user)
         except ValueError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
-        if users_are_blocked(request.user.id, other_user.id):
+        if user_has_blocked_other(request.user.id, other_user.id):
             return Response(
-                {"detail": "Bu foydalanuvchi bilan shaxsiy chat ochib bo'lmaydi."},
+                {"detail": "Bloklangan foydalanuvchi bilan yangi shaxsiy chat ochib bo'lmaydi."},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
@@ -698,6 +698,16 @@ class DirectMessageListCreateView(APIView):
 
     def post(self, request, thread_id):
         thread = self.get_thread_for_user(request, thread_id)
+        other_user_id = (
+            thread.user_two_id
+            if thread.user_one_id == request.user.id
+            else thread.user_one_id
+        )
+        if user_has_blocked_other(request.user.id, other_user_id):
+            return Response(
+                {"detail": "Bloklangan foydalanuvchiga xabar yuborib bo'lmaydi."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         serializer = ChatMessageCreateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         message = DirectMessage.objects.create(

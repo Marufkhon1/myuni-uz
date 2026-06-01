@@ -493,6 +493,19 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
   .hero-float-card {
     animation: none;
   }
@@ -515,5 +528,11 @@ body {
 
   .social-proof-marquee {
     mask-image: none;
+  }
+}
+
+@layer components {
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-2xl focus:bg-slate-950 focus:px-5 focus:py-3 focus:text-sm focus:font-bold focus:text-white focus:shadow-soft focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:bg-white dark:focus:text-slate-950;
   }
 }

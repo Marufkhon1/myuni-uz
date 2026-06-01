@@ -19,6 +19,7 @@ export default function ChatMessageBubble({
   onDelete,
   onReport,
   onMute,
+  isAuthorMuted = false,
   onTagClick,
   onPin,
   onUnpin,
@@ -291,6 +292,7 @@ export default function ChatMessageBubble({
           onUnpin={onUnpin}
           onReport={onReport}
           onMute={onMute}
+          isMuted={isAuthorMuted}
           onEdit={onEdit}
           onDelete={onDelete}
           onClose={closeMenu}

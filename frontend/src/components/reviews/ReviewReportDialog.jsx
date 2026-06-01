@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ModalOverlay from "../ui/ModalOverlay.jsx";
 
 const REASONS = [
   { id: "spam", label: "Spam / reklama" },
@@ -29,12 +30,7 @@ export default function ReviewReportDialog({ open, onClose, onSubmit, isSubmitti
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 grid place-items-center bg-slate-950/50 p-4 backdrop-blur-sm"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="review-report-title"
-    >
+    <ModalOverlay onClose={onClose} labelledBy="review-report-title">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-xl dark:border-white/10 dark:bg-slate-900"
@@ -68,24 +64,33 @@ export default function ReviewReportDialog({ open, onClose, onSubmit, isSubmitti
         </fieldset>
 
         {reason === "other" && (
-          <textarea
-            value={details}
-            onChange={(event) => setDetails(event.target.value)}
-            rows={3}
-            placeholder="Qisqacha tushuntiring..."
-            className="mt-3 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm dark:border-white/15 dark:bg-slate-800"
-          />
+          <label className="mt-4 block text-xs font-black uppercase text-slate-400">
+            Izoh (majburiy)
+            <textarea
+              value={details}
+              onChange={(event) => setDetails(event.target.value)}
+              rows={3}
+              maxLength={500}
+              required
+              className="mt-1.5 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary dark:border-white/15 dark:bg-slate-800"
+              placeholder="Qisqacha tushuntiring..."
+            />
+          </label>
         )}
 
         <div className="mt-5 flex justify-end gap-2">
           <button type="button" onClick={onClose} className="btn-modal-secondary">
             Bekor qilish
           </button>
-          <button type="submit" disabled={isSubmitting || (reason === "other" && details.trim().length < 5)} className="btn-modal-primary">
+          <button
+            type="submit"
+            disabled={isSubmitting || (reason === "other" && details.trim().length < 5)}
+            className="btn-modal-primary"
+          >
             {isSubmitting ? "Yuborilmoqda..." : "Shikoyat yuborish"}
           </button>
         </div>
       </form>
-    </div>
+    </ModalOverlay>
   );
 }

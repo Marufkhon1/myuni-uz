@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import UserAvatar from "./dashboard/UserAvatar.jsx";
 import ReviewAspectRatings from "./reviews/ReviewAspectRatings.jsx";
+import StarRatingDisplay from "./ui/StarRatingDisplay.jsx";
 import { LandingReviewsSkeleton } from "./skeletons/LandingSkeletons.jsx";
 import FilterSelect from "./ui/FilterSelect.jsx";
 import { useToast } from "../hooks/useToast.js";
@@ -294,10 +295,7 @@ export default function ReviewsSection() {
                   <ReviewAspectRatings item={review} variant="chip" />
                 </div>
                 <div className="mt-5 flex shrink-0 items-center justify-between gap-3">
-                  <p className="text-amber-400">
-                    {"★".repeat(review.rating)}
-                    <span className="ml-2 text-xs font-black text-slate-500">{review.rating}/5</span>
-                  </p>
+                  <StarRatingDisplay rating={review.rating} />
                   <p className="text-xs font-bold text-slate-500">
                     Foydali: {review.helpful_count ?? review.like_count ?? 0}
                   </p>

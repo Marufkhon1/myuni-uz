@@ -24,13 +24,19 @@ def group_unread_sender_count(user, university_id):
     return _group_unread_messages_queryset(user, university_id).values("user_id").distinct().count()
 
 
+from .chat_community_utils import filter_direct_messages_for_viewer
+
+
 def direct_unread_message_count(user, thread: DirectThread):
     if thread.user_one_id == user.id:
         last_read = thread.user_one_last_read_at
     else:
         last_read = thread.user_two_last_read_at
 
-    messages = DirectMessage.objects.filter(thread=thread).exclude(sender=user)
+    messages = filter_direct_messages_for_viewer(
+        DirectMessage.objects.filter(thread=thread, is_deleted=False).exclude(sender=user),
+        user,
+    )
     if last_read:
         messages = messages.filter(created_at__gt=last_read)
 

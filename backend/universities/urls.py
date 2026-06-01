@@ -8,6 +8,7 @@ from .report_views import ChatMessageReportView, DirectMessageReportView
 from .review_report_views import ReviewReportView
 from .community_views import (
     BlockedUsersListView,
+    MutedUsersListView,
     UniversityChatTagsView,
     UserBlockView,
     UserMuteView,
@@ -98,6 +99,7 @@ urlpatterns = [
     path("reviews/", ReviewListCreateView.as_view(), name="review-list-create"),
     path("compare/", UniversityCompareView.as_view(), name="university-compare"),
     path("community/blocked/", BlockedUsersListView.as_view(), name="blocked-users"),
+    path("community/muted/", MutedUsersListView.as_view(), name="muted-users"),
     path("community/users/<int:user_id>/block/", UserBlockView.as_view(), name="user-block"),
     path("community/users/<int:user_id>/mute/", UserMuteView.as_view(), name="user-mute"),
     path("directs/", DirectThreadListCreateView.as_view(), name="direct-thread-list-create"),

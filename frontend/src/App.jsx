@@ -1,6 +1,8 @@
 import { lazy, Suspense } from "react";
+import { MotionConfig } from "framer-motion";
 import { Route, Routes } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
+import SkipToContent from "./components/a11y/SkipToContent.jsx";
 import AnalyticsProvider from "./components/analytics/AnalyticsProvider.jsx";
 import OfflineBanner from "./components/pwa/OfflineBanner.jsx";
 import PwaInstallPrompt from "./components/pwa/PwaInstallPrompt.jsx";
@@ -38,6 +40,8 @@ export default function App() {
     <ErrorBoundary>
     <ToastProvider>
     <AuthProvider>
+      <MotionConfig reducedMotion="user">
+      <SkipToContent />
       <ScrollToTop />
       <OfflineBanner />
       <PwaInstallPrompt />
@@ -90,6 +94,7 @@ export default function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       </AnalyticsProvider>
+      </MotionConfig>
     </AuthProvider>
     </ToastProvider>
     </ErrorBoundary>

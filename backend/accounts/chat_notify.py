@@ -83,9 +83,9 @@ def notify_direct_chat_message(message):
     if not recipient:
         return
 
-    from universities.chat_community_utils import should_notify_viewer_about_sender
+    from universities.chat_community_utils import should_notify_direct_message
 
-    if not should_notify_viewer_about_sender(recipient.id, sender.id):
+    if not should_notify_direct_message(recipient.id, sender.id):
         return
 
     dashboard_path = _dashboard_path_for_user(recipient)

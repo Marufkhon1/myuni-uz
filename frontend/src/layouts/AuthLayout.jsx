@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import logo from "../assets/myuni-logo.png";
 import { PublicBackHomeButton } from "../components/PublicPageButtons.jsx";
+import { mainContentProps } from "../utils/mainContent.js";
 
 export default function AuthLayout({ eyebrow, title, subtitle, children, showBackHome = true }) {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-950 dark:bg-slateNight dark:text-white">
+    <main {...mainContentProps} className="min-h-screen bg-slate-50 text-slate-950 dark:bg-slateNight dark:text-white">
       <div className="container-shell grid min-h-screen grid-cols-1 items-start gap-6 pb-10 pt-4 sm:gap-8 sm:pb-10 sm:pt-5 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch lg:gap-10 lg:py-10">
         <section className="relative hidden lg:min-h-screen lg:block">
           {showBackHome && (
