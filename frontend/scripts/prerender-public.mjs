@@ -168,9 +168,10 @@ function routeToOutputFile(route) {
   return path.join(distDir, normalized, "index.html");
 }
 
-async function prerenderRoute(page, route) {
+async function prerenderRoute(page, route, index, total) {
   const url = route === "/" ? `${previewBase}/` : `${previewBase}${route}`;
-  await page.goto(url, { waitUntil: "networkidle", timeout: 60000 });
+  console.log(`[prerender] (${index + 1}/${total}) ${route}`);
+  await page.goto(url, { waitUntil: "load", timeout: 45000 });
   await page.waitForSelector('[data-seo-ready="true"]', {
     timeout: 30000,
     state: "attached",
@@ -205,8 +206,8 @@ async function main() {
   const page = await browser.newPage();
 
   try {
-    for (const route of routes) {
-      await prerenderRoute(page, route);
+    for (const [index, route] of routes.entries()) {
+      await prerenderRoute(page, route, index, routes.length);
     }
 
     const manifest = {

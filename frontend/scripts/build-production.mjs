@@ -95,7 +95,7 @@ function startBackendServer() {
     DJANGO_DEBUG: process.env.DJANGO_DEBUG || "True",
   };
 
-  return spawn(pythonCommand, ["manage.py", "runserver", `${apiHost}:${apiPort}`], {
+  return spawn(pythonCommand, ["manage.py", "runserver", `${apiHost}:${apiPort}`, "--noreload"], {
     cwd: backendRoot,
     stdio: ["ignore", "pipe", "pipe"],
     shell: process.platform === "win32",
