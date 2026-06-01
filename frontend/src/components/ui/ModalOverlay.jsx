@@ -28,6 +28,9 @@ export default function ModalOverlay({
         {...(labelledBy ? { "aria-labelledby": labelledBy } : {})}
         className={`relative z-10 outline-none ${panelClassName}`}
       >
+        <button type="button" onClick={onClose} className="sr-only">
+          {closeLabel}
+        </button>
         {children}
       </div>
     </div>
