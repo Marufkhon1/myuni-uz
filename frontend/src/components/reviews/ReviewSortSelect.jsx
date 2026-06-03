@@ -1,11 +1,11 @@
-import { useEffect, useId, useRef, useState } from "react";
+﻿import { useEffect, useId, useRef, useState } from "react";
 
 const SORT_ICONS = {
-  likes: "♥",
-  rating: "★",
-  rating_high: "★",
-  newest: "↓",
-  oldest: "↑",
+  likes: "тЩе",
+  rating: "тШЕ",
+  rating_high: "тШЕ",
+  newest: "тЖУ",
+  oldest: "тЖС",
 };
 
 function ChevronIcon({ open }) {
@@ -48,7 +48,7 @@ export default function ReviewSortSelect({ options, value, onChange, disabled = 
   const [isOpen, setIsOpen] = useState(false);
 
   const selectedOption = options.find((option) => option.id === value) ?? options[0];
-  const selectedIcon = SORT_ICONS[selectedOption?.id] ?? "•";
+  const selectedIcon = SORT_ICONS[selectedOption?.id] ?? "тАв";
 
   useEffect(() => {
     function handlePointerDown(event) {
@@ -108,7 +108,7 @@ export default function ReviewSortSelect({ options, value, onChange, disabled = 
         >
           {options.map((option) => {
             const isSelected = option.id === value;
-            const icon = SORT_ICONS[option.id] ?? "•";
+            const icon = SORT_ICONS[option.id] ?? "тАв";
 
             return (
               <li key={option.id} role="option" aria-selected={isSelected}>

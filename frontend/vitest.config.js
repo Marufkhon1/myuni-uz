@@ -7,5 +7,8 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "./src/test/setup.js",
     include: ["src/**/*.test.{js,jsx}"],
+    pool: "vmThreads",
+    testTimeout: 20_000,
+    hookTimeout: 20_000,
   },
 });

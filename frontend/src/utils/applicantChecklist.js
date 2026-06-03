@@ -86,7 +86,7 @@ export function getDashboardChecklistSteps({
     {
       id: "compare",
       label: "Universitetlarni solishtiring",
-      description: "Tanlov uchun taqqoslang",
+      description: "3 ta OTMni taqqoslang",
       done: Boolean(stored.compare),
       section: "compare",
     },
@@ -103,7 +103,7 @@ export function getApplicantChecklistProgress(steps) {
 }
 
 export function getCompareSuggestion(universities, userUniversityName) {
-  if (!universities?.length) {
+  if (!universities?.length || universities.length < 3) {
     return null;
   }
 
@@ -117,16 +117,15 @@ export function getCompareSuggestion(universities, userUniversityName) {
     return (right.member_count ?? 0) - (left.member_count ?? 0);
   });
 
-  const partner = sorted.find((item) => item.id !== myUniversity?.id) ?? sorted[1] ?? sorted[0];
-
-  if (!myUniversity || !partner || myUniversity.id === partner.id) {
-    if (sorted.length >= 2) {
-      return { anchor: sorted[0], other: sorted[1] };
+  if (myUniversity) {
+    const others = sorted.filter((item) => item.id !== myUniversity.id).slice(0, 2);
+    if (others.length < 2) {
+      return null;
     }
-    return null;
+    return { universities: [myUniversity, others[0], others[1]] };
   }
 
-  return { anchor: myUniversity, other: partner };
+  return { universities: sorted.slice(0, 3) };
 }
 
 export function getRecentJoinedChats(universities, joinedUniversityIds, limit = 3) {

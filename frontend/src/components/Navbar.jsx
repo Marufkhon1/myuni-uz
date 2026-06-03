@@ -1,24 +1,28 @@
-import { AnimatePresence, motion } from "framer-motion";
+﻿import { AnimatePresence, motion } from "framer-motion";
 import { useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/myuni-logo.png";
 import { useAuth } from "../hooks/useAuth.js";
 import useFocusTrap from "../hooks/useFocusTrap.js";
-import { PublicBackHomeButton, PublicLoginButton, PublicSignupButton } from "./PublicPageButtons.jsx";
+import { useLandingActiveSection } from "../hooks/useLandingActiveSection.js";
+import { normalizeNavHash } from "../utils/landingNav.js";
 import { scrollToLandingSection } from "../utils/landingScroll.js";
+import { PublicBackHomeButton, PublicLoginButton, PublicSignupButton } from "./PublicPageButtons.jsx";
+import ThemeToggle from "./ThemeToggle.jsx";
 
-function resolveLandingNavCurrent(pathname, hash, linkHref) {
-  if (pathname !== "/") {
-    return undefined;
+const publicRouteToHash = {
+  "/universitetlar": "#universities",
+  "/universitetlar/xarita": "#universities",
+  "/savollar-javob": "#faq",
+};
+
+const navSectionIds = ["#home", "#how-it-works", "#universities", "#reviews", "#faq", "#about"];
+
+function isNavLinkActive(pathname, activeHash, linkHref) {
+  if (pathname === "/") {
+    return normalizeNavHash(linkHref) === normalizeNavHash(activeHash);
   }
-  const active = hash || "#home";
-  if (linkHref === active) {
-    return "page";
-  }
-  if (linkHref === "#home" && !hash) {
-    return "page";
-  }
-  return undefined;
+  return publicRouteToHash[pathname] === linkHref;
 }
 
 function isDashboardPath(pathname) {
@@ -33,246 +37,197 @@ const navLinks = [
   { label: "Bosh sahifa", href: "#home" },
   { label: "Qanday ishlaydi", href: "#how-it-works" },
   { label: "Universitetlar", href: "#universities" },
+  { label: "Sharhlar", href: "#reviews" },
   { label: "Savollar", href: "#faq" },
   { label: "Biz haqimizda", href: "#about" },
 ];
 
-function DesktopNavLink({ link, pathname, hash, onNavigate }) {
-  const isActive = resolveLandingNavCurrent(pathname, hash, link.href) === "page";
-
-  return (
-    <a
-      href={link.href}
-      onClick={(event) => onNavigate(event, link.href)}
-      className={`nav-link ${isActive ? "nav-link-active" : ""}`}
-      aria-current={isActive ? "page" : undefined}
-    >
-      {link.label}
-    </a>
-  );
+function desktopNavLinkClass(isActive) {
+  const base =
+    "relative inline-flex items-center rounded-lg px-1.5 py-1 text-sm transition-colors duration-200 after:pointer-events-none after:absolute after:inset-x-1 after:-bottom-[0.45rem] after:h-[3px] after:rounded-full after:transition-all after:duration-200 after:content-['']";
+  if (isActive) {
+    return `${base} font-bold text-white after:bg-gradient-to-r after:from-sky-300 after:via-blue-300 after:to-violet-300 after:opacity-100 after:shadow-[0_0_12px_rgba(125,211,252,0.55)]`;
+  }
+  return `${base} font-semibold text-white/72 hover:text-white after:scale-x-0 after:opacity-0 hover:after:scale-x-100 hover:after:bg-white/40 hover:after:opacity-70`;
 }
 
-function MobileNavLink({ link, pathname, hash, onNavigate }) {
-  const isActive = resolveLandingNavCurrent(pathname, hash, link.href) === "page";
-
-  return (
-    <a
-      href={link.href}
-      onClick={(event) => onNavigate(event, link.href)}
-      className={`nav-link-mobile ${isActive ? "nav-link-mobile-active" : ""}`}
-      aria-current={isActive ? "page" : undefined}
-    >
-      {link.label}
-    </a>
-  );
+function mobileNavLinkClass(isActive) {
+  const base = "rounded-2xl px-4 py-3 text-sm font-bold transition";
+  if (isActive) {
+    return `${base} bg-white/12 text-white ring-1 ring-white/20`;
+  }
+  return `${base} text-white/80 hover:bg-white/10 hover:text-white`;
 }
 
 export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guestHomeButtonOnly = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const mobileMenuRef = useRef(null);
-  const { pathname, hash } = useLocation();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
+  const { activeHash, setActiveSection } = useLandingActiveSection(navSectionIds);
   const { isAuthenticated, isLoading, role } = useAuth();
   const dashboardPath = role === "student" ? "/student/dashboard" : "/applicant/dashboard";
   const themeToggle = onToggleTheme ? () => onToggleTheme() : undefined;
 
   useFocusTrap(isOpen, mobileMenuRef, {
     onEscape: () => setIsOpen(false),
-    lockScroll: true,
+    lockScroll: false,
   });
 
   function goToLandingSection(event, targetHash) {
     event.preventDefault();
     setIsOpen(false);
 
+    const normalized = normalizeNavHash(targetHash);
+    const hashValue = normalized.replace(/^#/, "");
+
     if (pathname === "/") {
-      scrollToLandingSection(targetHash);
-      window.history.replaceState(null, "", targetHash);
+      setActiveSection(normalized);
+      navigate({ pathname: "/", hash: hashValue }, { replace: true });
+      scrollToLandingSection(normalized);
       return;
     }
 
-    navigate({ pathname: "/", hash: targetHash });
+    navigate({ pathname: "/", hash: hashValue });
   }
 
-  const ThemeIcon = isDark ? (
-    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-amber-400" aria-hidden="true">
-      <path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM12 2a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1ZM12 19a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1ZM4.22 4.22a1 1 0 0 1 1.42 0l.7.7a1 1 0 0 1-1.41 1.42l-.71-.7a1 1 0 0 1 0-1.42ZM17.66 17.66a1 1 0 0 1 1.41 0l.71.7a1 1 0 1 1-1.42 1.42l-.7-.71a1 1 0 0 1 0-1.41ZM2 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1ZM19 12a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1ZM4.93 17.66a1 1 0 0 1 1.41 1.41l-.7.71a1 1 0 0 1-1.42-1.42l.71-.7ZM18.36 4.22a1 1 0 0 1 1.42 1.42l-.71.7a1 1 0 0 1-1.41-1.41l.7-.71Z" />
-    </svg>
-  ) : (
-    <svg viewBox="0 0 24 24" className="h-5 w-5 fill-slate-600" aria-hidden="true">
-      <path d="M21 14.6A8.9 8.9 0 0 1 9.4 3a.8.8 0 0 0-1-.98 10.5 10.5 0 1 0 13.58 13.58.8.8 0 0 0-.98-1Z" />
-    </svg>
-  );
-
-  const authActions = !isLoading && isAuthenticated ? (
-    <Link
-      to={dashboardPath}
-      className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-full bg-slate-950 px-4 py-2 text-sm font-bold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-primary 2xl:px-5 2xl:py-2.5 dark:bg-white dark:text-slate-950"
-      aria-current={isDashboardPath(pathname) ? "page" : undefined}
-    >
-      Kabinet
-    </Link>
-  ) : guestHomeButtonOnly ? (
-    <PublicBackHomeButton className="!min-h-10 !rounded-full shrink-0 !px-4 2xl:!px-5" />
-  ) : (
-    <>
-      <PublicLoginButton to={loginTo} className="!min-h-10 shrink-0 !px-3 2xl:!px-4" />
-      <PublicSignupButton
-        to={signupTo}
-        className="!min-h-10 shrink-0 !px-3 !text-xs 2xl:!px-4 2xl:!text-sm"
-      />
-    </>
-  );
+  const authButtonClass = "!min-h-9 !px-4 !py-2";
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-200/60 bg-white/80 backdrop-blur-2xl transition-colors dark:border-white/5 dark:bg-slate-950/80">
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/25 to-transparent"
-        aria-hidden="true"
-      />
-
+    <header className="fixed inset-x-0 top-0 z-50 overflow-visible border-b border-white/10 bg-gradient-to-r from-[#06102a] via-[#0c1f4a] to-[#0a1838] shadow-[0_10px_40px_rgba(2,8,23,0.45)] backdrop-blur-md">
       <nav
-        className="container-shell grid h-16 min-w-0 grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 sm:h-[4.75rem] xl:gap-4"
+        className="container-shell flex h-14 items-center justify-between overflow-visible pb-1 sm:h-[4.25rem]"
         aria-label="Asosiy navigatsiya"
       >
         <Link
           to="/"
-          className="group flex shrink-0 items-center gap-2.5 sm:gap-3"
+          onClick={() => {
+            if (pathname === "/") {
+              setActiveSection("#home");
+            }
+          }}
+          className="group flex min-w-0 items-center gap-2.5 sm:gap-3"
           aria-label="MyUni.uz bosh sahifa"
         >
-          <img
-            src={logo}
-            alt=""
-            className="h-10 w-10 rounded-2xl object-cover shadow-glow transition duration-300 group-hover:scale-105 sm:h-11 sm:w-11"
-          />
-          <span className="hidden text-lg font-black tracking-tight text-slate-950 min-[420px]:inline sm:text-xl dark:text-white">
-            MyUni.uz
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/95 p-0.5 ring-1 ring-white/30 shadow-[0_4px_18px_rgba(37,99,235,0.35)] transition group-hover:ring-white/50 sm:h-10 sm:w-10">
+            <img src={logo} alt="" className="h-full w-full rounded-[0.6rem] object-cover" />
           </span>
+          <span className="truncate text-lg font-black tracking-tight text-white sm:text-xl">MyUni.uz</span>
         </Link>
 
-        <div className="nav-links hidden min-w-0 xl:flex" aria-label="Sahifa bo'limlari">
-            {navLinks.map((link) => (
-              <DesktopNavLink
+        <div className="hidden items-center gap-7 overflow-visible xl:gap-9 lg:flex">
+          {navLinks.map((link) => {
+            const isActive = isNavLinkActive(pathname, activeHash, link.href);
+            return (
+              <a
                 key={link.href}
-                link={link}
-                pathname={pathname}
-                hash={hash}
-                onNavigate={goToLandingSection}
-              />
-            ))}
+                href={link.href}
+                onClick={(event) => goToLandingSection(event, link.href)}
+                className={desktopNavLinkClass(isActive)}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            );
+          })}
         </div>
 
-        <div className="hidden shrink-0 items-center justify-end gap-2 xl:flex 2xl:gap-3">
+        <div className="hidden items-center gap-2.5 sm:gap-3 lg:flex">
           {themeToggle && (
-            <button
-              type="button"
-              onClick={themeToggle}
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-slate-200/80 bg-white text-slate-700 shadow-soft transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-glow 2xl:h-11 2xl:w-11 dark:border-white/10 dark:bg-white/10 dark:text-slate-200"
-              aria-label="Rang rejimini almashtirish"
-            >
-              {ThemeIcon}
-            </button>
+            <ThemeToggle isDark={isDark} onToggle={themeToggle} variant="navbar" />
           )}
-          {authActions}
+          {!isLoading && isAuthenticated ? (
+            <Link
+              to={dashboardPath}
+              className={`${authButtonClass} rounded-full bg-white px-5 text-sm font-bold text-slate-950 shadow-[0_8px_24px_rgba(255,255,255,0.18)] transition hover:-translate-y-0.5 hover:bg-sky-50`}
+              aria-current={isDashboardPath(pathname) ? "page" : undefined}
+            >
+              Kabinet
+            </Link>
+          ) : guestHomeButtonOnly ? (
+            <PublicBackHomeButton tone="navbar" className={`${authButtonClass} !shadow-none`} />
+          ) : (
+            <>
+              <PublicLoginButton to={loginTo} tone="navbar" className={authButtonClass} />
+              <PublicSignupButton to={signupTo} tone="navbar" className={authButtonClass} />
+            </>
+          )}
         </div>
 
-        <div className="col-start-3 flex shrink-0 items-center justify-end gap-2 xl:hidden">
-          {themeToggle && (
-            <button
-              type="button"
-              onClick={themeToggle}
-              className="grid h-10 w-10 place-items-center rounded-full border border-slate-200/80 bg-white shadow-soft transition hover:border-primary/40 dark:border-white/10 dark:bg-white/10"
-              aria-label="Rang rejimini almashtirish"
-            >
-              {ThemeIcon}
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={() => setIsOpen((value) => !value)}
-            className="grid h-10 w-10 place-items-center rounded-2xl border border-slate-200/80 bg-white text-slate-900 shadow-soft transition hover:border-primary/40 hover:shadow-glow dark:border-white/10 dark:bg-white/10 dark:text-white"
-            aria-label={isOpen ? "Navigatsiya menyusini yopish" : "Navigatsiya menyusini ochish"}
-            aria-expanded={isOpen}
-            aria-controls="mobile-nav-menu"
-          >
-            <span className="relative block h-3.5 w-5">
-              <span
-                className={`absolute left-0 block h-0.5 w-5 rounded-full bg-current transition duration-200 ${
-                  isOpen ? "top-[7px] rotate-45" : "top-0"
-                }`}
-              />
-              <span
-                className={`absolute left-0 top-[7px] block h-0.5 w-5 rounded-full bg-current transition duration-200 ${
-                  isOpen ? "scale-x-0 opacity-0" : "scale-x-100 opacity-100"
-                }`}
-              />
-              <span
-                className={`absolute left-0 block h-0.5 w-5 rounded-full bg-current transition duration-200 ${
-                  isOpen ? "top-[7px] -rotate-45" : "top-[14px]"
-                }`}
-              />
-            </span>
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => setIsOpen((value) => !value)}
+          className="grid h-9 w-9 place-items-center rounded-xl border border-white/25 bg-white/10 text-white transition hover:border-white/40 hover:bg-white/15 lg:hidden"
+          aria-label={isOpen ? "Navigatsiya menyusini yopish" : "Navigatsiya menyusini ochish"}
+          aria-expanded={isOpen}
+          aria-controls="mobile-nav-menu"
+        >
+          <span className="space-y-1.5" aria-hidden="true">
+            <span className="block h-0.5 w-5 rounded-full bg-current" />
+            <span className="block h-0.5 w-5 rounded-full bg-current" />
+            <span className="block h-0.5 w-5 rounded-full bg-current" />
+          </span>
+        </button>
       </nav>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
-            className="overflow-hidden xl:hidden"
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            className="container-shell pb-4 lg:hidden"
           >
-            <div className="container-shell pb-5">
-              <div
-                id="mobile-nav-menu"
-                ref={mobileMenuRef}
-                role="dialog"
-                aria-modal="true"
-                aria-label="Mobil navigatsiya"
-                tabIndex={-1}
-                className="glass-card max-h-[min(80vh,640px)] overflow-y-auto rounded-3xl p-3 shadow-glow"
-              >
-                <p className="px-4 pb-2 pt-1 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  Bo&apos;limlar
-                </p>
-                <div className="grid gap-0.5">
-                  {navLinks.map((link) => (
-                    <MobileNavLink
+            <div
+              id="mobile-nav-menu"
+              ref={mobileMenuRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Mobil navigatsiya"
+              tabIndex={-1}
+              className="rounded-2xl border border-white/15 bg-[#0b1a3d]/95 p-3 shadow-[0_20px_50px_rgba(0,0,0,0.35)] backdrop-blur-xl"
+            >
+              <div className="grid gap-1">
+                {navLinks.map((link) => {
+                  const isActive = isNavLinkActive(pathname, activeHash, link.href);
+                  return (
+                    <a
                       key={link.href}
-                      link={link}
-                      pathname={pathname}
-                      hash={hash}
-                      onNavigate={goToLandingSection}
-                    />
-                  ))}
-                </div>
-
-                <div className="my-4 h-px bg-slate-200/80 dark:bg-white/10" />
-
-                <p className="px-4 pb-2 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  Hisob
-                </p>
-                <div className="grid grid-cols-1 gap-2.5 px-1 sm:grid-cols-2">
-                  {!isLoading && isAuthenticated ? (
-                    <Link
-                      to={dashboardPath}
-                      className="rounded-2xl bg-premium-gradient px-4 py-3 text-center text-sm font-black text-white shadow-glow sm:col-span-2"
-                      aria-current={isDashboardPath(pathname) ? "page" : undefined}
+                      href={link.href}
+                      onClick={(event) => goToLandingSection(event, link.href)}
+                      className={mobileNavLinkClass(isActive)}
+                      aria-current={isActive ? "page" : undefined}
                     >
-                      Kabinet
-                    </Link>
-                  ) : guestHomeButtonOnly ? (
-                    <PublicBackHomeButton className="w-full sm:col-span-2" />
-                  ) : (
-                    <>
-                      <PublicLoginButton to={loginTo} className="w-full !rounded-2xl" />
-                      <PublicSignupButton to={signupTo} className="w-full !rounded-2xl" />
-                    </>
-                  )}
-                </div>
+                      {link.label}
+                    </a>
+                  );
+                })}
+              </div>
+              <div className={`mt-3 grid gap-2 border-t border-white/10 pt-3 ${themeToggle ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+                {themeToggle && (
+                  <ThemeToggle
+                    isDark={isDark}
+                    onToggle={themeToggle}
+                    variant="navbar"
+                    className="mx-auto w-full max-w-[8.5rem]"
+                  />
+                )}
+                {!isLoading && isAuthenticated ? (
+                  <Link
+                    to={dashboardPath}
+                    className="rounded-xl bg-white px-4 py-2.5 text-center text-sm font-bold text-slate-950"
+                    aria-current={isDashboardPath(pathname) ? "page" : undefined}
+                  >
+                    Kabinet
+                  </Link>
+                ) : guestHomeButtonOnly ? (
+                  <PublicBackHomeButton tone="navbar" className="w-full !min-h-10" />
+                ) : (
+                  <>
+                    <PublicLoginButton to={loginTo} tone="navbar" className="w-full !min-h-10" />
+                    <PublicSignupButton to={signupTo} tone="navbar" className="w-full !min-h-10" />
+                  </>
+                )}
               </div>
             </div>
           </motion.div>

@@ -54,6 +54,7 @@ from .review_trust_utils import (
     annotate_reviews_with_likes,
     aspect_averages_for_university,
     generate_review_insight_summary,
+    university_review_stats_map,
 )
 from .reaction_serializers import MessageReactionSerializer
 from .reaction_utils import toggle_message_reaction
@@ -278,6 +279,24 @@ class PopularReviewListView(generics.ListAPIView):
         return annotate_reviews_with_likes(queryset, self.request.user).order_by(
             "-like_count", "-created_at"
         )[:30]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        # Sliced queryset — distinct() ishlatib bo'lmaydi; ID larni Python orqali yig'amiz.
+        university_ids = list(
+            {
+                university_id
+                for university_id in queryset.values_list("university_id", flat=True)
+                if university_id is not None
+            }
+        )
+        stats_map = university_review_stats_map(university_ids)
+        serializer = self.get_serializer(
+            queryset,
+            many=True,
+            context={**self.get_serializer_context(), "university_stats": stats_map},
+        )
+        return Response(serializer.data)
 
 
 class ReviewListCreateView(generics.ListCreateAPIView):

@@ -107,12 +107,9 @@ export function DashboardReviewsSkeleton() {
 export function DashboardCompareSkeleton() {
   return (
     <div className="space-y-4" aria-busy="true" aria-label="Taqqoslash yuklanmoqda">
-      <Skeleton className="h-28 w-full rounded-[2rem]" />
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Skeleton className="h-72 rounded-[2rem]" />
-        <Skeleton className="h-72 rounded-[2rem]" />
-      </div>
-      <Skeleton className="h-64 w-full rounded-[2rem]" />
+      <Skeleton className="h-36 w-full rounded-2xl" />
+      <Skeleton className="h-64 w-full rounded-2xl" />
+      <CompareResultsSkeleton columns={2} />
     </div>
   );
 }
@@ -254,15 +251,16 @@ export function ReviewPanelSkeleton({ className = "" }) {
   );
 }
 
-export function CompareResultsSkeleton() {
+export function CompareResultsSkeleton({ columns = 2 }) {
+  const colClass = columns >= 3 ? "xl:grid-cols-3" : "lg:grid-cols-2";
   return (
     <div className="space-y-4" aria-busy="true" aria-label="Taqqoslash natijasi yuklanmoqda">
       <div className="h-28 animate-pulse rounded-2xl bg-slate-200/80 dark:bg-white/10" />
       <div className="h-52 animate-pulse rounded-2xl bg-slate-200/60 dark:bg-white/[0.06]" />
-      <div className="h-40 animate-pulse rounded-2xl bg-slate-200/50 dark:bg-white/[0.05]" />
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="h-72 animate-pulse rounded-2xl bg-slate-200/50 dark:bg-white/[0.04]" />
-        <div className="h-72 animate-pulse rounded-2xl bg-slate-200/50 dark:bg-white/[0.04]" />
+      <div className={`grid gap-4 ${colClass}`}>
+        {Array.from({ length: Math.min(columns, 3) }, (_, index) => (
+          <div key={index} className="h-72 animate-pulse rounded-2xl bg-slate-200/50 dark:bg-white/[0.04]" />
+        ))}
       </div>
     </div>
   );

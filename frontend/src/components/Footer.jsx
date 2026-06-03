@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+﻿import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/myuni-logo.png";
 import OfficeMapEmbed from "./OfficeMapEmbed.jsx";
 import {
@@ -135,8 +135,8 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col justify-between gap-4 border-t border-slate-200 pt-8 text-sm font-semibold text-slate-500 sm:flex-row dark:border-white/10 dark:text-slate-400">
-          <p>© 2026 MyUni.uz. Barcha huquqlar himoyalangan.</p>
-          <p>TDIU Samarqand filiali — biznes loyihasi</p>
+          <p>┬й 2026 MyUni.uz. Barcha huquqlar himoyalangan.</p>
+          <p>TDIU Samarqand filiali тАФ biznes loyihasi</p>
         </div>
       </div>
     </footer>

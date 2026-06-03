@@ -1,6 +1,6 @@
 import { CHAT_COLOR_OPTIONS, getAuthorColorClass, getColorOption } from "../../utils/chatAuthorColor.js";
 
-const sectionLabelClass = "text-xs font-black uppercase tracking-[0.18em] text-primary";
+const sectionLabelClass = "text-[10px] font-black uppercase tracking-[0.16em] text-primary";
 
 export default function ChatColorPicker({
   displayName,
@@ -17,15 +17,17 @@ export default function ChatColorPicker({
 
   return (
     <div className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-white/[0.06]">
-      <div className="border-b border-slate-100 px-4 py-3 dark:border-white/10 sm:px-5">
+      <div className="border-b border-slate-100 px-4 py-2.5 dark:border-white/10 sm:px-5">
         <p className={sectionLabelClass}>Chat rangi</p>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Ismingiz chatda qanday rangda ko&apos;rinadi</p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+          Ismingiz chatda qanday rangda ko&apos;rinadi
+        </p>
       </div>
 
       <div className="space-y-4 px-4 py-4 sm:px-5 sm:py-5">
         <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-[#eef2f7] dark:border-white/10 dark:bg-white/[0.04]">
           <div className="border-b border-slate-200/60 px-4 py-2 dark:border-white/10">
-            <p className="text-center text-sm font-bold text-slate-500">Guruh chat · preview</p>
+            <p className="text-center text-[10px] font-bold uppercase tracking-wide text-slate-500">Guruh chat · preview</p>
           </div>
           <div className="px-4 py-4">
             <div className="flex items-end gap-3">
@@ -33,8 +35,8 @@ export default function ChatColorPicker({
                 {displayName.slice(0, 1).toUpperCase()}
               </div>
               <div className="min-w-0">
-                <p className={`truncate text-base font-black ${previewClass}`}>{displayName || "Ismingiz"}</p>
-                <div className="mt-1.5 inline-block max-w-full rounded-2xl rounded-bl-md bg-white px-4 py-2.5 text-sm text-slate-700 shadow-sm dark:bg-slate-800 dark:text-slate-200">
+                <p className={`truncate text-sm font-black ${previewClass}`}>{displayName || "Ismingiz"}</p>
+                <div className="mt-1.5 inline-block max-w-full rounded-2xl rounded-bl-md bg-white px-3 py-2 text-xs text-slate-700 shadow-sm dark:bg-slate-800 dark:text-slate-200">
                   Tanlangan rang bilan shunday ko&apos;rinasiz
                 </div>
               </div>
@@ -43,7 +45,7 @@ export default function ChatColorPicker({
         </div>
 
         <div className="flex items-center justify-between gap-2">
-          <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
             {isAuto ? "Avtomatik rang" : "Tanlangan rang"}
           </p>
           {activeOption && (

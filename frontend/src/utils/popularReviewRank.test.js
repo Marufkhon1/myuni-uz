@@ -22,9 +22,14 @@ describe("getPopularRankStyles", () => {
     expect(styles.card).toContain("orange");
   });
 
-  it("returns standard card from rank 4", () => {
-    const styles = getPopularRankStyles(4);
-    expect(styles.label).toBe("#4 mashhur");
-    expect(styles.card).toContain("bg-white");
+  it("returns accent metadata for top 3 only", () => {
+    expect(getPopularRankStyles(2)?.accentBar).toContain("slate");
+    expect(getPopularRankStyles(3)?.accentBar).toContain("amber");
+    expect(getPopularRankStyles(1)?.accentBar).toContain("amber");
+  });
+
+  it("returns null from rank 4", () => {
+    expect(getPopularRankStyles(4)).toBeNull();
+    expect(getPopularRankStyles(10)).toBeNull();
   });
 });

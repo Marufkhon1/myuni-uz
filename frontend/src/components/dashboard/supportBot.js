@@ -27,7 +27,7 @@ export function getSupportBotReply(text, { isStudent = false } = {}) {
     return "Chatlar bo'limida universitet guruhiga qo'shiling. Keyin xabar yozishingiz mumkin.";
   }
   if (query.includes("taqqos") || query.includes("solishtir")) {
-    return "Taqqoslash bo'limida ikkita universitetni tanlab, yonma-yon ko'ring.";
+    return "Taqqoslash bo'limida aynan 3 ta universitetni tanlab, jadvalda solishtiring.";
   }
   if (query.includes("profil") || query.includes("rasm")) {
     return "Profil bo'limida ism, universitet va profil rasmini yangilashingiz mumkin.";

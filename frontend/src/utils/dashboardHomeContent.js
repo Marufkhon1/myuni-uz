@@ -29,7 +29,7 @@ export function getDashboardHomeQuickActions(isStudent) {
     {
       id: "compare",
       label: "Taqqoslash",
-      helper: "Ikki OTM yonma-yon",
+      helper: "3 ta OTM jadvali",
       section: "compare",
     },
   ];

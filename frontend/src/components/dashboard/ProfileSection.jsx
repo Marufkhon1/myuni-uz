@@ -11,16 +11,18 @@ import { getProfileContent, getProfileDigitalIdNarrative } from "../../utils/pro
 const BIO_MIN_LENGTH = 3;
 const BIO_MAX_LENGTH = 70;
 
-const sectionLabelClass = "text-xs font-black uppercase tracking-[0.18em] text-primary";
+const sectionLabelClass = "text-[10px] font-black uppercase tracking-[0.16em] text-primary";
+const hintTextClass = "text-xs leading-relaxed text-slate-500 dark:text-slate-400";
+const metaTextClass = "text-[11px] font-semibold text-slate-500 dark:text-slate-400";
 
 const profileFieldInputClass =
-  "h-11 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-base font-semibold outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400/25";
+  "h-10 w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400/25";
 
 function SettingsGroup({ title, children }) {
   return (
     <div className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-white/[0.06]">
       {title && (
-        <div className="border-b border-slate-100 px-4 py-3 dark:border-white/10 sm:px-5">
+        <div className="border-b border-slate-100 px-4 py-2.5 dark:border-white/10 sm:px-5">
           <p className={sectionLabelClass}>{title}</p>
         </div>
       )}
@@ -36,20 +38,18 @@ function SettingsRow({ label, hint, value, onClick, disabled = false, active = f
       type={onClick ? "button" : undefined}
       onClick={onClick}
       disabled={disabled}
-      className={`flex w-full items-center gap-4 px-4 py-4 text-left sm:px-5 ${
+      className={`flex w-full items-center gap-3 px-4 py-3 text-left sm:px-5 ${
         onClick && !disabled ? "transition hover:bg-slate-50 dark:hover:bg-white/[0.04]" : ""
       } ${disabled ? "opacity-60" : ""}`}
     >
       <div className="min-w-0 flex-1">
-        <p className={`text-base font-bold ${active ? "text-primary" : "text-slate-900 dark:text-white"}`}>
+        <p className={`text-sm font-black ${active ? "text-primary" : "text-slate-900 dark:text-white"}`}>
           {label}
         </p>
-        {hint && (
-          <p className="mt-1 break-all text-sm leading-6 text-slate-500 dark:text-slate-400">{hint}</p>
-        )}
+        {hint && <p className={`mt-0.5 break-all ${hintTextClass}`}>{hint}</p>}
       </div>
       {value && (
-        <span className="max-w-[42%] truncate text-right text-sm font-bold text-slate-600 dark:text-slate-300">
+        <span className="max-w-[42%] truncate text-right text-xs font-bold text-slate-600 dark:text-slate-300">
           {value}
         </span>
       )}
@@ -66,8 +66,8 @@ function SettingsRow({ label, hint, value, onClick, disabled = false, active = f
 function ProfileHeaderStat({ value, label }) {
   return (
     <div className="min-w-0 rounded-2xl border border-slate-200/80 bg-slate-50/80 px-3 py-3 dark:border-white/10 dark:bg-white/[0.04]">
-      <p className="truncate text-xl font-black tabular-nums text-slate-950 dark:text-white sm:text-2xl">{value}</p>
-      <p className="mt-0.5 truncate text-[10px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+      <p className="truncate text-lg font-black tabular-nums text-slate-950 dark:text-white">{value}</p>
+      <p className="mt-0.5 truncate text-[9px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
         {label}
       </p>
     </div>
@@ -237,18 +237,18 @@ export default function ProfileSection({
             </label>
             </div>
 
-            <h2 className="text-center text-2xl font-black leading-tight text-slate-950 dark:text-white sm:text-3xl">
+            <h2 className="text-center text-xl font-black leading-tight text-slate-950 dark:text-white sm:text-2xl">
               {displayName}
             </h2>
-            <div className="mt-2 flex flex-wrap justify-center gap-2">
-              <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-black text-primary">{roleLabel}</span>
+            <div className="mt-2 flex flex-wrap justify-center gap-1.5">
+              <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-black text-primary">{roleLabel}</span>
               {hasUniversity && (
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700 dark:bg-white/10 dark:text-slate-200">
+                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold text-slate-700 dark:bg-white/10 dark:text-slate-200">
                   {universityShort}
                 </span>
               )}
               <span
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
                   isProfileComplete
                     ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-300"
                     : "bg-amber-100 text-amber-800 dark:bg-amber-400/15 dark:text-amber-200"
@@ -260,16 +260,16 @@ export default function ProfileSection({
             </div>
 
             {universityFull && (
-              <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{universityFull}</p>
+              <p className={`mt-2 text-center ${metaTextClass} text-slate-600 dark:text-slate-300`}>{universityFull}</p>
             )}
             {universityLocation && (
-              <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">{universityLocation}</p>
+              <p className={`mt-1 text-center ${metaTextClass}`}>{universityLocation}</p>
             )}
             {user?.email && (
-              <p className="mt-2 text-sm font-semibold text-slate-500 dark:text-slate-400">{user.email}</p>
+              <p className={`mt-2 text-center ${metaTextClass}`}>{user.email}</p>
             )}
             {savedBio && (
-              <p className="mt-3 rounded-2xl border border-slate-100 bg-slate-50/80 px-3 py-3 text-sm leading-6 text-slate-700 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-200">
+              <p className="mt-3 rounded-xl border border-slate-100 bg-slate-50/80 px-3 py-2.5 text-xs leading-relaxed text-slate-700 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-200">
                 {savedBio}
               </p>
             )}
@@ -286,7 +286,7 @@ export default function ProfileSection({
                   <p className="text-[10px] font-black uppercase tracking-[0.14em] text-amber-800 dark:text-amber-200">
                     Keyingi qadam
                   </p>
-                  <span className="text-xs font-black text-amber-800 dark:text-amber-200">
+                  <span className="text-[10px] font-black tabular-nums text-amber-800 dark:text-amber-200">
                     {completedChecks}/{profileChecks.length}
                   </span>
                 </div>
@@ -324,7 +324,7 @@ export default function ProfileSection({
               </button>
             )}
 
-            {avatarError && <p className="mt-3 text-sm font-semibold text-red-600">{avatarError}</p>}
+            {avatarError && <p className="mt-3 text-xs font-semibold text-red-600 dark:text-red-400">{avatarError}</p>}
           </div>
         </div>
 
@@ -434,12 +434,10 @@ export default function ProfileSection({
         {profile?.is_moderator ? (
           <div className="overflow-hidden rounded-[1.75rem] border border-primary/20 bg-blue-50/50 p-4 shadow-soft dark:border-primary/30 dark:bg-primary/10 sm:p-5">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Moderator</p>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-              Shikoyatlarni ko&apos;rib chiqish va holatni yangilash.
-            </p>
+            <p className={`mt-1 ${hintTextClass}`}>Shikoyatlarni ko&apos;rib chiqish va holatni yangilash.</p>
             <Link
               to="/moderator"
-              className="mt-3 inline-flex rounded-xl bg-primary px-4 py-2 text-sm font-black text-white"
+              className="mt-3 inline-flex rounded-xl bg-primary px-4 py-2 text-xs font-black text-white"
             >
               Moderator paneliga o&apos;tish
             </Link>
@@ -485,11 +483,9 @@ function ProfileBioEditor({ bio, bioDescription, isSaving, onSave }) {
 
   return (
     <div className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-white/[0.06]">
-      <div className="border-b border-slate-100 px-4 py-3 dark:border-white/10 sm:px-5">
+      <div className="border-b border-slate-100 px-4 py-2.5 dark:border-white/10 sm:px-5">
         <p className={sectionLabelClass}>Bio</p>
-        <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
-          {bioDescription}
-        </p>
+        <p className={`mt-1 ${hintTextClass}`}>{bioDescription}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 px-4 py-4 sm:px-5 sm:py-5">
@@ -502,9 +498,9 @@ function ProfileBioEditor({ bio, bioDescription, isSaving, onSave }) {
             rows={3}
             maxLength={BIO_MAX_LENGTH}
             placeholder="O'zingiz haqingizda qisqacha yozing..."
-            className="w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400/25"
+            className="w-full resize-none rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm leading-relaxed text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400/25"
           />
-          <div className="mt-2 flex items-center justify-between gap-2 text-sm">
+          <div className="mt-2 flex items-center justify-between gap-2 text-xs">
             <span
               className={`font-semibold ${
                 isTooShort || isTooLong ? "text-red-600" : "text-slate-500 dark:text-slate-400"
@@ -524,7 +520,7 @@ function ProfileBioEditor({ bio, bioDescription, isSaving, onSave }) {
 
         <div className="flex flex-wrap items-center justify-end gap-3">
           {isDirty && (
-            <span className="mr-auto text-sm font-bold text-amber-600 dark:text-amber-300">
+            <span className="mr-auto text-xs font-bold text-amber-600 dark:text-amber-300">
               Saqlanmagan o&apos;zgarishlar
             </span>
           )}
@@ -540,7 +536,7 @@ function ProfileBioEditor({ bio, bioDescription, isSaving, onSave }) {
                   toast.error("Bioni saqlab bo'lmadi.");
                 }
               }}
-              className="btn-modal-secondary min-h-11"
+              className="btn-modal-secondary min-h-9 text-xs"
             >
               O&apos;chirish
             </button>
@@ -548,7 +544,7 @@ function ProfileBioEditor({ bio, bioDescription, isSaving, onSave }) {
           <button
             type="submit"
             disabled={isSaving || !isDirty || isTooShort || isTooLong}
-            className="btn-modal-dark min-h-11 px-5 disabled:opacity-50"
+            className="btn-modal-dark min-h-9 px-4 text-xs disabled:opacity-50"
           >
             {isSaving ? "Saqlanmoqda..." : "Saqlash"}
           </button>
@@ -601,12 +597,12 @@ function ProfileDigitalIdCard({
         <div className="relative px-4 py-4 sm:px-5 sm:py-5">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <span className="rounded-lg bg-slate-950 px-2.5 py-1 text-xs font-black tracking-wider text-white dark:bg-white dark:text-slate-950">
+              <span className="rounded-lg bg-slate-950 px-2 py-0.5 text-[10px] font-black tracking-wider text-white dark:bg-white dark:text-slate-950">
                 MYUNI
               </span>
               <span className={sectionLabelClass}>Raqamli ID</span>
             </div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-white/10 dark:text-slate-300">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold text-slate-600 dark:bg-white/10 dark:text-slate-300">
               <span
                 className={`h-2 w-2 rounded-full ${isProfileComplete ? "bg-emerald-500" : "bg-amber-400"}`}
               />
@@ -651,18 +647,18 @@ function ProfileDigitalIdCard({
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="truncate text-lg font-black text-slate-950 dark:text-white sm:text-xl">{displayName}</p>
-              <p className="mt-0.5 truncate text-sm font-bold text-primary">{roleLabel}</p>
-              <p className="mt-0.5 truncate text-sm text-slate-500 dark:text-slate-400">{universityShort}</p>
+              <p className="truncate text-base font-black text-slate-950 dark:text-white">{displayName}</p>
+              <p className="mt-0.5 truncate text-xs font-bold text-primary">{roleLabel}</p>
+              <p className={`mt-0.5 truncate ${metaTextClass}`}>{universityShort}</p>
             </div>
           </div>
 
           <div className="mt-4 border-t border-dashed border-slate-200 pt-4 dark:border-white/10">
             <div className="flex items-center justify-between gap-2">
               <span className={sectionLabelClass}>A&apos;zo ID</span>
-              <span className="text-base font-black tabular-nums text-slate-900 dark:text-white">#{memberId}</span>
+              <span className="text-sm font-black tabular-nums text-slate-900 dark:text-white">#{memberId}</span>
             </div>
-            <p className="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">{narrative}</p>
+            <p className={`mt-3 ${hintTextClass} text-slate-600 dark:text-slate-300`}>{narrative}</p>
           </div>
         </div>
       </div>
@@ -785,12 +781,12 @@ function ProfileSettingsForm({
 
       <div className="flex flex-wrap items-center justify-end gap-3">
         {isDirty && (
-          <span className="mr-auto text-sm font-bold text-amber-600 dark:text-amber-300">Saqlanmagan o&apos;zgarishlar</span>
+          <span className="mr-auto text-xs font-bold text-amber-600 dark:text-amber-300">Saqlanmagan o&apos;zgarishlar</span>
         )}
         <button
           type="submit"
           disabled={isSaving || !editName.trim() || !isDirty}
-          className="min-h-11 rounded-xl bg-slate-950 px-5 py-2.5 text-sm font-black text-white transition hover:bg-primary disabled:opacity-50 dark:bg-white dark:text-slate-950"
+          className="min-h-9 rounded-xl bg-slate-950 px-4 py-2 text-xs font-black text-white transition hover:bg-primary disabled:opacity-50 dark:bg-white dark:text-slate-950"
         >
           {isSaving ? "Saqlanmoqda..." : "Saqlash"}
         </button>

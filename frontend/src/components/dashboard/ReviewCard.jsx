@@ -1,6 +1,7 @@
 import UserAvatar from "./UserAvatar.jsx";
 import UniversityAvatar from "../UniversityAvatar.jsx";
 import ReviewAspectRatings, { formatReviewDate } from "../reviews/ReviewAspectRatings.jsx";
+import HelpfulLikeButton from "../reviews/HelpfulLikeButton.jsx";
 import { resolveMediaUrl } from "../../utils/media.js";
 import { getPopularRankStyles } from "../../utils/popularReviewRank.js";
 const STATUS_LABELS = {
@@ -78,32 +79,6 @@ function ReviewTextBody({ text }) {
   );
 }
 
-function LikeButton({ item, onLike, likeLabel, helpfulCount }) {
-  return (
-    <button
-      type="button"
-      onClick={() => onLike(item.id)}
-      className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-black transition active:scale-[0.98] ${
-        item.liked_by_me
-          ? "bg-primary text-white shadow-sm shadow-primary/20"
-          : "bg-white text-slate-700 ring-1 ring-slate-200/80 hover:bg-primary hover:text-white hover:ring-primary/30 dark:bg-white/5 dark:text-slate-200 dark:ring-white/10 dark:hover:bg-primary dark:hover:text-white"
-      }`}
-    >
-      <span aria-hidden="true" className="text-base leading-none">
-        {item.liked_by_me ? "♥" : "♡"}
-      </span>
-      {likeLabel}
-      <span
-        className={`rounded-md px-1.5 py-0.5 text-xs tabular-nums ${
-          item.liked_by_me ? "bg-white/20" : "bg-black/5 dark:bg-white/10"
-        }`}
-      >
-        {helpfulCount}
-      </span>
-    </button>
-  );
-}
-
 export default function ReviewCard({
   item,
   showUniversity = false,
@@ -146,6 +121,13 @@ export default function ReviewCard({
     <article
       className={`group relative overflow-hidden rounded-2xl transition ${cardSurfaceClass}`}
     >
+      {rankStyles?.accentBar && (
+        <span
+          className={`absolute bottom-0 left-0 top-0 w-1 ${rankStyles.accentBar}`}
+          aria-hidden="true"
+        />
+      )}
+
       {featured && (
         <div className="flex items-center justify-between gap-3 border-b border-primary/10 bg-gradient-to-r from-primary/8 to-transparent px-5 py-2.5 dark:border-primary/15 dark:from-primary/15">
           <p className="text-[11px] font-black uppercase tracking-[0.14em] text-primary">
@@ -156,14 +138,21 @@ export default function ReviewCard({
       )}
 
       {popularRank && rankStyles && (
-        <div className="absolute right-4 top-4 z-10 flex items-center gap-2">
-          <span
-            className={`rounded-full px-3 py-1 text-xs font-black ${rankStyles.badge}`}
-          >
-            {rankStyles.label}
-          </span>
-          <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-black text-slate-700 shadow-sm ring-1 ring-slate-200/80 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10">
-            ♥ {helpfulCount}
+        <div
+          className={`flex flex-wrap items-center justify-between gap-2 border-b px-5 py-2.5 sm:px-6 ${rankStyles.headerBar}`}
+        >
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={`rounded-full px-3 py-1 text-xs font-black ${rankStyles.badge}`}>
+              {rankStyles.label}
+            </span>
+            {popularRank === 1 && (
+              <span className="text-[10px] font-black uppercase tracking-[0.16em] text-amber-800/80 dark:text-amber-200/90">
+                Lider sharh
+              </span>
+            )}
+          </div>
+          <span className="text-xs font-bold tabular-nums text-slate-500 dark:text-slate-400">
+            ♥ {helpfulCount} foydali
           </span>
         </div>
       )}
@@ -178,12 +167,7 @@ export default function ReviewCard({
             />
           </div>
 
-          <div className={`min-w-0 flex-1 ${popularRank ? "pt-12 sm:pt-0 sm:pr-28" : ""}`}>
-            {popularRank === 1 && (
-              <p className="mb-1 text-[10px] font-black uppercase tracking-[0.18em] text-amber-700 dark:text-amber-300">
-                Lider sharh
-              </p>
-            )}
+          <div className="min-w-0 flex-1">
             <h3 className="text-base font-black tracking-tight text-slate-950 dark:text-white sm:text-[1.05rem]">
               {item.author}
             </h3>
@@ -219,13 +203,15 @@ export default function ReviewCard({
                       className="flex items-center gap-2.5 text-left text-sm font-bold leading-relaxed text-primary transition hover:underline"
                     >
                       <UniversityAvatar university={item.university} size="sm" />
-                      <span>{item.university.name}</span>
+                      <span className="line-clamp-2">
+                        {item.university.short_name || item.university.name}
+                      </span>
                     </button>
                   ) : (
                     <div className="flex items-center gap-2.5">
                       <UniversityAvatar university={item.university} size="sm" />
-                      <p className="text-sm font-bold leading-relaxed text-primary">
-                        {item.university.name}
+                      <p className="line-clamp-2 text-sm font-bold leading-relaxed text-primary">
+                        {item.university.short_name || item.university.name}
                       </p>
                     </div>
                   )}
@@ -265,12 +251,7 @@ export default function ReviewCard({
               {(onLike || onReport || (item.is_mine && onDelete)) && (
                 <div className={`flex flex-wrap items-center gap-2 ${item.text ? "mt-4" : ""}`}>
                   {!hideLike && onLike && (
-                    <LikeButton
-                      item={item}
-                      onLike={onLike}
-                      likeLabel={likeLabel}
-                      helpfulCount={helpfulCount}
-                    />
+                    <HelpfulLikeButton item={item} onLike={onLike} label={likeLabel} shape="rounded" />
                   )}
                   {showHelpfulCount && helpfulCount > 0 && (
                     <span className="inline-flex items-center rounded-xl bg-white px-4 py-2 text-sm font-black text-slate-600 ring-1 ring-slate-200/80 dark:bg-white/5 dark:text-slate-300 dark:ring-white/10">

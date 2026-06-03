@@ -97,7 +97,7 @@ export default function DashboardHomeSection({
   onOpenSection,
   onOpenUniversityChat,
   onOpenUniversityReviews,
-  onOpenComparePair,
+  onOpenCompareSuggestion,
   onOpenPrivateThread,
   getUniversityTypingUsers,
 }) {
@@ -243,23 +243,27 @@ export default function DashboardHomeSection({
           {compareSuggestion && (
             <WidgetCard eyebrow="Taqqoslash" title="Siz uchun taklif">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <div className="flex flex-1 items-center justify-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 dark:border-white/10 dark:bg-white/[0.03]">
-                  <UniversityAvatar university={compareSuggestion.anchor} size="md" />
-                  <span className="text-sm font-black text-slate-400">vs</span>
-                  <UniversityAvatar university={compareSuggestion.other} size="md" />
+                <div className="flex flex-1 flex-wrap items-center justify-center gap-2 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 dark:border-white/10 dark:bg-white/[0.03]">
+                  {compareSuggestion.universities.map((university, index) => (
+                    <span key={university.id} className="inline-flex items-center gap-2">
+                      {index > 0 && <span className="text-xs font-black text-slate-300">·</span>}
+                      <UniversityAvatar university={university} size="md" />
+                      <span className="text-sm font-bold text-slate-800 dark:text-white">
+                        {university.short_name}
+                      </span>
+                    </span>
+                  ))}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="font-black text-slate-900 dark:text-white">
-                    {compareSuggestion.anchor.short_name} va {compareSuggestion.other.short_name}
+                    {compareSuggestion.universities.map((u) => u.short_name).join(" · ")}
                   </p>
                   <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Reyting, sharhlar va chat faolligini yonma-yon solishtiring.
+                    3 ta OTM — reyting, sharhlar va chat faolligini solishtiring.
                   </p>
                   <button
                     type="button"
-                    onClick={() =>
-                      onOpenComparePair(compareSuggestion.anchor, compareSuggestion.other)
-                    }
+                    onClick={() => onOpenCompareSuggestion(compareSuggestion.universities)}
                     className="mt-3 rounded-2xl bg-slate-950 px-4 py-2.5 text-sm font-black text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100"
                   >
                     Taqqoslashni boshlash

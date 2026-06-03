@@ -199,6 +199,7 @@ export default function ReviewWorkspacePanel({
     return (
       <ReviewPanelPlaceholder
         className={className}
+        isStudent={isStudent}
         title={content.placeholderTitle}
         description={content.placeholderDescription}
       />
@@ -356,7 +357,7 @@ export default function ReviewWorkspacePanel({
                       compact
                       variant="filter"
                       title="Bu bahoda sharh topilmadi"
-                      description="Boshqa baho yoki saralash turini tanlab ko'ring."
+                      description="Boshqa filtr yoki saralashni sinab ko'ring."
                       action={{
                         label: "Filtrni tozalash",
                         onClick: () => {

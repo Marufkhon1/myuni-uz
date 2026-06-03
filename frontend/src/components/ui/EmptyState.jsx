@@ -71,9 +71,34 @@ const icons = {
     </svg>
   ),
   filter: (
-    <svg viewBox="0 0 80 80" className="h-20 w-20" fill="none" aria-hidden="true">
-      <circle cx="40" cy="40" r="36" className="fill-slate-100 dark:fill-white/10" />
-      <path d="M28 30h24l-8 12v14l-8 4V42l-8-12Z" className="fill-white stroke-slate-400 stroke-[2.5] dark:fill-slate-900" />
+    <svg viewBox="0 0 96 96" className="h-24 w-24" fill="none" aria-hidden="true">
+      <circle cx="48" cy="48" r="44" className="fill-violet-100/90 dark:fill-violet-400/12" />
+      <circle cx="48" cy="48" r="44" className="stroke-violet-200/80 dark:stroke-violet-400/20" strokeWidth="1.5" />
+      <path
+        d="M32 28h32l-10 15v17l-6 3.5V43L32 28Z"
+        className="fill-white stroke-violet-500 stroke-[2.2] dark:fill-slate-900 dark:stroke-violet-300"
+      />
+      <path d="M36 36h24" className="stroke-violet-300 stroke-[2] dark:stroke-violet-400/60" />
+      <g className="text-amber-400">
+        <path
+          d="M68 34l1.4 2.8 3.1.5-2.2 2.2.5 3.1-2.8-1.5-2.8 1.5.5-3.1-2.2-2.2 3.1-.5L68 34Z"
+          fill="currentColor"
+        />
+        <path
+          d="M24 58l1 2 2.2.3-1.6 1.6.4 2.2-2-.9-2 .9.4-2.2-1.6-1.6 2.2-.3L24 58Z"
+          fill="currentColor"
+          className="opacity-70"
+        />
+      </g>
+      <rect
+        x="58"
+        y="54"
+        width="18"
+        height="18"
+        rx="6"
+        className="fill-primary/10 stroke-primary/30 stroke-[1.5] dark:fill-primary/20"
+      />
+      <path d="M63 63h8M67 59v8" className="stroke-primary stroke-[2] [stroke-linecap:round] dark:stroke-blue-300" />
     </svg>
   ),
 };
@@ -88,12 +113,17 @@ export default function EmptyState({
   className = "",
   children,
 }) {
-  const paddingClass = compact ? "px-5 py-8" : "px-6 py-10 sm:px-8 sm:py-12";
+  const isFilter = variant === "filter";
+  const paddingClass = compact ? "px-5 py-8 sm:px-6 sm:py-9" : "px-6 py-10 sm:px-8 sm:py-12";
   const icon = icons[variant] || icons.search;
-  const actionClassName =
-    "rounded-2xl bg-premium-gradient px-6 py-3 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5";
+  const actionClassName = isFilter
+    ? "inline-flex min-h-10 items-center justify-center rounded-xl bg-primary px-6 py-2.5 text-sm font-black text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900"
+    : "rounded-2xl bg-premium-gradient px-6 py-3 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5";
   const secondaryActionClassName =
     "rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-700 transition hover:border-primary dark:border-white/15 dark:bg-white/[0.04] dark:text-slate-200";
+  const shellClass = isFilter
+    ? "border border-slate-200/80 bg-slate-50/50 dark:border-white/10 dark:bg-white/[0.03]"
+    : "border-dashed border-slate-200 bg-slate-50/80 dark:border-white/10 dark:bg-white/[0.03]";
 
   function renderAction(actionConfig) {
     if (!actionConfig) {
@@ -133,18 +163,30 @@ export default function EmptyState({
 
   return (
     <div
-      className={`grid place-items-center rounded-[1.75rem] border border-dashed border-slate-200 bg-slate-50/80 text-center dark:border-white/10 dark:bg-white/[0.03] ${paddingClass} ${className}`}
+      className={`grid place-items-center rounded-2xl text-center ${shellClass} ${paddingClass} ${className}`}
     >
-      <div className="opacity-95">{icon}</div>
-      <h3 className={`mt-5 font-black text-slate-950 dark:text-white ${compact ? "text-base" : "text-lg sm:text-xl"}`}>
+      <div className="opacity-90">{icon}</div>
+
+      <h3
+        className={`mt-4 font-black text-slate-950 dark:text-white ${
+          compact ? "text-base sm:text-lg" : "text-lg sm:text-xl"
+        }`}
+      >
         {title}
       </h3>
+
       {description && (
-        <p className={`mx-auto mt-2 max-w-md leading-6 text-slate-500 dark:text-slate-400 ${compact ? "text-sm" : "text-sm sm:text-base"}`}>
+        <p
+          className={`mx-auto mt-2 max-w-sm leading-relaxed text-slate-500 dark:text-slate-400 ${
+            compact ? "text-sm" : "text-sm sm:text-base"
+          }`}
+        >
           {description}
         </p>
       )}
+
       {children}
+
       {(action || secondaryAction) && (
         <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
           {renderAction(action)}

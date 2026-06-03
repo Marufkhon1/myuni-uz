@@ -29,6 +29,11 @@ class UniversityCompareTests(TestCase):
             location="Samarqand",
             founded_year=2000,
         )
+        self.uni_c = University.objects.create(
+            name="Compare University C",
+            short_name="CUC",
+            location="Buxoro",
+        )
         other_user = User.objects.create_user(
             username="compare-other@uni.test",
             email="compare-other@uni.test",
@@ -43,15 +48,15 @@ class UniversityCompareTests(TestCase):
         ReviewLike.objects.create(user=self.user, review=self.top_review_a)
         ChatMembership.objects.create(user=self.user, university=self.uni_a)
 
-    def test_compare_returns_two_universities_with_highlights(self):
+    def test_compare_returns_three_universities_with_highlights(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")
         response = self.client.get(
             "/api/universities/compare/",
-            {"ids": f"{self.uni_a.id},{self.uni_b.id}"},
+            {"ids": f"{self.uni_a.id},{self.uni_b.id},{self.uni_c.id}"},
         )
         self.assertEqual(response.status_code, 200)
         payload = response.json()
-        self.assertEqual(len(payload["universities"]), 2)
+        self.assertEqual(len(payload["universities"]), 3)
         self.assertEqual(payload["universities"][0]["review_count"], 2)
         self.assertEqual(payload["universities"][1]["review_count"], 1)
         self.assertTrue(payload["universities"][0]["is_joined"])
@@ -61,7 +66,7 @@ class UniversityCompareTests(TestCase):
         self.assertEqual(payload["universities"][0]["sample_review"]["text"], "A joy")
         self.assertEqual(payload["universities"][0]["sample_review"]["like_count"], 1)
 
-    def test_compare_requires_exactly_two_ids(self):
+    def test_compare_requires_exactly_three_ids(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")
         response = self.client.get(
             "/api/universities/compare/",
@@ -69,13 +74,19 @@ class UniversityCompareTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
-        uni_c = University.objects.create(
-            name="Compare University C",
-            short_name="CUC",
-            location="Buxoro",
+        response = self.client.get(
+            "/api/universities/compare/",
+            {"ids": f"{self.uni_a.id},{self.uni_b.id}"},
+        )
+        self.assertEqual(response.status_code, 400)
+
+        uni_d = University.objects.create(
+            name="Compare University D",
+            short_name="CUD",
+            location="Namangan",
         )
         response = self.client.get(
             "/api/universities/compare/",
-            {"ids": f"{self.uni_a.id},{self.uni_b.id},{uni_c.id}"},
+            {"ids": f"{self.uni_a.id},{self.uni_b.id},{self.uni_c.id},{uni_d.id}"},
         )
         self.assertEqual(response.status_code, 400)

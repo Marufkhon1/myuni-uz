@@ -12,9 +12,9 @@ export default function UniversityRatingStars({ rating }) {
   return (
     <StarRatingDisplay
       rating={rating}
-      className="inline-flex items-center rounded-full bg-white px-3 py-1 shadow-sm dark:bg-white/10"
-      starClassName="text-base leading-none tracking-tight"
-      numericClassName="ml-2 text-xs font-black text-slate-500 dark:text-slate-400"
+      className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 ring-1 ring-amber-200/70 dark:bg-amber-400/10 dark:ring-amber-400/20"
+      starClassName="text-base leading-none text-amber-500 dark:text-amber-400"
+      numericClassName="text-xs font-black tabular-nums text-amber-950 dark:text-amber-50"
     />
   );
 }

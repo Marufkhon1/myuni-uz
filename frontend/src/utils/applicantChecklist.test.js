@@ -65,16 +65,26 @@ describe("applicantChecklist", () => {
     expect(progress.isComplete).toBe(false);
   });
 
-  it("suggests compare pair using profile university", () => {
+  it("suggests three universities using profile university", () => {
     const universities = [
       { id: 1, name: "TATU", short_name: "TATU", average_rating: 4.2 },
       { id: 2, name: "TDTU", short_name: "TDTU", average_rating: 4.8 },
+      { id: 3, name: "WIUT", short_name: "WIUT", average_rating: 4.0 },
     ];
 
     const suggestion = getCompareSuggestion(universities, "TATU");
 
-    expect(suggestion?.anchor.id).toBe(1);
-    expect(suggestion?.other.id).toBe(2);
+    expect(suggestion?.universities).toHaveLength(3);
+    expect(suggestion?.universities[0].id).toBe(1);
+    expect(suggestion?.universities.map((u) => u.id).sort()).toEqual([1, 2, 3]);
+  });
+
+  it("returns null compare suggestion when fewer than three universities", () => {
+    const universities = [
+      { id: 1, name: "TATU", short_name: "TATU" },
+      { id: 2, name: "TDTU", short_name: "TDTU" },
+    ];
+    expect(getCompareSuggestion(universities, "TATU")).toBeNull();
   });
 
   it("returns recent joined chats sorted by last message", () => {

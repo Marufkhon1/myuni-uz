@@ -22,12 +22,18 @@ export function useDashboardData({
 
     async function loadDashboardData() {
       try {
-        const [universityList, joinedIds, threadList, popularList] = await Promise.all([
+        const [universityList, joinedIds, threadList] = await Promise.all([
           getUniversities(),
           getJoinedUniversityIds(),
           getDirectThreads(),
-          getPopularReviews(),
         ]);
+
+        let popularList = [];
+        try {
+          popularList = await getPopularReviews();
+        } catch {
+          // Mashhur sharhlar ixtiyoriy — asosiy kabinet yuklanishiga xalaqit bermasin
+        }
 
         if (!isMounted) {
           return;

@@ -32,7 +32,7 @@ const scenes = [
     id: "compare",
     fig: "03",
     label: "OTMlarni taqqoslash",
-    caption: "Ikki universitetni yonma-yon solishtirish",
+    caption: "Uchta universitetni yonma-yon solishtirish",
     icon: "⚖️",
   },
   {
@@ -315,7 +315,7 @@ function CompareScene({ universities }) {
     return (
       <DemoEmptyState
         title="Taqqoslash uchun yetarli ma'lumot yo'q"
-        description="Kamida ikkita universitet va sharhlar bo'lganda taqqoslash ko'rsatiladi."
+        description="Kamida uchta universitet va sharhlar bo'lganda taqqoslash ko'rsatiladi."
       />
     );
   }

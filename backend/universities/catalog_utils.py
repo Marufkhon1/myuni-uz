@@ -34,7 +34,8 @@ OWNERSHIP_FROM_INSTITUTION = {
     "Xalqaro universitet": University.OwnershipType.INTERNATIONAL,
 }
 
-MAX_COMPARE = 2
+MIN_COMPARE = 3
+MAX_COMPARE = 3
 
 SORT_ORDERS = {
     "name": ("name",),
@@ -96,16 +97,16 @@ def annotated_universities_queryset():
 
 def parse_compare_ids(ids_param):
     if not ids_param:
-        return None, "Taqqoslash uchun aynan 2 ta universitet tanlang."
+        return None, f"Taqqoslash uchun kamida {MIN_COMPARE} ta universitet tanlang."
     try:
         university_ids = [int(value) for value in ids_param.split(",") if value.strip()]
     except ValueError:
         return None, "Universities id lari noto'g'ri."
 
     if len(university_ids) != MAX_COMPARE:
-        return None, "Taqqoslash uchun aynan 2 ta universitet tanlang."
+        return None, f"Taqqoslash uchun aynan {MAX_COMPARE} ta universitet tanlang."
 
-    if len(set(university_ids)) != MAX_COMPARE:
+    if len(set(university_ids)) != len(university_ids):
         return None, "Bir xil universitetni ikki marta tanlab bo'lmaydi."
 
     return university_ids, None

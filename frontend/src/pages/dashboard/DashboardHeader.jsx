@@ -29,7 +29,9 @@ export default function DashboardHeader({
             <p className="text-[10px] font-black uppercase tracking-[0.18em] text-primary sm:text-xs">
               {cabinetEyebrow} · {activeSectionLabel}
             </p>
-            <h1 className="truncate text-lg font-black sm:text-2xl lg:text-3xl">Salom, {displayName}</h1>
+            <h1 className="truncate text-lg font-black text-slate-950 sm:text-2xl lg:text-3xl dark:text-white">
+              Salom, {displayName}
+            </h1>
             <p className="mt-0.5 truncate text-xs font-semibold text-slate-500 dark:text-slate-400">
               {subtitle}
             </p>
@@ -41,7 +43,7 @@ export default function DashboardHeader({
             <button
               type="button"
               onClick={() => notifications.setIsOpen((value) => !value)}
-              className="relative inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-soft transition hover:border-primary hover:text-primary dark:border-white/10 dark:bg-white/10 dark:text-slate-200"
+              className="dashboard-toolbar-btn relative"
               aria-label="Bildirishnomalar"
               aria-expanded={notifications.isOpen}
             >
@@ -66,12 +68,8 @@ export default function DashboardHeader({
             />
           </div>
 
-          <ThemeToggle isDark={isDark} onToggle={onToggleTheme} />
-          <button
-            type="button"
-            onClick={onLogout}
-            className="min-h-11 rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-black shadow-soft transition hover:border-primary hover:text-primary sm:px-5 sm:text-sm dark:border-white/10 dark:bg-white/10"
-          >
+          <ThemeToggle isDark={isDark} onToggle={onToggleTheme} className="!h-11 !w-11 !shadow-soft" />
+          <button type="button" onClick={onLogout} className="dashboard-toolbar-btn !min-w-0 px-4 sm:px-5">
             Chiqish
           </button>
         </div>

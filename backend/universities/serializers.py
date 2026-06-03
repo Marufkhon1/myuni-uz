@@ -36,6 +36,9 @@ def chat_color_for_user(user):
 
 
 class UniversitySerializer(serializers.ModelSerializer):
+    average_rating = serializers.SerializerMethodField()
+    review_count = serializers.SerializerMethodField()
+
     class Meta:
         model = University
         fields = [
@@ -60,7 +63,26 @@ class UniversitySerializer(serializers.ModelSerializer):
             "instagram_url",
             "latitude",
             "longitude",
+            "average_rating",
+            "review_count",
         ]
+
+    def _stats_for_university(self, university):
+        if not university:
+            return None
+        return self.context.get("university_stats", {}).get(university.id)
+
+    def get_average_rating(self, university):
+        stats = self._stats_for_university(university)
+        if not stats:
+            return None
+        return stats.get("average_rating")
+
+    def get_review_count(self, university):
+        stats = self._stats_for_university(university)
+        if not stats:
+            return None
+        return stats.get("review_count")
 
 
 class UniversityChatSerializer(serializers.ModelSerializer):

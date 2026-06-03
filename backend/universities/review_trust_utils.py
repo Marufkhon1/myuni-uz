@@ -140,3 +140,27 @@ def public_review_filter_options():
             {"id": "helpful", "label": "Eng foydali"},
         ],
     }
+
+
+def university_review_stats_map(university_ids):
+    """OTM bo'yicha tasdiqlangan sharhlardan o'rtacha baho va soni."""
+    ids = [uid for uid in university_ids if uid]
+    if not ids:
+        return {}
+
+    rows = (
+        Review.objects.filter(
+            university_id__in=ids,
+            status=Review.Status.APPROVED,
+        )
+        .values("university_id")
+        .annotate(average_rating=Avg("rating"), review_count=Count("id"))
+    )
+    result = {}
+    for row in rows:
+        average = row["average_rating"]
+        result[row["university_id"]] = {
+            "average_rating": round(float(average), 1) if average is not None else None,
+            "review_count": row["review_count"] or 0,
+        }
+    return result

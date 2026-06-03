@@ -259,11 +259,14 @@ export default function DashboardPage({ role }) {
     [changeSectionBase]
   );
 
-  const handleOpenComparePair = useCallback(
-    (anchor, other) => {
+  const handleOpenCompareSuggestion = useCallback(
+    (universities) => {
+      if (!universities?.length) {
+        return;
+      }
       markApplicantChecklistStep("compare");
       setChecklistVersion((value) => value + 1);
-      setComparePrefill({ anchorId: anchor.id, otherId: other.id });
+      setComparePrefill(universities.map((university) => String(university.id)));
       changeSectionBase("compare");
     },
     [changeSectionBase]
@@ -1929,7 +1932,7 @@ export default function DashboardPage({ role }) {
                 onOpenSection={changeSection}
                 onOpenUniversityChat={openUniversityChat}
                 onOpenUniversityReviews={handleOpenUniversityReviews}
-                onOpenComparePair={handleOpenComparePair}
+                onOpenCompareSuggestion={handleOpenCompareSuggestion}
                 onOpenPrivateThread={openPrivateThreadFromHome}
                 getUniversityTypingUsers={getUniversityTypingUsers}
               />
@@ -2110,7 +2113,7 @@ export default function DashboardPage({ role }) {
                 userUniversity={userUniversity}
                 isStudent={isStudent}
                 onViewReviews={selectReviewUniversity}
-                prefillPair={comparePrefill}
+                prefillIds={comparePrefill}
                 onPrefillConsumed={clearComparePrefill}
               />
             )}
