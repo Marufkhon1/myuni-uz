@@ -2,6 +2,7 @@ import UniversityCampusBanner from "../UniversityCampusBanner.jsx";
 import UniversityAvatar from "../UniversityAvatar.jsx";
 import UniversityMetaLine from "../UniversityMetaLine.jsx";
 import UserAvatarWithPresence from "./UserAvatarWithPresence.jsx";
+import ChatAuthorName from "../chat/ChatAuthorName.jsx";
 import ModalOverlay from "../ui/ModalOverlay.jsx";
 
 export default function GroupInfoModal({
@@ -78,12 +79,22 @@ export default function GroupInfoModal({
                         name={member.display_name}
                         avatarUrl={member.avatar_url}
                         size="md"
+                        colorKey={member.chat_color}
+                        userId={member.id}
                         isOnline={member.is_online}
                         lastSeenAt={member.last_seen_at}
                         showPresence={showPresence}
                       />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-black">{member.display_name}</p>
+                        <p className="truncate font-black">
+                          <ChatAuthorName
+                            as="span"
+                            name={member.display_name}
+                            userId={member.id}
+                            colorKey={member.chat_color}
+                            className="text-base font-black"
+                          />
+                        </p>
                         <p className="mt-0.5 truncate text-sm text-primary">
                           {member.is_me ? "Siz" : member.role_label}
                         </p>

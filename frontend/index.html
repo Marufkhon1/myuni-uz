@@ -75,6 +75,18 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>MyUni.uz | Universitetlar reytingi va talabalar sharhlari</title>
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/api/public/sitemap.xml" />
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem("myuni-theme");
+          var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var useDark = saved === "dark" || (!saved && prefersDark);
+          document.documentElement.classList.toggle("dark", useDark);
+        } catch (error) {
+          /* ignore */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -15,7 +15,6 @@ export function useLandingActiveSection(sectionIds) {
   const { pathname, hash } = useLocation();
   const [activeHash, setActiveHash] = useState(() => normalizeNavHash(hash));
   const lockUntilRef = useRef(0);
-  const sectionIdsKey = sectionIds.join("|");
 
   useEffect(() => {
     setActiveHash(normalizeNavHash(hash));
@@ -37,8 +36,8 @@ export function useLandingActiveSection(sectionIds) {
     }
 
     function onScrollOrResize() {
-      cancelAnimationFrame(frameId);
-      frameId = requestAnimationFrame(updateFromScroll);
+      window.cancelAnimationFrame(frameId);
+      frameId = window.requestAnimationFrame(updateFromScroll);
     }
 
     onScrollOrResize();
@@ -49,12 +48,12 @@ export function useLandingActiveSection(sectionIds) {
     const delayed = window.setTimeout(onScrollOrResize, 400);
 
     return () => {
-      cancelAnimationFrame(frameId);
+      window.cancelAnimationFrame(frameId);
       window.clearTimeout(delayed);
       window.removeEventListener("scroll", onScrollOrResize);
       window.removeEventListener("resize", onScrollOrResize);
     };
-  }, [pathname, sectionIdsKey]);
+  }, [pathname, sectionIds]);
 
   function setActiveSection(targetHash, { lockMs = 900 } = {}) {
     const normalized = normalizeNavHash(targetHash);

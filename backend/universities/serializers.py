@@ -506,6 +506,7 @@ class DirectThreadSerializer(serializers.ModelSerializer):
     other_user_avatar_url = serializers.SerializerMethodField()
     other_user_is_online = serializers.SerializerMethodField()
     other_user_last_seen_at = serializers.SerializerMethodField()
+    other_user_chat_color = serializers.SerializerMethodField()
     last_message = serializers.SerializerMethodField()
     unread_count = serializers.SerializerMethodField()
     both_replied = serializers.SerializerMethodField()
@@ -521,6 +522,7 @@ class DirectThreadSerializer(serializers.ModelSerializer):
             "other_user_avatar_url",
             "other_user_is_online",
             "other_user_last_seen_at",
+            "other_user_chat_color",
             "last_message",
             "updated_at",
             "unread_count",
@@ -574,6 +576,12 @@ class DirectThreadSerializer(serializers.ModelSerializer):
             return None
         seen_at = resolve_user_last_seen(other)
         return seen_at.isoformat() if seen_at else None
+
+    def get_other_user_chat_color(self, obj):
+        other = self.get_other_user(obj)
+        if not other:
+            return resolve_chat_color_key(None)
+        return chat_color_for_user(other)
 
     def get_other_user_blocked_by_me(self, obj):
         from .chat_community_utils import user_has_blocked_other

@@ -10,6 +10,14 @@ export async function getUniversityDetail(universityId) {
   return data;
 }
 
+export async function createCompareShareLink(ids) {
+  const idList = Array.isArray(ids) ? ids : [ids];
+  const { data } = await api.post("/universities/compare/share/", {
+    ids: idList.filter(Boolean).join(","),
+  });
+  return data;
+}
+
 export async function getUniversityCompare(ids) {
   const idList = Array.isArray(ids) ? ids : [ids];
   const { data } = await api.get("/universities/compare/", {

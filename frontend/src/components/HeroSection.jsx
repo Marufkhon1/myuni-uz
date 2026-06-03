@@ -82,17 +82,17 @@ export default function HeroSection() {
   const heroStats = buildHeroStats(platformStats);
 
   return (
-    <section id="home" className="relative isolate overflow-hidden pt-28 pb-16 sm:pt-32 sm:pb-20 lg:pt-40 lg:pb-24">
+    <section id="home" className="relative isolate overflow-hidden pt-[calc(5.5rem+env(safe-area-inset-top,0px))] pb-14 sm:pt-32 sm:pb-20 lg:pt-40 lg:pb-24">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_10%,rgba(37,99,235,0.20),transparent_30%),radial-gradient(circle_at_80%_20%,rgba(124,58,237,0.18),transparent_30%)] dark:bg-[radial-gradient(circle_at_20%_10%,rgba(37,99,235,0.28),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(124,58,237,0.22),transparent_32%)]" />
       <div className="absolute left-1/2 top-32 -z-10 h-72 w-72 -translate-x-1/2 rounded-full bg-blue-400/20 blur-3xl" />
 
-      <div className="container-shell grid items-center gap-14 lg:grid-cols-[1.03fr_0.97fr]">
+      <div className="container-shell grid items-center gap-10 sm:gap-12 lg:grid-cols-[1.03fr_0.97fr] lg:gap-14">
         <div className="hero-enter-left mx-auto max-w-4xl text-center lg:mx-0 lg:text-left [animation:hero-fade-up_0.7s_ease-out_both]">
           <span className="eyebrow">To&apos;g&apos;ri universitet, to&apos;g&apos;ri kelajak</span>
-          <h1 className="mt-7 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-7xl dark:text-white">
+          <h1 className="responsive-heading-xl mt-6 text-slate-950 dark:text-white sm:mt-7">
             Eng yaxshi universitetni haqiqiy talabalar tajribasi orqali toping
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl lg:mx-0 dark:text-slate-300">
+          <p className="responsive-prose mx-auto mt-5 max-w-2xl text-slate-600 sm:mt-6 lg:mx-0 dark:text-slate-300">
             Universitetlarni solishtiring, ishonchli sharhlarni o&apos;qing va kelajagingiz
             uchun muhim qaror qabul qilishdan oldin real talabalar fikrini bilib oling.
           </p>
@@ -166,7 +166,7 @@ export default function HeroSection() {
           {floatingCards.map((card) => (
             <article
               key={card.title}
-              className={`hero-float-card absolute hidden w-44 rounded-3xl border border-white/70 bg-white/90 p-4 shadow-soft transition hover:-translate-y-1 hover:border-primary/30 hover:shadow-glow dark:border-white/10 dark:bg-slate-900/95 sm:block ${card.position} ${card.delayClass}`}
+              className={`hero-float-card absolute hidden w-44 rounded-3xl border border-white/70 bg-white/90 p-4 shadow-soft transition hover:-translate-y-1 hover:border-primary/30 hover:shadow-glow dark:border-white/10 dark:bg-slate-900/95 lg:block ${card.position} ${card.delayClass}`}
             >
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                 {card.title}

@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CompareResultsSkeleton } from "../skeletons/DashboardSkeletons.jsx";
 import { useToast } from "../../hooks/useToast.js";
@@ -235,16 +235,6 @@ export default function UniversityCompareSection({
     };
   }, [selectedIds, canCompare, toast]);
 
-  const buildShareUrl = useCallback(() => {
-    if (typeof window === "undefined" || selectedIds.length !== MAX_COMPARE) {
-      return "";
-    }
-    const url = new URL(window.location.href);
-    url.searchParams.set("section", "compare");
-    url.searchParams.set("compare_ids", selectedIds.join(","));
-    return url.toString();
-  }, [selectedIds]);
-
   function clearSelection() {
     setSelectedIds([]);
     setSearch("");
@@ -409,7 +399,6 @@ export default function UniversityCompareSection({
           onToggleFavorite={toggleFavorite}
           onViewReviews={onViewReviews}
           favoriteBusyId={favoriteBusyId}
-          onBuildShareUrl={buildShareUrl}
         />
       )}
     </section>

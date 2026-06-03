@@ -19,18 +19,24 @@ export function getDashboardHomeQuickActions(isStudent) {
       label: isStudent ? "Sharh yozish" : "Sharhlarni ko'rish",
       helper: isStudent ? "Tajribangizni ulashing" : "Talabalar tajribasini o'qing",
       section: "reviews",
+      icon: "✍️",
+      accent: "amber",
     },
     {
       id: "chats",
       label: "Chatga kirish",
       helper: "Guruh va shaxsiy xabarlar",
       section: "chats",
+      icon: "💬",
+      accent: "blue",
     },
     {
       id: "compare",
       label: "Taqqoslash",
       helper: "3 ta OTM jadvali",
       section: "compare",
+      icon: "⚖️",
+      accent: "violet",
     },
   ];
 }

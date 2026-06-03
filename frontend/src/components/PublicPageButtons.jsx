@@ -6,6 +6,9 @@ const defaultBase =
 const navbarBase =
   "inline-flex min-h-9 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c1f4a] active:translate-y-0";
 
+const navbarLightBase =
+  "inline-flex min-h-9 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white active:translate-y-0";
+
 const styles = {
   default: {
     back: `${defaultBase} border border-slate-200 bg-white text-slate-800 shadow-soft hover:border-primary hover:text-primary dark:border-white/15 dark:bg-white/10 dark:text-white dark:hover:border-primary/50`,
@@ -16,6 +19,11 @@ const styles = {
     back: `${navbarBase} border border-white/30 bg-white/10 text-white shadow-none backdrop-blur-sm hover:border-white/50 hover:bg-white/15 hover:text-white`,
     login: `${navbarBase} border border-white/30 bg-white/10 text-white shadow-none backdrop-blur-sm hover:border-white/50 hover:bg-white/15 hover:text-white`,
     signup: `${navbarBase} bg-premium-gradient text-white shadow-[0_8px_28px_rgba(37,99,235,0.45)] hover:shadow-[0_10px_32px_rgba(37,99,235,0.55)]`,
+  },
+  navbarLight: {
+    back: `${navbarLightBase} border border-slate-200 bg-white text-slate-800 shadow-sm hover:border-slate-300 hover:bg-slate-50`,
+    login: `${navbarLightBase} border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-primary hover:text-primary`,
+    signup: `${navbarLightBase} bg-premium-gradient text-white shadow-[0_8px_28px_rgba(37,99,235,0.35)] hover:shadow-[0_10px_32px_rgba(37,99,235,0.45)]`,
   },
 };
 

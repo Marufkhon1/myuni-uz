@@ -5,6 +5,7 @@ from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from universities.public_views import (
+    PublicCompareShareView,
     PublicArticleDetailView,
     PublicArticleListView,
     PublicFAQDetailView,
@@ -14,6 +15,7 @@ from universities.public_views import (
     PublicPlatformStatsView,
     PublicRecentReviewsView,
     PublicReviewFiltersView,
+    PublicTopUniversityReviewsView,
     PublicSharePreviewView,
     PublicSitemapView,
     PublicTopUniversitiesView,
@@ -51,6 +53,11 @@ urlpatterns = [
         "api/public/reviews/recent/",
         PublicRecentReviewsView.as_view(),
         name="public-recent-reviews",
+    ),
+    path(
+        "api/public/reviews/top-universities/",
+        PublicTopUniversityReviewsView.as_view(),
+        name="public-top-university-reviews",
     ),
     path(
         "api/public/universities/map/",
@@ -101,6 +108,11 @@ urlpatterns = [
         "api/public/sitemap.xml",
         PublicSitemapView.as_view(),
         name="public-sitemap",
+    ),
+    path(
+        "api/public/compare/<str:token>/",
+        PublicCompareShareView.as_view(),
+        name="public-compare-share",
     ),
     path(
         "api/public/share-preview/",

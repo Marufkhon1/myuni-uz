@@ -65,6 +65,13 @@ export function getApiErrorMessage(error, fallback) {
   if (typeof data?.detail === "string") {
     return data.detail;
   }
+  if (error.response.status === 404) {
+    const requestUrl = String(error.config?.url || "");
+    if (requestUrl.includes("compare/share")) {
+      return "Taqqoslash havolasi API topilmadi. Backend serverni qayta ishga tushiring (backend papkada: .\\manage.ps1 runserver 127.0.0.1:8000).";
+    }
+    return "So'ralgan manba topilmadi (404).";
+  }
   if (Array.isArray(data?.non_field_errors) && data.non_field_errors[0]) {
     return data.non_field_errors[0];
   }

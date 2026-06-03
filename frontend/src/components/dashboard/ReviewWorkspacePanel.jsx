@@ -367,7 +367,7 @@ export default function ReviewWorkspacePanel({
                       }}
                     />
                   ) : (
-                    <ul className="space-y-3">
+                    <ul className="space-y-4">
                       {renderedReviews.map(({ item, featured }) => (
                         <li key={item.id}>
                           <ReviewCard

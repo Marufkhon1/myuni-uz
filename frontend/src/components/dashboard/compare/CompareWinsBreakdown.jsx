@@ -1,7 +1,18 @@
 import { buildCompareBreakdown } from "../../../utils/compareMath.js";
+import { COMPARE_BREAKDOWN_KEYS, COMPARE_METRICS } from "../../../utils/compareRoleContent.js";
 
-export default function CompareWinsBreakdown({ universities, winCounts }) {
-  const rows = buildCompareBreakdown(universities).filter((row) => row.status !== "insufficient");
+const METRIC_ICONS = Object.fromEntries(
+  COMPARE_METRICS.filter((metric) => metric.icon).map((metric) => [metric.key, metric.icon])
+);
+const BREAKDOWN_KEY_SET = new Set(COMPARE_BREAKDOWN_KEYS);
+
+export default function CompareWinsBreakdown({ universities }) {
+  const rows = buildCompareBreakdown(universities)
+    .filter((row) => BREAKDOWN_KEY_SET.has(row.key) && row.status === "win")
+    .map((row) => ({
+      ...row,
+      icon: row.icon || METRIC_ICONS[row.key],
+    }));
 
   if (!rows.length) {
     return null;
@@ -10,6 +21,15 @@ export default function CompareWinsBreakdown({ universities, winCounts }) {
   const nameById = Object.fromEntries(
     universities.map((university) => [university.id, university.short_name || university.name])
   );
+
+  const visibleWinCounts = Object.fromEntries(universities.map((university) => [university.id, 0]));
+  rows.forEach((row) => {
+    if (row.winnerId != null) {
+      visibleWinCounts[row.winnerId] += 1;
+    }
+  });
+
+  const hasVisibleWins = universities.some((university) => visibleWinCounts[university.id] > 0);
 
   return (
     <div className="rounded-2xl bg-white p-4 ring-1 ring-slate-200/70 dark:bg-white/[0.03] dark:ring-white/10">
@@ -28,22 +48,21 @@ export default function CompareWinsBreakdown({ universities, winCounts }) {
               )}
               {row.label}
             </span>
-            {row.status === "win" ? (
-              <span className="font-black text-emerald-700 dark:text-emerald-400">
-                {nameById[row.winnerId]}
-              </span>
-            ) : (
-              <span className="text-xs font-bold text-slate-400">Durang</span>
-            )}
+            <span className="font-black text-emerald-700 dark:text-emerald-400">
+              {nameById[row.winnerId]}
+            </span>
           </li>
         ))}
       </ul>
-      <p className="mt-3 text-[11px] text-slate-500 dark:text-slate-400">
-        Jami g&apos;alabalar:{" "}
-        {universities
-          .map((university) => `${university.short_name} ${winCounts[university.id] ?? 0}`)
-          .join(" · ")}
-      </p>
+      {hasVisibleWins && (
+        <p className="mt-3 text-[11px] text-slate-500 dark:text-slate-400">
+          Asosiy ko&apos;rsatkichlar:{" "}
+          {universities
+            .filter((university) => visibleWinCounts[university.id] > 0)
+            .map((university) => `${university.short_name} ${visibleWinCounts[university.id]}`)
+            .join(" · ")}
+        </p>
+      )}
     </div>
   );
 }

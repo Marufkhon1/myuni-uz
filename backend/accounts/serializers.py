@@ -74,6 +74,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
     university = serializers.CharField(source="profile.university", read_only=True)
     study_program = serializers.CharField(source="profile.study_program", read_only=True)
     bio = serializers.CharField(source="profile.bio", read_only=True)
+    chat_color = serializers.SerializerMethodField()
     last_seen_at = serializers.SerializerMethodField()
     is_online = serializers.SerializerMethodField()
     blocked_by_me = serializers.SerializerMethodField()
@@ -90,6 +91,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
             "university",
             "study_program",
             "bio",
+            "chat_color",
             "last_seen_at",
             "is_online",
             "blocked_by_me",
@@ -131,6 +133,9 @@ class PublicUserSerializer(serializers.ModelSerializer):
         from universities.chat_community_utils import users_are_blocked
 
         return users_are_blocked(request.user.id, obj.id)
+
+    def get_chat_color(self, obj):
+        return resolve_chat_color_key(getattr(obj, "profile", None))
 
     def get_display_name(self, obj):
         profile = getattr(obj, "profile", None)

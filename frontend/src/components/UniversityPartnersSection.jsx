@@ -40,12 +40,14 @@ function PartnerLogoCard({ university, rankIndex }) {
   return (
     <Link
       to={publicPath}
-      className="partner-logo-card group flex w-44 shrink-0 flex-col items-center rounded-[1.35rem] border border-slate-200 bg-white px-4 py-5 text-center shadow-soft transition dark:border-white/10 dark:bg-white/[0.05]"
+      className="partner-logo-card group flex w-44 shrink-0 flex-col items-center rounded-[1.35rem] border border-slate-200 bg-white px-4 py-5 text-center shadow-soft transition dark:border-white/10 dark:bg-white/[0.05] min-h-[13.5rem]"
     >
-      {isTop && (
+      {isTop ? (
         <span className="mb-2 inline-flex rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-amber-800 dark:bg-amber-400/15 dark:text-amber-200">
           Top {rankIndex + 1}
         </span>
+      ) : (
+        <span className="mb-2 h-[18px]" aria-hidden="true" />
       )}
       <div className="partner-logo-image">
         <UniversityAvatar university={university} size="lg" />
@@ -53,20 +55,29 @@ function PartnerLogoCard({ university, rankIndex }) {
       <p className="mt-3 line-clamp-2 min-h-[2.5rem] text-sm font-black leading-snug text-slate-800 transition group-hover:text-primary dark:text-slate-100">
         {university.short_name || university.name}
       </p>
-      {rating != null && (
-        <StarRatingDisplay
-          rating={Number(rating)}
-          variant="pill"
-          showNumeric
-          className="mt-2 px-2 py-0.5"
-          starClassName="text-[11px]"
-          numericClassName="text-[10px] font-black text-amber-700 dark:text-amber-200"
-        />
-      )}
-      <p className="mt-2 text-[11px] font-semibold leading-4 text-slate-500 dark:text-slate-400">
+      <div className="mt-2 flex min-h-[1.75rem] items-center justify-center">
+        {rating != null ? (
+          <StarRatingDisplay
+            rating={Number(rating)}
+            variant="pill"
+            showNumeric
+            className="px-2 py-0.5"
+            starClassName="text-[11px]"
+            numericClassName="text-[10px] font-black text-amber-700 dark:text-amber-200"
+          />
+        ) : (
+          <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold text-slate-400 dark:bg-white/[0.06] dark:text-slate-500">
+            Hali baho yo&apos;q
+          </span>
+        )}
+      </div>
+      <p className="mt-2 min-h-[1rem] text-[11px] font-semibold leading-4 text-slate-500 dark:text-slate-400">
         {university.review_count > 0 && `${formatLandingStat(university.review_count)} sharh`}
         {university.review_count > 0 && university.member_count > 0 && " · "}
         {university.member_count > 0 && `${formatLandingStat(university.member_count)} a'zo`}
+        {university.review_count <= 0 && university.member_count <= 0 && (
+          <span className="text-slate-400 dark:text-slate-500">Profil ochiq</span>
+        )}
       </p>
     </Link>
   );

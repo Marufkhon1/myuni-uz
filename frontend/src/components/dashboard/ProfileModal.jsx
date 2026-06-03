@@ -62,6 +62,8 @@ export default function ProfileModal({
               name={profileUser.display_name}
               avatarUrl={profileUser.avatar_url}
               size="lg"
+              colorKey={profileUser.chat_color}
+              userId={profileUser.id}
               isOnline={isOwnProfile ? true : profileUser.is_online}
               lastSeenAt={profileUser.last_seen_at}
               showPresence

@@ -16,6 +16,10 @@ export function getProfileContent(isStudent) {
       university: isStudent ? "Universitet" : "Qiziqilgan OTM",
       avatar: "Rasm",
     },
+    firstNameLabel: "Ism",
+    lastNameLabel: "Familiya",
+    firstNameHint: "Chatda ko'rinadigan ismingiz.",
+    lastNameHint: "Ixtiyoriy — yozsangiz avatar 2 harf (masalan AN).",
     avatarOptions: [
       {
         value: "everyone",

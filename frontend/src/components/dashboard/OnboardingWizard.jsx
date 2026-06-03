@@ -6,6 +6,7 @@ import { useToast } from "../../hooks/useToast.js";
 import { updateProfileSettings } from "../../services/authService.js";
 import { getApiErrorMessage } from "../../utils/apiErrors.js";
 import { getInitialOnboardingStep, markOnboardingComplete } from "../../utils/onboardingStorage.js";
+import { buildFullName, splitFullName } from "../../utils/profileName.js";
 import { matchUniversityByText } from "../../utils/universityMatch.js";
 
 const steps = [
@@ -37,7 +38,8 @@ export default function OnboardingWizard({
 }) {
   const toast = useToast();
   const [step, setStep] = useState(0);
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [bio, setBio] = useState("");
   const [universityText, setUniversityText] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -59,7 +61,9 @@ export default function OnboardingWizard({
       return;
     }
     setStep(getInitialOnboardingStep({ profile, joinedChatCount, universities }));
-    setFullName(profile?.full_name || displayName || "");
+    const names = splitFullName(profile?.full_name || displayName || "");
+    setFirstName(names.firstName);
+    setLastName(names.lastName);
     setBio(profile?.bio || "");
     setUniversityText(profile?.university || "");
   }, [open, profile, displayName, joinedChatCount, universities]);
@@ -92,14 +96,14 @@ export default function OnboardingWizard({
   }
 
   async function handleNextFromProfile() {
-    const trimmedName = fullName.trim();
-    if (trimmedName.length < 2) {
+    const trimmedFirstName = firstName.trim();
+    if (trimmedFirstName.length < 2) {
       toast.warning("Ism kamida 2 ta belgidan iborat bo'lishi kerak.");
       return;
     }
     try {
       await saveProfileFields({
-        full_name: trimmedName,
+        full_name: buildFullName(trimmedFirstName, lastName),
         bio: bio.trim(),
       });
       setStep(1);
@@ -178,15 +182,30 @@ export default function OnboardingWizard({
         <div className="space-y-4 px-6 py-5">
           {step === 0 && (
             <>
-              <label className="block">
-                <span className="text-xs font-black uppercase tracking-wide text-slate-400">To&apos;liq ism</span>
-                <input
-                  value={fullName}
-                  onChange={(event) => setFullName(event.target.value)}
-                  className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-base font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white"
-                  placeholder="Masalan: Ali Valiyev"
-                />
-              </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block">
+                  <span className="text-xs font-black uppercase tracking-wide text-slate-400">Ism</span>
+                  <input
+                    value={firstName}
+                    onChange={(event) => setFirstName(event.target.value)}
+                    autoComplete="given-name"
+                    className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-base font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white"
+                    placeholder="Masalan: Alisher"
+                  />
+                </label>
+                <label className="block">
+                  <span className="text-xs font-black uppercase tracking-wide text-slate-400">
+                    Familiya (ixtiyoriy)
+                  </span>
+                  <input
+                    value={lastName}
+                    onChange={(event) => setLastName(event.target.value)}
+                    autoComplete="family-name"
+                    className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-base font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white"
+                    placeholder="Masalan: Qodirov"
+                  />
+                </label>
+              </div>
               <label className="block">
                 <span className="text-xs font-black uppercase tracking-wide text-slate-400">
                   Bio (ixtiyoriy)

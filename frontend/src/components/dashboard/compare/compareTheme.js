@@ -9,7 +9,8 @@ export const COMPARE_SLOT_THEMES = [
     badge: "bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 shadow-md shadow-amber-900/30",
     matrixBadge: "bg-primary text-white",
     statIcon: "bg-primary/15 text-primary",
-    footerHover: "hover:bg-primary hover:text-white",
+    footerHover:
+      "hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white dark:hover:shadow-lg dark:hover:shadow-primary/25",
     bg: "bg-primary/5 dark:bg-primary/10",
     column: "bg-primary/[0.04] dark:bg-primary/[0.08]",
     headerRing: "ring-primary/30",
@@ -24,7 +25,8 @@ export const COMPARE_SLOT_THEMES = [
     badge: "bg-gradient-to-r from-violet-400 to-violet-500 text-white shadow-md shadow-violet-900/30",
     matrixBadge: "bg-violet-600 text-white dark:bg-violet-500",
     statIcon: "bg-violet-500/15 text-violet-600 dark:text-violet-300",
-    footerHover: "hover:bg-violet-600 hover:text-white",
+    footerHover:
+      "hover:bg-violet-600 hover:text-white dark:hover:bg-violet-600 dark:hover:text-white dark:hover:shadow-lg dark:hover:shadow-violet-500/25",
     bg: "bg-violet-50/90 dark:bg-violet-500/10",
     column: "bg-violet-50/50 dark:bg-violet-500/[0.08]",
     headerRing: "ring-violet-400/30",
@@ -39,7 +41,8 @@ export const COMPARE_SLOT_THEMES = [
     badge: "bg-gradient-to-r from-emerald-400 to-emerald-500 text-emerald-950 shadow-md shadow-emerald-900/30",
     matrixBadge: "bg-emerald-600 text-white dark:bg-emerald-500",
     statIcon: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-300",
-    footerHover: "hover:bg-emerald-600 hover:text-white",
+    footerHover:
+      "hover:bg-emerald-600 hover:text-white dark:hover:bg-emerald-600 dark:hover:text-white dark:hover:shadow-lg dark:hover:shadow-emerald-500/25",
     bg: "bg-emerald-50/90 dark:bg-emerald-500/10",
     column: "bg-emerald-50/50 dark:bg-emerald-500/[0.08]",
     headerRing: "ring-emerald-400/30",

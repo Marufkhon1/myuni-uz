@@ -65,6 +65,9 @@ class UniversityCompareTests(TestCase):
         self.assertEqual(payload["highlights"]["rating"]["value"], 4.5)
         self.assertEqual(payload["universities"][0]["sample_review"]["text"], "A joy")
         self.assertEqual(payload["universities"][0]["sample_review"]["like_count"], 1)
+        self.assertIn("message_count", payload["universities"][0])
+        self.assertIn("institution_label", payload["universities"][0])
+        self.assertEqual(payload["universities"][2]["review_count"], 0)
 
     def test_compare_requires_exactly_three_ids(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")

@@ -14,6 +14,7 @@ from .community_views import (
     UserMuteView,
 )
 from .views import (
+    CompareShareCreateView,
     DirectMessageListCreateView,
     DirectMessageReactionView,
     DirectThreadListCreateView,
@@ -100,6 +101,7 @@ urlpatterns = [
     path("reviews/<int:review_id>/", ReviewDetailView.as_view(), name="review-detail"),
     path("reviews/popular/", PopularReviewListView.as_view(), name="popular-review-list"),
     path("reviews/", ReviewListCreateView.as_view(), name="review-list-create"),
+    path("compare/share/", CompareShareCreateView.as_view(), name="university-compare-share"),
     path("compare/", UniversityCompareView.as_view(), name="university-compare"),
     path("community/blocked/", BlockedUsersListView.as_view(), name="blocked-users"),
     path("community/muted/", MutedUsersListView.as_view(), name="muted-users"),

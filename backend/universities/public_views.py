@@ -29,7 +29,7 @@ from .review_trust_utils import (
     generate_review_insight_summary,
     public_review_filter_options,
 )
-from .models import Article, ChatMembership, ChatMessage, FAQItem, Review, University
+from .models import Article, ChatMembership, ChatMessage, CompareShareLink, FAQItem, Review, University
 from .serializers import ReviewSerializer, UniversitySerializer, display_name_for_user
 
 User = get_user_model()
@@ -340,6 +340,50 @@ class PublicRecentReviewsView(APIView):
 
         queryset = queryset[:limit]
         return Response(ReviewSerializer(queryset, many=True, context={"request": request}).data)
+
+
+def _top_university_featured_reviews(limit=3, request=None):
+    """Top universitetlar uchun har biridan eng ko'p like olgan sharh."""
+    user = getattr(request, "user", None) if request else None
+    featured_reviews = []
+
+    for university in _top_universities_queryset(limit=limit):
+        review_qs = (
+            Review.objects.filter(status=Review.Status.APPROVED, university=university)
+            .select_related(
+                "university",
+                "user",
+                "user__profile",
+                "study_direction",
+                "official_reply",
+                "official_reply__author",
+            )
+            .prefetch_related("images")
+        )
+        review_qs = annotate_reviews_with_likes(review_qs, user)
+        review = review_qs.order_by("-like_count", "-created_at").first()
+        if review:
+            featured_reviews.append(review)
+
+    return featured_reviews
+
+
+class PublicTopUniversityReviewsView(APIView):
+    """Landing ijtimoiy isbot: top universitetlarning eng foydali sharhlari."""
+
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            limit = int(request.GET.get("limit", 3))
+        except (TypeError, ValueError):
+            limit = 3
+        limit = max(1, min(limit, 6))
+
+        reviews = _top_university_featured_reviews(limit=limit, request=request)
+        return Response(
+            ReviewSerializer(reviews, many=True, context={"request": request}).data
+        )
 
 
 class PublicReviewFiltersView(APIView):
@@ -799,3 +843,33 @@ class PublicSharePreviewView(APIView):
         path = request.GET.get("path") or "/"
         meta = _build_share_meta_for_path(path)
         return HttpResponse(_render_share_html(meta), content_type="text/html; charset=utf-8")
+
+
+class PublicCompareShareView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, token):
+        share = CompareShareLink.objects.filter(token=token).first()
+        if not share:
+            return Response(
+                {"detail": "Havola topilmadi.", "code": "not_found"},
+                status=404,
+            )
+        if share.is_expired:
+            return Response(
+                {
+                    "detail": "Havola muddati tugagan.",
+                    "code": "expired",
+                    "expires_at": share.expires_at.isoformat(),
+                },
+                status=410,
+            )
+
+        return Response(
+            {
+                **share.snapshot,
+                "expires_at": share.expires_at.isoformat(),
+                "created_at": share.created_at.isoformat(),
+                "token": share.token,
+            }
+        )

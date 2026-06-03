@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import ChatAuthorName from "../chat/ChatAuthorName.jsx";
 import ChatMessageContextMenu from "../chat/ChatMessageContextMenu.jsx";
 import ChatMessageText from "../chat/ChatMessageText.jsx";
 import ChatReactionPicker from "../chat/ChatReactionPicker.jsx";
 import UserAvatarWithPresence from "./UserAvatarWithPresence.jsx";
-import { getAuthorColorClass } from "../../utils/chatAuthorColor.js";
 import { clampContextMenuPosition, getReactionPickerPosition } from "../../utils/chatMenuPosition.js";
 
 const MENU_ESTIMATE = { width: 210, height: 168 };
@@ -34,10 +34,7 @@ export default function ChatMessageBubble({
 }) {
   const isMine = message.is_mine;
   const authorId = message.author_id ?? message.sender_id;
-  const authorColorClass = getAuthorColorClass(
-    authorId,
-    message.author_color ?? message.sender_color
-  );
+  const authorColorKey = message.author_color ?? message.sender_color;
   const [showMenu, setShowMenu] = useState(false);
   const [menuClick, setMenuClick] = useState({ x: 0, y: 0 });
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
@@ -56,6 +53,14 @@ export default function ChatMessageBubble({
   const longPressTimerRef = useRef(null);
 
   const bubbleClass = isMine ? mineClassName : otherClassName;
+  const canReact = typeof onReact === "function";
+  const hasContextMenuActions =
+    canReact ||
+    (isMine && onEdit) ||
+    (isMine && onDelete) ||
+    onPin ||
+    (!isMine && onReport) ||
+    (!isMine && onMute);
   const reactionBadgeClass =
     "inline-flex items-center gap-0.5 rounded-full border border-white/10 bg-[#2b3344] px-1.5 py-0.5 text-xs font-bold text-white shadow-lg ring-1 ring-black/10";
 
@@ -108,12 +113,18 @@ export default function ChatMessageBubble({
   }
 
   function handleMessageContextMenu(event) {
+    if (!hasContextMenuActions) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     openMenuAt(event.clientX, event.clientY);
   }
 
   function handleTouchStart(event) {
+    if (!hasContextMenuActions) {
+      return;
+    }
     if (event.touches.length !== 1) {
       return;
     }
@@ -136,7 +147,7 @@ export default function ChatMessageBubble({
   }
 
   function scheduleHeartTrigger() {
-    if (showMenu || suppressHoverUntilLeaveRef.current) {
+    if (!canReact || showMenu || suppressHoverUntilLeaveRef.current) {
       return;
     }
     if (hoverCloseTimerRef.current) {
@@ -208,6 +219,9 @@ export default function ChatMessageBubble({
   }
 
   function handleReactionPick(emoji) {
+    if (!canReact) {
+      return;
+    }
     clearHoverTimers();
     closeReactionUi();
     suppressHoverUntilLeaveRef.current = true;
@@ -309,6 +323,7 @@ export default function ChatMessageBubble({
     );
 
   const reactionPickerPortal =
+    canReact &&
     showHeartTrigger &&
     !showMenu &&
     createPortal(
@@ -337,9 +352,9 @@ export default function ChatMessageBubble({
     <>
       <article
         ref={rootRef}
-        className={`group relative w-full ${hasReactions ? "mb-5" : showHeartTrigger ? "mb-2" : ""}`}
-        onMouseEnter={handleArticleMouseEnter}
-        onMouseLeave={handleArticleMouseLeave}
+        className={`group relative w-full ${hasReactions ? "mb-5" : showHeartTrigger && canReact ? "mb-2" : ""}`}
+        onMouseEnter={canReact ? handleArticleMouseEnter : undefined}
+        onMouseLeave={canReact ? handleArticleMouseLeave : undefined}
       >
         <div className={`flex w-full gap-2 ${isMine ? "justify-end" : "justify-start"}`}>
           {!isMine && showAuthorAvatar && displayName ? (
@@ -355,6 +370,8 @@ export default function ChatMessageBubble({
                     name={displayName}
                     avatarUrl={authorAvatarUrl}
                     size="sm"
+                    colorKey={message.author_color ?? message.sender_color}
+                    userId={authorId}
                     isOnline={message.author_is_online}
                     lastSeenAt={message.author_last_seen_at}
                     showPresence
@@ -365,6 +382,8 @@ export default function ChatMessageBubble({
                   name={displayName}
                   avatarUrl={authorAvatarUrl}
                   size="sm"
+                  colorKey={message.author_color ?? message.sender_color}
+                  userId={authorId}
                   isOnline={message.author_is_online}
                   lastSeenAt={message.author_last_seen_at}
                   showPresence
@@ -385,22 +404,28 @@ export default function ChatMessageBubble({
               className={`relative px-3 py-2 shadow-sm ${bubbleClass} ${
                 isMine ? "rounded-2xl rounded-br-md" : "rounded-2xl rounded-bl-md"
               } ${isPinned ? "ring-2 ring-amber-300/80 dark:ring-amber-400/50" : ""} ${
-                showHeartTrigger ? "ring-2 ring-white/20" : ""
+                showHeartTrigger && canReact ? "ring-2 ring-white/20" : ""
               }`}
             >
               {!isMine && displayName && (
                 onAuthorClick && authorId ? (
-                  <button
+                  <ChatAuthorName
+                    as="button"
                     type="button"
-                    onClick={() =>
-                      onAuthorClick(authorId, authorPrefetch)
-                    }
-                    className={`text-left text-[11px] font-bold tracking-wide transition hover:underline ${authorColorClass}`}
-                  >
-                    {displayName}
-                  </button>
+                    name={displayName}
+                    userId={authorId}
+                    colorKey={authorColorKey}
+                    onClick={() => onAuthorClick(authorId, authorPrefetch)}
+                    className="block text-left text-xs transition hover:underline"
+                  />
                 ) : (
-                  <p className={`text-[11px] font-bold tracking-wide ${authorColorClass}`}>{displayName}</p>
+                  <ChatAuthorName
+                    as="p"
+                    name={displayName}
+                    userId={authorId}
+                    colorKey={authorColorKey}
+                    className="text-xs"
+                  />
                 )
               )}
               <p
@@ -424,22 +449,35 @@ export default function ChatMessageBubble({
 
             {hasReactions && (
               <div className={`absolute z-10 flex flex-wrap gap-1 ${reactionCornerClass}`}>
-                {message.reactions.map((reaction) => (
-                  <button
-                    key={reaction.emoji}
-                    type="button"
-                    disabled={isReacting}
-                    onClick={() => handleReactionPick(reaction.emoji)}
-                    className={`${reactionBadgeClass} transition hover:scale-105 disabled:opacity-50 ${
-                      reaction.reacted_by_me ? "ring-2 ring-primary/60" : ""
-                    }`}
-                  >
-                    <span className="text-base leading-none">{reaction.emoji}</span>
-                    {reaction.count > 1 && (
-                      <span className="tabular-nums text-[10px] opacity-90">{reaction.count}</span>
-                    )}
-                  </button>
-                ))}
+                {message.reactions.map((reaction) =>
+                  canReact ? (
+                    <button
+                      key={reaction.emoji}
+                      type="button"
+                      disabled={isReacting}
+                      onClick={() => handleReactionPick(reaction.emoji)}
+                      className={`${reactionBadgeClass} transition hover:scale-105 disabled:opacity-50 ${
+                        reaction.reacted_by_me ? "ring-2 ring-primary/60" : ""
+                      }`}
+                    >
+                      <span className="text-base leading-none">{reaction.emoji}</span>
+                      {reaction.count > 1 && (
+                        <span className="tabular-nums text-[10px] opacity-90">{reaction.count}</span>
+                      )}
+                    </button>
+                  ) : (
+                    <span
+                      key={reaction.emoji}
+                      className={`${reactionBadgeClass} cursor-default`}
+                      aria-label={`${reaction.emoji} reaksiyasi`}
+                    >
+                      <span className="text-base leading-none">{reaction.emoji}</span>
+                      {reaction.count > 1 && (
+                        <span className="tabular-nums text-[10px] opacity-90">{reaction.count}</span>
+                      )}
+                    </span>
+                  )
+                )}
               </div>
             )}
           </div>

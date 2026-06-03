@@ -54,7 +54,7 @@ export default function TopUniversitiesSection() {
         <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div className="max-w-2xl">
             <span className="eyebrow">Top universitetlar</span>
-            <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl dark:text-white">
+            <h2 className="responsive-heading-lg mt-5 text-slate-950 dark:text-white">
               Talabalar eng ko'p qiziqadigan universitetlarni ko'ring.
             </h2>
           </div>
@@ -81,7 +81,7 @@ export default function TopUniversitiesSection() {
         )}
 
         {!isFetching && universities.length > 0 && (
-          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {universities.map((university, index) => {
               const publicPath = buildUniversityPublicPath(university);
 

@@ -4,6 +4,20 @@ export const OWNERSHIP_LABELS = {
   international: "Xalqaro",
 };
 
+export function formatOwnershipLabel(university) {
+  if (!university) {
+    return "";
+  }
+  return (
+    university.ownership_label ||
+    university.ownership_type_label ||
+    OWNERSHIP_LABELS[university.ownership_type] ||
+    university.institution_label ||
+    university.institution_type ||
+    ""
+  );
+}
+
 export const DEFAULT_CATALOG_FILTERS = {
   q: "",
   city: "",

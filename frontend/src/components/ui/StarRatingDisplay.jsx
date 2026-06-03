@@ -31,13 +31,13 @@ export function FractionalStars({
         }
 
         return (
-          <span key={index} className={`relative inline-block leading-none ${starClassName}`}>
+          <span key={index} className={`relative inline-block w-[1em] text-center leading-none ${starClassName}`}>
             <span className={emptyStarClassName}>★</span>
             <span
-              className={`absolute inset-y-0 left-0 overflow-hidden whitespace-nowrap ${filledStarClassName}`}
+              className={`absolute inset-y-0 left-0 overflow-hidden text-center ${filledStarClassName}`}
               style={{ width: `${fill * 100}%` }}
             >
-              ★
+              <span className="inline-block w-[1em]">★</span>
             </span>
           </span>
         );
@@ -51,6 +51,8 @@ export default function StarRatingDisplay({
   max = 5,
   className = "",
   starClassName = "",
+  filledStarClassName,
+  emptyStarClassName,
   showNumeric = true,
   numericClassName = "ml-2 text-xs font-black text-slate-500 dark:text-slate-400",
   emptyLabel = "Baho berilmagan",
@@ -67,6 +69,13 @@ export default function StarRatingDisplay({
   const numeric = Number(rating);
   const label = formatStarRatingLabel(numeric, { max, emptyLabel });
   const formatted = numeric % 1 === 0 ? String(numeric) : numeric.toFixed(1);
+  const starsProps = {
+    rating: numeric,
+    max,
+    starClassName,
+    ...(filledStarClassName ? { filledStarClassName } : {}),
+    ...(emptyStarClassName ? { emptyStarClassName } : {}),
+  };
 
   if (variant === "pill") {
     return (
@@ -75,7 +84,24 @@ export default function StarRatingDisplay({
         role="img"
         aria-label={label}
       >
-        <FractionalStars rating={numeric} max={max} starClassName={starClassName} />
+        <FractionalStars {...starsProps} />
+        {showNumeric && (
+          <span className={numericClassName} aria-hidden="true">
+            {formatted}/{max}
+          </span>
+        )}
+      </span>
+    );
+  }
+
+  if (variant === "card") {
+    return (
+      <span
+        className={`inline-flex flex-col items-center gap-0.5 rounded-xl bg-white px-2.5 py-1 ring-1 ring-slate-200/80 ${className}`}
+        role="img"
+        aria-label={label}
+      >
+        <FractionalStars {...starsProps} />
         {showNumeric && (
           <span className={numericClassName} aria-hidden="true">
             {formatted}/{max}
@@ -87,7 +113,7 @@ export default function StarRatingDisplay({
 
   return (
     <span className={`inline-flex items-center ${className}`} role="img" aria-label={label}>
-      <FractionalStars rating={numeric} max={max} starClassName={starClassName} />
+      <FractionalStars {...starsProps} />
       {showNumeric && (
         <span className={numericClassName} aria-hidden="true">
           {formatted}/{max}

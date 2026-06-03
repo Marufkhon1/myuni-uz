@@ -31,6 +31,7 @@ import FAQDetailPage from "./pages/FAQDetailPage.jsx";
 import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
 import VerifyEmailPendingPage from "./pages/VerifyEmailPendingPage.jsx";
 import TrustSafetyPage from "./pages/TrustSafetyPage.jsx";
+import CompareSharePage from "./pages/CompareSharePage.jsx";
 import ModeratorDashboardPage from "./pages/ModeratorDashboardPage.jsx";
 
 export default function App() {
@@ -57,6 +58,7 @@ export default function App() {
         <Route path="/universitet/:slug" element={<UniversityPublicPage />} />
         <Route path="/universitetlar" element={<UniversitiesDirectoryPage />} />
         <Route path="/universitetlar/xarita" element={<UniversitiesMapPage />} />
+        <Route path="/taqqoslash/:token" element={<CompareSharePage />} />
         <Route path="/savollar-javob" element={<FAQPage />} />
         <Route path="/savollar-javob/:slug" element={<FAQDetailPage />} />
         <Route path="/foydalanish-shartlari" element={<LegalDocumentPage />} />

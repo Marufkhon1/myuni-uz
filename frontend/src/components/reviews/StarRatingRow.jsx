@@ -167,22 +167,14 @@ export default function StarRatingRow({
 
               onMouseEnter={() => setHover(star)}
 
-              className={`grid shrink-0 place-items-center transition-all duration-200 ${sizing.btn} ${
-
+              className={`grid shrink-0 place-items-center transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${sizing.btn} ${
                 isMinimal
-
                   ? filled
-
-                    ? "scale-110 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.45)]"
-
-                    : "text-slate-300 hover:scale-110 hover:text-amber-300 dark:text-slate-600"
-
+                    ? "scale-110 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]"
+                    : "rounded-xl text-slate-300 hover:scale-105 hover:text-amber-300 dark:text-slate-500 dark:hover:text-amber-300"
                   : filled
-
-                    ? "scale-105 rounded-2xl bg-amber-50 text-amber-500 shadow-sm ring-1 ring-amber-200/80 dark:bg-amber-400/15 dark:ring-amber-400/30"
-
-                    : "rounded-2xl bg-slate-50 text-slate-300 ring-1 ring-slate-200/60 hover:text-amber-300 dark:bg-white/[0.04] dark:ring-white/10"
-
+                    ? "scale-105 rounded-xl bg-gradient-to-br from-amber-50 to-amber-100/80 text-amber-500 shadow-[0_4px_14px_-4px_rgba(251,191,36,0.55)] ring-1 ring-amber-200/90 dark:from-amber-400/20 dark:to-amber-500/10 dark:text-amber-400 dark:ring-amber-400/35"
+                    : "rounded-xl bg-slate-50 text-slate-300 ring-1 ring-slate-200/70 hover:-translate-y-0.5 hover:bg-amber-50/50 hover:text-amber-300 hover:ring-amber-200/60 dark:bg-white/[0.04] dark:text-slate-500 dark:ring-white/10 dark:hover:bg-amber-400/10 dark:hover:text-amber-300"
               }`}
 
               aria-label={`${star} yulduz`}

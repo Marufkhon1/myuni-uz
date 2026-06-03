@@ -92,7 +92,7 @@ export function resolveCompareHighlight(universities, highlights, metricKey) {
   };
 }
 
-export function numericWinner(values) {
+export function numericWinner(values, { higherIsBetter = true } = {}) {
   const entries = values
     .map((value, index) => ({
       value: value == null || value === "" ? Number.NaN : Number(value),
@@ -104,12 +104,43 @@ export function numericWinner(values) {
     return null;
   }
 
-  const best = entries.reduce((winner, entry) => (entry.value > winner.value ? entry : winner));
+  const best = entries.reduce((winner, entry) => {
+    if (higherIsBetter) {
+      return entry.value > winner.value ? entry : winner;
+    }
+    return entry.value < winner.value ? entry : winner;
+  });
   const tied = entries.filter((entry) => entry.value === best.value);
   if (tied.length > 1) {
     return null;
   }
   return best.index;
+}
+
+export function hasCompareValue(value, allowZero = false) {
+  if (value == null || value === "" || value === "—") {
+    return false;
+  }
+  if (typeof value === "number" && value === 0 && !allowZero) {
+    return false;
+  }
+  return true;
+}
+
+export function shouldShowCompareMetric(universities, metric) {
+  if (metric.alwaysShow) {
+    return true;
+  }
+  return universities.some((university) =>
+    hasCompareValue(university[metric.key], Boolean(metric.allowZero))
+  );
+}
+
+export function metricMaxValue(values) {
+  const numbers = values
+    .map((value) => (value == null || value === "" ? Number.NaN : Number(value)))
+    .filter((value) => !Number.isNaN(value));
+  return numbers.length ? Math.max(...numbers) : 0;
 }
 
 function getMetricValues(universities, metricKey, isAspect = false) {
@@ -119,7 +150,7 @@ function getMetricValues(universities, metricKey, isAspect = false) {
   return universities.map((university) => university[metricKey]);
 }
 
-function evaluateRow(universities, values) {
+function evaluateRow(universities, values, higherIsBetter = true) {
   const numericValues = values.map((value) =>
     value == null || value === "" ? Number.NaN : Number(value)
   );
@@ -129,7 +160,7 @@ function evaluateRow(universities, values) {
     return { status: "insufficient", winnerId: null };
   }
 
-  const winnerIndex = numericWinner(values);
+  const winnerIndex = numericWinner(values, { higherIsBetter });
   if (winnerIndex != null) {
     return { status: "win", winnerId: universities[winnerIndex].id };
   }
@@ -142,13 +173,16 @@ export function buildCompareBreakdown(universities) {
   const rows = [];
 
   COMPARE_METRICS.forEach((metric) => {
+    if (metric.text) {
+      return;
+    }
     const values = getMetricValues(universities, metric.key, false);
     rows.push({
       key: metric.key,
       label: metric.label,
       kind: "metric",
       values,
-      ...evaluateRow(universities, values),
+      ...evaluateRow(universities, values, metric.higherIsBetter !== false),
     });
   });
 
@@ -303,7 +337,7 @@ export function buildCompareSummary(universities) {
   };
 }
 
-export function getCompareLeader(universities, winCounts) {
+export function getCompareLeader(universities) {
   return buildCompareSummary(universities).leader;
 }
 

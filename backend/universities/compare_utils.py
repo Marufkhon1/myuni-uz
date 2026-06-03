@@ -1,7 +1,15 @@
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, Sum
 
-from .models import ChatMembership, Review, University, UniversityFavorite
-
+from .models import (
+    AdmissionCycle,
+    ChatMembership,
+    ChatMessage,
+    Review,
+    ReviewLike,
+    StudyDirection,
+    University,
+    UniversityFavorite,
+)
 
 from .review_trust_utils import aspect_averages_for_university
 
@@ -53,6 +61,82 @@ def build_compare_row(university, joined_ids, favorite_ids):
             "like_count": top_review.like_count,
         }
 
+    faculty_count = university.faculties.count()
+    direction_count = StudyDirection.objects.filter(faculty__university=university).count()
+    total_likes = ReviewLike.objects.filter(
+        review__university=university,
+        review__status=Review.Status.APPROVED,
+    ).count()
+
+    latest_cycle = (
+        university.admission_cycles.filter(status=AdmissionCycle.Status.PUBLISHED)
+        .order_by("-academic_year")
+        .first()
+    )
+    grant_quota_total = None
+    contract_quota_total = None
+    min_admission_score = None
+    if latest_cycle:
+        quota_agg = latest_cycle.quotas.aggregate(
+            grant_total=Sum("grant_quota"),
+            contract_total=Sum("contract_quota"),
+        )
+        grant_quota_total = quota_agg["grant_total"] or 0
+        contract_quota_total = quota_agg["contract_total"] or 0
+        min_scores = [
+            quota.min_score
+            for quota in latest_cycle.quotas.all()
+            if quota.min_score is not None
+        ]
+        if min_scores:
+            min_admission_score = float(min(min_scores))
+
+    ownership_label = (
+        university.get_ownership_type_display()
+        if university.ownership_type
+        else (university.institution_type or "")
+    )
+    institution_label = university.institution_type or ownership_label or ""
+
+    message_count = ChatMessage.objects.filter(
+        university=university,
+        is_deleted=False,
+    ).count()
+    favorites_count = UniversityFavorite.objects.filter(university=university).count()
+
+    admission_year = latest_cycle.academic_year if latest_cycle else None
+    max_admission_score = None
+    if latest_cycle:
+        max_scores = [
+            float(quota.min_score)
+            for quota in latest_cycle.quotas.all()
+            if quota.min_score is not None
+        ]
+        if max_scores:
+            max_admission_score = max(max_scores)
+
+    distribution = rating_distribution(university.id)
+    review_total = stats["review_count"] or 0
+    high_ratings = distribution.get("4", 0) + distribution.get("5", 0)
+    positive_review_percent = (
+        round(100 * high_ratings / review_total) if review_total else None
+    )
+
+    aspects = aspect_averages_for_university(university.id)
+    aspect_values = [value for value in aspects.values() if value is not None]
+    composite_aspect_score = (
+        round(sum(aspect_values) / len(aspect_values), 1) if aspect_values else None
+    )
+
+    website_label = ""
+    if university.website:
+        website_label = (
+            university.website.replace("https://", "")
+            .replace("http://", "")
+            .replace("www.", "")
+            .strip("/")
+        )
+
     return {
         **{
             field: getattr(university, field)
@@ -77,9 +161,35 @@ def build_compare_row(university, joined_ids, favorite_ids):
         "rating_distribution": rating_distribution(university.id),
         "aspect_averages": aspect_averages_for_university(university.id),
         "sample_review": sample_review,
+        "faculty_count": faculty_count,
+        "direction_count": direction_count,
+        "total_likes": total_likes,
+        "grant_quota_total": grant_quota_total,
+        "contract_quota_total": contract_quota_total,
+        "min_admission_score": min_admission_score,
+        "ownership_label": ownership_label,
+        "institution_label": institution_label,
+        "message_count": message_count,
+        "favorites_count": favorites_count,
+        "admission_year": admission_year,
+        "max_admission_score": max_admission_score,
+        "positive_review_percent": positive_review_percent,
+        "composite_aspect_score": composite_aspect_score,
+        "website_label": website_label,
+        "has_website": bool(university.website),
         "is_joined": university.id in joined_ids,
         "is_favorited": university.id in favorite_ids,
     }
+
+
+def build_public_compare_snapshot(rows, highlights):
+    public_rows = []
+    for row in rows:
+        public_row = {**row}
+        public_row["is_joined"] = False
+        public_row["is_favorited"] = False
+        public_rows.append(public_row)
+    return {"universities": public_rows, "highlights": highlights}
 
 
 def pick_highlight(metric_key, rows, higher_is_better=True):

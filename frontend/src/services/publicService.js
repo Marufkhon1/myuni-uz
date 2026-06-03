@@ -58,6 +58,11 @@ export async function getPublicRecentReviews(params = {}) {
   return Array.isArray(data) ? data : data?.results ?? [];
 }
 
+export async function getPublicTopUniversityReviews(limit = 3) {
+  const { data } = await api.get("/public/reviews/top-universities/", { params: { limit } });
+  return Array.isArray(data) ? data : data?.results ?? [];
+}
+
 export async function getPublicReviewFilters() {
   const { data } = await api.get("/public/reviews/filters/");
   return data;
@@ -100,5 +105,10 @@ export async function getPublicFaqItems() {
 
 export async function getPublicFaqDetail(slug) {
   const { data } = await api.get(`/public/faq/${slug}/`);
+  return data;
+}
+
+export async function getPublicCompareShare(token) {
+  const { data } = await api.get(`/public/compare/${token}/`);
   return data;
 }

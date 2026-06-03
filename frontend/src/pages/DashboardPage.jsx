@@ -187,6 +187,8 @@ export default function DashboardPage({ role }) {
   const [isReportSubmitting, setIsReportSubmitting] = useState(false);
   const [messageDeleteTarget, setMessageDeleteTarget] = useState(null);
   const [isMessageDeleting, setIsMessageDeleting] = useState(false);
+  const [reviewDeleteTarget, setReviewDeleteTarget] = useState(null);
+  const [isReviewDeleting, setIsReviewDeleting] = useState(false);
   const [mobileChatScreen, setMobileChatScreen] = useState("list");
   const [mobileReviewScreen, setMobileReviewScreen] = useState("list");
   const [groupTypingUsers, setGroupTypingUsers] = useState([]);
@@ -1665,6 +1667,8 @@ export default function DashboardPage({ role }) {
           name={thread.other_user_name}
           avatarUrl={thread.other_user_avatar_url}
           size="sm"
+          colorKey={thread.other_user_chat_color}
+          userId={thread.other_user_id}
           isOnline={thread.other_user_is_online}
           lastSeenAt={thread.other_user_last_seen_at}
           showPresence
@@ -1815,21 +1819,30 @@ export default function DashboardPage({ role }) {
     }
   }
 
-  async function handleDeleteReview(reviewId) {
-    if (!window.confirm("Sharhni o'chirishni tasdiqlaysizmi?")) {
+  function requestDeleteReview(reviewId) {
+    setReviewDeleteTarget(reviewId);
+  }
+
+  async function confirmReviewDelete() {
+    if (!reviewDeleteTarget) {
       return;
     }
+
+    setIsReviewDeleting(true);
     try {
-      await deleteReview(reviewId);
-      setReviews((current) => current.filter((item) => item.id !== reviewId));
-      setPopularReviews((current) => current.filter((item) => item.id !== reviewId));
+      await deleteReview(reviewDeleteTarget);
+      setReviews((current) => current.filter((item) => item.id !== reviewDeleteTarget));
+      setPopularReviews((current) => current.filter((item) => item.id !== reviewDeleteTarget));
       if (reviewUniversity) {
         const detail = await getUniversityDetail(reviewUniversity);
         setReviewUniversityDetail(detail);
       }
+      setReviewDeleteTarget(null);
       toast.success("Sharh o'chirildi.");
     } catch (requestError) {
       toast.error(getApiErrorMessage(requestError, "Sharhni o'chirib bo'lmadi. Qayta urinib ko'ring."));
+    } finally {
+      setIsReviewDeleting(false);
     }
   }
 
@@ -1908,8 +1921,8 @@ export default function DashboardPage({ role }) {
           />
 
           <div
-            className={`min-h-[calc(100vh-9rem)] pb-24 sm:pb-24 lg:pb-8 ${
-              isWideChatLayout ? "p-3 sm:p-4 lg:px-6 lg:py-6" : "p-4 sm:p-6 lg:p-8"
+            className={`dashboard-page-shell min-h-[calc(100dvh-9rem)] pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:pb-8 ${
+              isWideChatLayout ? "p-3 sm:p-4 md:p-5 lg:px-6 lg:py-6" : "p-3 sm:p-5 md:p-6 lg:p-8"
             }`}
           >
             {isDataLoading ? (
@@ -2086,7 +2099,7 @@ export default function DashboardPage({ role }) {
                 onReviewTextChange={setReviewText}
                 isReviewSubmitting={isReviewSubmitting}
                 onLike={handleReviewLike}
-                onDeleteReview={isStudent ? handleDeleteReview : undefined}
+                onDeleteReview={isStudent ? requestDeleteReview : undefined}
                 onReportReview={(review) => setReviewReportTarget(review)}
                 onOpenSection={changeSection}
                 onOpenChat={openChatFromReviewUniversity}
@@ -2143,6 +2156,22 @@ export default function DashboardPage({ role }) {
         onClose={() => setReviewReportTarget(null)}
         onSubmit={submitReviewReport}
         isSubmitting={isReviewReportSubmitting}
+      />
+
+      <ConfirmDialog
+        open={Boolean(reviewDeleteTarget)}
+        title="Sharhni o'chirish"
+        description="Bu sharhni butunlay o'chirmoqchimisiz? Amalni ortga qaytarib bo'lmaydi."
+        confirmLabel="Ha"
+        cancelLabel="Yo'q"
+        onClose={() => {
+          if (!isReviewDeleting) {
+            setReviewDeleteTarget(null);
+          }
+        }}
+        onConfirm={confirmReviewDelete}
+        isSubmitting={isReviewDeleting}
+        tone="danger"
       />
 
       <ConfirmDialog

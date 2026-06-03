@@ -17,6 +17,17 @@ export function buildDefaultAspectRatings() {
   };
 }
 
+export function getFilledReviewAspects(source) {
+  if (!source) {
+    return [];
+  }
+  return REVIEW_ASPECTS.filter((aspect) => (source[aspect.id] ?? source[aspect.key]) != null);
+}
+
+export function hasReviewAspectRatings(source) {
+  return getFilledReviewAspects(source).length > 0;
+}
+
 export function aspectRatingsComplete(ratings) {
   return REVIEW_ASPECTS.every((aspect) => ratings[aspect.id] >= 1 && ratings[aspect.id] <= 5);
 }

@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from accounts.notifications_service import notify_review_liked, notify_review_pending
 from accounts.rate_limit_utils import rate_limit_response
 from accounts.avatar_access import avatar_url_for_viewer
+from accounts.chat_colors import resolve_chat_color_key
 from accounts.presence import is_user_online, resolve_user_last_seen
 from accounts.profile_access import can_view_chat_profile
 from accounts.permissions import CanWriteStudentContent
@@ -24,7 +25,8 @@ from .chat_community_utils import (
     filter_university_messages_for_viewer,
     user_has_blocked_other,
 )
-from .compare_utils import build_compare_row, build_highlights
+from .compare_utils import build_compare_row, build_highlights, build_public_compare_snapshot
+from .compare_share_utils import compare_share_expires_at, generate_compare_share_token
 from .chat_permissions import require_university_member, user_is_university_member
 from .chat_utils import annotate_direct_threads_both_replied, get_or_create_direct_thread
 from .unread_utils import mark_direct_thread_read, mark_university_read
@@ -38,6 +40,7 @@ from .models import (
     ChatMembership,
     ChatMessage,
     ChatMessageReaction,
+    CompareShareLink,
     DirectMessage,
     DirectMessageReaction,
     DirectThread,
@@ -150,6 +153,7 @@ class UniversityMembersView(APIView):
                 "role_label": profile.get_role_display() if profile else "",
                 "university": (profile.university if profile else "") or "",
                 "bio": (profile.bio if profile else "") or "",
+                "chat_color": resolve_chat_color_key(profile),
                 "is_me": membership.user.id == request.user.id,
                 "can_open_profile": can_open_profile,
                 "has_joined_chat": True,
@@ -206,6 +210,61 @@ class UniversityCompareView(APIView):
         ]
 
         return Response({"universities": rows, "highlights": build_highlights(rows)})
+
+
+class CompareShareCreateView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        ids_param = request.data.get("ids", "")
+        university_ids, error = parse_compare_ids(ids_param)
+        if error:
+            return Response({"detail": error}, status=status.HTTP_400_BAD_REQUEST)
+
+        universities = list(University.objects.filter(pk__in=university_ids))
+        if len(universities) != len(university_ids):
+            return Response(
+                {"detail": "Tanlangan universitetlardan biri topilmadi."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        order = {university_id: index for index, university_id in enumerate(university_ids)}
+        universities.sort(key=lambda item: order[item.id])
+
+        joined_ids = set(
+            ChatMembership.objects.filter(user=request.user).values_list(
+                "university_id", flat=True
+            )
+        )
+        favorite_ids = set(
+            UniversityFavorite.objects.filter(user=request.user).values_list(
+                "university_id", flat=True
+            )
+        )
+
+        rows = [
+            build_compare_row(university, joined_ids, favorite_ids)
+            for university in universities
+        ]
+        highlights = build_highlights(rows)
+        snapshot = build_public_compare_snapshot(rows, highlights)
+        expires_at = compare_share_expires_at()
+
+        share = CompareShareLink.objects.create(
+            token=generate_compare_share_token(),
+            created_by=request.user,
+            snapshot=snapshot,
+            expires_at=expires_at,
+        )
+
+        return Response(
+            {
+                "token": share.token,
+                "expires_at": share.expires_at.isoformat(),
+                "university_ids": university_ids,
+            },
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class UniversityDetailView(APIView):

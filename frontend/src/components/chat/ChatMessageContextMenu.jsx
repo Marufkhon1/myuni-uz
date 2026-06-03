@@ -21,25 +21,27 @@ export default function ChatMessageContextMenu({
       role="menu"
       onMouseDown={(event) => event.stopPropagation()}
     >
-      <div className="flex items-center gap-0.5 border-b border-white/10 px-2 py-2">
-        {CHAT_REACTIONS.map((emoji) => (
-          <button
-            key={emoji}
-            type="button"
-            disabled={isReacting}
-            onClick={() => {
-              onReact(message, emoji);
-              onClose();
-            }}
-            className={`grid h-8 w-8 place-items-center rounded-lg text-lg transition hover:bg-white/10 disabled:opacity-50 ${
-              message.my_reaction === emoji ? "bg-white/15" : ""
-            }`}
-            aria-label={`Reaksiya ${emoji}`}
-          >
-            {emoji}
-          </button>
-        ))}
-      </div>
+      {onReact ? (
+        <div className="flex items-center gap-0.5 border-b border-white/10 px-2 py-2">
+          {CHAT_REACTIONS.map((emoji) => (
+            <button
+              key={emoji}
+              type="button"
+              disabled={isReacting}
+              onClick={() => {
+                onReact(message, emoji);
+                onClose();
+              }}
+              className={`grid h-8 w-8 place-items-center rounded-lg text-lg transition hover:bg-white/10 disabled:opacity-50 ${
+                message.my_reaction === emoji ? "bg-white/15" : ""
+              }`}
+              aria-label={`Reaksiya ${emoji}`}
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       <div className="py-1">
         {isMine && onEdit && (

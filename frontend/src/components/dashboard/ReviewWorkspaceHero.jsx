@@ -16,9 +16,14 @@ function formatDecimalRating(value) {
   return num.toFixed(1);
 }
 
-function MetaPill({ children }) {
+function MetaPill({ children, icon }) {
   return (
-    <span className="inline-flex items-center rounded-full bg-white/10 px-2.5 py-0.5 text-[11px] font-semibold text-white/90 ring-1 ring-white/15 backdrop-blur-sm">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/90 ring-1 ring-white/15 backdrop-blur-md">
+      {icon ? (
+        <span className="text-[10px] leading-none opacity-80" aria-hidden="true">
+          {icon}
+        </span>
+      ) : null}
       {children}
     </span>
   );
@@ -30,6 +35,7 @@ function StarDisplay({ rating, size = "sm" }) {
     <FractionalStars
       rating={rating}
       starClassName={starSize}
+      filledStarClassName="text-amber-400"
       emptyStarClassName="text-slate-200 dark:text-slate-700"
     />
   );
@@ -56,105 +62,127 @@ export default function ReviewWorkspaceHero({
   const showDistribution = hasReviews && distribution;
   const hasAspects = aspectAverages?.review_count > 0;
   const coverUrl = getUniversityImageUrl(university);
-  const metaParts = [metaHeader, memberCount > 0 ? `${memberCount} chat a'zosi` : null].filter(Boolean);
+  const displayTitle = university?.name;
 
   return (
     <header className="shrink-0 overflow-hidden bg-white dark:bg-[#0b1220]">
-      <div className="relative bg-gradient-to-br from-slate-900 via-[#0f2744] to-primary/90">
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-[#0c1a33] to-primary">
         {coverUrl && (
           <>
             <img
               src={coverUrl}
               alt=""
               role="presentation"
-              className="absolute inset-0 h-full w-full object-cover opacity-30"
+              className="absolute inset-0 h-full w-full scale-105 object-cover opacity-35"
               loading="eager"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950/88 via-slate-950/72 to-slate-950/55" aria-hidden="true" />
+            <div
+              className="absolute inset-0 bg-gradient-to-br from-slate-950/92 via-[#0c1a33]/88 to-primary/75"
+              aria-hidden="true"
+            />
           </>
         )}
 
-        <div className="relative px-5 py-5 sm:px-6 sm:py-6">
-          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-300/90">{eyebrow}</p>
+        <div
+          className="pointer-events-none absolute -left-16 top-0 h-48 w-48 rounded-full bg-blue-500/20 blur-3xl"
+          aria-hidden="true"
+        />
+        <div
+          className="pointer-events-none absolute bottom-0 right-0 h-56 w-56 rounded-full bg-violet-500/15 blur-3xl"
+          aria-hidden="true"
+        />
 
-          <div className="mt-3 flex flex-col gap-5 lg:flex-row lg:items-start lg:gap-8">
-            <div className="flex min-w-0 items-start gap-4 lg:flex-1">
-              <UniversityIdentity university={university} size="lg" />
+        <div className="relative px-5 py-6 sm:px-6 sm:py-7">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-300/90">{eyebrow}</p>
+
+          <div className="mt-4 grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-stretch lg:gap-6">
+            <div className="flex min-w-0 items-start gap-4 sm:gap-5">
+              <div className="relative shrink-0">
+                <div
+                  className="absolute -inset-1 rounded-[1.35rem] bg-gradient-to-br from-white/25 to-blue-400/20 blur-sm"
+                  aria-hidden="true"
+                />
+                <UniversityIdentity university={university} size="lg" className="relative !h-[4.75rem] !w-[4.75rem] !rounded-[1.15rem] sm:!h-20 sm:!w-20 sm:!rounded-[1.25rem]" />
+              </div>
+
               <div className="min-w-0 flex-1 pt-0.5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-lg font-black leading-tight text-white sm:text-xl">
-                    {university?.name}
+                  <h1 className="text-xl font-black leading-tight tracking-tight text-white sm:text-2xl">
+                    {displayTitle}
                   </h1>
                   {shortName && (
-                    <span className="rounded-md bg-white/15 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                    <span className="rounded-lg bg-white/15 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.12em] text-white ring-1 ring-white/20 backdrop-blur-sm">
                       {shortName}
                     </span>
                   )}
                 </div>
-                {location && <p className="mt-1 text-sm text-slate-300">{location}</p>}
-                {metaParts.length > 0 && (
-                  <div className="mt-2.5 flex flex-wrap gap-1.5">
-                    {metaParts.map((part) => (
-                      <MetaPill key={part}>{part}</MetaPill>
-                    ))}
-                  </div>
+
+                {location && (
+                  <p className="mt-2 inline-flex items-center gap-1.5 text-sm text-slate-300/90">
+                    <span className="text-xs opacity-70" aria-hidden="true">
+                      📍
+                    </span>
+                    {location}
+                  </p>
                 )}
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {metaHeader && <MetaPill icon="🏛️">{metaHeader}</MetaPill>}
+                  {memberCount > 0 && <MetaPill icon="💬">{memberCount} chat a&apos;zosi</MetaPill>}
+                </div>
               </div>
             </div>
 
             {summary && (
-              <div className="min-w-0 lg:max-w-[22rem] lg:flex-1 lg:border-l lg:border-white/10 lg:pl-6 xl:max-w-md">
-                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-blue-300/80">
+              <div className="min-w-0 rounded-2xl border border-white/10 bg-white/[0.07] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-md sm:p-5 lg:self-center">
+                <p className="text-[10px] font-black uppercase tracking-[0.16em] text-blue-200/90">
                   Universitet haqida
                 </p>
-                <p className="mt-2 text-sm leading-relaxed text-slate-300/95">{summary}</p>
+                <p className="mt-2.5 text-sm leading-[1.75] text-slate-100/95">{summary}</p>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="border-b border-slate-100 bg-slate-50/50 px-5 py-4 dark:border-white/10 dark:bg-white/[0.02] sm:px-6">
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:gap-5">
-          <div className="flex min-w-0 shrink-0 items-center gap-4">
-            <div className="flex shrink-0 items-baseline gap-1">
-              <span className="text-4xl font-black tabular-nums leading-none tracking-tight text-slate-950 dark:text-white">
-                {displayRating ?? "—"}
-              </span>
-              <span className="text-sm font-semibold text-slate-400">/5</span>
-            </div>
-
-            <div className="h-11 w-px shrink-0 bg-slate-200 dark:bg-white/10" aria-hidden="true" />
-
-            <div className="min-w-0 shrink-0" role="img" aria-label={formatStarRatingLabel(averageRating)}>
-              <div aria-hidden="true">
-                <StarDisplay rating={averageRating} size="lg" />
+      <div className="border-b border-slate-200/70 bg-gradient-to-r from-slate-50 via-white to-slate-50/80 px-5 py-4 dark:border-white/10 dark:from-white/[0.03] dark:via-[#0b1220] dark:to-white/[0.02] sm:px-6">
+        <div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
+          <div className="grid grid-cols-1 divide-y divide-slate-200/70 dark:divide-white/10 xl:grid-cols-[minmax(0,13.5rem)_minmax(0,1fr)_minmax(0,11.5rem)] xl:divide-x xl:divide-y-0">
+            <div className="flex min-w-0 items-center gap-4 p-4 sm:p-5 xl:shrink-0">
+              <div className="shrink-0 text-center">
+                <div className="flex items-baseline justify-center gap-0.5">
+                  <span className="text-4xl font-black tabular-nums leading-none tracking-tight text-slate-950 dark:text-white">
+                    {displayRating ?? "—"}
+                  </span>
+                  <span className="text-sm font-semibold text-slate-400">/5</span>
+                </div>
+                <div className="mt-2 flex justify-center" role="img" aria-label={formatStarRatingLabel(averageRating)}>
+                  <StarDisplay rating={averageRating} size="lg" />
+                </div>
               </div>
-              <p className="mt-1.5 text-sm font-bold text-slate-800 dark:text-white">
-                {hasReviews ? `${reviewCount} ${statLabels.reviews.toLowerCase()}` : "Hali sharh yo'q"}
-              </p>
-              {!hasReviews && (
-                <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                  Birinchi sharhni siz qoldiring
+              <div className="min-w-0 border-l border-slate-200/70 pl-4 dark:border-white/10">
+                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-slate-400">Umumiy reyting</p>
+                <p className="mt-1 text-sm font-bold text-slate-800 dark:text-white">
+                  {hasReviews ? `${reviewCount} ${statLabels.reviews.toLowerCase()}` : "Hali sharh yo'q"}
                 </p>
-              )}
-            </div>
-          </div>
-
-          {hasAspects && (
-            <>
-              <div className="hidden h-12 w-px shrink-0 bg-slate-200 dark:bg-white/10 sm:block" aria-hidden="true" />
-              <div className="min-w-0 flex-1">
-                <ReviewAspectRatings averages={aspectAverages} compact />
+                {!hasReviews && (
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Birinchi sharhni siz qoldiring</p>
+                )}
               </div>
-            </>
-          )}
+            </div>
 
-          {showDistribution && (
-            <>
-              <div className="hidden h-14 w-px shrink-0 bg-slate-200 dark:bg-white/10 xl:block" aria-hidden="true" />
-              <div className="min-w-0 xl:w-44 xl:shrink-0">
-                <p className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            {hasAspects && (
+              <div className="min-w-0 overflow-hidden p-4 sm:p-5">
+                <p className="mb-3 text-[10px] font-black uppercase tracking-[0.14em] text-slate-400">
+                  Mezonlar bo&apos;yicha
+                </p>
+                <ReviewAspectRatings averages={aspectAverages} variant="hero" />
+              </div>
+            )}
+
+            {showDistribution && (
+              <div className="min-w-0 overflow-hidden p-4 sm:p-5 xl:shrink-0">
+                <p className="mb-3 text-[10px] font-black uppercase tracking-[0.14em] text-slate-400">
                   Baholar taqsimoti
                 </p>
                 <ReviewRatingDistribution
@@ -165,8 +193,8 @@ export default function ReviewWorkspaceHero({
                   compact
                 />
               </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </header>

@@ -1,5 +1,6 @@
 import UniversityAvatar from "../UniversityAvatar.jsx";
 import UserAvatar from "../dashboard/UserAvatar.jsx";
+import ChatAuthorName from "./ChatAuthorName.jsx";
 import SearchMatchSnippet from "./SearchMatchSnippet.jsx";
 import { formatMessageSearchDate, formatMessageSearchTime } from "../../utils/formatMessageDate.js";
 
@@ -77,6 +78,8 @@ export default function ChatGroupSearchPanel({
               name={thread.other_user_name}
               avatarUrl={thread.other_user_avatar_url}
               size="xs"
+              colorKey={thread.other_user_chat_color}
+              userId={thread.other_user_id}
             />
           ) : (
             university && <UniversityAvatar university={university} size="xs" />
@@ -118,12 +121,17 @@ export default function ChatGroupSearchPanel({
                       name={item.author || item.sender_name}
                       avatarUrl={item.author_avatar_url || item.sender_avatar_url}
                       size="sm"
+                      colorKey={item.author_color ?? item.sender_color}
+                      userId={item.author_id ?? item.sender_id}
                     />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-2">
-                        <span className="truncate font-black text-slate-900 dark:text-white">
-                          {item.author || item.sender_name || "Foydalanuvchi"}
-                        </span>
+                        <ChatAuthorName
+                          name={item.author || item.sender_name || "Foydalanuvchi"}
+                          userId={item.author_id ?? item.sender_id}
+                          colorKey={item.author_color ?? item.sender_color}
+                          className="truncate text-sm font-black"
+                        />
                         <time
                           dateTime={item.created_at}
                           className="shrink-0 text-right text-xs font-semibold leading-tight text-slate-400 dark:text-slate-500"

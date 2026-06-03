@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from rest_framework.test import APIClient
 
-from universities.models import Article, Review, University
+from universities.models import Article, Review, ReviewLike, University
 
 User = get_user_model()
 
@@ -115,6 +115,58 @@ class PublicApiTests(TestCase):
         response = self.client.get("/api/public/reviews/recent/?limit=1")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 1)
+
+    def test_public_top_university_reviews_returns_most_liked_per_top_university(self):
+        other_user = User.objects.create_user(
+            username="other@uni.test",
+            email="other@uni.test",
+            password="test-pass-123",
+        )
+        third_user = User.objects.create_user(
+            username="third@uni.test",
+            email="third@uni.test",
+            password="test-pass-123",
+        )
+        uni_b = University.objects.create(
+            name="Second Public University",
+            short_name="SPU",
+            location="Samarqand",
+            slug="second-public-university",
+        )
+        review_a_low = Review.objects.create(
+            university=self.university,
+            user=third_user,
+            rating=3,
+            text="Kam like",
+            status=Review.Status.APPROVED,
+        )
+        review_a_top = Review.objects.create(
+            university=self.university,
+            user=other_user,
+            rating=5,
+            text="Ko'p like",
+            status=Review.Status.APPROVED,
+        )
+        ReviewLike.objects.create(user=other_user, review=review_a_top)
+        ReviewLike.objects.create(user=self.user, review=review_a_top)
+        ReviewLike.objects.create(user=other_user, review=review_a_low)
+
+        review_b = Review.objects.create(
+            university=uni_b,
+            user=self.user,
+            rating=4,
+            text="B universitet sharhi",
+            status=Review.Status.APPROVED,
+        )
+        ReviewLike.objects.create(user=other_user, review=review_b)
+
+        response = self.client.get("/api/public/reviews/top-universities/?limit=3")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertGreaterEqual(len(payload), 1)
+        first = payload[0]
+        self.assertEqual(first["id"], review_a_top.id)
+        self.assertEqual(first["helpful_count"], 2)
 
     def test_public_review_filters(self):
         response = self.client.get("/api/public/reviews/filters/")

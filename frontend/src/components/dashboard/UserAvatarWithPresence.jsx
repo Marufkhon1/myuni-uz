@@ -11,6 +11,8 @@ export default function UserAvatarWithPresence({
   name,
   avatarUrl,
   size = "sm",
+  colorKey,
+  userId,
   isOnline,
   lastSeenAt,
   showPresence = false,
@@ -19,7 +21,7 @@ export default function UserAvatarWithPresence({
 
   return (
     <div className="relative shrink-0">
-      <UserAvatar name={name} avatarUrl={avatarUrl} size={size} />
+      <UserAvatar name={name} avatarUrl={avatarUrl} size={size} colorKey={colorKey} userId={userId} />
       {presence ? (
         <span
           className={`absolute bottom-0 right-0 rounded-full ring-white dark:ring-slate-900 ${dotSizes[size] || dotSizes.sm} ${presence.dotClassName}`}

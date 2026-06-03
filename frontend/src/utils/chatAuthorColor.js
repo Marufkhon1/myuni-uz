@@ -1,4 +1,6 @@
 /** Telegram uslubidagi chat ranglari — profildan tanlanadi yoki avtomatik */
+export { getNameInitials } from "./profileName.js";
+
 export const CHAT_COLOR_OPTIONS = [
   { id: "pink", hex: "#e5659a", className: "text-[#e5659a]", label: "Pushti" },
   { id: "cyan", hex: "#5ad8f2", className: "text-[#5ad8f2]", label: "Moviy" },
@@ -31,4 +33,16 @@ export function getAuthorColorClass(userId, colorKey) {
 
 export function getColorOption(colorKey) {
   return CHAT_COLOR_OPTIONS.find((option) => option.id === colorKey) ?? null;
+}
+
+export function getAuthorColorHex(userId, colorKey) {
+  const option = getColorOption(colorKey);
+  if (option) {
+    return option.hex;
+  }
+  const numericId = Number(userId);
+  if (!Number.isFinite(numericId) || numericId <= 0) {
+    return CHAT_COLOR_OPTIONS[2]?.hex ?? "#7b8efc";
+  }
+  return CHAT_COLOR_OPTIONS[Math.abs(numericId) % CHAT_COLOR_OPTIONS.length].hex;
 }

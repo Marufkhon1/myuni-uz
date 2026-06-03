@@ -106,9 +106,6 @@ export function useReviews({ isStudent, activeSection, universities }) {
 
   const handleDeleteReview = useCallback(
     async (reviewId) => {
-      if (!window.confirm("Sharhni o'chirishni tasdiqlaysizmi?")) {
-        return;
-      }
       try {
         await deleteReview(reviewId);
         setReviews((current) => current.filter((item) => item.id !== reviewId));

@@ -256,7 +256,7 @@ export default function ReviewsSection() {
         )}
 
         {!isFetching && reviews.length > 0 && (
-          <div className="mt-10 grid gap-6 lg:grid-cols-3">
+          <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {reviews.map((review, index) => (
               <motion.article
                 key={review.id}

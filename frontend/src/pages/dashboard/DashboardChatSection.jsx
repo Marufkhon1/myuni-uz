@@ -14,7 +14,6 @@ import GroupInfoModal from "../../components/dashboard/GroupInfoModal.jsx";
 import ProfileModal from "../../components/dashboard/ProfileModal.jsx";
 import UserAvatarWithPresence from "../../components/dashboard/UserAvatarWithPresence.jsx";
 import { chatTabs } from "../../components/dashboard/dashboardConstants.js";
-import { getAuthorColorClass } from "../../utils/chatAuthorColor.js";
 import { joinedUniversityIdsHas, sameUniversityId } from "../../utils/universityIds.js";
 
 export default function DashboardChatSection(p) {
@@ -199,6 +198,8 @@ export default function DashboardChatSection(p) {
                               name={p.selectedThread.other_user_name}
                               avatarUrl={p.selectedThread.other_user_avatar_url}
                               size="lg"
+                              colorKey={p.selectedThread.other_user_chat_color}
+                              userId={p.selectedThread.other_user_id}
                               isOnline={p.selectedThread.other_user_is_online}
                               lastSeenAt={p.selectedThread.other_user_last_seen_at}
                               showPresence
@@ -272,10 +273,6 @@ export default function DashboardChatSection(p) {
                       <PinnedMessageBar
                         message={p.privatePinnedMessage}
                         formatTime={p.formatTime}
-                        authorColorClass={getAuthorColorClass(
-                          p.privatePinnedMessage?.author_id ?? p.privatePinnedMessage?.sender_id,
-                          p.privatePinnedMessage?.author_color ?? p.privatePinnedMessage?.sender_color
-                        )}
                         onUnpin={p.handleUnpinPrivateMessage}
                       />
                       <div
@@ -504,10 +501,6 @@ export default function DashboardChatSection(p) {
                       <PinnedMessageBar
                         message={p.groupPinnedMessage}
                         formatTime={p.formatTime}
-                        authorColorClass={getAuthorColorClass(
-                          p.groupPinnedMessage?.author_id,
-                          p.groupPinnedMessage?.author_color
-                        )}
                         onUnpin={p.hasJoinedSelectedChat ? p.handleUnpinGroupMessage : undefined}
                       />
                       {p.hasJoinedSelectedChat ? (

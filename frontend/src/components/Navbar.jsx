@@ -42,24 +42,36 @@ const navLinks = [
   { label: "Biz haqimizda", href: "#about" },
 ];
 
-function desktopNavLinkClass(isActive) {
+function desktopNavLinkClass(isActive, isDark) {
   const base =
-    "relative inline-flex items-center rounded-lg px-1.5 py-1 text-sm transition-colors duration-200 after:pointer-events-none after:absolute after:inset-x-1 after:-bottom-[0.45rem] after:h-[3px] after:rounded-full after:transition-all after:duration-200 after:content-['']";
-  if (isActive) {
-    return `${base} font-bold text-white after:bg-gradient-to-r after:from-sky-300 after:via-blue-300 after:to-violet-300 after:opacity-100 after:shadow-[0_0_12px_rgba(125,211,252,0.55)]`;
+    "relative inline-flex shrink-0 items-center whitespace-nowrap rounded-lg px-1.5 py-1 text-sm transition-colors duration-200 after:pointer-events-none after:absolute after:inset-x-1 after:-bottom-[0.45rem] after:h-[3px] after:rounded-full after:transition-all after:duration-200 after:content-['']";
+  if (isDark) {
+    if (isActive) {
+      return `${base} font-bold text-white after:bg-gradient-to-r after:from-sky-300 after:via-blue-300 after:to-violet-300 after:opacity-100 after:shadow-[0_0_12px_rgba(125,211,252,0.55)]`;
+    }
+    return `${base} font-semibold text-white/80 hover:text-white after:scale-x-0 after:opacity-0 hover:after:scale-x-100 hover:after:bg-white/40 hover:after:opacity-70`;
   }
-  return `${base} font-semibold text-white/72 hover:text-white after:scale-x-0 after:opacity-0 hover:after:scale-x-100 hover:after:bg-white/40 hover:after:opacity-70`;
+  if (isActive) {
+    return `${base} font-bold text-slate-900 after:bg-gradient-to-r after:from-primary after:via-blue-500 after:to-violet-500 after:opacity-100`;
+  }
+  return `${base} font-semibold text-slate-600 hover:text-slate-900 after:scale-x-0 after:opacity-0 hover:after:scale-x-100 hover:after:bg-slate-300/70 hover:after:opacity-70`;
 }
 
-function mobileNavLinkClass(isActive) {
+function mobileNavLinkClass(isActive, isDark) {
   const base = "rounded-2xl px-4 py-3 text-sm font-bold transition";
-  if (isActive) {
-    return `${base} bg-white/12 text-white ring-1 ring-white/20`;
+  if (isDark) {
+    if (isActive) {
+      return `${base} bg-white/12 text-white ring-1 ring-white/20`;
+    }
+    return `${base} text-white/80 hover:bg-white/10 hover:text-white`;
   }
-  return `${base} text-white/80 hover:bg-white/10 hover:text-white`;
+  if (isActive) {
+    return `${base} bg-primary/10 text-primary ring-1 ring-primary/20`;
+  }
+  return `${base} text-slate-700 hover:bg-slate-100 hover:text-slate-900`;
 }
 
-export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guestHomeButtonOnly = false }) {
+export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo, guestHomeButtonOnly = false }) {
   const [isOpen, setIsOpen] = useState(false);
   const mobileMenuRef = useRef(null);
   const { pathname } = useLocation();
@@ -92,11 +104,18 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
   }
 
   const authButtonClass = "!min-h-9 !px-4 !py-2";
+  const navTone = isDark ? "navbar" : "navbarLight";
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 overflow-visible border-b border-white/10 bg-gradient-to-r from-[#06102a] via-[#0c1f4a] to-[#0a1838] shadow-[0_10px_40px_rgba(2,8,23,0.45)] backdrop-blur-md">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 overflow-x-clip border-b backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-300 page-top-safe ${
+        isDark
+          ? "border-white/10 bg-gradient-to-r from-[#06102a] via-[#0c1f4a] to-[#0a1838] shadow-[0_10px_40px_rgba(2,8,23,0.45)]"
+          : "border-slate-200/80 bg-white/95 shadow-[0_4px_24px_rgba(15,23,42,0.08)]"
+      }`}
+    >
       <nav
-        className="container-shell flex h-14 items-center justify-between overflow-visible pb-1 sm:h-[4.25rem]"
+        className="container-shell flex h-14 items-center gap-3 overflow-visible pb-1 sm:h-[4.25rem] lg:gap-4"
         aria-label="Asosiy navigatsiya"
       >
         <Link
@@ -106,16 +125,20 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
               setActiveSection("#home");
             }
           }}
-          className="group flex min-w-0 items-center gap-2.5 sm:gap-3"
+          className="group flex shrink-0 items-center gap-2.5 sm:gap-3"
           aria-label="MyUni.uz bosh sahifa"
         >
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/95 p-0.5 ring-1 ring-white/30 shadow-[0_4px_18px_rgba(37,99,235,0.35)] transition group-hover:ring-white/50 sm:h-10 sm:w-10">
             <img src={logo} alt="" className="h-full w-full rounded-[0.6rem] object-cover" />
           </span>
-          <span className="truncate text-lg font-black tracking-tight text-white sm:text-xl">MyUni.uz</span>
+          <span
+            className={`whitespace-nowrap text-lg font-black tracking-tight sm:text-xl ${isDark ? "text-white" : "text-slate-950"}`}
+          >
+            MyUni.uz
+          </span>
         </Link>
 
-        <div className="hidden items-center gap-7 overflow-visible xl:gap-9 lg:flex">
+        <div className="hidden min-w-0 flex-1 items-center justify-center gap-4 overflow-visible xl:gap-7 lg:flex 2xl:gap-9">
           {navLinks.map((link) => {
             const isActive = isNavLinkActive(pathname, activeHash, link.href);
             return (
@@ -123,7 +146,7 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
                 key={link.href}
                 href={link.href}
                 onClick={(event) => goToLandingSection(event, link.href)}
-                className={desktopNavLinkClass(isActive)}
+                className={desktopNavLinkClass(isActive, isDark)}
                 aria-current={isActive ? "page" : undefined}
               >
                 {link.label}
@@ -132,24 +155,28 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
           })}
         </div>
 
-        <div className="hidden items-center gap-2.5 sm:gap-3 lg:flex">
+        <div className="ml-auto hidden shrink-0 items-center gap-2.5 sm:gap-3 lg:flex">
           {themeToggle && (
             <ThemeToggle isDark={isDark} onToggle={themeToggle} variant="navbar" />
           )}
           {!isLoading && isAuthenticated ? (
             <Link
               to={dashboardPath}
-              className={`${authButtonClass} rounded-full bg-white px-5 text-sm font-bold text-slate-950 shadow-[0_8px_24px_rgba(255,255,255,0.18)] transition hover:-translate-y-0.5 hover:bg-sky-50`}
+              className={`${authButtonClass} rounded-full px-5 text-sm font-bold transition hover:-translate-y-0.5 ${
+                isDark
+                  ? "bg-white text-slate-950 shadow-[0_8px_24px_rgba(255,255,255,0.18)] hover:bg-sky-50"
+                  : "bg-slate-900 text-white shadow-[0_8px_24px_rgba(15,23,42,0.18)] hover:bg-slate-800"
+              }`}
               aria-current={isDashboardPath(pathname) ? "page" : undefined}
             >
               Kabinet
             </Link>
           ) : guestHomeButtonOnly ? (
-            <PublicBackHomeButton tone="navbar" className={`${authButtonClass} !shadow-none`} />
+            <PublicBackHomeButton tone={navTone} className={`${authButtonClass} !shadow-none`} />
           ) : (
             <>
-              <PublicLoginButton to={loginTo} tone="navbar" className={authButtonClass} />
-              <PublicSignupButton to={signupTo} tone="navbar" className={authButtonClass} />
+              <PublicLoginButton to={loginTo} tone={navTone} className={authButtonClass} />
+              <PublicSignupButton to={signupTo} tone={navTone} className={authButtonClass} />
             </>
           )}
         </div>
@@ -157,7 +184,11 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
         <button
           type="button"
           onClick={() => setIsOpen((value) => !value)}
-          className="grid h-9 w-9 place-items-center rounded-xl border border-white/25 bg-white/10 text-white transition hover:border-white/40 hover:bg-white/15 lg:hidden"
+          className={`ml-auto grid h-9 w-9 shrink-0 place-items-center rounded-xl border transition lg:hidden ${
+            isDark
+              ? "border-white/25 bg-white/10 text-white hover:border-white/40 hover:bg-white/15"
+              : "border-slate-200 bg-slate-50 text-slate-800 hover:border-slate-300 hover:bg-slate-100"
+          }`}
           aria-label={isOpen ? "Navigatsiya menyusini yopish" : "Navigatsiya menyusini ochish"}
           aria-expanded={isOpen}
           aria-controls="mobile-nav-menu"
@@ -185,7 +216,11 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
               aria-modal="true"
               aria-label="Mobil navigatsiya"
               tabIndex={-1}
-              className="rounded-2xl border border-white/15 bg-[#0b1a3d]/95 p-3 shadow-[0_20px_50px_rgba(0,0,0,0.35)] backdrop-blur-xl"
+              className={`rounded-2xl border p-3 shadow-[0_20px_50px_rgba(0,0,0,0.12)] backdrop-blur-xl ${
+                isDark
+                  ? "border-white/15 bg-[#0b1a3d]/95"
+                  : "border-slate-200 bg-white/98"
+              }`}
             >
               <div className="grid gap-1">
                 {navLinks.map((link) => {
@@ -195,7 +230,7 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
                       key={link.href}
                       href={link.href}
                       onClick={(event) => goToLandingSection(event, link.href)}
-                      className={mobileNavLinkClass(isActive)}
+                      className={mobileNavLinkClass(isActive, isDark)}
                       aria-current={isActive ? "page" : undefined}
                     >
                       {link.label}
@@ -203,29 +238,28 @@ export default function Navbar({ isDark, onToggleTheme, loginTo, signupTo, guest
                   );
                 })}
               </div>
-              <div className={`mt-3 grid gap-2 border-t border-white/10 pt-3 ${themeToggle ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>
+              <div className={`mt-3 grid gap-2 border-t pt-3 ${themeToggle ? "sm:grid-cols-3" : "sm:grid-cols-2"} ${isDark ? "border-white/10" : "border-slate-200"}`}>
                 {themeToggle && (
-                  <ThemeToggle
-                    isDark={isDark}
-                    onToggle={themeToggle}
-                    variant="navbar"
-                    className="mx-auto w-full max-w-[8.5rem]"
-                  />
+                  <div className="flex justify-center">
+                    <ThemeToggle isDark={isDark} onToggle={themeToggle} variant="navbar" />
+                  </div>
                 )}
                 {!isLoading && isAuthenticated ? (
                   <Link
                     to={dashboardPath}
-                    className="rounded-xl bg-white px-4 py-2.5 text-center text-sm font-bold text-slate-950"
+                    className={`rounded-xl px-4 py-2.5 text-center text-sm font-bold ${
+                      isDark ? "bg-white text-slate-950" : "bg-slate-900 text-white"
+                    }`}
                     aria-current={isDashboardPath(pathname) ? "page" : undefined}
                   >
                     Kabinet
                   </Link>
                 ) : guestHomeButtonOnly ? (
-                  <PublicBackHomeButton tone="navbar" className="w-full !min-h-10" />
+                  <PublicBackHomeButton tone={navTone} className="w-full !min-h-10" />
                 ) : (
                   <>
-                    <PublicLoginButton to={loginTo} tone="navbar" className="w-full !min-h-10" />
-                    <PublicSignupButton to={signupTo} tone="navbar" className="w-full !min-h-10" />
+                    <PublicLoginButton to={loginTo} tone={navTone} className="w-full !min-h-10" />
+                    <PublicSignupButton to={signupTo} tone={navTone} className="w-full !min-h-10" />
                   </>
                 )}
               </div>

@@ -47,10 +47,10 @@ function NavIcon({ name }) {
 export default function DashboardBottomNav({ items, activeSection, onSelect }) {
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 pb-safe backdrop-blur-xl lg:hidden dark:border-white/10 dark:bg-slate-950/95"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-slate-200 bg-white/95 pb-safe backdrop-blur-xl md:pb-[max(0.5rem,env(safe-area-inset-bottom))] lg:hidden dark:border-white/10 dark:bg-slate-950/95"
       aria-label="Asosiy menyu"
     >
-      <div className="mx-auto flex max-w-lg items-stretch justify-around gap-0.5 px-1 py-1.5 sm:max-w-none sm:px-2">
+      <div className="mx-auto flex max-w-2xl items-stretch justify-around gap-0.5 px-1 py-1.5 md:max-w-3xl md:gap-1 md:px-3 md:py-2">
         {items.map((item) => {
           const isActive = activeSection === item.id;
           return (
@@ -60,18 +60,15 @@ export default function DashboardBottomNav({ items, activeSection, onSelect }) {
               onClick={() => onSelect(item.id)}
               aria-current={isActive ? "page" : undefined}
               aria-label={item.label}
-              className={`flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2.5 transition sm:gap-1.5 sm:px-2 ${
+              className={`flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2.5 transition md:min-h-12 md:gap-1.5 md:px-3 ${
                 isActive
                   ? "bg-slate-950 text-white dark:bg-white dark:text-slate-950"
                   : "text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-white/10"
               }`}
             >
               <NavIcon name={item.id} />
-              <span className="w-full truncate text-center text-[10px] font-black leading-tight sm:hidden">
+              <span className="w-full truncate text-center text-[10px] font-black leading-tight md:text-[11px]">
                 {item.shortLabel ?? item.label}
-              </span>
-              <span className="hidden w-full truncate text-center text-xs font-black leading-tight sm:inline">
-                {item.label}
               </span>
             </button>
           );

@@ -172,6 +172,28 @@ class AdmissionQuota(models.Model):
         return f"{self.cycle} — {label}"
 
 
+class CompareShareLink(models.Model):
+    token = models.CharField(max_length=32, unique=True, db_index=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="compare_share_links",
+    )
+    snapshot = models.JSONField()
+    expires_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"CompareShare {self.token}"
+
+    @property
+    def is_expired(self):
+        return timezone.now() >= self.expires_at
+
+
 class UniversityFavorite(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
