@@ -31,10 +31,10 @@
       "slug": "ozmesi",
       "name": "Botir Zokirov nomidagi O'zbekiston milliy estrada san'ati instituti",
       "website": "",
-      "status": "missing_website",
+      "status": "not_found",
       "image_url": "",
       "source_url": "",
-      "error": "website yo'q"
+      "error": "rasm topilmadi"
     },
     "binaryu": {
       "slug": "binaryu",
@@ -121,10 +121,11 @@
       "slug": "reu",
       "name": "G.V. Plehanov nomidagi Rossiya iqtisodiyot universiteti Toshkent filiali",
       "website": "https://plekhanov.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/reu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-iqtisodiyot-universiteti-Samarqand-filiali.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "ivsfi": {
       "slug": "ivsfi",
@@ -184,10 +185,10 @@
       "slug": "ozmrdi",
       "name": "Kamoliddin Behzod nomidagi O'zbekiston milliy rassomlik va dizayn instituti",
       "website": "",
-      "status": "missing_website",
+      "status": "not_found",
       "image_url": "",
       "source_url": "",
-      "error": "website yo'q"
+      "error": "rasm topilmadi"
     },
     "mvima": {
       "slug": "mvima",
@@ -211,10 +212,10 @@
       "slug": "millatu",
       "name": "Millat umidi universiteti",
       "website": "https://millatumidi.uz",
-      "status": "download_failed",
+      "status": "not_found",
       "image_url": "",
-      "source_url": "https://millatumidi.uz/default-og-image.jpg",
-      "error": "yuklab bo'lmadi"
+      "source_url": "",
+      "error": "rasm topilmadi"
     },
     "mephi": {
       "slug": "mephi",
@@ -229,10 +230,11 @@
       "slug": "msu",
       "name": "M.V. Lomonosov nomidagi Moskva davlat universiteti Toshkent filiali",
       "website": "https://msu.uz",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://mc.yandex.ru/watch/108682550",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/msu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-texnika-universiteti-Olmaliq-filiali.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "rniimu": {
       "slug": "rniimu",
@@ -265,19 +267,20 @@
       "slug": "ozdk",
       "name": "O'zbekiston davlat konservatoriyasi",
       "website": "https://conservatory.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/ozdk.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/O‘zbekiston-davlat-konservatoriyasi.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "ozdsmi": {
       "slug": "ozdsmi",
       "name": "O'zbekiston davlat san'at va madaniyat instituti",
       "website": "",
-      "status": "missing_website",
+      "status": "not_found",
       "image_url": "",
       "source_url": "",
-      "error": "website yo'q"
+      "error": "rasm topilmadi"
     },
     "ozdxa": {
       "slug": "ozdxa",
@@ -301,19 +304,21 @@
       "slug": "ozmpu",
       "name": "O'zbekiston milliy pedagogika universiteti",
       "website": "https://npuu.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/ozmpu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/O‘zbekiston-Milliy-universiteti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "ozmu": {
       "slug": "ozmu",
       "name": "O'zbekiston milliy universiteti",
       "website": "https://www.nuu.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/ozmu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/O‘zbekiston-Milliy-universiteti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "ozxia": {
       "slug": "ozxia",
@@ -328,10 +333,11 @@
       "slug": "ozhma",
       "name": "O'zbekiston Respublikasi Huquqni muhofaza qilish akademiyasi",
       "website": "https://proacademy.uz/",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://proacademy.uz/images/og-default.jpg",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/ozhma.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Ozbekiston-Respublikasi-Huquqni-muhofaza-qilish-akademiyasi.png",
+      "error": "",
+      "source": "infoedu"
     },
     "pdp": {
       "slug": "pdp",
@@ -355,10 +361,10 @@
       "slug": "pisau",
       "name": "Pisa University in Tashkent",
       "website": "https://pisa.uz",
-      "status": "not_found",
+      "status": "download_failed",
       "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "source_url": "https://pisa.uz/front/extra-images/slider2.jpg",
+      "error": "yuklab bo'lmadi"
     },
     "profiu": {
       "slug": "profiu",
@@ -481,10 +487,10 @@
       "slug": "team",
       "name": "TEAM University",
       "website": "https://teamuni.uz",
-      "status": "download_failed",
+      "status": "not_found",
       "image_url": "",
-      "source_url": "https://thb.tildacdn.one/tild6435-3034-4537-a337-333633616233/-/resize/20x/united-states.png",
-      "error": "yuklab bo'lmadi"
+      "source_url": "",
+      "error": "rasm topilmadi"
     },
     "oxusu": {
       "slug": "oxusu",
@@ -526,10 +532,11 @@
       "slug": "tatu",
       "name": "Toshkent axborot texnologiyalari universiteti",
       "website": "https://tuit.uz",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://static.tuit.uz/uploads/files/m/w/5a0d867e08fe4.png",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tatu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-axborot-texnologiyalari-universiteti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tdiu": {
       "slug": "tdiu",
@@ -544,10 +551,11 @@
       "slug": "tdoztadu",
       "name": "Toshkent davlat o'zbek tili va adabiyoti universiteti",
       "website": "https://navoiy-uni.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tdoztadu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-o‘zbek-tili-va-adabiyoti-universiteti.png",
+      "error": "",
+      "source": "infoedu"
     },
     "tdshu": {
       "slug": "tdshu",
@@ -562,19 +570,21 @@
       "slug": "tdtu",
       "name": "Toshkent davlat texnika universiteti",
       "website": "https://tdtu.uz/",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://mc.yandex.ru/watch/99076121",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tdtu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-texnika-universiteti.png",
+      "error": "",
+      "source": "infoedu"
     },
     "tdtibbu": {
       "slug": "tdtibbu",
       "name": "Toshkent davlat tibbiyot universiteti",
       "website": "https://tma.uz/",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://tma.uz/wp-content/uploads/2026/04/Untitled-0-400x300.jpg",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tdtibbu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-tibbiyot-akademiyasi.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tdtru": {
       "slug": "tdtru",
@@ -589,19 +599,21 @@
       "slug": "tdyu",
       "name": "Toshkent davlat yuridik universiteti",
       "website": "https://tsul.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tdyu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-yuridik-universiteti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tfi": {
       "slug": "tfi",
       "name": "Toshkent farmatsevtika instituti",
       "website": "https://pharmi.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tfi.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-Farmatsevtika-Instituti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tiiu": {
       "slug": "tiiu",
@@ -616,28 +628,31 @@
       "slug": "tivtu",
       "name": "Toshkent iqtisodiyot va texnologiyalari universiteti",
       "website": "https://sbtsue.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tivtu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-iqtisodiyot-universiteti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tiqxmmi": {
       "slug": "tiqxmmi",
       "name": "TIQXMMI milliy tadqiqot universiteti",
       "website": "https://tiiame.uz/",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://cdn.tiiame.uz/assets/uploads/fcb7001b9c4c4b96bd40cef131427398.png",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tiqxmmi.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-irrigatsiya-va-qishloq-xo‘jaligini-mexanizatsiyalash-muhandislari-instituti-Milliy-tadqiqot-universiteti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tkti": {
       "slug": "tkti",
       "name": "Toshkent kimyo-texnologiya instituti",
       "website": "https://tkti.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tkti.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Kimyoviy_moddalar_texnologiyasi.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "kiut": {
       "slug": "kiut",
@@ -706,10 +721,11 @@
       "slug": "bmstu",
       "name": "Toshkent shahridagi N.E. Bauman nomidagi Moskva davlat texnika universiteti filiali",
       "website": "",
-      "status": "missing_website",
-      "image_url": "",
-      "source_url": "",
-      "error": "website yo'q"
+      "status": "ok",
+      "image_url": "/images/universities/bmstu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-texnika-universiteti-Olmaliq-filiali.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "puchon": {
       "slug": "puchon",
@@ -841,19 +857,20 @@
       "slug": "yangi-ozu",
       "name": "Yangi O'zbekiston universiteti",
       "website": "https://yangiu.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/yangi-ozu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/O‘zbekiston-Milliy-universiteti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "ozmmsi": {
       "slug": "ozmmsi",
       "name": "Yunus Rajabiy nomidagi O'zbek milliy musiqa san'ati instituti",
       "website": "",
-      "status": "missing_website",
+      "status": "not_found",
       "image_url": "",
       "source_url": "",
-      "error": "website yo'q"
+      "error": "rasm topilmadi"
     },
     "angrenu": {
       "slug": "angrenu",
@@ -895,19 +912,20 @@
       "slug": "cyberu",
       "name": "Cyber University",
       "website": "https://csu.uz",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "http://localhost:3000/website-template-OG.webp",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/cyberu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Cyber-university.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "ftu": {
       "slug": "ftu",
       "name": "Farmatsevtika texnik universiteti",
       "website": "https://ptu.uz",
-      "status": "download_failed",
+      "status": "not_found",
       "image_url": "",
-      "source_url": "https://mc.yandex.ru/watch/102709375",
-      "error": "yuklab bo'lmadi"
+      "source_url": "",
+      "error": "rasm topilmadi"
     },
     "misis-of": {
       "slug": "misis-of",
@@ -958,46 +976,50 @@
       "slug": "tatu-nf",
       "name": "Toshkent axborot texnologiyalari universiteti Nurafshon filiali",
       "website": "https://tuit.uz",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://static.tuit.uz/uploads/files/m/w/5a0d867e08fe4.png",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tatu-nf.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-axborot-texnologiyalari-universiteti-Samarqand-filiali-scaled.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tdau": {
       "slug": "tdau",
       "name": "Toshkent davlat agrar universiteti",
       "website": "https://tdau.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tdau.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-agrar-universiteti.png",
+      "error": "",
+      "source": "infoedu"
     },
     "tdtu-of": {
       "slug": "tdtu-of",
       "name": "Toshkent davlat texnika universiteti Olmaliq filiali",
       "website": "https://odti.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tdtu-of.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-texnika-universiteti-Olmaliq-filiali.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tdtibbu-chf": {
       "slug": "tdtibbu-chf",
       "name": "Toshkent davlat tibbiyot universiteti Chirchiq filiali",
       "website": "https://ttachf.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tdtibbu-chf.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-tibbiyot-akademiyasi-Chirchiq-filiali.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tivpi": {
       "slug": "tivpi",
       "name": "Toshkent iqtisodiyot va pedagogika instituti",
       "website": "",
-      "status": "missing_website",
+      "status": "not_found",
       "image_url": "",
       "source_url": "",
-      "error": "website yo'q"
+      "error": "rasm topilmadi"
     },
     "belatki": {
       "slug": "belatki",
@@ -1012,28 +1034,30 @@
       "slug": "ipakyoli-tu",
       "name": "Ipak yo'li turizm va madaniy meros xalqaro universiteti",
       "website": "https://univ-silkroad.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/ipakyoli-tu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Ipak-yo‘li-turizm-va-madaniy-meros-xalqaro-universiteti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "oz-fin-pi": {
       "slug": "oz-fin-pi",
       "name": "O'zbekiston-Finlyandiya pedagogika instituti",
       "website": "",
-      "status": "missing_website",
+      "status": "not_found",
       "image_url": "",
       "source_url": "",
-      "error": "website yo'q"
+      "error": "rasm topilmadi"
     },
     "samagroii": {
       "slug": "samagroii",
       "name": "Samarqand agroinnovatsiyalar va tadqiqotlar instituti",
       "website": "https://samaguni.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/samagroii.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Samarqand-agroinnovatsiyalar-va-tadqiqotlar-instituti.png",
+      "error": "",
+      "source": "infoedu"
     },
     "samaqqu": {
       "slug": "samaqqu",
@@ -1048,10 +1072,11 @@
       "slug": "samdchti",
       "name": "Samarqand davlat chet tillari instituti",
       "website": "",
-      "status": "missing_website",
-      "image_url": "",
-      "source_url": "",
-      "error": "website yo'q"
+      "status": "ok",
+      "image_url": "/images/universities/samdchti.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Samarqand-davlat-chet-tillar-instituti.webp",
+      "error": "",
+      "source": "infoedu"
     },
     "samdtu": {
       "slug": "samdtu",
@@ -1066,10 +1091,11 @@
       "slug": "samdu-kf",
       "name": "Samarqand davlat universiteti Kattaqo'rg'on filiali",
       "website": "",
-      "status": "missing_website",
-      "image_url": "",
-      "source_url": "",
-      "error": "website yo'q"
+      "status": "ok",
+      "image_url": "/images/universities/samdu-kf.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/clipboard-image-1774808927.png",
+      "error": "",
+      "source": "infoedu"
     },
     "samdvmu": {
       "slug": "samdvmu",
@@ -1111,55 +1137,61 @@
       "slug": "samdu-ugf",
       "name": "Sharof Rashidov nomidagi Samarqand davlat universiteti Urgut filiali",
       "website": "https://samduuf.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/samdu-ugf.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/clipboard-image-1774808927.png",
+      "error": "",
+      "source": "infoedu"
     },
     "tatu-sf": {
       "slug": "tatu-sf",
       "name": "Toshkent axborot texnologiyalari universiteti Samarqand filiali",
       "website": "https://tuit.uz",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://static.tuit.uz/uploads/files/m/w/5a0d867e08fe4.png",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tatu-sf.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-axborot-texnologiyalari-universiteti-Samarqand-filiali-scaled.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tdiu-sf": {
       "slug": "tdiu-sf",
       "name": "Toshkent davlat iqtisodiyot universiteti Samarqand filiali",
       "website": "https://sbtsue.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tdiu-sf.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-iqtisodiyot-universiteti-Samarqand-filiali.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "anddchti": {
       "slug": "anddchti",
       "name": "Andijon davlat chet tillari instituti",
       "website": "",
-      "status": "missing_website",
-      "image_url": "",
-      "source_url": "",
-      "error": "website yo'q"
+      "status": "ok",
+      "image_url": "/images/universities/anddchti.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Samarqand-davlat-chet-tillar-instituti.webp",
+      "error": "",
+      "source": "infoedu"
     },
     "anddpi": {
       "slug": "anddpi",
       "name": "Andijon davlat pedagogika instituti",
       "website": "",
-      "status": "missing_website",
-      "image_url": "",
-      "source_url": "",
-      "error": "website yo'q"
+      "status": "ok",
+      "image_url": "/images/universities/anddpi.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/ANDIJON_TIBBIYOT_INSTITUTI.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "anddti": {
       "slug": "anddti",
       "name": "Andijon davlat texnika instituti",
       "website": "",
-      "status": "missing_website",
-      "image_url": "",
-      "source_url": "",
-      "error": "website yo'q"
+      "status": "ok",
+      "image_url": "/images/universities/anddti.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/ANDIJON_TIBBIYOT_INSTITUTI.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "anddtibbi": {
       "slug": "anddtibbi",
@@ -1228,10 +1260,11 @@
       "slug": "fardtu",
       "name": "Farg'ona davlat texnika universiteti",
       "website": "https://fstu.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/fardtu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-texnika-universiteti.png",
+      "error": "",
+      "source": "infoedu"
     },
     "fardu": {
       "slug": "fardu",
@@ -1246,10 +1279,11 @@
       "slug": "farjsti",
       "name": "Farg'ona jamoat salomatligi tibbiyot instituti",
       "website": "https://fjsti.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/farjsti.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Farg‘ona-jamoat-salomatligi-tibbiyot-instituti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "kiu": {
       "slug": "kiu",
@@ -1327,10 +1361,11 @@
       "slug": "namdtu",
       "name": "Namangan davlat texnika universiteti",
       "website": "https://ndtu.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/namdtu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-texnika-universiteti.png",
+      "error": "",
+      "source": "infoedu"
     },
     "namdu": {
       "slug": "namdu",
@@ -1399,10 +1434,11 @@
       "slug": "buxdu",
       "name": "Buxoro davlat universiteti",
       "website": "https://buxdu.uz",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://buxdu.uz/static/images/bayroq/uzbek.png",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/buxdu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Buxoro-davlat-universiteti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "buxittu": {
       "slug": "buxittu",
@@ -1417,10 +1453,11 @@
       "slug": "buxinvu",
       "name": "Buxoro innovatsiyalar universiteti",
       "website": "https://binnov.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/buxinvu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Buxoro-davlat-universiteti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "bpvxti": {
       "slug": "bpvxti",
@@ -1471,10 +1508,11 @@
       "slug": "kfu-jf",
       "name": "Qozon federal universiteti Jizzax filiali",
       "website": "https://kfu.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/kfu-jf.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Mirzo-Ulugʻbek-nomidagi-Oʻzbekiston-Milliy-universiteti-Jizzax-filiali-scaled.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "ozmu-jf": {
       "slug": "ozmu-jf",
@@ -1498,10 +1536,11 @@
       "slug": "guldpi",
       "name": "Guliston davlat pedagogika instituti",
       "website": "https://gspi.uz",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://cnt0.www.uz/counter/collect?",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/guldpi.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Guliston-davlat-pedagogika-instituti-e1775184520408.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "guldu": {
       "slug": "guldu",
@@ -1516,19 +1555,21 @@
       "slug": "tkti-yf",
       "name": "Toshkent kimyo-texnologiya instituti Yangiyer filiali",
       "website": "https://ticty.uz/",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://ticty.uz/preview-image.jpg",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tkti-yf.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/maxresdefault_4.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "atvmu": {
       "slug": "atvmu",
       "name": "Axborot texnologiyalari va menejment universiteti",
       "website": "https://tuit.uz",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://static.tuit.uz/uploads/files/m/w/5a0d867e08fe4.png",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/atvmu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-axborot-texnologiyalari-universiteti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "ipeu": {
       "slug": "ipeu",
@@ -1570,19 +1611,21 @@
       "slug": "qarxiu",
       "name": "Qarshi xalqaro universiteti",
       "website": "https://qxiu.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/qarxiu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Qarshi-davlat-universiteti.webp",
+      "error": "",
+      "source": "infoedu"
     },
     "shhdpi": {
       "slug": "shhdpi",
       "name": "Shahrisabz davlat pedagogika instituti",
       "website": "https://shdpi.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/shhdpi.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Shahrisabz-davlat-pedagogika-instituti.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "turonu": {
       "slug": "turonu",
@@ -1633,10 +1676,11 @@
       "slug": "terdu",
       "name": "Termiz davlat universiteti",
       "website": "https://tersu.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/terdu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Termiz-davlat-universiteti-1-scaled.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tivsu": {
       "slug": "tivsu",
@@ -1651,10 +1695,11 @@
       "slug": "tdtibbu-tf",
       "name": "Toshkent davlat tibbiyot universiteti Termiz filiali",
       "website": "https://ttatf.uz/",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://media.ttatf.uz/media/original/thumbnails/user/admin/bfbf1f58d73842a6866114ec1203885d.bayroq.gif_5HAMD6B.jpg",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tdtibbu-tf.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/TTA_TF_bosh_bino.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "navdktu": {
       "slug": "navdktu",
@@ -1714,10 +1759,11 @@
       "slug": "tatu-uf",
       "name": "Toshkent axborot texnologiyalari universiteti Urganch filiali",
       "website": "https://tuit.uz",
-      "status": "download_failed",
-      "image_url": "",
-      "source_url": "https://static.tuit.uz/uploads/files/m/w/5a0d867e08fe4.png",
-      "error": "yuklab bo'lmadi"
+      "status": "ok",
+      "image_url": "/images/universities/tatu-uf.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-axborot-texnologiyalari-universiteti-Samarqand-filiali-scaled.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "urdpi": {
       "slug": "urdpi",
@@ -1732,28 +1778,31 @@
       "slug": "urdti",
       "name": "Urganch davlat tibbiyot instituti",
       "website": "https://urgfiltma.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/urdti.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-tibbiyot-akademiyasi-Urganch-filiali.png",
+      "error": "",
+      "source": "infoedu"
     },
     "urdu": {
       "slug": "urdu",
       "name": "Urganch davlat universiteti",
       "website": "https://urdu.uz/uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/urdu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Urganch-davlat-universiteti-scaled.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "urinvu": {
       "slug": "urinvu",
       "name": "Urganch innovatsion universiteti",
       "website": "https://uiu.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/urinvu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Urganch-davlat-universiteti-scaled.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "urtu": {
       "slug": "urtu",
@@ -1768,10 +1817,11 @@
       "slug": "qordu",
       "name": "Berdaq nomidagi Qoraqalpoq davlat universiteti",
       "website": "",
-      "status": "missing_website",
-      "image_url": "",
-      "source_url": "",
-      "error": "website yo'q"
+      "status": "ok",
+      "image_url": "/images/universities/qordu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Cyber-university.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "nukdpi": {
       "slug": "nukdpi",
@@ -1786,10 +1836,11 @@
       "slug": "nukdtu",
       "name": "Nukus davlat texnika universiteti",
       "website": "https://nukusstu.uz/",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/nukdtu.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-texnika-universiteti.png",
+      "error": "",
+      "source": "infoedu"
     },
     "nukinvi": {
       "slug": "nukinvi",
@@ -1849,10 +1900,11 @@
       "slug": "samdvmu-nkf",
       "name": "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti Nukus filiali",
       "website": "https://sdvunf.uz",
-      "status": "not_found",
-      "image_url": "",
-      "source_url": "",
-      "error": "rasm topilmadi"
+      "status": "ok",
+      "image_url": "/images/universities/samdvmu-nkf.jpg",
+      "source_url": "https://api.infoedu.uz/wp-content/uploads/2025/12/photo_2026-03-29_23-42-57.jpg",
+      "error": "",
+      "source": "infoedu"
     },
     "tgfu": {
       "slug": "tgfu",

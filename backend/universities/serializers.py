@@ -19,6 +19,11 @@ from .models import (
 from .review_validation import validate_aspect_rating, validate_review_text
 from .review_trust_utils import MAX_REVIEW_IMAGES, is_verified_student_user
 from .reaction_utils import reactions_summary_for_message
+from .unread_utils import (
+    direct_unread_message_count,
+    group_unread_message_count,
+    group_unread_sender_count,
+)
 from .university_images import build_gallery_urls, build_university_image_url
 
 
