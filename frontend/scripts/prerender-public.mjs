@@ -26,7 +26,6 @@ const previewBase = `http://${previewHost}:${previewPort}`;
 const STATIC_ROUTES = [
   "/",
   "/universitetlar",
-  "/universitetlar/xarita",
   "/foydalanish-shartlari",
   "/maxfiylik-siyosati",
   "/sharh-qoidalari",

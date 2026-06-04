@@ -2,17 +2,11 @@ import UniversityAvatar from "../../UniversityAvatar.jsx";
 import { COMPARE_SLOT_THEMES } from "./compareTheme.js";
 import CompareRecommendBadge from "./CompareRecommendBadge.jsx";
 import { formatCompareRating } from "../../../utils/compareMath.js";
-import { CAMPUS_IMAGE_PATHS, campusIndex, getUniversityImageUrl } from "../../../utils/universityImage.js";
+import { getUniversityBannerUrl } from "../../../utils/universityImage.js";
 import { FractionalStars } from "../../ui/StarRatingDisplay.jsx";
 
-function heroImageForCard(university, index) {
-  const primary = getUniversityImageUrl(university);
-  const fallbackIndex = (campusIndex(university) + index) % CAMPUS_IMAGE_PATHS.length;
-  const fallback = CAMPUS_IMAGE_PATHS[fallbackIndex];
-  if (primary === fallback) {
-    return fallback;
-  }
-  return primary || fallback;
+function heroImageForCard(university) {
+  return getUniversityBannerUrl(university);
 }
 
 function PositionBadge({ isLeader, positionBadge, theme }) {
@@ -113,7 +107,7 @@ export default function CompareHeroCards({ universities, leaderId, onViewReviews
         const theme = COMPARE_SLOT_THEMES[index % COMPARE_SLOT_THEMES.length];
         const isLeader = index === 1 && leaderId != null && String(leaderId) === String(university.id);
         const positionBadge = index === 0 ? 1 : index === 2 ? 3 : null;
-        const imageUrl = heroImageForCard(university, index);
+        const imageUrl = heroImageForCard(university);
 
         return (
           <article

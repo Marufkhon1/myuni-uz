@@ -1,4 +1,4 @@
-﻿import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/myuni-logo.png";
 import OfficeMapEmbed from "./OfficeMapEmbed.jsx";
 import {
@@ -15,7 +15,6 @@ const footerLinks = {
     { label: "Bosh sahifa", to: "/" },
     { label: "Universitetlar", to: "/universitetlar" },
     { label: "Sharhlar", to: "/", hash: "#reviews" },
-    { label: "Xarita", to: "/universitetlar/xarita" },
     { label: "Qanday ishlaydi", to: "/", hash: "#how-it-works" },
     { label: "Savollar (FAQ)", to: "/", hash: "#faq" },
   ],

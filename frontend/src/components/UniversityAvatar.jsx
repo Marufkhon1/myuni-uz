@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CAMPUS_IMAGE_PATHS, campusIndex, getUniversityImageUrl } from "../utils/universityImage.js";
+import { getUniversityImageUrl } from "../utils/universityImage.js";
 
 const sizeClasses = {
   "2xs": "h-6 w-6 text-[9px]",
@@ -24,10 +24,10 @@ export default function UniversityAvatar({ university, size = "md" }) {
   const frameClass = frameClasses[size] || frameClasses.md;
   const initials = (university?.short_name || university?.name || "U").slice(0, 2).toUpperCase();
   const primaryUrl = getUniversityImageUrl(university);
-  const fallbackUrl = CAMPUS_IMAGE_PATHS[campusIndex(university)];
   const [imageUrl, setImageUrl] = useState(primaryUrl);
+  const [failed, setFailed] = useState(false);
 
-  if (imageUrl) {
+  if (imageUrl && !failed) {
     return (
       <img
         src={imageUrl}
@@ -36,9 +36,8 @@ export default function UniversityAvatar({ university, size = "md" }) {
         className={`${sizeClass} shrink-0 rounded-full object-cover shadow-sm ${frameClass}`}
         loading="lazy"
         onError={() => {
-          if (imageUrl !== fallbackUrl) {
-            setImageUrl(fallbackUrl);
-          }
+          setFailed(true);
+          setImageUrl("");
         }}
       />
     );

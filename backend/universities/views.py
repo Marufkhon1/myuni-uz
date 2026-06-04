@@ -271,6 +271,7 @@ class UniversityDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, university_id):
+        from .catalog_utils import serialize_faculty
         from .compare_utils import rating_distribution
 
         university = get_object_or_404(University, pk=university_id)
@@ -289,6 +290,10 @@ class UniversityDetailView(APIView):
             .order_by("sort_order", "name")
             .values("id", "name")
         )
+        faculties = [
+            serialize_faculty(faculty)
+            for faculty in university.faculties.prefetch_related("directions").order_by("sort_order", "name")
+        ]
         return Response(
             {
                 **UniversitySerializer(university).data,
@@ -299,6 +304,7 @@ class UniversityDetailView(APIView):
                 "aspect_averages": aspects,
                 "review_insight_summary": generate_review_insight_summary(university.id),
                 "study_directions": directions,
+                "faculties": faculties,
             }
         )
 

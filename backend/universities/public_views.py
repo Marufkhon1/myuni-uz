@@ -19,10 +19,10 @@ from .catalog_utils import (
     apply_catalog_filters,
     annotated_universities_queryset,
     catalog_filter_options,
-    serialize_map_marker,
     serialize_university_card,
     serialize_university_detail,
 )
+from .university_images import build_university_image_url, is_legacy_placeholder_url
 from .review_trust_utils import (
     annotate_reviews_with_likes,
     aspect_averages_for_university,
@@ -189,31 +189,6 @@ class PublicUniversityListView(APIView):
         )
 
 
-class PublicUniversityMapView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        queryset = apply_catalog_filters(
-            annotated_universities_queryset().filter(
-                latitude__isnull=False,
-                longitude__isnull=False,
-            ),
-            request.query_params,
-        )
-        markers = []
-        for university in queryset:
-            marker = serialize_map_marker(university)
-            if marker:
-                markers.append(marker)
-        return Response(
-            {
-                "count": len(markers),
-                "filters": catalog_filter_options(),
-                "markers": markers,
-            }
-        )
-
-
 class PublicUniversityCatalogFiltersView(APIView):
     permission_classes = [AllowAny]
 
@@ -365,6 +340,13 @@ def _top_university_featured_reviews(limit=3, request=None):
         if review:
             featured_reviews.append(review)
 
+    featured_reviews.sort(
+        key=lambda review: (
+            getattr(review, "like_count", 0) or 0,
+            review.created_at.timestamp() if review.created_at else 0,
+        ),
+        reverse=True,
+    )
     return featured_reviews
 
 
@@ -506,7 +488,6 @@ class PublicSitemapView(APIView):
             "login",
             "signup",
             "universitetlar",
-            "universitetlar/xarita",
             "savollar-javob",
             "foydalanish-shartlari",
             "maxfiylik-siyosati",
@@ -542,7 +523,7 @@ DEFAULT_DESCRIPTION = (
     "MyUni.uz — O'zbekiston universitetlari haqida talabalar sharhlari, "
     "reyting va tanlov uchun ochiq ma'lumot platformasi."
 )
-DEFAULT_OG_IMAGE = "/images/campuses/campus-01.jpg"
+DEFAULT_OG_IMAGE = "/images/universities/_default.jpg"
 META_DESCRIPTION_MAX = 160
 
 LEGAL_PAGES = {
@@ -601,31 +582,18 @@ def _canonical_share_url(path):
     return f"{base}/" if normalized == "/" else f"{base}{normalized}"
 
 
+
 def _is_unreliable_image(url):
-    if not url:
-        return True
-    lower = url.lower()
-    blocked = ("picsum.photos", "dicebear.com", "unsplash.com", "images.unsplash")
-    return any(token in lower for token in blocked)
-
-
-def _campus_index(university):
-    key = university.id or university.short_name or university.name or "uni"
-    if isinstance(key, int):
-        numeric = key
-    else:
-        numeric = sum(ord(char) for char in str(key))
-    return abs(numeric) % 8
+    return is_legacy_placeholder_url(url)
 
 
 def _university_og_image(university):
-    image_url = (university.image_url or "").strip()
-    if image_url and not _is_unreliable_image(image_url):
+    image_url = build_university_image_url(university)
+    if image_url:
         if image_url.startswith(("http://", "https://")):
             return image_url
         return _absolute_share_url(image_url)
-    campus_number = _campus_index(university) + 1
-    return _absolute_share_url(f"/images/campuses/campus-{campus_number:02d}.jpg")
+    return _absolute_share_url(DEFAULT_OG_IMAGE)
 
 
 def _build_share_meta_for_path(path):
@@ -668,19 +636,6 @@ def _build_share_meta_for_path(path):
             "description": _truncate_description(
                 "O'zbekiston universitetlarini shahar, turi, reyting va sharhlar bo'yicha "
                 "filtrlash va qidirish."
-            ),
-            "canonical": canonical,
-            "image": image,
-            "image_alt": image_alt,
-            "type": page_type,
-            "robots": robots,
-        }
-
-    if normalized == "/universitetlar/xarita":
-        return {
-            "title": "Universitetlar xaritasi | MyUni.uz",
-            "description": _truncate_description(
-                "O'zbekiston xaritasida universitetlar joylashuvi, reyting va sharhlar."
             ),
             "canonical": canonical,
             "image": image,

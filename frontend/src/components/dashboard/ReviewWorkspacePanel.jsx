@@ -218,8 +218,6 @@ export default function ReviewWorkspacePanel({
   const distribution = reviewUniversityDetail?.rating_distribution;
   const aspectAverages = reviewUniversityDetail?.aspect_averages;
   const insightSummary = reviewUniversityDetail?.review_insight_summary;
-  const studyDirections = reviewUniversityDetail?.study_directions || [];
-
   return (
     <div
       className={`flex min-w-0 w-full flex-col overflow-hidden rounded-[1.25rem] bg-white shadow-[0_12px_40px_-16px_rgba(15,23,42,0.12)] ring-1 ring-slate-200/70 dark:bg-[#0b1220]/80 dark:shadow-[0_12px_40px_-16px_rgba(0,0,0,0.5)] dark:ring-white/10 lg:flex lg:min-h-0 lg:max-h-[calc(100dvh-11rem)] lg:overflow-hidden ${className}`}
@@ -253,6 +251,7 @@ export default function ReviewWorkspacePanel({
             statLabels={content.statLabels}
             ratingFilter={ratingFilter}
             onRatingFilterChange={setRatingFilter}
+            reviews={reviews}
           />
 
           <div className="space-y-5 px-5 pb-28 pt-4 sm:px-6 sm:pb-6 lg:pb-6">
@@ -271,9 +270,6 @@ export default function ReviewWorkspacePanel({
                 onRatingChange={onRatingChange}
                 aspectRatings={aspectRatings}
                 onAspectChange={onAspectChange}
-                studyDirectionId={studyDirectionId}
-                onStudyDirectionChange={onStudyDirectionChange}
-                directions={studyDirections}
                 reviewText={reviewText}
                 onReviewTextChange={onReviewTextChange}
                 isSubmitting={isReviewSubmitting}

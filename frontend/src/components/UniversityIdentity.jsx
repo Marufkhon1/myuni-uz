@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CAMPUS_IMAGE_PATHS, campusIndex, getUniversityImageUrl } from "../utils/universityImage.js";
+import { getUniversityImageUrl } from "../utils/universityImage.js";
 
 const SIZE = {
   sm: { box: "h-10 w-10 rounded-xl text-xs", text: "text-xs" },
@@ -11,10 +11,10 @@ export default function UniversityIdentity({ university, size = "md", className 
   const sizing = SIZE[size] ?? SIZE.md;
   const initials = (university?.short_name || university?.name || "U").slice(0, 2).toUpperCase();
   const primaryUrl = getUniversityImageUrl(university);
-  const fallbackUrl = CAMPUS_IMAGE_PATHS[campusIndex(university)];
   const [imageUrl, setImageUrl] = useState(primaryUrl);
+  const [failed, setFailed] = useState(false);
 
-  if (imageUrl) {
+  if (imageUrl && !failed) {
     return (
       <img
         src={imageUrl}
@@ -23,9 +23,8 @@ export default function UniversityIdentity({ university, size = "md", className 
         className={`${sizing.box} shrink-0 object-cover shadow-lg ring-2 ring-white/20 ${className}`}
         loading="lazy"
         onError={() => {
-          if (imageUrl !== fallbackUrl) {
-            setImageUrl(fallbackUrl);
-          }
+          setFailed(true);
+          setImageUrl("");
         }}
       />
     );

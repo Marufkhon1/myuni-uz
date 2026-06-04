@@ -118,6 +118,15 @@ export default function SocialProofSection() {
   }, []);
 
   const highlights = useMemo(() => buildSocialProofHighlights(stats), [stats]);
+  const sortedReviews = useMemo(
+    () =>
+      [...reviews].sort((left, right) => {
+        const leftLikes = left.helpful_count ?? left.like_count ?? 0;
+        const rightLikes = right.helpful_count ?? right.like_count ?? 0;
+        return rightLikes - leftLikes;
+      }),
+    [reviews]
+  );
 
   if (!isLoading && highlights.length === 0 && reviews.length === 0) {
     return null;
@@ -157,15 +166,15 @@ export default function SocialProofSection() {
 
         {isLoading && <SocialProofSkeleton />}
 
-        {!isLoading && reviews.length > 0 && (
+        {!isLoading && sortedReviews.length > 0 && (
           <div className="mt-10 responsive-card-grid">
-            {reviews.map((review) => (
+            {sortedReviews.map((review) => (
               <SocialProofCard key={review.id} review={review} />
             ))}
           </div>
         )}
 
-        {!isLoading && reviews.length === 0 && highlights.length > 0 && (
+        {!isLoading && sortedReviews.length === 0 && highlights.length > 0 && (
           <p className="mt-8 text-center text-sm font-semibold text-slate-500 dark:text-slate-400">
             Birinchi sharhlar paydo bo&apos;lgach, top universitetlar bo&apos;yicha eng foydalilari shu yerda chiqadi.
           </p>

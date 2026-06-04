@@ -220,14 +220,9 @@ export default function UniversityPartnersSection() {
               Rasmiy hamkorlik yoki tasdiq bildirilmaydi. OTM vakillari o&apos;zgartirish yoki olib
               tashlashni so&apos;rashlari mumkin.
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link to="/universitetlar" className="landing-btn-gradient px-7 py-3.5 text-sm">
-                Barcha universitetlar
-              </Link>
-              <Link to="/universitetlar/xarita" className="landing-btn-outline px-7 py-3.5 text-sm">
-                Xaritada ko&apos;rish
-              </Link>
-            </div>
+            <Link to="/universitetlar" className="landing-btn-gradient px-7 py-3.5 text-sm">
+              Barcha universitetlar
+            </Link>
           </motion.div>
         )}
       </div>

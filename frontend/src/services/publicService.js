@@ -28,15 +28,6 @@ export async function getPublicUniversityCatalog(params) {
   return getPublicUniversities(params);
 }
 
-export async function getPublicUniversityMap(params) {
-  const { data } = await api.get("/public/universities/map/", { params });
-  return {
-    count: data?.count ?? data?.markers?.length ?? 0,
-    markers: data?.markers ?? [],
-    filters: data?.filters ?? null,
-  };
-}
-
 export async function getPublicUniversityFilters() {
   const { data } = await api.get("/public/universities/filters/");
   return data;

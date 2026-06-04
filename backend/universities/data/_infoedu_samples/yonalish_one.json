@@ -1,0 +1,381 @@
+{
+  "dirid": "60810200",
+  "dirnm": "Agrokimyo va tuproqshunoslik",
+  "quotas": [
+    {
+      "OTM": "Buxoro davlat universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "9",
+      "contractnm": "16",
+      "ballgr": "108.7",
+      "ballk": "94.1",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "buxoro-davlat-universiteti",
+      "viloyatLabel": "Buxoro viloyati"
+    },
+    {
+      "OTM": "Guliston davlat universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "18",
+      "contractnm": "33",
+      "ballgr": "100.2",
+      "ballk": "77.7",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "guliston-davlat-universiteti",
+      "viloyatLabel": "Sirdaryo viloyati"
+    },
+    {
+      "OTM": "Samarqand davlat universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "18",
+      "contractnm": "32",
+      "ballgr": "107.8",
+      "ballk": "85.7",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "samarqand-davlat-universiteti",
+      "viloyatLabel": "Andijon viloyati"
+    },
+    {
+      "OTM": "O‘zbekiston Milliy universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "9",
+      "contractnm": "16",
+      "ballgr": "120.1",
+      "ballk": "103.7",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "ozbekiston-milliy-universiteti",
+      "viloyatLabel": "Toshkent shahri"
+    },
+    {
+      "OTM": "Urganch davlat universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "9",
+      "contractnm": "16",
+      "ballgr": "111",
+      "ballk": "98.6",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "urganch-davlat-universiteti",
+      "viloyatLabel": "Xorazm viloyati"
+    },
+    {
+      "OTM": "Farg‘ona davlat universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "9",
+      "contractnm": "17",
+      "ballgr": "112.1",
+      "ballk": "95.2",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "fargona-davlat-universiteti",
+      "viloyatLabel": "Farg'ona viloyati"
+    },
+    {
+      "OTM": "Qarshi davlat universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "9",
+      "contractnm": "16",
+      "ballgr": "110.5",
+      "ballk": "96.9",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "qarshi-davlat-universiteti",
+      "viloyatLabel": "Qashqadaryo viloyati"
+    },
+    {
+      "OTM": "Qoraqalpoq davlat universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "13",
+      "contractnm": "17",
+      "ballgr": "84.6",
+      "ballk": "75.4",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "qoraqalpoq-davlat-universiteti",
+      "viloyatLabel": "Qoraqalpog'iston Respublikasi"
+    },
+    {
+      "OTM": "Qoraqalpoq davlat universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "Qoraqalpoq",
+      "grantnm": "2",
+      "contractnm": "18",
+      "ballgr": "94.2",
+      "ballk": "62.1",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "qoraqalpoq-davlat-universiteti",
+      "viloyatLabel": "Qoraqalpog'iston Respublikasi"
+    },
+    {
+      "OTM": "Andijon qishloq xo‘jaligi va agrotexnologiyalar instituti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "18",
+      "contractnm": "32",
+      "ballgr": "105.7",
+      "ballk": "80.9",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "andijon-qishloq-xojaligi-va-agrotexnologiyalar-instituti",
+      "viloyatLabel": "Andijon viloyati"
+    },
+    {
+      "OTM": "Toshkent davlat agrar universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "26",
+      "contractnm": "49",
+      "ballgr": "106.9",
+      "ballk": "82.8",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "toshkent-davlat-agrar-universiteti",
+      "viloyatLabel": "Toshkent viloyati"
+    },
+    {
+      "OTM": "Toshkent davlat agrar universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kechki",
+      "langnm": "O`zbek",
+      "grantnm": "0",
+      "contractnm": "25",
+      "ballgr": "0",
+      "ballk": "68.1",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "toshkent-davlat-agrar-universiteti",
+      "viloyatLabel": "Toshkent viloyati"
+    },
+    {
+      "OTM": "Qoraqalpog‘iston qishloq xo‘jaligi va agrotexnologiyalar instituti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "4",
+      "contractnm": "38",
+      "ballgr": "85",
+      "ballk": "64.9",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "qoraqalpogiston-qishloq-xojaligi-va-agrotexnologiyalar-instituti",
+      "viloyatLabel": "Qoraqalpog'iston Respublikasi"
+    },
+    {
+      "OTM": "Qoraqalpog‘iston qishloq xo‘jaligi va agrotexnologiyalar instituti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "Qoraqalpoq",
+      "grantnm": "1",
+      "contractnm": "18",
+      "ballgr": "90.6",
+      "ballk": "56.8",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "qoraqalpogiston-qishloq-xojaligi-va-agrotexnologiyalar-instituti",
+      "viloyatLabel": "Qoraqalpog'iston Respublikasi"
+    },
+    {
+      "OTM": "Toshkent kimyo-texnologiya instituti Yangiyer filiali",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "8",
+      "contractnm": "17",
+      "ballgr": "86",
+      "ballk": "72.1",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "toshkent-kimyo-texnologiya-instituti-yangiyer-filiali",
+      "viloyatLabel": "Sirdaryo viloyati"
+    },
+    {
+      "OTM": "Toshkent kimyo-texnologiya instituti Yangiyer filiali",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kechki",
+      "langnm": "O`zbek",
+      "grantnm": "0",
+      "contractnm": "25",
+      "ballgr": "0",
+      "ballk": "66.3",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "toshkent-kimyo-texnologiya-instituti-yangiyer-filiali",
+      "viloyatLabel": "Sirdaryo viloyati"
+    },
+    {
+      "OTM": "Samarqand agroinnovatsiyalar va tadqiqotlar instituti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "9",
+      "contractnm": "16",
+      "ballgr": "99.4",
+      "ballk": "80.5",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "samarqand-agroinnovatsiyalar-va-tadqiqotlar-instituti",
+      "viloyatLabel": "Samarqand viloyati"
+    },
+    {
+      "OTM": "Termiz davlat muhandislik va agrotexnologiyalar universiteti",
+      "dirid": "60810200",
+      "dirnm": "Agrokimyo va tuproqshunoslik",
+      "emnm": "Kunduzgi",
+      "langnm": "O`zbek",
+      "grantnm": "18",
+      "contractnm": "32",
+      "ballgr": "94.3",
+      "ballk": "69.2",
+      "fan_1": "Biologiya",
+      "fan_2": "Kimyo",
+      "oliygohSlug": "termiz-davlat-muhandislik-va-agrotexnologiyalar-universiteti",
+      "viloyatLabel": "Surxondaryo viloyati"
+    }
+  ],
+  "directionStats": {
+    "comparisonNote": "O'rtacha va eng yuqori/past OTM lar: kunduzgi shakl, o'zbek tili qatorlari bo'yicha.",
+    "avgGrant": 102.30714285714286,
+    "avgContract": 84.12142857142855,
+    "sampleRowCount": 14,
+    "topGrantOtm": {
+      "name": "O‘zbekiston Milliy universiteti",
+      "ball": 120.1,
+      "slug": "ozbekiston-milliy-universiteti"
+    },
+    "bottomGrantOtm": {
+      "name": "Qoraqalpoq davlat universiteti",
+      "ball": 84.6,
+      "slug": "qoraqalpoq-davlat-universiteti"
+    },
+    "topContractOtm": {
+      "name": "O‘zbekiston Milliy universiteti",
+      "ball": 103.7,
+      "slug": "ozbekiston-milliy-universiteti"
+    },
+    "bottomContractOtm": {
+      "name": "Qoraqalpog‘iston qishloq xo‘jaligi va agrotexnologiyalar instituti",
+      "ball": 64.9,
+      "slug": "qoraqalpogiston-qishloq-xojaligi-va-agrotexnologiyalar-instituti"
+    }
+  },
+  "data": {
+    "generalSettings": {
+      "__typename": "GeneralSettings",
+      "title": "Infoedu",
+      "description": "Ta&#039;lim xabarlari va yangiliklari"
+    },
+    "primaryMenuItems": {
+      "__typename": "RootQueryToMenuItemConnection",
+      "nodes": [
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDozOTE4",
+          "label": "Oliygohlar",
+          "uri": "/oliygoh",
+          "parentId": null,
+          "childItems": {
+            "__typename": "MenuItemToMenuItemConnection",
+            "nodes": []
+          }
+        },
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDo0NTY2",
+          "label": "Darsliklar",
+          "uri": "/darsliklar",
+          "parentId": null,
+          "childItems": {
+            "__typename": "MenuItemToMenuItemConnection",
+            "nodes": []
+          }
+        },
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDoxNjI5NA==",
+          "label": "Yangiliklar",
+          "uri": "https://infoedu.uz/posts",
+          "parentId": null,
+          "childItems": {
+            "__typename": "MenuItemToMenuItemConnection",
+            "nodes": []
+          }
+        },
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDoxNjc4Nw==",
+          "label": "Milliy sertifikat 2026",
+          "uri": "https://infoedu.uz/milliy-sertifikat-sanalari",
+          "parentId": null,
+          "childItems": {
+            "__typename": "MenuItemToMenuItemConnection",
+            "nodes": []
+          }
+        }
+      ]
+    },
+    "footerMenuItems": {
+      "__typename": "RootQueryToMenuItemConnection",
+      "nodes": [
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDozMzIy",
+          "label": "Asosiy",
+          "uri": "/"
+        },
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDozMzIz",
+          "label": "Privacy Policy (Maxfiylik siyosati)",
+          "uri": "/privacy-policy/"
+        },
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDoxNjI2Nw==",
+          "label": "Biz haqimizda",
+          "uri": "/biz-haqimizda/"
+        }
+      ]
+    }
+  }
+}

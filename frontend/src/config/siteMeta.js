@@ -5,7 +5,7 @@ export const TWITTER_HANDLE = "@myuniuz";
 export const DEFAULT_TITLE = "MyUni.uz | Universitetlar reytingi va talabalar sharhlari";
 export const DEFAULT_DESCRIPTION =
   "MyUni.uz — O'zbekiston universitetlari haqida talabalar sharhlari, reyting va tanlov uchun ochiq ma'lumot platformasi.";
-export const DEFAULT_OG_IMAGE = "/images/campuses/campus-01.jpg";
+export const DEFAULT_OG_IMAGE = "/images/universities/_default.jpg";
 export const DEFAULT_OG_IMAGE_ALT = "MyUni.uz — universitet sharhlari va reyting platformasi";
 export const OG_IMAGE_WIDTH = 1200;
 export const OG_IMAGE_HEIGHT = 630;
@@ -193,10 +193,5 @@ export const PAGE_META = {
     description:
       "O'zbekiston universitetlarini shahar, turi, reyting va sharhlar bo'yicha filtrlash va qidirish.",
     path: "/universitetlar",
-  },
-  universitiesMap: {
-    title: "Universitetlar xaritasi | MyUni.uz",
-    description: "O'zbekiston xaritasida universitetlar joylashuvi, reyting va sharhlar.",
-    path: "/universitetlar/xarita",
   },
 };

@@ -1,0 +1,2330 @@
+{
+  "data": {
+    "contentNodesWithOliygoh": {
+      "nodes": [
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 16895,
+          "title": "O’zbekiston Respublikasi Favqulodda vaziyatlat vazirligi akademiyasi",
+          "slug": "ozbekiston-respublikasi-favqulodda-vaziyatlat-vazirligi-akademiyasi",
+          "uri": "/oliygoh/ozbekiston-respublikasi-favqulodda-vaziyatlat-vazirligi-akademiyasi/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2026/04/Ozbekiston-Respublikasi-Favqulodda-vaziyatlat-vazirligi-akademiyasi.jpg",
+              "altText": "O'zbekiston Respublikasi Favqulodda vaziyatlat vazirligi akademiyasi"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "akademiya: Akademiya"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3834,
+          "title": "“Cyber university” davlat universiteti",
+          "slug": "cyber-university-davlat-universiteti",
+          "uri": "/oliygoh/cyber-university-davlat-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Cyber-university.jpg",
+              "altText": "Cyber university"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3833,
+          "title": "Urganch davlat universiteti",
+          "slug": "urganch-davlat-universiteti",
+          "uri": "/oliygoh/urganch-davlat-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Urganch-davlat-universiteti-scaled.jpg",
+              "altText": "Urganch davlat universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "xorazm"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3832,
+          "title": "Urganch davlat tibbiyot instituti",
+          "slug": "urganch-davlat-tibbiyot-instituti",
+          "uri": "/oliygoh/urganch-davlat-tibbiyot-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-tibbiyot-akademiyasi-Urganch-filiali.png",
+              "altText": "Toshkent tibbiyot akademiyasi Urganch filiali"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "xorazm"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3831,
+          "title": "Urganch davlat pedagogika instituti",
+          "slug": "urganch-davlat-pedagogika-instituti",
+          "uri": "/oliygoh/urganch-davlat-pedagogika-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://urspi.uz/user_files/user_6/13.11.2023/photo_2023-11-15_16-13-31.jpg",
+              "altText": ""
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "xorazm"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3830,
+          "title": "Toshkent to‘qimachilik va yengil sanoat instituti",
+          "slug": "toshkent-toqimachilik-va-yengil-sanoat-instituti",
+          "uri": "/oliygoh/toshkent-toqimachilik-va-yengil-sanoat-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-to‘qimachilik-va-yengil-sanoat-instituti.png",
+              "altText": "Toshkent to‘qimachilik va yengil sanoat instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3829,
+          "title": "Toshkent kimyo-texnologiya instituti Yangiyer filiali",
+          "slug": "toshkent-kimyo-texnologiya-instituti-yangiyer-filiali",
+          "uri": "/oliygoh/toshkent-kimyo-texnologiya-instituti-yangiyer-filiali/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/maxresdefault_4.jpg",
+              "altText": "toshkent kimyo-texnologiya instituti yangiyer filiali"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "sirdaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3828,
+          "title": "Toshkent kimyo-texnologiya instituti",
+          "slug": "toshkent-kimyo-texnologiya-instituti",
+          "uri": "/oliygoh/toshkent-kimyo-texnologiya-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Kimyoviy_moddalar_texnologiyasi.jpg",
+              "altText": "Toshkent kimyo-texnologiya instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3827,
+          "title": "Toshkent irrigatsiya va qishloq xo‘jaligini mexanizatsiyalash muhandislari instituti milliy tadqiqotlar universiteti",
+          "slug": "toshkent-irrigatsiya-va-qishloq-xojaligini-mexanizatsiyalash-muhandislari-instituti-milliy-tadqiqotlar-universiteti",
+          "uri": "/oliygoh/toshkent-irrigatsiya-va-qishloq-xojaligini-mexanizatsiyalash-muhandislari-instituti-milliy-tadqiqotlar-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-irrigatsiya-va-qishloq-xo‘jaligini-mexanizatsiyalash-muhandislari-instituti-Milliy-tadqiqot-universiteti.jpg",
+              "altText": "\"Toshkent irrigatsiya va qishloq xo‘jaligini mexanizatsiyalash muhandislari instituti\" Milliy tadqiqot universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3826,
+          "title": "Toshkent farmatsevtika instituti",
+          "slug": "toshkent-farmatsevtika-instituti",
+          "uri": "/oliygoh/toshkent-farmatsevtika-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-Farmatsevtika-Instituti.jpg",
+              "altText": "Toshkent Farmatsevtika Instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3825,
+          "title": "Toshkent davlat yuridik universiteti",
+          "slug": "toshkent-davlat-yuridik-universiteti",
+          "uri": "/oliygoh/toshkent-davlat-yuridik-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-yuridik-universiteti.jpg",
+              "altText": "Toshkent davlat yuridik universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3824,
+          "title": "Toshkent davlat transport universiteti",
+          "slug": "toshkent-davlat-transport-universiteti",
+          "uri": "/oliygoh/toshkent-davlat-transport-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-transport-universiteti.jpg",
+              "altText": "Toshkent davlat transport universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3823,
+          "title": "Toshkent davlat tibbiyot universiteti",
+          "slug": "toshkent-davlat-tibbiyot-universiteti",
+          "uri": "/oliygoh/toshkent-davlat-tibbiyot-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-tibbiyot-akademiyasi.jpg",
+              "altText": "Toshkent tibbiyot akademiyasi"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3822,
+          "title": "Toshkent davlat tibbiyot akademiyasi Termiz filiali",
+          "slug": "toshkent-davlat-tibbiyot-akademiyasi-termiz-filiali",
+          "uri": "/oliygoh/toshkent-davlat-tibbiyot-akademiyasi-termiz-filiali/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/TTA_TF_bosh_bino.jpg",
+              "altText": ""
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "surxondaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3821,
+          "title": "Toshkent davlat tibbiyot akademiyasi Chirchiq filiali",
+          "slug": "toshkent-davlat-tibbiyot-akademiyasi-chirchiq-filiali",
+          "uri": "/oliygoh/toshkent-davlat-tibbiyot-akademiyasi-chirchiq-filiali/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-tibbiyot-akademiyasi-Chirchiq-filiali.jpg",
+              "altText": "Toshkent davlat tibbiyot akademiyasi Chirchiq filiali"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3820,
+          "title": "Toshkent davlat texnika universiteti Olmaliq filiali",
+          "slug": "toshkent-davlat-texnika-universiteti-olmaliq-filiali",
+          "uri": "/oliygoh/toshkent-davlat-texnika-universiteti-olmaliq-filiali/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-texnika-universiteti-Olmaliq-filiali.jpg",
+              "altText": "Toshkent davlat texnika universiteti Olmaliq filiali"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3819,
+          "title": "Toshkent davlat texnika universiteti",
+          "slug": "toshkent-davlat-texnika-universiteti",
+          "uri": "/oliygoh/toshkent-davlat-texnika-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-texnika-universiteti.png",
+              "altText": "Toshkent davlat texnika universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3818,
+          "title": "Toshkent davlat sharqshunoslik universiteti",
+          "slug": "toshkent-davlat-sharqshunoslik-universiteti",
+          "uri": "/oliygoh/toshkent-davlat-sharqshunoslik-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-sharqshunoslik-universiteti.jpg",
+              "altText": "Toshkent davlat sharqshunoslik universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3817,
+          "title": "Toshkent davlat o‘zbek tili va adabiyoti universiteti",
+          "slug": "toshkent-davlat-ozbek-tili-va-adabiyoti-universiteti",
+          "uri": "/oliygoh/toshkent-davlat-ozbek-tili-va-adabiyoti-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-o‘zbek-tili-va-adabiyoti-universiteti.png",
+              "altText": "Toshkent davlat o‘zbek tili va adabiyoti universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3816,
+          "title": "Toshkent davlat iqtisodiyot universiteti To‘rtko‘l fakulʼteti",
+          "slug": "toshkent-davlat-iqtisodiyot-universiteti-tortkol-fakulteti",
+          "uri": "/oliygoh/toshkent-davlat-iqtisodiyot-universiteti-tortkol-fakulteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-iqtisodiyot-universiteti-To‘rtko‘l-fakulʼteti.webp",
+              "altText": "Toshkent davlat iqtisodiyot universiteti To‘rtko‘l fakulʼteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3815,
+          "title": "Toshkent davlat iqtisodiyot universiteti Samarqand filiali",
+          "slug": "toshkent-davlat-iqtisodiyot-universiteti-samarqand-filiali",
+          "uri": "/oliygoh/toshkent-davlat-iqtisodiyot-universiteti-samarqand-filiali/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-iqtisodiyot-universiteti-Samarqand-filiali.jpg",
+              "altText": "Toshkent davlat iqtisodiyot universiteti Samarqand filiali"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3814,
+          "title": "Toshkent davlat iqtisodiyot universiteti",
+          "slug": "toshkent-davlat-iqtisodiyot-universiteti",
+          "uri": "/oliygoh/toshkent-davlat-iqtisodiyot-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-iqtisodiyot-universiteti.jpg",
+              "altText": "Toshkent davlat iqtisodiyot universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3813,
+          "title": "Toshkent davlat agrar universiteti",
+          "slug": "toshkent-davlat-agrar-universiteti",
+          "uri": "/oliygoh/toshkent-davlat-agrar-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-davlat-agrar-universiteti.png",
+              "altText": "Toshkent davlat agrar universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3812,
+          "title": "Toshkent axborot texnologiyalari universiteti Zarafshon fakulteti",
+          "slug": "toshkent-axborot-texnologiyalari-universiteti-zarafshon-fakulteti",
+          "uri": "/oliygoh/toshkent-axborot-texnologiyalari-universiteti-zarafshon-fakulteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-axborot-texnologiyalari-universiteti-Zarafshon-fakulteti.jpg",
+              "altText": "Toshkent axborot texnologiyalari universiteti Zarafshon fakulteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "navoiy"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3811,
+          "title": "Toshkent axborot texnologiyalari universiteti Samarqand filiali",
+          "slug": "toshkent-axborot-texnologiyalari-universiteti-samarqand-filiali",
+          "uri": "/oliygoh/toshkent-axborot-texnologiyalari-universiteti-samarqand-filiali/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-axborot-texnologiyalari-universiteti-Samarqand-filiali-scaled.jpg",
+              "altText": "Toshkent axborot texnologiyalari universiteti Samarqand filiali"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3810,
+          "title": "Toshkent axborot texnologiyalari universiteti",
+          "slug": "toshkent-axborot-texnologiyalari-universiteti",
+          "uri": "/oliygoh/toshkent-axborot-texnologiyalari-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-axborot-texnologiyalari-universiteti.jpg",
+              "altText": "Toshkent axborot texnologiyalari universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3809,
+          "title": "Toshkent arxitektura-qurilish universiteti",
+          "slug": "toshkent-arxitektura-qurilish-universiteti",
+          "uri": "/oliygoh/toshkent-arxitektura-qurilish-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Toshkent-arxitektura-qurilish-universiteti.jpg",
+              "altText": ""
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3808,
+          "title": "Termiz davlat universiteti",
+          "slug": "termiz-davlat-universiteti",
+          "uri": "/oliygoh/termiz-davlat-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Termiz-davlat-universiteti-1-scaled.jpg",
+              "altText": "Termiz davlat universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "surxondaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3807,
+          "title": "Termiz davlat pedagogika instituti",
+          "slug": "termiz-davlat-pedagogika-instituti",
+          "uri": "/oliygoh/termiz-davlat-pedagogika-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Termiz-davlat-pedagogika-instituti.jpg",
+              "altText": "Termiz davlat pedagogika instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "surxondaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3806,
+          "title": "Termiz davlat muhandislik va agrotexnologiyalar universiteti",
+          "slug": "termiz-davlat-muhandislik-va-agrotexnologiyalar-universiteti",
+          "uri": "/oliygoh/termiz-davlat-muhandislik-va-agrotexnologiyalar-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Termiz-davlat-muhandislik-va-agrotexnologiyalar-universiteti.jpg",
+              "altText": "Termiz davlat muhandislik va agrotexnologiyalar universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "surxondaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3805,
+          "title": "Shahrisabz davlat pedagogika instituti",
+          "slug": "shahrisabz-davlat-pedagogika-instituti",
+          "uri": "/oliygoh/shahrisabz-davlat-pedagogika-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Shahrisabz-davlat-pedagogika-instituti.jpg",
+              "altText": "Shahrisabz davlat pedagogika instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qashqadaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3804,
+          "title": "Samarqand iqtisodiyot va servis instituti",
+          "slug": "samarqand-iqtisodiyot-va-servis-instituti",
+          "uri": "/oliygoh/samarqand-iqtisodiyot-va-servis-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Samarqand-iqtisodiyot-va-servis-instituti.webp",
+              "altText": "Samarqand iqtisodiyot va servis instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3803,
+          "title": "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti Toshkent filiali",
+          "slug": "samarqand-davlat-veterinariya-meditsinasi-chorvachilik-va-biotexnologiyalar-universiteti-toshkent-filiali",
+          "uri": "/oliygoh/samarqand-davlat-veterinariya-meditsinasi-chorvachilik-va-biotexnologiyalar-universiteti-toshkent-filiali/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/11/image-21.png",
+              "altText": "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti Toshkent filiali"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3802,
+          "title": "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti Nukus filiali",
+          "slug": "samarqand-davlat-veterinariya-meditsinasi-chorvachilik-va-biotexnologiyalar-universiteti-nukus-filiali",
+          "uri": "/oliygoh/samarqand-davlat-veterinariya-meditsinasi-chorvachilik-va-biotexnologiyalar-universiteti-nukus-filiali/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/photo_2026-03-29_23-42-57.jpg",
+              "altText": "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti Nukus filiali"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3801,
+          "title": "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti",
+          "slug": "samarqand-davlat-veterinariya-meditsinasi-chorvachilik-va-biotexnologiyalar-universiteti",
+          "uri": "/oliygoh/samarqand-davlat-veterinariya-meditsinasi-chorvachilik-va-biotexnologiyalar-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Samarqand-davlat-veterinariya-meditsinasi-chorvachilik-va-biotexnologiyalar-universiteti.webp",
+              "altText": "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3800,
+          "title": "Samarqand davlat universiteti Urgut filiali",
+          "slug": "samarqand-davlat-universiteti-urgut-filiali",
+          "uri": "/oliygoh/samarqand-davlat-universiteti-urgut-filiali/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/clipboard-image-1774808927.png",
+              "altText": "Samarqand davlat universiteti Urgut filiali"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3799,
+          "title": "Samarqand davlat universiteti",
+          "slug": "samarqand-davlat-universiteti",
+          "uri": "/oliygoh/samarqand-davlat-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Samarqand-davlat-pedagogika-instituti-SamDPI.jpg",
+              "altText": "Samarqand davlat universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "andijon"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3798,
+          "title": "Samarqand davlat tibbiyot  universiteti",
+          "slug": "samarqand-davlat-tibbiyot-universiteti",
+          "uri": "/oliygoh/samarqand-davlat-tibbiyot-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Samarqand-davlat-tibbiyot-universiteti.webp",
+              "altText": "Samarqand davlat tibbiyot universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3797,
+          "title": "Samarqand davlat pedagogika instituti",
+          "slug": "samarqand-davlat-pedagogika-instituti",
+          "uri": "/oliygoh/samarqand-davlat-pedagogika-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Samarqand-davlat-pedagogika-instituti.jpg",
+              "altText": "Samarqand davlat pedagogika instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3796,
+          "title": "Samarqand davlat chet tillar instituti Narpay “Xorijiy tillar” fakulʼteti",
+          "slug": "samarqand-davlat-chet-tillar-instituti-narpay-xorijiy-tillar-fakulʼteti",
+          "uri": "/oliygoh/samarqand-davlat-chet-tillar-instituti-narpay-xorijiy-tillar-fakulʼteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Samarqand-davlat-chet-tillar-instituti-fakulʼteti.webp",
+              "altText": "Samarqand davlat chet tillar instituti Narpay \"Xorijiy tillar\" fakulʼteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3795,
+          "title": "Samarqand davlat chet tillar instituti",
+          "slug": "samarqand-davlat-chet-tillar-instituti",
+          "uri": "/oliygoh/samarqand-davlat-chet-tillar-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Samarqand-davlat-chet-tillar-instituti.webp",
+              "altText": "Samarqand davlat chet tillar instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3794,
+          "title": "Samarqand davlat arxitektura-qurilish universiteti",
+          "slug": "samarqand-davlat-arxitektura-qurilish-universiteti",
+          "uri": "/oliygoh/samarqand-davlat-arxitektura-qurilish-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/samarqand-davlat-arxitektura-qurilish-universiteti.jpg",
+              "altText": "samarqand davlat arxitektura-qurilish universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3793,
+          "title": "Samarqand agroinnovatsiyalar va tadqiqotlar instituti",
+          "slug": "samarqand-agroinnovatsiyalar-va-tadqiqotlar-instituti",
+          "uri": "/oliygoh/samarqand-agroinnovatsiyalar-va-tadqiqotlar-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Samarqand-agroinnovatsiyalar-va-tadqiqotlar-instituti.png",
+              "altText": "Samarqand agroinnovatsiyalar va tadqiqotlar instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3792,
+          "title": "Qoʻqon davlat universiteti",
+          "slug": "qoʻqon-davlat-universiteti",
+          "uri": "/oliygoh/qoʻqon-davlat-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Qoqon_davlat_pedagigka_instituti.jpg",
+              "altText": "Qoʻqon davlat universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "fargona"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3791,
+          "title": "Qoraqalpoq davlat universiteti Qo‘ng‘irot  fakulʼteti",
+          "slug": "qoraqalpoq-davlat-universiteti-qongirot-fakulʼteti",
+          "uri": "/oliygoh/qoraqalpoq-davlat-universiteti-qongirot-fakulʼteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Qoraqalpoq-davlat-universiteti-Qo‘ng‘irot-fakulʼteti.webp",
+              "altText": "Qoraqalpoq davlat universiteti Qo‘ng‘irot fakulʼteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3790,
+          "title": "Qoraqalpoq davlat universiteti Chimboy  fakulʼteti",
+          "slug": "qoraqalpoq-davlat-universiteti-chimboy-fakulʼteti",
+          "uri": "/oliygoh/qoraqalpoq-davlat-universiteti-chimboy-fakulʼteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3789,
+          "title": "Qoraqalpoq davlat universiteti",
+          "slug": "qoraqalpoq-davlat-universiteti",
+          "uri": "/oliygoh/qoraqalpoq-davlat-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3788,
+          "title": "Qoraqalpog‘iston tibbiyot instituti",
+          "slug": "qoraqalpogiston-tibbiyot-instituti",
+          "uri": "/oliygoh/qoraqalpogiston-tibbiyot-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3787,
+          "title": "Qoraqalpog‘iston qishloq xo‘jaligi va agrotexnologiyalar instituti",
+          "slug": "qoraqalpogiston-qishloq-xojaligi-va-agrotexnologiyalar-instituti",
+          "uri": "/oliygoh/qoraqalpogiston-qishloq-xojaligi-va-agrotexnologiyalar-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3786,
+          "title": "Qarshi davlat universiteti",
+          "slug": "qarshi-davlat-universiteti",
+          "uri": "/oliygoh/qarshi-davlat-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Qarshi-davlat-universiteti.webp",
+              "altText": "Qarshi davlat universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qashqadaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3785,
+          "title": "Qarshi davlat texnika universiteti Shaxrisabz oziq-ovqat muhandisligi  fakulʼteti",
+          "slug": "qarshi-davlat-texnika-universiteti-shaxrisabz-oziq-ovqat-muhandisligi-fakulʼteti",
+          "uri": "/oliygoh/qarshi-davlat-texnika-universiteti-shaxrisabz-oziq-ovqat-muhandisligi-fakulʼteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qashqadaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3784,
+          "title": "Qarshi davlat texnika universiteti",
+          "slug": "qarshi-davlat-texnika-universiteti",
+          "uri": "/oliygoh/qarshi-davlat-texnika-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qashqadaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3783,
+          "title": "O‘zbekiston jurnalistika va ommaviy kommunikatsiyalar universiteti",
+          "slug": "ozbekiston-jurnalistika-va-ommaviy-kommunikatsiyalar-universiteti",
+          "uri": "/oliygoh/ozbekiston-jurnalistika-va-ommaviy-kommunikatsiyalar-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3782,
+          "title": "O‘zbekiston davlat xoreografiya akademiyasi Urganch filiali",
+          "slug": "ozbekiston-davlat-xoreografiya-akademiyasi-urganch-filiali",
+          "uri": "/oliygoh/ozbekiston-davlat-xoreografiya-akademiyasi-urganch-filiali/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "xorazm"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3781,
+          "title": "O‘zbekiston davlat xoreografiya akademiyasi",
+          "slug": "ozbekiston-davlat-xoreografiya-akademiyasi",
+          "uri": "/oliygoh/ozbekiston-davlat-xoreografiya-akademiyasi/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3780,
+          "title": "O‘zbekiston davlat sanʼat va madaniyat instituti Nukus filiali",
+          "slug": "ozbekiston-davlat-sanʼat-va-madaniyat-instituti-nukus-filiali",
+          "uri": "/oliygoh/ozbekiston-davlat-sanʼat-va-madaniyat-instituti-nukus-filiali/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3779,
+          "title": "O‘zbekiston davlat sanʼat va madaniyat instituti",
+          "slug": "ozbekiston-davlat-sanʼat-va-madaniyat-instituti",
+          "uri": "/oliygoh/ozbekiston-davlat-sanʼat-va-madaniyat-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3778,
+          "title": "O‘zbekiston davlat konservatoriyasi Nukus filiali",
+          "slug": "ozbekiston-davlat-konservatoriyasi-nukus-filiali",
+          "uri": "/oliygoh/ozbekiston-davlat-konservatoriyasi-nukus-filiali/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3777,
+          "title": "O‘zbekiston davlat jahon tillari universiteti Angren fakulteti",
+          "slug": "ozbekiston-davlat-jahon-tillari-universiteti-angren-fakulteti",
+          "uri": "/oliygoh/ozbekiston-davlat-jahon-tillari-universiteti-angren-fakulteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/O‘zbekiston-davlat-jahon-tillari-universiteti-Angren-fakulteti-1.jpg",
+              "altText": "O‘zbekiston davlat jahon tillari universiteti Angren fakulteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3776,
+          "title": "O‘zbekiston davlat jahon tillari universiteti",
+          "slug": "ozbekiston-davlat-jahon-tillari-universiteti",
+          "uri": "/oliygoh/ozbekiston-davlat-jahon-tillari-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/O‘zbekiston-davlat-jahon-tillari-universiteti-OzDJTU-1-scaled.jpg",
+              "altText": "O‘zbekiston davlat jahon tillari universiteti (O'zDJTU)"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3775,
+          "title": "O‘zbekiston Respublikasi Huquqni muhofaza qilish akademiyasi",
+          "slug": "ozbekiston-respublikasi-huquqni-muhofaza-qilish-akademiyasi",
+          "uri": "/oliygoh/ozbekiston-respublikasi-huquqni-muhofaza-qilish-akademiyasi/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Ozbekiston-Respublikasi-Huquqni-muhofaza-qilish-akademiyasi.png",
+              "altText": ""
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3774,
+          "title": "O‘zbekiston Milliy universiteti Jizzax filiali",
+          "slug": "ozbekiston-milliy-universiteti-jizzax-filiali",
+          "uri": "/oliygoh/ozbekiston-milliy-universiteti-jizzax-filiali/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Mirzo-Ulugʻbek-nomidagi-Oʻzbekiston-Milliy-universiteti-Jizzax-filiali-scaled.jpg",
+              "altText": "Mirzo Ulugʻbek nomidagi Oʻzbekiston Milliy universiteti Jizzax filiali"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "jizzax"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3773,
+          "title": "O‘zbekiston Milliy universiteti",
+          "slug": "ozbekiston-milliy-universiteti",
+          "uri": "/oliygoh/ozbekiston-milliy-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/O‘zbekiston-Milliy-universiteti.jpg",
+              "altText": "O‘zbekiston Milliy universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3772,
+          "title": "O‘zbekiston  davlat konservatoriyasi",
+          "slug": "ozbekiston-davlat-konservatoriyasi",
+          "uri": "/oliygoh/ozbekiston-davlat-konservatoriyasi/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/O‘zbekiston-davlat-konservatoriyasi.jpg",
+              "altText": "O‘zbekiston davlat konservatoriyasi"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3771,
+          "title": "O‘zbekiston  davlat jismoniy tarbiya va sport universiteti",
+          "slug": "ozbekiston-davlat-jismoniy-tarbiya-va-sport-universiteti",
+          "uri": "/oliygoh/ozbekiston-davlat-jismoniy-tarbiya-va-sport-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/O‘zbekiston-davlat-jismoniy-tarbiya-va-sport-universiteti.jpg",
+              "altText": "O‘zbekiston davlat jismoniy tarbiya va sport universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3770,
+          "title": "O‘zbek milliy musiqa sanʼati instituti",
+          "slug": "ozbek-milliy-musiqa-sanʼati-instituti",
+          "uri": "/oliygoh/ozbek-milliy-musiqa-sanʼati-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3769,
+          "title": "Oʻzbekiston xalqaro islomshunoslik akademiyasi",
+          "slug": "oʻzbekiston-xalqaro-islomshunoslik-akademiyasi",
+          "uri": "/oliygoh/oʻzbekiston-xalqaro-islomshunoslik-akademiyasi/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3768,
+          "title": "Oʻzbekiston  davlat jismoniy tarbiya va sport universiteti Nukus filiali",
+          "slug": "oʻzbekiston-davlat-jismoniy-tarbiya-va-sport-universiteti-nukus-filiali",
+          "uri": "/oliygoh/oʻzbekiston-davlat-jismoniy-tarbiya-va-sport-universiteti-nukus-filiali/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3767,
+          "title": "Oziq-ovqat texnologiyasi va muhandisligi xalqaro instituti",
+          "slug": "oziq-ovqat-texnologiyasi-va-muhandisligi-xalqaro-instituti",
+          "uri": "/oliygoh/oziq-ovqat-texnologiyasi-va-muhandisligi-xalqaro-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "fargona"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3766,
+          "title": "O’zbekiston milliy pedagogika universiteti",
+          "slug": "ozbekiston-milliy-pedagogika-universiteti",
+          "uri": "/oliygoh/ozbekiston-milliy-pedagogika-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Ozbekiston-milliy-pedagogika-universiteti-1.jpg",
+              "altText": "O’zbekiston milliy pedagogika universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3765,
+          "title": "Nukus davlat texnika universiteti",
+          "slug": "nukus-davlat-texnika-universiteti",
+          "uri": "/oliygoh/nukus-davlat-texnika-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3764,
+          "title": "Nukus davlat pedagogika instituti Ellikqal’a fakulteti",
+          "slug": "nukus-davlat-pedagogika-instituti-ellikqala-fakulteti",
+          "uri": "/oliygoh/nukus-davlat-pedagogika-instituti-ellikqala-fakulteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3763,
+          "title": "Nukus davlat pedagogika instituti",
+          "slug": "nukus-davlat-pedagogika-instituti",
+          "uri": "/oliygoh/nukus-davlat-pedagogika-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "qoraqalpogiston"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3762,
+          "title": "Navoiy davlat univeristeti",
+          "slug": "navoiy-davlat-univeristeti",
+          "uri": "/oliygoh/navoiy-davlat-univeristeti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "navoiy"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3761,
+          "title": "Navoiy davlat konchilik va texnologiyalar universiteti",
+          "slug": "navoiy-davlat-konchilik-va-texnologiyalar-universiteti",
+          "uri": "/oliygoh/navoiy-davlat-konchilik-va-texnologiyalar-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "navoiy"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3760,
+          "title": "Namangan davlat universiteti",
+          "slug": "namangan-davlat-universiteti",
+          "uri": "/oliygoh/namangan-davlat-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "namangan"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3759,
+          "title": "Namangan davlat texnika universiteti",
+          "slug": "namangan-davlat-texnika-universiteti",
+          "uri": "/oliygoh/namangan-davlat-texnika-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "namangan"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3758,
+          "title": "Namangan davlat pedagogika instituti",
+          "slug": "namangan-davlat-pedagogika-instituti",
+          "uri": "/oliygoh/namangan-davlat-pedagogika-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "namangan"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3757,
+          "title": "Namangan davlat chet tillari instituti",
+          "slug": "namangan-davlat-chet-tillari-instituti",
+          "uri": "/oliygoh/namangan-davlat-chet-tillari-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "namangan"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3756,
+          "title": "Milliy rassomlik va dizayn instituti",
+          "slug": "milliy-rassomlik-va-dizayn-instituti",
+          "uri": "/oliygoh/milliy-rassomlik-va-dizayn-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3755,
+          "title": "Milliy estrada san’ati instituti",
+          "slug": "milliy-estrada-sanati-instituti",
+          "uri": "/oliygoh/milliy-estrada-sanati-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3754,
+          "title": "Kattaqoʻrgʻon davlat pedagogika instituti",
+          "slug": "kattaqorgon-davlat-pedagogika-instituti",
+          "uri": "/oliygoh/kattaqorgon-davlat-pedagogika-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Kattaqoʻrgʻon-davlat-pedagogika-instituti.jpg",
+              "altText": "Kattaqoʻrgʻon davlat pedagogika instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3753,
+          "title": "Jizzax politexnika instituti",
+          "slug": "jizzax-politexnika-instituti",
+          "uri": "/oliygoh/jizzax-politexnika-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "jizzax"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3752,
+          "title": "Jizzax davlat pedagogika universiteti",
+          "slug": "jizzax-davlat-pedagogika-universiteti",
+          "uri": "/oliygoh/jizzax-davlat-pedagogika-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/11/jdpu.jpg",
+              "altText": "Jizzax davlat pedagogika universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "jizzax"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3751,
+          "title": "Jamoat xavfsizligi universiteti",
+          "slug": "jamoat-xavfsizligi-universiteti",
+          "uri": "/oliygoh/jamoat-xavfsizligi-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3750,
+          "title": "Jahon iqtisodiyoti va diplomatiya universiteti",
+          "slug": "jahon-iqtisodiyoti-va-diplomatiya-universiteti",
+          "uri": "/oliygoh/jahon-iqtisodiyoti-va-diplomatiya-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Jahon-iqtisodiyoti-va-diplomatiya-universiteti.webp",
+              "altText": "Jahon iqtisodiyoti va diplomatiya universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3749,
+          "title": "Ipak yo‘li turizm va madaniy meros xalqaro universiteti",
+          "slug": "ipak-yoli-turizm-va-madaniy-meros-xalqaro-universiteti",
+          "uri": "/oliygoh/ipak-yoli-turizm-va-madaniy-meros-xalqaro-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Ipak-yo‘li-turizm-va-madaniy-meros-xalqaro-universiteti.jpg",
+              "altText": "Ipak yo‘li turizm va madaniy meros xalqaro universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "samarqand"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3748,
+          "title": "Guliston davlat universiteti",
+          "slug": "guliston-davlat-universiteti",
+          "uri": "/oliygoh/guliston-davlat-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/photo_2026-04-03_07-46-45.jpg",
+              "altText": "Guliston davlat universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "sirdaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3747,
+          "title": "Guliston davlat pedagogika instituti",
+          "slug": "guliston-davlat-pedagogika-instituti",
+          "uri": "/oliygoh/guliston-davlat-pedagogika-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Guliston-davlat-pedagogika-instituti-e1775184520408.jpg",
+              "altText": "Guliston davlat pedagogika instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "sirdaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3746,
+          "title": "Geologiya fanlari universiteti",
+          "slug": "geologiya-fanlari-universiteti",
+          "uri": "/oliygoh/geologiya-fanlari-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Geologiya-fanlari-universiteti-1-scaled.jpg",
+              "altText": "Geologiya fanlari universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent_shahar"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3745,
+          "title": "Farg‘ona jamoat salomatligi tibbiyot instituti",
+          "slug": "fargona-jamoat-salomatligi-tibbiyot-instituti",
+          "uri": "/oliygoh/fargona-jamoat-salomatligi-tibbiyot-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Farg‘ona-jamoat-salomatligi-tibbiyot-instituti.jpg",
+              "altText": "Farg‘ona jamoat salomatligi tibbiyot instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "fargona"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3744,
+          "title": "Farg‘ona davlat universiteti",
+          "slug": "fargona-davlat-universiteti",
+          "uri": "/oliygoh/fargona-davlat-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "fargona"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3743,
+          "title": "Farg‘ona davlat texnika texnika universiteti",
+          "slug": "fargona-davlat-texnika-texnika-universiteti",
+          "uri": "/oliygoh/fargona-davlat-texnika-texnika-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "fargona"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3742,
+          "title": "Denov tadbirkorlik va pedagogika instituti",
+          "slug": "denov-tadbirkorlik-va-pedagogika-instituti",
+          "uri": "/oliygoh/denov-tadbirkorlik-va-pedagogika-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "surxondaryo"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3741,
+          "title": "Chirchiq davlat pedagogika universiteti",
+          "slug": "chirchiq-davlat-pedagogika-universiteti",
+          "uri": "/oliygoh/chirchiq-davlat-pedagogika-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "toshkent"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3740,
+          "title": "Buxoro davlat universiteti",
+          "slug": "buxoro-davlat-universiteti",
+          "uri": "/oliygoh/buxoro-davlat-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/Buxoro-davlat-universiteti.jpg",
+              "altText": "Buxoro davlat universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "buxoro"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3739,
+          "title": "Buxoro davlat tibbiyot instituti",
+          "slug": "buxoro-davlat-tibbiyot-instituti",
+          "uri": "/oliygoh/buxoro-davlat-tibbiyot-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/400_210_85_3771577910.jpg",
+              "altText": "Buxoro davlat tibbiyot instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "buxoro"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3738,
+          "title": "Buxoro davlat texnika universiteti",
+          "slug": "buxoro-davlat-texnika-universiteti",
+          "uri": "/oliygoh/buxoro-davlat-texnika-universiteti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "buxoro"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3737,
+          "title": "Buxoro davlat pedagogika instituti",
+          "slug": "buxoro-davlat-pedagogika-instituti",
+          "uri": "/oliygoh/buxoro-davlat-pedagogika-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "buxoro"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3736,
+          "title": "Andijon qishloq xo‘jaligi va agrotexnologiyalar instituti",
+          "slug": "andijon-qishloq-xojaligi-va-agrotexnologiyalar-instituti",
+          "uri": "/oliygoh/andijon-qishloq-xojaligi-va-agrotexnologiyalar-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "andijon"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3735,
+          "title": "Andijon davlat tibbiyot instituti",
+          "slug": "andijon-davlat-tibbiyot-instituti",
+          "uri": "/oliygoh/andijon-davlat-tibbiyot-instituti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/ANDIJON_TIBBIYOT_INSTITUTI.jpg",
+              "altText": "Andijon davlat tibbiyot instituti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "andijon"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3734,
+          "title": "Andijon davlat texnika instituti",
+          "slug": "andijon-davlat-texnika-instituti",
+          "uri": "/oliygoh/andijon-davlat-texnika-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": null,
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3733,
+          "title": "Andijon davlat pedagogika instituti",
+          "slug": "andijon-davlat-pedagogika-instituti",
+          "uri": "/oliygoh/andijon-davlat-pedagogika-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": null,
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3732,
+          "title": "Andijon davlat chet tillari instituti",
+          "slug": "andijon-davlat-chet-tillari-instituti",
+          "uri": "/oliygoh/andijon-davlat-chet-tillari-instituti/",
+          "featuredImage": null,
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": null,
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        },
+        {
+          "__typename": "Oliygoh",
+          "databaseId": 3731,
+          "title": "Andijon davlat universiteti",
+          "slug": "andijon-davlat-universiteti",
+          "uri": "/oliygoh/andijon-davlat-universiteti/",
+          "featuredImage": {
+            "__typename": "NodeWithFeaturedImageToMediaItemConnectionEdge",
+            "node": {
+              "__typename": "MediaItem",
+              "sourceUrl": "https://api.infoedu.uz/wp-content/uploads/2025/12/andijon-davlat-universiteti.jpg",
+              "altText": "andijon davlat universiteti"
+            }
+          },
+          "oliygohMalumotlari": {
+            "__typename": "OliygohMalumotlari",
+            "viloyat": [
+              "andijon"
+            ],
+            "universitetTuri": [
+              "davlat"
+            ]
+          }
+        }
+      ],
+      "pageInfo": {
+        "hasNextPage": false,
+        "endCursor": null
+      }
+    },
+    "generalSettings": {
+      "__typename": "GeneralSettings",
+      "title": "Infoedu",
+      "description": "Ta&#039;lim xabarlari va yangiliklari"
+    },
+    "primaryMenuItems": {
+      "__typename": "RootQueryToMenuItemConnection",
+      "nodes": [
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDozOTE4",
+          "label": "Oliygohlar",
+          "uri": "/oliygoh",
+          "parentId": null,
+          "childItems": {
+            "__typename": "MenuItemToMenuItemConnection",
+            "nodes": []
+          }
+        },
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDo0NTY2",
+          "label": "Darsliklar",
+          "uri": "/darsliklar",
+          "parentId": null,
+          "childItems": {
+            "__typename": "MenuItemToMenuItemConnection",
+            "nodes": []
+          }
+        },
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDoxNjI5NA==",
+          "label": "Yangiliklar",
+          "uri": "https://infoedu.uz/posts",
+          "parentId": null,
+          "childItems": {
+            "__typename": "MenuItemToMenuItemConnection",
+            "nodes": []
+          }
+        },
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDoxNjc4Nw==",
+          "label": "Milliy sertifikat 2026",
+          "uri": "https://infoedu.uz/milliy-sertifikat-sanalari",
+          "parentId": null,
+          "childItems": {
+            "__typename": "MenuItemToMenuItemConnection",
+            "nodes": []
+          }
+        }
+      ]
+    },
+    "footerMenuItems": {
+      "__typename": "RootQueryToMenuItemConnection",
+      "nodes": [
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDozMzIy",
+          "label": "Asosiy",
+          "uri": "/"
+        },
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDozMzIz",
+          "label": "Privacy Policy (Maxfiylik siyosati)",
+          "uri": "/privacy-policy/"
+        },
+        {
+          "__typename": "MenuItem",
+          "id": "cG9zdDoxNjI2Nw==",
+          "label": "Biz haqimizda",
+          "uri": "/biz-haqimizda/"
+        }
+      ]
+    }
+  }
+}

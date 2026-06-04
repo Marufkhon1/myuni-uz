@@ -152,6 +152,14 @@ body {
     backface-visibility: hidden;
   }
 
+  .hero-preview-panel {
+    animation: hero-float 5.5s ease-in-out infinite;
+    animation-delay: -1.2s;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
   .hero-float-card-delay-1 {
     animation-delay: -1.5s;
   }
@@ -642,7 +650,8 @@ body {
     scroll-behavior: auto !important;
   }
 
-  .hero-float-card {
+  .hero-float-card,
+  .hero-preview-panel {
     animation: none;
   }
 
@@ -704,7 +713,7 @@ body {
   }
 
   .responsive-heading-xl {
-    @apply text-3xl font-black tracking-tight sm:text-4xl md:text-5xl lg:text-6xl;
+    @apply text-3xl font-black leading-[1.12] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl;
   }
 
   .responsive-heading-lg {

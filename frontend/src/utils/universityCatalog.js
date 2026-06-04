@@ -83,3 +83,25 @@ export function formatAdmissionDate(value) {
     return value;
   }
 }
+
+export function formatUzsAmount(value) {
+  const amount = Number(value);
+  if (!Number.isFinite(amount) || amount <= 0) {
+    return null;
+  }
+  return `${new Intl.NumberFormat("uz-UZ").format(Math.round(amount))} so'm`;
+}
+
+/** @returns {{ label: string, value: string }[]} */
+export function formatContractPricingLines(contractPricing) {
+  if (!contractPricing?.forms?.length) {
+    return [];
+  }
+  const year = contractPricing.academic_year ? ` (${contractPricing.academic_year})` : "";
+  return contractPricing.forms
+    .filter((form) => form.average_uzs)
+    .map((form) => ({
+      label: `Kontrakt — ${form.label}${year}`,
+      value: formatUzsAmount(form.average_uzs) || "—",
+    }));
+}

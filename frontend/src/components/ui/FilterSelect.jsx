@@ -28,6 +28,16 @@ const ICONS = {
       <path strokeLinecap="round" strokeLinejoin="round" d="M3 7h13M3 12h9M3 17h5M16 6v12M16 18l3-3M16 6l3 3" />
     </svg>
   ),
+  ownership: (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" />
+    </svg>
+  ),
+  reviews: (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  ),
 };
 
 function CheckIcon() {

@@ -18,6 +18,6 @@ class ReviewTextValidationTests(TestCase):
         with self.assertRaises(serializers.ValidationError):
             validate_review_text("a" * (REVIEW_TEXT_MAX_LENGTH + 1))
 
-    def test_rejects_repetitive_characters(self):
-        with self.assertRaises(serializers.ValidationError):
-            validate_review_text("a" * 40)
+    def test_accepts_repeated_characters_when_min_length_met(self):
+        result = validate_review_text("a" * 40)
+        self.assertEqual(len(result), 40)

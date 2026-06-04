@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import JsonLd from "../components/seo/JsonLd.jsx";
 import UniversityFiltersBar, {
   UniversityDirectoryCard,
@@ -7,7 +6,7 @@ import UniversityFiltersBar, {
 import EmptyState from "../components/ui/EmptyState.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
 import { useCatalogFilters } from "../hooks/useCatalogFilters.js";
-import { getPublicUniversityCatalog } from "../services/publicService.js";
+import { getPublicUniversityCatalog, getPublicUniversityFilters } from "../services/publicService.js";
 import {
   activeFilterCount,
   DEFAULT_CATALOG_FILTERS,
@@ -29,6 +28,20 @@ export default function UniversitiesDirectoryPage() {
       "O'zbekiston universitetlarini shahar, turi, reyting va sharhlar bo'yicha filtrlash va qidirish.",
     path: "/universitetlar",
   });
+
+  useEffect(() => {
+    let cancelled = false;
+    getPublicUniversityFilters()
+      .then((data) => {
+        if (!cancelled && data) {
+          setFilterOptions(data);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -107,23 +120,15 @@ export default function UniversitiesDirectoryPage() {
         className="container-shell pb-16 pt-24 sm:pt-28 lg:pt-32"
         data-seo-ready={seoReady ? "true" : undefined}
       >
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Katalog</p>
-            <h1 className="mt-1 text-3xl font-black text-slate-950 dark:text-white sm:text-4xl">
-              O&apos;zbekiston universitetlari
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-300">
-              Shahar, turi (davlat/xususiy/xalqaro), reyting va sharhlar bo&apos;yicha qidiring —
-              barcha ma&apos;lumotlar bitta professional katalogda.
-            </p>
-          </div>
-          <Link
-            to="/universitetlar/xarita"
-            className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-black text-slate-800 shadow-sm transition hover:border-primary hover:text-primary dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
-          >
-            Xaritada ko&apos;rish
-          </Link>
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">Katalog</p>
+          <h1 className="mt-1 text-3xl font-black text-slate-950 dark:text-white sm:text-4xl">
+            O&apos;zbekiston universitetlari
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-300">
+            Shahar, turi (davlat/xususiy/xalqaro), reyting va sharhlar bo&apos;yicha qidiring —
+            barcha ma&apos;lumotlar bitta professional katalogda.
+          </p>
         </div>
 
         <div className="mt-6">

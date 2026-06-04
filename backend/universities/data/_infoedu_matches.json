@@ -1,0 +1,386 @@
+{
+  "ATU": {
+    "name": "Amerika texnologiyalar universiteti",
+    "match": "Navoiy davlat konchilik va texnologiyalar universiteti",
+    "score": 0.5,
+    "slug": "navoiy-davlat-konchilik-va-texnologiyalar-universiteti"
+  },
+  "AVIFU": {
+    "name": "Aniq va ijtimoiy fanlar universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.25,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "AcharyaU": {
+    "name": "Acharya University",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "AngrenU": {
+    "name": "Angren universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.5,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "Auezov ChF": {
+    "name": "M. Auezov nomidagi Janubiy Qozog'iston universiteti Chirchiq filiali",
+    "match": "Chirchiq davlat pedagogika universiteti",
+    "score": 0.4,
+    "slug": "chirchiq-davlat-pedagogika-universiteti"
+  },
+  "BMU": {
+    "name": "British Management University",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "BPVXTI": {
+    "name": "Buxoro psixologiya va xorijiy tillar instituti",
+    "match": "Samarqand davlat chet tillar instituti Narpay “Xorijiy tillar” fakulʼteti",
+    "score": 0.333,
+    "slug": "samarqand-davlat-chet-tillar-instituti-narpay-xorijiy-tillar-fakulʼteti"
+  },
+  "BelATKI": {
+    "name": "Belarus-O'zbekiston qo'shma tarmoqlararo amaliy texnik kvalifikatsiyalar instituti",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "DiplomatU": {
+    "name": "Diplomat University",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "FTU": {
+    "name": "Farmatsevtika texnik universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.333,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "FVTU": {
+    "name": "Fan va texnologiyalar universiteti",
+    "match": "Navoiy davlat konchilik va texnologiyalar universiteti",
+    "score": 0.5,
+    "slug": "navoiy-davlat-konchilik-va-texnologiyalar-universiteti"
+  },
+  "GreenU": {
+    "name": "Markaziy Osiyo atrof-muhit va iqlim o'zgarishini o'rganish universiteti (Green University)",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.125,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "Gubkin": {
+    "name": "I.M. Gubkin nomidagi Rossiya davlat neft va gaz universiteti Toshkent filiali",
+    "match": "Toshkent davlat yuridik universiteti",
+    "score": 0.333,
+    "slug": "toshkent-davlat-yuridik-universiteti"
+  },
+  "IAU": {
+    "name": "Xalqaro qishloq xo'jaligi universiteti",
+    "match": "Qoraqalpog‘iston qishloq xo‘jaligi va agrotexnologiyalar instituti",
+    "score": 0.5,
+    "slug": "qoraqalpogiston-qishloq-xojaligi-va-agrotexnologiyalar-instituti"
+  },
+  "ISFTS": {
+    "name": "International School of Finance Technology and Science",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "ISMA FF": {
+    "name": "Latviyaning axborot tizimlari menejmenti oliy maktabi Farg'ona filiali",
+    "match": "Toshkent axborot texnologiyalari universiteti Zarafshon fakulteti",
+    "score": 0.143,
+    "slug": "toshkent-axborot-texnologiyalari-universiteti-zarafshon-fakulteti"
+  },
+  "IVSFI": {
+    "name": "Ijtimoiy va siyosiy fanlar instituti",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "IYIU": {
+    "name": "Ipak yo'li innovatsiyalar universiteti",
+    "match": "Ipak yo‘li turizm va madaniy meros xalqaro universiteti",
+    "score": 0.429,
+    "slug": "ipak-yoli-turizm-va-madaniy-meros-xalqaro-universiteti"
+  },
+  "Japan DigitalU": {
+    "name": "Japan Digital University",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "KFU JF": {
+    "name": "Qozon federal universiteti Jizzax filiali",
+    "match": "O‘zbekiston Milliy universiteti Jizzax filiali",
+    "score": 0.5,
+    "slug": "ozbekiston-milliy-universiteti-jizzax-filiali"
+  },
+  "MEI": {
+    "name": "MEI milliy tadqiqot universiteti Toshkent filiali",
+    "match": "Toshkent davlat yuridik universiteti",
+    "score": 0.5,
+    "slug": "toshkent-davlat-yuridik-universiteti"
+  },
+  "MEPhI": {
+    "name": "MMFI milliy tadqiqot yadro universiteti Toshkent filiali",
+    "match": "Toshkent davlat yuridik universiteti",
+    "score": 0.4,
+    "slug": "toshkent-davlat-yuridik-universiteti"
+  },
+  "MISiS OF": {
+    "name": "MISiS milliy texnologik tadqiqotlar universiteti Olmaliq filiali",
+    "match": "Toshkent davlat texnika universiteti Olmaliq filiali",
+    "score": 0.4,
+    "slug": "toshkent-davlat-texnika-universiteti-olmaliq-filiali"
+  },
+  "MSU": {
+    "name": "M.V. Lomonosov nomidagi Moskva davlat universiteti Toshkent filiali",
+    "match": "Toshkent davlat yuridik universiteti",
+    "score": 0.5,
+    "slug": "toshkent-davlat-yuridik-universiteti"
+  },
+  "MVIMA": {
+    "name": "Mehnat va ijtimoiy munosabatlar akademiyasi",
+    "match": "Toshkent davlat tibbiyot akademiyasi Termiz filiali",
+    "score": 0.25,
+    "slug": "toshkent-davlat-tibbiyot-akademiyasi-termiz-filiali"
+  },
+  "MamunU": {
+    "name": "Ma'mun universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.5,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "MillatU": {
+    "name": "Millat umidi universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.333,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "NIU": {
+    "name": "Xalqaro Nordik universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.333,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "NavInvI": {
+    "name": "Navoiy innovatsiyalar instituti",
+    "match": "Navoiy davlat univeristeti",
+    "score": 0.5,
+    "slug": "navoiy-davlat-univeristeti"
+  },
+  "NukInvI": {
+    "name": "Nukus innovatsion instituti",
+    "match": "Nukus davlat pedagogika instituti",
+    "score": 0.5,
+    "slug": "nukus-davlat-pedagogika-instituti"
+  },
+  "OTXU": {
+    "name": "Osiyo texnologiyalar universiteti",
+    "match": "Navoiy davlat konchilik va texnologiyalar universiteti",
+    "score": 0.5,
+    "slug": "navoiy-davlat-konchilik-va-texnologiyalar-universiteti"
+  },
+  "OXU": {
+    "name": "Osiyo xalqaro universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.333,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "OrientalU": {
+    "name": "Oriental universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.5,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "OxusU": {
+    "name": "The Oxus universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.5,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "PerfectU": {
+    "name": "Perfect University",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "PisaU": {
+    "name": "Pisa University in Tashkent",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "RGPU": {
+    "name": "A.I. Gersen nomidagi Rossiya davlat pedagogika universiteti Toshkent filiali",
+    "match": "Toshkent davlat yuridik universiteti",
+    "score": 0.4,
+    "slug": "toshkent-davlat-yuridik-universiteti"
+  },
+  "RHTU": {
+    "name": "D.I. Mendeleev nomidagi Rossiya kimyo-texnologiya universiteti Toshkent filiali",
+    "match": "Toshkent kimyo-texnologiya instituti Yangiyer filiali",
+    "score": 0.4,
+    "slug": "toshkent-kimyo-texnologiya-instituti-yangiyer-filiali"
+  },
+  "RIVAU": {
+    "name": "Raqamli iqtisodiyot va agrotexnologiyalar universiteti",
+    "match": "Toshkent davlat iqtisodiyot universiteti Samarqand filiali",
+    "score": 0.5,
+    "slug": "toshkent-davlat-iqtisodiyot-universiteti-samarqand-filiali"
+  },
+  "RNIIMU": {
+    "name": "N.I. Pirogov nomidagi Rossiya milliy tadqiqot tibbiyot universiteti Toshkent filiali",
+    "match": "Toshkent davlat tibbiyot universiteti",
+    "score": 0.5,
+    "slug": "toshkent-davlat-tibbiyot-universiteti"
+  },
+  "RenessansU": {
+    "name": "Renessans ta'lim universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.333,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "STARS IU": {
+    "name": "STARS International University",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "SamXTU": {
+    "name": "Samarqand xalqaro texnologiya universiteti",
+    "match": "Toshkent davlat iqtisodiyot universiteti Samarqand filiali",
+    "score": 0.5,
+    "slug": "toshkent-davlat-iqtisodiyot-universiteti-samarqand-filiali"
+  },
+  "SambhramU": {
+    "name": "Sambhram universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.5,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "SarbonU": {
+    "name": "Sarbon universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.5,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "SharqU": {
+    "name": "Sharq University",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "TAFU": {
+    "name": "Toshkent amaliy fanlar universiteti",
+    "match": "Toshkent davlat yuridik universiteti",
+    "score": 0.5,
+    "slug": "toshkent-davlat-yuridik-universiteti"
+  },
+  "TDXU": {
+    "name": "Turkiy davlatlar xalqaro universiteti",
+    "match": "Ipak yo‘li turizm va madaniy meros xalqaro universiteti",
+    "score": 0.286,
+    "slug": "ipak-yoli-turizm-va-madaniy-meros-xalqaro-universiteti"
+  },
+  "TGFU": {
+    "name": "Toshkent gumanitar fanlar universiteti",
+    "match": "Toshkent davlat yuridik universiteti",
+    "score": 0.5,
+    "slug": "toshkent-davlat-yuridik-universiteti"
+  },
+  "TIIU": {
+    "name": "Toshkent ijtimoiy innovatsiya universiteti",
+    "match": "Toshkent davlat yuridik universiteti",
+    "score": 0.5,
+    "slug": "toshkent-davlat-yuridik-universiteti"
+  },
+  "TIUE": {
+    "name": "Tashkent International University of Education",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "TIUT": {
+    "name": "Tashkent International University",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "TIVSU": {
+    "name": "Termiz iqtisodiyot va servis universiteti",
+    "match": "Toshkent davlat iqtisodiyot universiteti Samarqand filiali",
+    "score": 0.5,
+    "slug": "toshkent-davlat-iqtisodiyot-universiteti-samarqand-filiali"
+  },
+  "TMU": {
+    "name": "Tashkent Metropolitan University",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "TOBB ETU": {
+    "name": "Turkiyaning iqtisodiyot va texnologiyalar universiteti filiali (TOBB ETU) Toshkent",
+    "match": "Toshkent davlat iqtisodiyot universiteti To‘rtko‘l fakulʼteti",
+    "score": 0.429,
+    "slug": "toshkent-davlat-iqtisodiyot-universiteti-tortkol-fakulteti"
+  },
+  "TTechU": {
+    "name": "Tashkent Tech universiteti",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.333,
+    "slug": "cyber-university-davlat-universiteti"
+  },
+  "TXMBVTU": {
+    "name": "Toshkent xalqaro moliyaviy boshqaruv va texnologiyalar universiteti",
+    "match": "Toshkent davlat yuridik universiteti",
+    "score": 0.333,
+    "slug": "toshkent-davlat-yuridik-universiteti"
+  },
+  "TuranU": {
+    "name": "Turan International University",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "UBS": {
+    "name": "University of Business and Science",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "UEP": {
+    "name": "University of Economics and Pedagogy",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "UMFT": {
+    "name": "University of Management and Future Technologies",
+    "match": null,
+    "score": 0.0,
+    "slug": null
+  },
+  "URTU": {
+    "name": "Urganch Ranch texnologiya universiteti",
+    "match": "Urganch davlat universiteti",
+    "score": 0.5,
+    "slug": "urganch-davlat-universiteti"
+  },
+  "VGIK": {
+    "name": "S.A. Gerasimov nomidagi Butunrossiya davlat kinematografiya instituti (VGIK) Toshkent filiali",
+    "match": "Toshkent to‘qimachilik va yengil sanoat instituti",
+    "score": 0.2,
+    "slug": "toshkent-toqimachilik-va-yengil-sanoat-instituti"
+  },
+  "XinnovU": {
+    "name": "Xalqaro innovatsion universitet",
+    "match": "“Cyber university” davlat universiteti",
+    "score": 0.333,
+    "slug": "cyber-university-davlat-universiteti"
+  }
+}

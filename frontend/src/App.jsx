@@ -25,7 +25,6 @@ import NotFoundPage from "./pages/NotFoundPage.jsx";
 import LegalDocumentPage from "./pages/LegalDocumentPage.jsx";
 import UniversityPublicPage from "./pages/UniversityPublicPage.jsx";
 import UniversitiesDirectoryPage from "./pages/UniversitiesDirectoryPage.jsx";
-import UniversitiesMapPage from "./pages/UniversitiesMapPage.jsx";
 import FAQPage from "./pages/FAQPage.jsx";
 import FAQDetailPage from "./pages/FAQDetailPage.jsx";
 import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
@@ -57,7 +56,6 @@ export default function App() {
         <Route path="/ishonch-xavfsizlik" element={<TrustSafetyPage />} />
         <Route path="/universitet/:slug" element={<UniversityPublicPage />} />
         <Route path="/universitetlar" element={<UniversitiesDirectoryPage />} />
-        <Route path="/universitetlar/xarita" element={<UniversitiesMapPage />} />
         <Route path="/taqqoslash/:token" element={<CompareSharePage />} />
         <Route path="/savollar-javob" element={<FAQPage />} />
         <Route path="/savollar-javob/:slug" element={<FAQDetailPage />} />

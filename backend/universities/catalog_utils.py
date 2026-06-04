@@ -73,12 +73,11 @@ def coordinates_for_university(city, university_id):
     return base[0] + offset, base[1] + offset * Decimal("0.7")
 
 
+from .university_images import build_gallery_urls as _build_gallery_urls
+
+
 def build_gallery_urls(university):
-    if university.gallery_urls:
-        return university.gallery_urls
-    seed = university.id or 1
-    indices = [(seed + offset) % 8 + 1 for offset in range(3)]
-    return [f"/images/campuses/campus-{index:02d}.jpg" for index in indices]
+    return _build_gallery_urls(university)
 
 
 def annotated_universities_queryset():
@@ -124,7 +123,7 @@ def apply_catalog_filters(queryset, params):
 
     city = (params.get("city") or "").strip()
     if city:
-        queryset = queryset.filter(city__iexact=city)
+        queryset = queryset.filter(Q(city__iexact=city) | Q(location__icontains=city))
 
     ownership = (params.get("ownership") or params.get("ownership_type") or "").strip()
     if ownership:
@@ -154,6 +153,9 @@ def serialize_study_direction(direction):
         "id": direction.id,
         "name": direction.name,
         "slug": direction.slug,
+        "dirid": direction.dirid,
+        "exam_subjects": direction.exam_subjects or [],
+        "study_forms": direction.study_forms or [],
         "degree_level": direction.degree_level,
         "degree_level_label": direction.get_degree_level_display(),
         "duration_years": float(direction.duration_years)

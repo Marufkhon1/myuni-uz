@@ -33,12 +33,4 @@ def validate_review_text(value):
     if len(compact) < REVIEW_TEXT_MIN_LENGTH:
         raise serializers.ValidationError("Sharhda yetarli mazmun yo'q.")
 
-    if re.search(r"(.)\1{14,}", compact, flags=re.IGNORECASE):
-        raise serializers.ValidationError("Matnda juda ko'p takrorlanuvchi belgilar bor.")
-
-    if len(compact) >= 40:
-        unique_ratio = len(set(compact.lower())) / len(compact)
-        if unique_ratio < 0.12:
-            raise serializers.ValidationError("Sharh mazmunli bo'lishi kerak — faqat takrorlanmasin.")
-
     return text

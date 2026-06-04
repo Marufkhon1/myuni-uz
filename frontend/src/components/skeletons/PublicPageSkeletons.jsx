@@ -7,17 +7,33 @@ export function UniversityPublicPageSkeleton() {
       aria-busy="true"
       aria-label="Universitet sahifasi yuklanmoqda"
     >
-      <Skeleton className="h-40 rounded-none sm:h-48" />
-      <div className="space-y-4 p-5 sm:p-6">
-        <Skeleton className="h-8 w-2/3" />
-        <Skeleton className="h-4 w-1/3" />
-        <div className="flex gap-2">
-          <Skeleton className="h-6 w-24 rounded-full" />
-          <Skeleton className="h-6 w-20 rounded-full" />
+      <Skeleton className="h-44 rounded-none sm:h-56 lg:h-64" />
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="space-y-0 p-0">
+          <div className="space-y-4 border-b border-slate-100 p-5 dark:border-white/10 sm:p-6">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <Skeleton className="h-20 rounded-2xl" />
+              <Skeleton className="h-20 rounded-2xl" />
+              <Skeleton className="h-20 rounded-2xl" />
+              <Skeleton className="h-20 rounded-2xl" />
+            </div>
+          </div>
+          <div className="space-y-3 border-b border-slate-100 p-5 dark:border-white/10 sm:p-6">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+          </div>
+          <div className="space-y-3 p-5 sm:p-6">
+            <Skeleton className="h-28 w-full rounded-2xl" />
+            <Skeleton className="h-28 w-full rounded-2xl" />
+            <Skeleton className="h-40 w-full rounded-2xl" />
+          </div>
         </div>
-        <Skeleton className="h-16 w-full" />
-        <Skeleton className="h-28 w-full rounded-2xl" />
-        <Skeleton className="h-28 w-full rounded-2xl" />
+        <div className="space-y-4 border-t border-slate-100 p-5 dark:border-white/10 lg:border-l lg:border-t-0 lg:p-6">
+          <Skeleton className="h-24 w-full rounded-[1.25rem]" />
+          <Skeleton className="h-56 w-full rounded-[1.25rem]" />
+        </div>
       </div>
     </article>
   );
@@ -47,11 +63,7 @@ export function BlogListSkeleton({ className = "" }) {
 
 export function BlogArticleSkeleton() {
   return (
-    <article
-      className="max-w-3xl"
-      aria-busy="true"
-      aria-label="Maqola yuklanmoqda"
-    >
+    <article className="max-w-3xl" aria-busy="true" aria-label="Maqola yuklanmoqda">
       <Skeleton className="h-3 w-20" />
       <Skeleton className="mt-4 h-10 w-full" />
       <Skeleton className="mt-4 h-6 w-4/5" />
@@ -79,7 +91,6 @@ export function NotificationsListSkeleton() {
           <div className="min-w-0 flex-1 space-y-2">
             <Skeleton className="h-4 w-3/5" />
             <Skeleton className="h-3 w-full" />
-            <Skeleton className="h-3 w-1/4" />
           </div>
         </div>
       ))}

@@ -1,0 +1,920 @@
+{
+  "O’zbekiston Respublikasi Favqulodda vaziyatlat vazirligi akademiyasi": {
+    "slug": "ozbekiston-respublikasi-favqulodda-vaziyatlat-vazirligi-akademiyasi",
+    "address": "Toshkent shahar, 100102, Yangihayot tumani, Doʻstlik koʻchasi 5-uy",
+    "phone": "+998732429431",
+    "email": "info@akademiyafvv.uz",
+    "website": "https://akademiya.fvv.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "“Cyber university” davlat universiteti": {
+    "slug": "cyber-university-davlat-universiteti",
+    "address": "Toshkent viloyati, Nurafshon shahri, Yangiobod ko'chasi 42-uy",
+    "phone": "+998558885555",
+    "email": "info@csu.uz",
+    "website": "https://csu.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Urganch davlat universiteti": {
+    "slug": "urganch-davlat-universiteti",
+    "address": "Urganch shahar, 220100, Hamid Olimjon ko‘chasi, 14-uy",
+    "phone": "+998622246700",
+    "email": "info@urdu.uz",
+    "website": "https://urdu.uz/uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Urganch davlat tibbiyot instituti": {
+    "slug": "urganch-davlat-tibbiyot-instituti",
+    "address": "220100, Urganch shahar, Al-Xorazmiy ko'chasi 28",
+    "phone": "+998622248484",
+    "email": "ttaurgfil@umail.uz",
+    "website": "https://urgfiltma.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Urganch davlat pedagogika instituti": {
+    "slug": "urganch-davlat-pedagogika-instituti",
+    "address": "Oʻzbekiston, 220100, Urganch shahri, Gurlan koʻchasi, 1-A uy",
+    "phone": "+998622291477",
+    "email": "study_info@urspi.uz",
+    "website": "https://www.urspi.uz",
+    "telegram_url": "https://t.me/FeruzaMadraximova_bot",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent to‘qimachilik va yengil sanoat instituti": {
+    "slug": "toshkent-toqimachilik-va-yengil-sanoat-instituti",
+    "address": "Toshkent sh, Yakkasaroy tumani, Shohjahon ko‘chasi 5",
+    "phone": "+998555146611",
+    "email": "info@ttysi.uz",
+    "website": "https://ttysi.uz/oz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent kimyo-texnologiya instituti Yangiyer filiali": {
+    "slug": "toshkent-kimyo-texnologiya-instituti-yangiyer-filiali",
+    "address": "Sirdaryo viloyati, Yangiyer shahar, Tinchlik ko'chasi, 1-uy",
+    "phone": "+998955115856",
+    "email": "info@ticty.uz",
+    "website": "https://ticty.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent kimyo-texnologiya instituti": {
+    "slug": "toshkent-kimyo-texnologiya-instituti",
+    "address": "Navoiy ko’chasi, 32-uy, Toshkent, O'zbekiston, 100011",
+    "phone": "+998712447934",
+    "email": "info@tkti.uz",
+    "website": "https://tkti.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent irrigatsiya va qishloq xo‘jaligini mexanizatsiyalash muhandislari instituti milliy tadqiqotlar universiteti": {
+    "slug": "toshkent-irrigatsiya-va-qishloq-xojaligini-mexanizatsiyalash-muhandislari-instituti-milliy-tadqiqotlar-universiteti",
+    "address": "O’zbekiston Respublikasi, Toshkent shahar Qori Niyoziy ko'chasi, 39, 100000",
+    "phone": "+998712371936",
+    "email": "admin@tiiame.uz",
+    "website": "https://tiiame.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent farmatsevtika instituti": {
+    "slug": "toshkent-farmatsevtika-instituti",
+    "address": "100015, Toshkent shahri, A. Aybek ko'chasi, 45-uy",
+    "phone": "+998712563738",
+    "email": "info@pharmi.uz",
+    "website": "https://pharmi.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat yuridik universiteti": {
+    "slug": "toshkent-davlat-yuridik-universiteti",
+    "address": "Toshkent sh., Sayilgoh ko‘chasi, 35 uy",
+    "phone": "+998712331395",
+    "email": "info@tsul.uz",
+    "website": "https://tsul.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat transport universiteti": {
+    "slug": "toshkent-davlat-transport-universiteti",
+    "address": "Toshkent shahar Mirobod tumani Temiryo‘lchilar ko‘chasi 1-uy",
+    "phone": "+998712990001",
+    "email": "rektorat@tstu.uz",
+    "website": "https://tstu.uz/uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat tibbiyot universiteti": {
+    "slug": "toshkent-davlat-tibbiyot-universiteti",
+    "address": "Tashkent Medical Academy 100109, Tashkent, Uzbekistan Farabi street 2",
+    "phone": "+998781507801",
+    "email": "info@tma.uz",
+    "website": "https://tma.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat tibbiyot akademiyasi Termiz filiali": {
+    "slug": "toshkent-davlat-tibbiyot-akademiyasi-termiz-filiali",
+    "address": "Termiz sh. I.Karimov ko'chasi 64-uy",
+    "phone": "+998554525586",
+    "email": "devonxona@ttatf.uz",
+    "website": "https://ttatf.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat tibbiyot akademiyasi Chirchiq filiali": {
+    "slug": "toshkent-davlat-tibbiyot-akademiyasi-chirchiq-filiali",
+    "address": "Toshkent viloyati Chirchiq shahri Lomonosov ko’chasi 1a-uy",
+    "phone": "+998771561445",
+    "email": "info@ttachf.uz",
+    "website": "https://ttachf.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat texnika universiteti Olmaliq filiali": {
+    "slug": "toshkent-davlat-texnika-universiteti-olmaliq-filiali",
+    "address": "Toshkent viloyati Olmaliq shahar M.Ulug‘bek ko’chasi 45",
+    "phone": "+998559021772",
+    "email": "info@tdtuof.uz",
+    "website": "https://odti.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat texnika universiteti": {
+    "slug": "toshkent-davlat-texnika-universiteti",
+    "address": "Toshkent shahri, Universitet ko`chasi 2-uy",
+    "phone": "+998712071468",
+    "email": "tstu_info@tdtu.uz",
+    "website": "https://tdtu.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat sharqshunoslik universiteti": {
+    "slug": "toshkent-davlat-sharqshunoslik-universiteti",
+    "address": "100060, Toshkent shahri, Amir Temur ko‘chasi 20",
+    "phone": "+998712333424",
+    "email": "info@tsuos.uz",
+    "website": "https://tsuos.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat o‘zbek tili va adabiyoti universiteti": {
+    "slug": "toshkent-davlat-ozbek-tili-va-adabiyoti-universiteti",
+    "address": "Toshkent shahri, Yakkasaroy tumani, Yusuf Xos Hojib ko‘chasi 103-uy. Pochta indeksi - 100100.",
+    "phone": "+998712814244",
+    "email": "interdep@navoiy-uni.uz",
+    "website": "https://navoiy-uni.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat iqtisodiyot universiteti To‘rtko‘l fakulʼteti": {
+    "slug": "toshkent-davlat-iqtisodiyot-universiteti-tortkol-fakulteti",
+    "address": "Qoraqalpog'iston respublikasi, Shahar: To'rtko'l, To'rtko'l ko'chasi (sobiq Semashko)",
+    "phone": "+998996264962",
+    "email": "r.raxmanov@tsue.uz",
+    "website": "https://tdiutf.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat iqtisodiyot universiteti Samarqand filiali": {
+    "slug": "toshkent-davlat-iqtisodiyot-universiteti-samarqand-filiali",
+    "address": "140147, Samarqand shahri Professorlar ko'chasi 51 uy",
+    "phone": "+998662373281",
+    "email": "sbtsue@edu.uz",
+    "website": "https://sbtsue.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat iqtisodiyot universiteti": {
+    "slug": "toshkent-davlat-iqtisodiyot-universiteti",
+    "address": "100066, Toshkent shahri, Islom Karimov ko‘chasi 49",
+    "phone": "+998712454243",
+    "email": "tdiu@exat.uz",
+    "website": "https://tsue.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent davlat agrar universiteti": {
+    "slug": "toshkent-davlat-agrar-universiteti",
+    "address": "100164, Toshkent viloyati, Qibray tumani, Universitet ko'chasi, 2-uy",
+    "phone": "+998712603860",
+    "email": "press@tdau.uz",
+    "website": "https://tdau.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent axborot texnologiyalari universiteti Zarafshon fakulteti": {
+    "slug": "toshkent-axborot-texnologiyalari-universiteti-zarafshon-fakulteti",
+    "address": "Toshkent 100084, Amir Temur shox ko‘chasi 108 uy",
+    "phone": "+998712386489",
+    "email": "u.safarov@tuit.uz",
+    "website": "https://tuit.uz/zarafshon-fakulteti",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent axborot texnologiyalari universiteti Samarqand filiali": {
+    "slug": "toshkent-axborot-texnologiyalari-universiteti-samarqand-filiali",
+    "address": "Samarqand shahar Ibn Sino\r\nko'chasi 2 A uy",
+    "phone": "+998662322929",
+    "email": "info@samtuit.uz",
+    "website": "https://tuit.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent axborot texnologiyalari universiteti": {
+    "slug": "toshkent-axborot-texnologiyalari-universiteti",
+    "address": "Toshkent shahri, Amir Temur shox ko'chasi, 108-uy",
+    "phone": "+998712386489",
+    "email": "info@tuit.uz",
+    "website": "https://tuit.uz",
+    "telegram_url": "https://t.me/tuituz_official",
+    "source": "infoedu_dtm"
+  },
+  "Toshkent arxitektura-qurilish universiteti": {
+    "slug": "toshkent-arxitektura-qurilish-universiteti",
+    "address": "100194, Toshkent shahar, Yunusobod tumani, Yangishahar ko'chasi, 9a-uy",
+    "phone": "+998555080256",
+    "email": "t.taqi@exat.uz",
+    "website": "https://taqu.uz",
+    "telegram_url": "https://t.me/taqi_uz",
+    "source": "infoedu_dtm"
+  },
+  "Termiz davlat universiteti": {
+    "slug": "termiz-davlat-universiteti",
+    "address": "Termiz shahri, “Barkamol avlod” ko'chasi 43-uy, 190111",
+    "phone": "+998762217455",
+    "email": "info@tersu.uz",
+    "website": "https://tersu.uz",
+    "telegram_url": "https://t.me/terdu340",
+    "source": "infoedu_dtm"
+  },
+  "Termiz davlat pedagogika instituti": {
+    "slug": "termiz-davlat-pedagogika-instituti",
+    "address": "Termiz shahar, Islom Karimov ko`chasi, 288b-uy",
+    "phone": "+998762219081",
+    "email": "terdpi@umail.uz",
+    "website": "https://terdpi.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Termiz davlat muhandislik va agrotexnologiyalar universiteti": {
+    "slug": "termiz-davlat-muhandislik-va-agrotexnologiyalar-universiteti",
+    "address": "190100, Termiz sh., Islom Karimov ko'chasi, 288a uy.",
+    "phone": "+998762218720",
+    "email": "info@tdmau.uz",
+    "website": "https://tdmau.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Shahrisabz davlat pedagogika instituti": {
+    "slug": "shahrisabz-davlat-pedagogika-instituti",
+    "address": "Qashqadaryo viloyati, Shahrisabz shahri, Shahrisabz ko'chasi 10-uy",
+    "phone": "+998755224058",
+    "email": "info@shdpi.uz",
+    "website": "https://shdpi.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand iqtisodiyot va servis instituti": {
+    "slug": "samarqand-iqtisodiyot-va-servis-instituti",
+    "address": "Oʻzbekiston, Samarqand viloyati, Samarqand shahri, Amir Temur koʻchasi, 9-uy, 140100",
+    "phone": "+998662333872",
+    "email": "sies_info@edu.uz",
+    "website": "http://sies.uz",
+    "telegram_url": "https://t.me/siesmatbuotxizmati",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti Toshkent filiali": {
+    "slug": "samarqand-davlat-veterinariya-meditsinasi-chorvachilik-va-biotexnologiyalar-universiteti-toshkent-filiali",
+    "address": "Toshkent shahar, Chilonzor tumani 20-mavze 35a-uy",
+    "phone": "+998555030759",
+    "email": "info@svmitf.uz",
+    "website": "https://www.svmitf.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti Nukus filiali": {
+    "slug": "samarqand-davlat-veterinariya-meditsinasi-chorvachilik-va-biotexnologiyalar-universiteti-nukus-filiali",
+    "address": "Qoraqalpog‘iston Respublikasi, Nukus shahri, A. Utepov ko‘chasi, 31-uy",
+    "phone": "+998612247109",
+    "email": "samvminf@edu.uz",
+    "website": "https://sdvunf.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti": {
+    "slug": "samarqand-davlat-veterinariya-meditsinasi-chorvachilik-va-biotexnologiyalar-universiteti",
+    "address": "Samarqand shahri, Mirzo Ulug‘bek ko‘chasi, 77-uy",
+    "phone": "+998557077686",
+    "email": "ssuv@edu.uz",
+    "website": "https://ssuv.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand davlat universiteti Urgut filiali": {
+    "slug": "samarqand-davlat-universiteti-urgut-filiali",
+    "address": "Samarqand viloyati, Urgut tumani, Vag'ashti MFY, 13-uy",
+    "phone": "+998917081417",
+    "email": "samduuf@edu.uz",
+    "website": "https://samduuf.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand davlat universiteti": {
+    "slug": "samarqand-davlat-universiteti",
+    "address": "Samarqand shahri, Universitet xiyoboni, 15-uy",
+    "phone": "+998662403841",
+    "email": "devonxona@samdu.uz",
+    "website": "https://www.samdu.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand davlat tibbiyot  universiteti": {
+    "slug": "samarqand-davlat-tibbiyot-universiteti",
+    "address": "Samarqand shahri, Amir Temur ko‘chasi, 18-uy",
+    "phone": "+998662330841",
+    "email": "sammu@sammu.uz",
+    "website": "https://www.sammu.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand davlat pedagogika instituti": {
+    "slug": "samarqand-davlat-pedagogika-instituti",
+    "address": "Samarqand shahri, Spitamen shoh ko‘chasi, 166-uy",
+    "phone": "+998955000384",
+    "email": "devonxona@samdpi.uz",
+    "website": "https://samdpi.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand davlat chet tillar instituti Narpay “Xorijiy tillar” fakulʼteti": {
+    "slug": "samarqand-davlat-chet-tillar-instituti-narpay-xorijiy-tillar-fakulʼteti",
+    "address": "XRFW+X3R, Maydakazak, Samarqand Region",
+    "phone": "+998662382937",
+    "email": "info@samdchti.uz",
+    "website": "https://samdchti.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand davlat chet tillar instituti": {
+    "slug": "samarqand-davlat-chet-tillar-instituti",
+    "address": "Samarqand shahri, Gagarin ko'chasi, 43 uy",
+    "phone": "+998662382937",
+    "email": "info@samdchti.uz",
+    "website": "https://samdchti.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand davlat arxitektura-qurilish universiteti": {
+    "slug": "samarqand-davlat-arxitektura-qurilish-universiteti",
+    "address": "Shahar: Samarqand shahri\r\nKo'cha: Lolazor, 70 uy",
+    "phone": "+998662371593",
+    "email": "samdaqu@samdaqu.edu.uz",
+    "website": "https://samgasi.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Samarqand agroinnovatsiyalar va tadqiqotlar instituti": {
+    "slug": "samarqand-agroinnovatsiyalar-va-tadqiqotlar-instituti",
+    "address": "Samarqand viloyati, Oqdaryo tumani, Dahbet qo‘rg‘oni, A.Temur ko‘chasi 7-uy",
+    "phone": "+998664928116",
+    "email": "info@samaguni.uz",
+    "website": "https://samaguni.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Qoʻqon davlat universiteti": {
+    "slug": "qoʻqon-davlat-universiteti",
+    "address": "Farg`ona viloyati, Qo`qon sh. Turon ko`chasi 23",
+    "phone": "+998735423838",
+    "email": "kokandsu@exat.uz",
+    "website": "https://kokandsu.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Qoraqalpoq davlat universiteti Qo‘ng‘irot  fakulʼteti": {
+    "slug": "qoraqalpoq-davlat-universiteti-qongirot-fakulʼteti",
+    "address": "230614, Qoraqalpog'iston Respublikasi, Qo'ng'irot tumani, Yelabad q.",
+    "phone": "+998612236078",
+    "email": "karsu_info@edu.uz",
+    "website": "https://karsu.uz/uz/news/qoraqalpoq-davlat-universitetining-qongirot-fakulteti-ochildi",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Qoraqalpoq davlat universiteti Chimboy  fakulʼteti": {
+    "slug": "qoraqalpoq-davlat-universiteti-chimboy-fakulʼteti",
+    "address": "Qoraqalpogʻiston Respublikasi, Chimboy tumani, Jana Makan koʻchasi, 1",
+    "phone": "",
+    "email": "",
+    "website": "https://karsu.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Qoraqalpoq davlat universiteti": {
+    "slug": "qoraqalpoq-davlat-universiteti",
+    "address": "230112, O'zbekiston, Qoraqalpog'iston Respublikasi, Nukus shahri, Sh.Abdirov ko'chasi 1-uy",
+    "phone": "+998612236078",
+    "email": "karsu_info@edu.uz",
+    "website": "https://karsu.uz",
+    "telegram_url": "https://t.me/karsu_uz",
+    "source": "infoedu_dtm"
+  },
+  "Qoraqalpog‘iston tibbiyot instituti": {
+    "slug": "qoraqalpogiston-tibbiyot-instituti",
+    "address": "Qoraqalpog'iston Respublikasi, Nukus shahri, A.Dosnazarov ko'chasi, 108",
+    "phone": "+998612228436",
+    "email": "info@kkmi.uz",
+    "website": "https://kkmi.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Qoraqalpog‘iston qishloq xo‘jaligi va agrotexnologiyalar instituti": {
+    "slug": "qoraqalpogiston-qishloq-xojaligi-va-agrotexnologiyalar-instituti",
+    "address": "Qoraqalpog'iston Respublikasi, Nukus shahri, Darbent ko'chasi, 140/1-uy",
+    "phone": "+998612292701",
+    "email": "ftga_info@edu.uz",
+    "website": "https://tdaunukus.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Qarshi davlat universiteti": {
+    "slug": "qarshi-davlat-universiteti",
+    "address": "O'zbekiston, Qashqadaryo viloyati, Qarshi shahri, Koʻchabogʻ koʻchasi, 17-uy",
+    "phone": "+998752253413",
+    "email": "info@qarshidu.uz",
+    "website": "https://qarshidu.uz/oz",
+    "telegram_url": "https://t.me/qarduuz",
+    "source": "infoedu_dtm"
+  },
+  "Qarshi davlat texnika universiteti Shaxrisabz oziq-ovqat muhandisligi  fakulʼteti": {
+    "slug": "qarshi-davlat-texnika-universiteti-shaxrisabz-oziq-ovqat-muhandisligi-fakulʼteti",
+    "address": "180100, Qashqadaryo viloyati, Qarshi shahri, Mustaqillik shoh ko'chasi, 225-uy",
+    "phone": "+998752241949",
+    "email": "",
+    "website": "https://kstu.uz/",
+    "telegram_url": "https://t.me/kstu_uz",
+    "source": "infoedu_dtm"
+  },
+  "Qarshi davlat texnika universiteti": {
+    "slug": "qarshi-davlat-texnika-universiteti",
+    "address": "Qashqadaryo viloyati, Qarshi shahri, Mustaqillik shoh koʻchasi, 225 uy",
+    "phone": "+998752200924",
+    "email": "kstu@kstu.uz",
+    "website": "https://kstu.uz/uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston jurnalistika va ommaviy kommunikatsiyalar universiteti": {
+    "slug": "ozbekiston-jurnalistika-va-ommaviy-kommunikatsiyalar-universiteti",
+    "address": "100170, Toshkent sh., Yunusobod tumani, Markaz-5, 88-uy",
+    "phone": "+998712070906",
+    "email": "info@uzjoku.uz",
+    "website": "https://www.uzjoku.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston davlat xoreografiya akademiyasi Urganch filiali": {
+    "slug": "ozbekiston-davlat-xoreografiya-akademiyasi-urganch-filiali",
+    "address": "O'zbekiston Respublikasi, Xorazm viloyati, Urganch sh., Al-Beruniy ko'chasi 2a-uy",
+    "phone": "+998934119412",
+    "email": "info@uzdxauf.uz",
+    "website": "https://uzdxauf.uz",
+    "telegram_url": "https://t.me/uz_dxauf",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston davlat xoreografiya akademiyasi": {
+    "slug": "ozbekiston-davlat-xoreografiya-akademiyasi",
+    "address": "100031, Toshkent shahar, Yusuf Xos Xojib ko'chasi, 103.",
+    "phone": "+998712155594",
+    "email": "info@uzdxa.uz",
+    "website": "https://uzdxa.uz",
+    "telegram_url": "https://t.me/qabul_uzdxa_2025",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston davlat sanʼat va madaniyat instituti Nukus filiali": {
+    "slug": "ozbekiston-davlat-sanʼat-va-madaniyat-instituti-nukus-filiali",
+    "address": "Qoraqalpog'iston Respublikasi, Nukus shahri, Qoraqalpog'iston ko'chasi, raqamsiz uy",
+    "phone": "+998612242902",
+    "email": "fart_info@uzdsmi-nf.uz",
+    "website": "https://uzdsmi-nf.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston davlat sanʼat va madaniyat instituti": {
+    "slug": "ozbekiston-davlat-sanʼat-va-madaniyat-instituti",
+    "address": "O'zbekiston Respublikasi, Toshkent shahri, Mirzo Ulug'bek tumani, Yalang'och dahasi 127 «A» uy, 100164",
+    "phone": "+998712302802",
+    "email": "uzdsmi@mcs.uz",
+    "website": "https://dsmi.uz",
+    "telegram_url": "https://t.me/dsmi_uz",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston davlat konservatoriyasi Nukus filiali": {
+    "slug": "ozbekiston-davlat-konservatoriyasi-nukus-filiali",
+    "address": "Qaraqalpaqstan Respublikası, Nókis qalası, Sharjaw Abdirov kóshesi, 5-jay",
+    "phone": "+998551020540",
+    "email": "ozdknf@edu.uz",
+    "website": "https://uzdknf.uz/",
+    "telegram_url": "https://t.me/uzdknf",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston davlat jahon tillari universiteti Angren fakulteti": {
+    "slug": "ozbekiston-davlat-jahon-tillari-universiteti-angren-fakulteti",
+    "address": "Tashkent viloyati, Angren shahri, O'zbekiston Mustaqilligi ko'chasi, 182-uy",
+    "phone": "+998712301291",
+    "email": "uzdjtu@uzswlu.uz",
+    "website": "https://www.uzswlu.uz/",
+    "telegram_url": "https://t.me/UzSWLU",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston davlat jahon tillari universiteti": {
+    "slug": "ozbekiston-davlat-jahon-tillari-universiteti",
+    "address": "Toshkent shahri, Uchtepa tumani, Kichik xalqa yo‘li, 21A - uy",
+    "phone": "+998712301291",
+    "email": "uzdjtu@uzswlu.uz",
+    "website": "https://uzswlu.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston Respublikasi Huquqni muhofaza qilish akademiyasi": {
+    "slug": "ozbekiston-respublikasi-huquqni-muhofaza-qilish-akademiyasi",
+    "address": "100009, Toshkent shahar, Yunusobod tumani, Rixsiliy ko'chasi, 9-uy",
+    "phone": "+998712020496",
+    "email": "info@proacademy.uz",
+    "website": "https://proacademy.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston Milliy universiteti Jizzax filiali": {
+    "slug": "ozbekiston-milliy-universiteti-jizzax-filiali",
+    "address": "130100, Jizzax viloyati, Jizzax shahri Sh.Rashidov shox ko'chasi, 259 uy",
+    "phone": "+998722260843",
+    "email": "info@jbnuu.uz",
+    "website": "https://jbnuu.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston Milliy universiteti": {
+    "slug": "ozbekiston-milliy-universiteti",
+    "address": "100174, Toshkent shahar, Olmazor tumani, Universitet ko'chasi, 4-uy",
+    "phone": "+998712271224",
+    "email": "rector@nuu.uz",
+    "website": "https://www.nuu.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston  davlat konservatoriyasi": {
+    "slug": "ozbekiston-davlat-konservatoriyasi",
+    "address": "Toshkent shahri, Shayxontohur tumani, Olmazor ko'chasi, 1-uy, 100027",
+    "phone": "+998712394653",
+    "email": "info@konservatoriya.uz",
+    "website": "https://conservatory.uz/",
+    "telegram_url": "https://t.me/UzDKrektor",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbekiston  davlat jismoniy tarbiya va sport universiteti": {
+    "slug": "ozbekiston-davlat-jismoniy-tarbiya-va-sport-universiteti",
+    "address": "Toshkent viloyati, Chirchiq shahri, Sportchilar ko'chasi, 19-uy",
+    "phone": "+998717171779",
+    "email": "info@jtsu.uz",
+    "website": "https://www.jtsu.uz",
+    "telegram_url": "https://t.me/uzdjtsu_rasmiy",
+    "source": "infoedu_dtm"
+  },
+  "O‘zbek milliy musiqa sanʼati instituti": {
+    "slug": "ozbek-milliy-musiqa-sanʼati-instituti",
+    "address": "Toshkent shahri, Mirzo-Ulug'bek tumani, Mustaqillik shoh ko'chasi, 31-uy",
+    "phone": "+998712373837",
+    "email": "devonxona@uzmmsi.uz",
+    "website": "https://uzmmsi.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Oʻzbekiston xalqaro islomshunoslik akademiyasi": {
+    "slug": "oʻzbekiston-xalqaro-islomshunoslik-akademiyasi",
+    "address": "100011, Toshkent sh., Abdulla Qodiriy ko'chasi 11-uy, O'zbekiston",
+    "phone": "+998712443165",
+    "email": "info@iiau.uz",
+    "website": "https://www.iiau.uz",
+    "telegram_url": "https://t.me/iiau_official",
+    "source": "infoedu_dtm"
+  },
+  "Oʻzbekiston  davlat jismoniy tarbiya va sport universiteti Nukus filiali": {
+    "slug": "oʻzbekiston-davlat-jismoniy-tarbiya-va-sport-universiteti-nukus-filiali",
+    "address": "Qoraqalpog'iston Respublikasi, Nukus shahri, Qoraqalpog'iston ko'chasi, 24-uy",
+    "phone": "+998612242773",
+    "email": "ozdjtsunf@edu.uz",
+    "website": "https://uzdjtsunf.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Oziq-ovqat texnologiyasi va muhandisligi xalqaro instituti": {
+    "slug": "oziq-ovqat-texnologiyasi-va-muhandisligi-xalqaro-instituti",
+    "address": "Farg'ona shahri, Al-Farg'oniy ko'chasi, 204-uy",
+    "phone": "+998953029090",
+    "email": "interfoodtech@agro.uz",
+    "website": "https://iifte.uz/",
+    "telegram_url": "https://t.me/iifte_official",
+    "source": "infoedu_dtm"
+  },
+  "O’zbekiston milliy pedagogika universiteti": {
+    "slug": "ozbekiston-milliy-pedagogika-universiteti",
+    "address": "Toshkent shahri, Chilonzor tumani, Bunyodkor shoh ko'chasi, 27-uy, 100070",
+    "phone": "+998712767651",
+    "email": "info@tdpu.uz",
+    "website": "https://npuu.uz/",
+    "telegram_url": "https://t.me/TDPU_uz",
+    "source": "infoedu_dtm"
+  },
+  "Nukus davlat texnika universiteti": {
+    "slug": "nukus-davlat-texnika-universiteti",
+    "address": "Nukus, Allayar Dosnazarov koʻchasi, 74",
+    "phone": "",
+    "email": "",
+    "website": "https://nukusstu.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Nukus davlat pedagogika instituti Ellikqal’a fakulteti": {
+    "slug": "nukus-davlat-pedagogika-instituti-ellikqala-fakulteti",
+    "address": "Qoraqalpog'iston Respublikasi, Ellikqal'a tumani, Xalqlar do'stligi ko'chasi 2-uy",
+    "phone": "+998612294075",
+    "email": "nkspi_info@edu.uz",
+    "website": "https://ndpi.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Nukus davlat pedagogika instituti": {
+    "slug": "nukus-davlat-pedagogika-instituti",
+    "address": "Qoraqolpog'iston Respublikasi, Nukus shahri, P.Seytov ko'chasi, raqamsiz uy",
+    "phone": "+998612294075",
+    "email": "nkspi_info@edu.uz",
+    "website": "https://ndpi.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Navoiy davlat univeristeti": {
+    "slug": "navoiy-davlat-univeristeti",
+    "address": "Navoiy viloyati, Navoiy sh. Ibn Sino ko'chasi, 45-uy",
+    "phone": "+998792251930",
+    "email": "info@nspi.uz",
+    "website": "http://nsuni.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Navoiy davlat konchilik va texnologiyalar universiteti": {
+    "slug": "navoiy-davlat-konchilik-va-texnologiyalar-universiteti",
+    "address": "Navoiy shahri, Gʻalaba shoh koʻchasi, 76-uy, Navoiy viloyati, Oʻzbekiston",
+    "phone": "+998792235362",
+    "email": "info@nsumt.uz",
+    "website": "https://nsumt.uz",
+    "telegram_url": "https://t.me/ndktu_rasmiy",
+    "source": "infoedu_dtm"
+  },
+  "Namangan davlat universiteti": {
+    "slug": "namangan-davlat-universiteti",
+    "address": "160107, Namangan shahri, Boburshox ko'chasi, 161-uy",
+    "phone": "+998692288525",
+    "email": "info@namdu.uz",
+    "website": "https://www.namdu.uz",
+    "telegram_url": "https://t.me/Namdu_xabarlari",
+    "source": "infoedu_dtm"
+  },
+  "Namangan davlat texnika universiteti": {
+    "slug": "namangan-davlat-texnika-universiteti",
+    "address": "Namangan shahri, Yangi Namangan tumani, I. Karimov koʻchasi 12-uy",
+    "phone": "+998692287675",
+    "email": "",
+    "website": "https://ndtu.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Namangan davlat pedagogika instituti": {
+    "slug": "namangan-davlat-pedagogika-instituti",
+    "address": "160136, Namangan shahar, Sharq tongi MFY, Uychi ko'chasi, 316-uy",
+    "phone": "+998692111097",
+    "email": "info@namspi.uz",
+    "website": "https://namspi.uz",
+    "telegram_url": "https://t.me/namspii",
+    "source": "infoedu_dtm"
+  },
+  "Namangan davlat chet tillari instituti": {
+    "slug": "namangan-davlat-chet-tillari-instituti",
+    "address": "Namangan viloyati, To'raqo'rg'on tumani, “Yangiobod” MFY, Saodat ko'chasi, 28-uy",
+    "phone": "+998694421167",
+    "email": "namdchti@edu.uz",
+    "website": "https://namsifl.uz",
+    "telegram_url": "https://t.me/NamSIFL",
+    "source": "infoedu_dtm"
+  },
+  "Milliy rassomlik va dizayn instituti": {
+    "slug": "milliy-rassomlik-va-dizayn-instituti",
+    "address": "Toshkent shahar, Mironshox ko'chasi 123-uy",
+    "phone": "+998712551892",
+    "email": "info@mrdi.uz",
+    "website": "https://mrdi.uz",
+    "telegram_url": "https://t.me/mrdi24yangiliklar",
+    "source": "infoedu_dtm"
+  },
+  "Milliy estrada san’ati instituti": {
+    "slug": "milliy-estrada-sanati-instituti",
+    "address": "Toshkent shahri, Shayxontohur tumani, Botir Zokirov ko'chasi, 1-uy, 100027",
+    "phone": "+998712000000",
+    "email": "info@uzmesi.uz",
+    "website": "https://uzmesi.uz/",
+    "telegram_url": "https://t.me/BZokirovnomidagiMESI",
+    "source": "infoedu_dtm"
+  },
+  "Kattaqoʻrgʻon davlat pedagogika instituti": {
+    "slug": "kattaqorgon-davlat-pedagogika-instituti",
+    "address": "140814, Samarqand viloyati, Kattaqo'rg'on shahar, Amir Temur ko'chasi, 27-uy",
+    "phone": "+998557021172",
+    "email": "samdukf_devonxona@edu.uz",
+    "website": "https://katdpi.uz/",
+    "telegram_url": "https://t.me/KatDPI",
+    "source": "infoedu_dtm"
+  },
+  "Jizzax politexnika instituti": {
+    "slug": "jizzax-politexnika-instituti",
+    "address": "Islom Karimov shoh ko'chasi, 4-uy, Jizzax shahri, 130100, O'zbekiston",
+    "phone": "+998722264605",
+    "email": "dgpi_info@edu.uz",
+    "website": "https://jizpi.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Jizzax davlat pedagogika universiteti": {
+    "slug": "jizzax-davlat-pedagogika-universiteti",
+    "address": "130100. Jizzax viloyati, Jizzax shahri Sh.Rashidov shohko‘chasi, 4-uy",
+    "phone": "+998722261357",
+    "email": "jspi_info@umail.uz",
+    "website": "https://jdpu.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Jamoat xavfsizligi universiteti": {
+    "slug": "jamoat-xavfsizligi-universiteti",
+    "address": "Toshkent viloyati, Zangiota tumani, Chorsu qo'rg'oni, 100109",
+    "phone": "+998712303271",
+    "email": "info@mgjxu.uz",
+    "website": "https://mgjxu.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Jahon iqtisodiyoti va diplomatiya universiteti": {
+    "slug": "jahon-iqtisodiyoti-va-diplomatiya-universiteti",
+    "address": "Toshkent shahri, Mustaqillik shoh ko‘chasi, 54-uy",
+    "phone": "+998712673950",
+    "email": "rektorat@uwed.uz",
+    "website": "https://www.uwed.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Ipak yo‘li turizm va madaniy meros xalqaro universiteti": {
+    "slug": "ipak-yoli-turizm-va-madaniy-meros-xalqaro-universiteti",
+    "address": "Samarkand city, Republic of Uzbekistan, 140104, 17, University boulevard",
+    "phone": "+998662406768",
+    "email": "info@univ-silkroad.uz",
+    "website": "https://univ-silkroad.uz/",
+    "telegram_url": "https://t.me/univ_silkroad_uz",
+    "source": "infoedu_dtm"
+  },
+  "Guliston davlat universiteti": {
+    "slug": "guliston-davlat-universiteti",
+    "address": "Guliston shahri, 4-mavze",
+    "phone": "+03672254042",
+    "email": "glsu_info@edu.uz",
+    "website": "https://guldu.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Guliston davlat pedagogika instituti": {
+    "slug": "guliston-davlat-pedagogika-instituti",
+    "address": "120101, Sirdaryo viloyati, Guliston shahri, Talabalar ko'chasi, 49-uy",
+    "phone": "+998556519276",
+    "email": "info@gspi.uz",
+    "website": "https://gspi.uz",
+    "telegram_url": "https://t.me/gulDPIuz",
+    "source": "infoedu_dtm"
+  },
+  "Geologiya fanlari universiteti": {
+    "slug": "geologiya-fanlari-universiteti",
+    "address": "Toshkent sh., Mirzo Ulug'bek tumani, Olimlar ko'chasi, 64-uy",
+    "phone": "+998712097900",
+    "email": "info@uzgeouniver.uz",
+    "website": "https://uzgeouniver.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Farg‘ona jamoat salomatligi tibbiyot instituti": {
+    "slug": "fargona-jamoat-salomatligi-tibbiyot-instituti",
+    "address": "2A Yangi Turon Street, Fergana 150100, Uzbekistan",
+    "phone": "+998732430662",
+    "email": "info@fjsti.uz",
+    "website": "https://fjsti.uz",
+    "telegram_url": "https://t.me/ferghana_medical_institute",
+    "source": "infoedu_dtm"
+  },
+  "Farg‘ona davlat universiteti": {
+    "slug": "fargona-davlat-universiteti",
+    "address": "150100, Farg`ona shahri, Murabbiylar ko`chasi, 19-uy",
+    "phone": "+998732444402",
+    "email": "fardu_info@umail.uz",
+    "website": "https://fdu.uz",
+    "telegram_url": "https://t.me/FarDUATM",
+    "source": "infoedu_dtm"
+  },
+  "Farg‘ona davlat texnika texnika universiteti": {
+    "slug": "fargona-davlat-texnika-texnika-universiteti",
+    "address": "150100, Farg'ona shahar, Farg'ona ko'chasi 86-uy",
+    "phone": "+998732411206",
+    "email": "info@fstu.uz",
+    "website": "https://fstu.uz",
+    "telegram_url": "https://t.me/ferpolitech",
+    "source": "infoedu_dtm"
+  },
+  "Denov tadbirkorlik va pedagogika instituti": {
+    "slug": "denov-tadbirkorlik-va-pedagogika-instituti",
+    "address": "Surxondaryo viloyati Denov tumani Bog' ko'chasi 112-uy",
+    "phone": "+998762280827",
+    "email": "info@dtpi.uz",
+    "website": "https://dtpi.uz",
+    "telegram_url": "https://t.me/dtpiuz",
+    "source": "infoedu_dtm"
+  },
+  "Chirchiq davlat pedagogika universiteti": {
+    "slug": "chirchiq-davlat-pedagogika-universiteti",
+    "address": "111700, Toshkent viloyati, Chirchiq shahri, Amir Temur ko'chasi, 104-uy",
+    "phone": "+998717166805",
+    "email": "tvchdpi@edu.uz",
+    "website": "https://www.cspi.uz",
+    "telegram_url": "https://t.me/tvchdpi2017",
+    "source": "infoedu_dtm"
+  },
+  "Buxoro davlat universiteti": {
+    "slug": "buxoro-davlat-universiteti",
+    "address": "Buxoro shahri, M.Iqbol ko‘chasi, 11-uy",
+    "phone": "+998652212914",
+    "email": "buxdu_rektor@buxdu.uz",
+    "website": "https://buxdu.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Buxoro davlat tibbiyot instituti": {
+    "slug": "buxoro-davlat-tibbiyot-instituti",
+    "address": "200018, Buxoro sh, G'ijduvon ko'chasi, 23",
+    "phone": "+998959110050",
+    "email": "info@bsmi.uz",
+    "website": "https://bsmi.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Buxoro davlat texnika universiteti": {
+    "slug": "buxoro-davlat-texnika-universiteti",
+    "address": "O'zbekiston, Buxoro viloyati, Buxoro shahri, Q. Murtazoyev ko'chasi, 15-uy, 200100",
+    "phone": "+998652232883",
+    "email": "info@bstu.uz",
+    "website": "https://bstu.uz/",
+    "telegram_url": "https://t.me/bdtu_uz",
+    "source": "infoedu_dtm"
+  },
+  "Buxoro davlat pedagogika instituti": {
+    "slug": "buxoro-davlat-pedagogika-instituti",
+    "address": "Buxoro shahar Piridastgir ko'chasi 2-uy",
+    "phone": "+03652261097",
+    "email": "buxdpi@buxdpi.uz",
+    "website": "https://buxdpi.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Andijon qishloq xo‘jaligi va agrotexnologiyalar instituti": {
+    "slug": "andijon-qishloq-xojaligi-va-agrotexnologiyalar-instituti",
+    "address": "170600, Andijan viloyati, Kuyganyor shaharchasi, Oliygoh ko'chasi 1-uy",
+    "phone": "+998743731363",
+    "email": "admission@andqxai.uz",
+    "website": "https://andqxai.uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Andijon davlat tibbiyot instituti": {
+    "slug": "andijon-davlat-tibbiyot-instituti",
+    "address": "Andijon sh. Yu.Otabekov 1-uy",
+    "phone": "03742239450",
+    "email": "info@adti.uz",
+    "website": "https://adti.uz/uz",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  },
+  "Andijon davlat universiteti": {
+    "slug": "andijon-davlat-universiteti",
+    "address": "Andijon viloyati, Andijon shahri, Universitet ko‘chasi, 129- uy",
+    "phone": "+998742238830",
+    "email": "agsu_info@edu.uz",
+    "website": "https://adu.uz/",
+    "telegram_url": "",
+    "source": "infoedu_dtm"
+  }
+}

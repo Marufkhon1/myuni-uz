@@ -1,0 +1,1867 @@
+{
+  "items": {
+    "akfa": {
+      "slug": "akfa",
+      "name": "Akfa universiteti",
+      "website": "https://cau.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "alfraganus": {
+      "slug": "alfraganus",
+      "name": "Alfraganus universiteti",
+      "website": "https://alfraganusuniversity.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "atu": {
+      "slug": "atu",
+      "name": "Amerika texnologiyalar universiteti",
+      "website": "https://atu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ozmesi": {
+      "slug": "ozmesi",
+      "name": "Botir Zokirov nomidagi O'zbekiston milliy estrada san'ati instituti",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "binaryu": {
+      "slug": "binaryu",
+      "name": "Binary xalqaro universiteti",
+      "website": "https://binary.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "bmu": {
+      "slug": "bmu",
+      "name": "British Management University",
+      "website": "https://bmu-edu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/bmu.jpg",
+      "source_url": "https://bmu-edu.uz/images/2.png",
+      "error": ""
+    },
+    "cau": {
+      "slug": "cau",
+      "name": "Central Asian University",
+      "website": "https://cau.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "digitalu": {
+      "slug": "digitalu",
+      "name": "Digital University",
+      "website": "https://digitaluniversity.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "rhtu": {
+      "slug": "rhtu",
+      "name": "D.I. Mendeleev nomidagi Rossiya kimyo-texnologiya universiteti Toshkent filiali",
+      "website": "https://muctr.uz",
+      "status": "ok",
+      "image_url": "/images/universities/rhtu.jpg",
+      "source_url": "https://muctr.uz/uploads/article/Fon/priem.jpg",
+      "error": ""
+    },
+    "diplomatu": {
+      "slug": "diplomatu",
+      "name": "Diplomat University",
+      "website": "https://diplomat.university",
+      "status": "ok",
+      "image_url": "/images/universities/diplomatu.jpg",
+      "source_url": "https://diplomat.university/media/sliders/photo_2025-10-29_16-53-59_7dCfQTa.jpg",
+      "error": ""
+    },
+    "emu": {
+      "slug": "emu",
+      "name": "EMU-University",
+      "website": "https://emu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "fvtu": {
+      "slug": "fvtu",
+      "name": "Fan va texnologiyalar universiteti",
+      "website": "https://ftu-edu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ftvti": {
+      "slug": "ftvti",
+      "name": "Farmatsevtika ta'lim va tadqiqot instituti",
+      "website": "https://ftti.uz",
+      "status": "ok",
+      "image_url": "/images/universities/ftvti.jpg",
+      "source_url": "https://ftti.uz/templates/ftti/images/about.jpg",
+      "error": ""
+    },
+    "reu": {
+      "slug": "reu",
+      "name": "G.V. Plehanov nomidagi Rossiya iqtisodiyot universiteti Toshkent filiali",
+      "website": "https://plekhanov.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ivsfi": {
+      "slug": "ivsfi",
+      "name": "Ijtimoiy va siyosiy fanlar instituti",
+      "website": "https://ivsfi.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "gubkin": {
+      "slug": "gubkin",
+      "name": "I.M. Gubkin nomidagi Rossiya davlat neft va gaz universiteti Toshkent filiali",
+      "website": "https://gubkin.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "isfts": {
+      "slug": "isfts",
+      "name": "International School of Finance Technology and Science",
+      "website": "https://isfts.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "it-park-u": {
+      "slug": "it-park-u",
+      "name": "IT Park University",
+      "website": "https://itpark.university",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "jidu": {
+      "slug": "jidu",
+      "name": "Jahon iqtisodiyoti va diplomatiya universiteti",
+      "website": "https://www.uwed.uz",
+      "status": "ok",
+      "image_url": "/images/universities/jidu.jpg",
+      "source_url": "https://api.uwed.uz/uploads/slider/UcB4rNEowwqdx3JMKHdwt6tuAtWazzpBt8r0FXsv.jpg",
+      "error": ""
+    },
+    "japan-digitalu": {
+      "slug": "japan-digitalu",
+      "name": "Japan Digital University",
+      "website": "https://jdu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/japan-digitalu.jpg",
+      "source_url": "https://static.tildacdn.one/tild3964-3461-4236-b137-636237356433/_-1.png",
+      "error": ""
+    },
+    "ozmrdi": {
+      "slug": "ozmrdi",
+      "name": "Kamoliddin Behzod nomidagi O'zbekiston milliy rassomlik va dizayn instituti",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "mvima": {
+      "slug": "mvima",
+      "name": "Mehnat va ijtimoiy munosabatlar akademiyasi",
+      "website": "https://mvima.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "mei": {
+      "slug": "mei",
+      "name": "MEI milliy tadqiqot universiteti Toshkent filiali",
+      "website": "https://mpei.uz",
+      "status": "ok",
+      "image_url": "/images/universities/mei.jpg",
+      "source_url": "https://mpei.uz/media/hero/20250418_112412_3OEeXYg.jpg",
+      "error": ""
+    },
+    "millatu": {
+      "slug": "millatu",
+      "name": "Millat umidi universiteti",
+      "website": "https://millatumidi.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://millatumidi.uz/default-og-image.jpg",
+      "error": "yuklab bo'lmadi"
+    },
+    "mephi": {
+      "slug": "mephi",
+      "name": "MMFI milliy tadqiqot yadro universiteti Toshkent filiali",
+      "website": "https://mephi.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "msu": {
+      "slug": "msu",
+      "name": "M.V. Lomonosov nomidagi Moskva davlat universiteti Toshkent filiali",
+      "website": "https://msu.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://mc.yandex.ru/watch/108682550",
+      "error": "yuklab bo'lmadi"
+    },
+    "rniimu": {
+      "slug": "rniimu",
+      "name": "N.I. Pirogov nomidagi Rossiya milliy tadqiqot tibbiyot universiteti Toshkent filiali",
+      "website": "https://rnimu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "orientalu": {
+      "slug": "orientalu",
+      "name": "Oriental universiteti",
+      "website": "https://orientaluniversity.uz",
+      "status": "ok",
+      "image_url": "/images/universities/orientalu.jpg",
+      "source_url": "https://orientaluniversity.uz/wp-content/uploads/2025/10/DSC1041-scaled.jpg",
+      "error": ""
+    },
+    "ozdjtu": {
+      "slug": "ozdjtu",
+      "name": "O'zbekiston davlat jahon tillari universiteti",
+      "website": "https://uzswlu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/ozdjtu.jpg",
+      "source_url": "https://uzswlu.uz/backend/web/uploads/16976310475961.png",
+      "error": ""
+    },
+    "ozdk": {
+      "slug": "ozdk",
+      "name": "O'zbekiston davlat konservatoriyasi",
+      "website": "https://conservatory.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ozdsmi": {
+      "slug": "ozdsmi",
+      "name": "O'zbekiston davlat san'at va madaniyat instituti",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "ozdxa": {
+      "slug": "ozdxa",
+      "name": "O'zbekiston davlat xoreografiya akademiyasi",
+      "website": "https://uzdxa.uz",
+      "status": "ok",
+      "image_url": "/images/universities/ozdxa.jpg",
+      "source_url": "https://uzdxa.uz/wp-content/uploads/2021/03/YAGONA-INTERAKTIV-DAVLAT-XIZMATLARI-PORTALI-1024x1024.png",
+      "error": ""
+    },
+    "ozjku": {
+      "slug": "ozjku",
+      "name": "O'zbekiston jurnalistika va ommaviy kommunikatsiyalar universiteti",
+      "website": "https://www.uzjoku.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ozmpu": {
+      "slug": "ozmpu",
+      "name": "O'zbekiston milliy pedagogika universiteti",
+      "website": "https://npuu.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ozmu": {
+      "slug": "ozmu",
+      "name": "O'zbekiston milliy universiteti",
+      "website": "https://www.nuu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ozxia": {
+      "slug": "ozxia",
+      "name": "O'zbekiston xalqaro islom akademiyasi",
+      "website": "https://www.iiau.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ozhma": {
+      "slug": "ozhma",
+      "name": "O'zbekiston Respublikasi Huquqni muhofaza qilish akademiyasi",
+      "website": "https://proacademy.uz/",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://proacademy.uz/images/og-default.jpg",
+      "error": "yuklab bo'lmadi"
+    },
+    "pdp": {
+      "slug": "pdp",
+      "name": "PDP University",
+      "website": "https://pdp.university",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "perfectu": {
+      "slug": "perfectu",
+      "name": "Perfect University",
+      "website": "https://perfectuniversity.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "pisau": {
+      "slug": "pisau",
+      "name": "Pisa University in Tashkent",
+      "website": "https://pisa.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "profiu": {
+      "slug": "profiu",
+      "name": "Profi University",
+      "website": "https://profiuniversity.uz",
+      "status": "ok",
+      "image_url": "/images/universities/profiu.jpg",
+      "source_url": "https://admin.profiuniversity.uz/storage/banners/cRL9LkkwaUJeSoJgI21B_file.png",
+      "error": ""
+    },
+    "rivau": {
+      "slug": "rivau",
+      "name": "Raqamli iqtisodiyot va agrotexnologiyalar universiteti",
+      "website": "https://udea.uz",
+      "status": "ok",
+      "image_url": "/images/universities/rivau.jpg",
+      "source_url": "https://udea.uz/assets/og/degree.png",
+      "error": ""
+    },
+    "renessansu": {
+      "slug": "renessansu",
+      "name": "Renessans ta'lim universiteti",
+      "website": "https://renessans-edu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "mgimo": {
+      "slug": "mgimo",
+      "name": "MGIMO (Moskva davlat xalqaro munosabatlar instituti) Toshkent filiali",
+      "website": "https://mgimo.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "samdvmu-tf": {
+      "slug": "samdvmu-tf",
+      "name": "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti Toshkent filiali",
+      "website": "https://www.svmitf.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/samdvmu-tf.jpg",
+      "source_url": "https://www.svmitf.uz/images/building.jpg",
+      "error": ""
+    },
+    "spbu": {
+      "slug": "spbu",
+      "name": "Sankt-Peterburg davlat universiteti Toshkent filiali",
+      "website": "https://spbu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/spbu.jpg",
+      "source_url": "https://www.spbu.uz/images/emblem2.jpg",
+      "error": ""
+    },
+    "sarbonu": {
+      "slug": "sarbonu",
+      "name": "Sarbon universiteti",
+      "website": "https://sarbon.university",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "sharqu": {
+      "slug": "sharqu",
+      "name": "Sharq University",
+      "website": "https://sharquniversity.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "stars-iu": {
+      "slug": "stars-iu",
+      "name": "STARS International University",
+      "website": "https://stars.university",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tiut": {
+      "slug": "tiut",
+      "name": "Tashkent International University",
+      "website": "https://tiu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/tiut.jpg",
+      "source_url": "https://tiu.uz/static/img/campus/a-bino-lobby.024214ac1242.jpg",
+      "error": ""
+    },
+    "tiue": {
+      "slug": "tiue",
+      "name": "Tashkent International University of Education",
+      "website": "https://tiue.uz",
+      "status": "ok",
+      "image_url": "/images/universities/tiue.jpg",
+      "source_url": "https://tiue.uz/wp-content/themes/kingster/assets/images/xuniversity-photo.png.pagespeed.ic.DUED3Xroe1.jpg",
+      "error": ""
+    },
+    "tmu": {
+      "slug": "tmu",
+      "name": "Tashkent Metropolitan University",
+      "website": "https://metropolitan.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ttechu": {
+      "slug": "ttechu",
+      "name": "Tashkent Tech universiteti",
+      "website": "https://tashkenttech-edu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "team": {
+      "slug": "team",
+      "name": "TEAM University",
+      "website": "https://teamuni.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://thb.tildacdn.one/tild6435-3034-4537-a337-333633616233/-/resize/20x/united-states.png",
+      "error": "yuklab bo'lmadi"
+    },
+    "oxusu": {
+      "slug": "oxusu",
+      "name": "The Oxus universiteti",
+      "website": "https://oxusuniversity.uz",
+      "status": "ok",
+      "image_url": "/images/universities/oxusu.jpg",
+      "source_url": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/cb295fd2-3f1c-4973-a554-5a3256ab59a7/id-preview-a9b70d7b--c7a9e08a-af9b-407c-8438-1c6f1109519e.lovable.app-1773217556691.png",
+      "error": ""
+    },
+    "tmc": {
+      "slug": "tmc",
+      "name": "TMC Institute",
+      "website": "https://tmci.uz",
+      "status": "ok",
+      "image_url": "/images/universities/tmc.jpg",
+      "source_url": "https://tmci.uz/og.png",
+      "error": ""
+    },
+    "tafu": {
+      "slug": "tafu",
+      "name": "Toshkent amaliy fanlar universiteti",
+      "website": "https://tafu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "taqu": {
+      "slug": "taqu",
+      "name": "Toshkent arxitektura-qurilish universiteti",
+      "website": "https://taqu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/taqu.jpg",
+      "source_url": "https://taqu.uz/storage/images/E'lon-20260424155403.jpg",
+      "error": ""
+    },
+    "tatu": {
+      "slug": "tatu",
+      "name": "Toshkent axborot texnologiyalari universiteti",
+      "website": "https://tuit.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://static.tuit.uz/uploads/files/m/w/5a0d867e08fe4.png",
+      "error": "yuklab bo'lmadi"
+    },
+    "tdiu": {
+      "slug": "tdiu",
+      "name": "Toshkent davlat iqtisodiyot universiteti",
+      "website": "https://tsue.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/tdiu.jpg",
+      "source_url": "https://tsue.uz/image/tsue-cover.jpg",
+      "error": ""
+    },
+    "tdoztadu": {
+      "slug": "tdoztadu",
+      "name": "Toshkent davlat o'zbek tili va adabiyoti universiteti",
+      "website": "https://navoiy-uni.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tdshu": {
+      "slug": "tdshu",
+      "name": "Toshkent davlat sharqshunoslik universiteti",
+      "website": "https://tsuos.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/tdshu.jpg",
+      "source_url": "https://tsuos.uz/wp-content/uploads/2025/04/TDSHU-Recovered-5p.png",
+      "error": ""
+    },
+    "tdtu": {
+      "slug": "tdtu",
+      "name": "Toshkent davlat texnika universiteti",
+      "website": "https://tdtu.uz/",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://mc.yandex.ru/watch/99076121",
+      "error": "yuklab bo'lmadi"
+    },
+    "tdtibbu": {
+      "slug": "tdtibbu",
+      "name": "Toshkent davlat tibbiyot universiteti",
+      "website": "https://tma.uz/",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://tma.uz/wp-content/uploads/2026/04/Untitled-0-400x300.jpg",
+      "error": "yuklab bo'lmadi"
+    },
+    "tdtru": {
+      "slug": "tdtru",
+      "name": "Toshkent davlat transport universiteti",
+      "website": "https://tstu.uz/uz",
+      "status": "ok",
+      "image_url": "/images/universities/tdtru.jpg",
+      "source_url": "https://tstu.uz/uz/share.jpg",
+      "error": ""
+    },
+    "tdyu": {
+      "slug": "tdyu",
+      "name": "Toshkent davlat yuridik universiteti",
+      "website": "https://tsul.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tfi": {
+      "slug": "tfi",
+      "name": "Toshkent farmatsevtika instituti",
+      "website": "https://pharmi.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tiiu": {
+      "slug": "tiiu",
+      "name": "Toshkent ijtimoiy innovatsiya universiteti",
+      "website": "https://tiiu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/tiiu.jpg",
+      "source_url": "https://tiiu.uz/wp-content/uploads/2020/12/bdrc-bg.png",
+      "error": ""
+    },
+    "tivtu": {
+      "slug": "tivtu",
+      "name": "Toshkent iqtisodiyot va texnologiyalari universiteti",
+      "website": "https://sbtsue.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tiqxmmi": {
+      "slug": "tiqxmmi",
+      "name": "TIQXMMI milliy tadqiqot universiteti",
+      "website": "https://tiiame.uz/",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://cdn.tiiame.uz/assets/uploads/fcb7001b9c4c4b96bd40cef131427398.png",
+      "error": "yuklab bo'lmadi"
+    },
+    "tkti": {
+      "slug": "tkti",
+      "name": "Toshkent kimyo-texnologiya instituti",
+      "website": "https://tkti.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "kiut": {
+      "slug": "kiut",
+      "name": "Toshkent kimyo xalqaro universiteti",
+      "website": "https://kiut.uz",
+      "status": "ok",
+      "image_url": "/images/universities/kiut.jpg",
+      "source_url": "https://kiut.uz/media/filer_public/ea/ef/eaef1652-453e-4348-8558-d5f824a6624d/1.jpg",
+      "error": ""
+    },
+    "yeodju": {
+      "slug": "yeodju",
+      "name": "Toshkent shahridagi Yeodju texnika instituti",
+      "website": "https://yit.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tmvii": {
+      "slug": "tmvii",
+      "name": "Toshkent menedjment va iqtisodiyot instituti",
+      "website": "https://tmi.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "adju": {
+      "slug": "adju",
+      "name": "Toshkent shahridagi Adju universiteti",
+      "website": "https://ajou.uz",
+      "status": "ok",
+      "image_url": "/images/universities/adju.jpg",
+      "source_url": "https://ajou.uz/uploads/banner/banner-1.png",
+      "error": ""
+    },
+    "rgpu": {
+      "slug": "rgpu",
+      "name": "A.I. Gersen nomidagi Rossiya davlat pedagogika universiteti Toshkent filiali",
+      "website": "https://rgpu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "amity": {
+      "slug": "amity",
+      "name": "Toshkent shahridagi Amiti universiteti",
+      "website": "https://amity.uz",
+      "status": "ok",
+      "image_url": "/images/universities/amity.jpg",
+      "source_url": "https://amity.uz/img/about/independence.png",
+      "error": ""
+    },
+    "inha": {
+      "slug": "inha",
+      "name": "Toshkent shahridagi Inha universiteti",
+      "website": "https://inha.uz",
+      "status": "ok",
+      "image_url": "/images/universities/inha.jpg",
+      "source_url": "https://inha.uz/wp-content/uploads/2021/01/post-contours-min.png",
+      "error": ""
+    },
+    "bmstu": {
+      "slug": "bmstu",
+      "name": "Toshkent shahridagi N.E. Bauman nomidagi Moskva davlat texnika universiteti filiali",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "puchon": {
+      "slug": "puchon",
+      "name": "Toshkent shahridagi Puchon universiteti",
+      "website": "https://puchon.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "vgik": {
+      "slug": "vgik",
+      "name": "S.A. Gerasimov nomidagi Butunrossiya davlat kinematografiya instituti (VGIK) Toshkent filiali",
+      "website": "https://vgik.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "mdis": {
+      "slug": "mdis",
+      "name": "Singapur menejmentni rivojlantirish instituti (MDIS) Toshkent",
+      "website": "https://mdis.uz",
+      "status": "ok",
+      "image_url": "/images/universities/mdis.jpg",
+      "source_url": "https://mdis.uz/assets/public/images/fb.jpg?v=0.2",
+      "error": ""
+    },
+    "ttpu": {
+      "slug": "ttpu",
+      "name": "Turin politexnika universiteti Toshkent",
+      "website": "https://polito.uz",
+      "status": "ok",
+      "image_url": "/images/universities/ttpu.jpg",
+      "source_url": "https://turin.uz/wp-content/uploads/2026/02/uz-1.jpg",
+      "error": ""
+    },
+    "tobb-etu": {
+      "slug": "tobb-etu",
+      "name": "Turkiyaning iqtisodiyot va texnologiyalar universiteti filiali (TOBB ETU) Toshkent",
+      "website": "https://tobbetu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/tobb-etu.jpg",
+      "source_url": "https://tobbetu.uz/static/storage/slider/1/original/3af639467c743e8df1405f37587a31eb98d8b0b5.png",
+      "error": ""
+    },
+    "webster": {
+      "slug": "webster",
+      "name": "Vebster universitetining ta'lim dasturlari markazi Toshkent",
+      "website": "https://webster.uz",
+      "status": "ok",
+      "image_url": "/images/universities/webster.jpg",
+      "source_url": "https://www.webster.uz/images/hero/tashkent-commencement-2025-1600x800.webp",
+      "error": ""
+    },
+    "ttyisi": {
+      "slug": "ttyisi",
+      "name": "Toshkent to'qimachilik va yengil sanoat instituti",
+      "website": "https://ttysi.uz/oz",
+      "status": "ok",
+      "image_url": "/images/universities/ttyisi.jpg",
+      "source_url": "https://ttysi.uz/storage/uploads/banner/FThuM9z1AQfQHKcSbk4neVhMntuoLt3X2KwNndqa.jpg",
+      "error": ""
+    },
+    "txmbvtu": {
+      "slug": "txmbvtu",
+      "name": "Toshkent xalqaro moliyaviy boshqaruv va texnologiyalar universiteti",
+      "website": "https://txmbvtu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "wiut": {
+      "slug": "wiut",
+      "name": "Toshkent xalqaro Vestminster universiteti",
+      "website": "https://wiut.uz",
+      "status": "ok",
+      "image_url": "/images/universities/wiut.jpg",
+      "source_url": "https://wiut.uz/images/banners/Slider-images-full-width%205.1.jpg",
+      "error": ""
+    },
+    "tdxu": {
+      "slug": "tdxu",
+      "name": "Turkiy davlatlar xalqaro universiteti",
+      "website": "https://tdxu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "umft": {
+      "slug": "umft",
+      "name": "University of Management and Future Technologies",
+      "website": "https://umft.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "niu": {
+      "slug": "niu",
+      "name": "Xalqaro Nordik universiteti",
+      "website": "https://niu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "iau": {
+      "slug": "iau",
+      "name": "Xalqaro qishloq xo'jaligi universiteti",
+      "website": "https://iau.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "yangiasru": {
+      "slug": "yangiasru",
+      "name": "Yangi asr universiteti",
+      "website": "https://yangiasr.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://yangiasr.uztheme/main/assets/img/og-image.png",
+      "error": "yuklab bo'lmadi"
+    },
+    "yangi-ozu": {
+      "slug": "yangi-ozu",
+      "name": "Yangi O'zbekiston universiteti",
+      "website": "https://yangiu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ozmmsi": {
+      "slug": "ozmmsi",
+      "name": "Yunus Rajabiy nomidagi O'zbek milliy musiqa san'ati instituti",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "angrenu": {
+      "slug": "angrenu",
+      "name": "Angren universiteti",
+      "website": "https://ac.auni.uz",
+      "status": "ok",
+      "image_url": "/images/universities/angrenu.jpg",
+      "source_url": "https://lh3.googleusercontent.com/sitesv/AA5AbUCYv7Hsyge1HnzDJsx0tA8yEkohxBnm5Jkzjs7dneGTSLEu4E3oSK5S0JSQpmmPu51Vl0-X4q4jOAm-wfnBckfeFq3CtPx-DkJDvNRRg67KDdMFM8NbnP5mEyMdIqCdScyrlgimhBg2_6KDo8Hn_GwMXa1FSZCY7cElIM1D2l5i0yQWCjASOTX4TxRy=w16383",
+      "error": ""
+    },
+    "avifu": {
+      "slug": "avifu",
+      "name": "Aniq va ijtimoiy fanlar universiteti",
+      "website": "https://aifu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/avifu.jpg",
+      "source_url": "https://aifu.uz/wp-content/uploads/2025/10/DSC09524-min-scaled.webp",
+      "error": ""
+    },
+    "astdtu": {
+      "slug": "astdtu",
+      "name": "Astraxan davlat texnika universiteti Toshkent viloyati filiali",
+      "website": "https://astu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/astdtu.jpg",
+      "source_url": "https://i0.wp.com/astu.uz/wp-content/uploads/2022/03/Untitled-23.jpg?fit=1903%2C299&ssl=1",
+      "error": ""
+    },
+    "chirdpu": {
+      "slug": "chirdpu",
+      "name": "Chirchiq davlat pedagogika universiteti",
+      "website": "https://www.cspi.uz",
+      "status": "ok",
+      "image_url": "/images/universities/chirdpu.jpg",
+      "source_url": "https://cspu.uz/storage/slider_thumb_images/53gANfkjBBd4JQp5nnG2pJFFeRit195uL9e7CL2V.jpg",
+      "error": ""
+    },
+    "cyberu": {
+      "slug": "cyberu",
+      "name": "Cyber University",
+      "website": "https://csu.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "http://localhost:3000/website-template-OG.webp",
+      "error": "yuklab bo'lmadi"
+    },
+    "ftu": {
+      "slug": "ftu",
+      "name": "Farmatsevtika texnik universiteti",
+      "website": "https://ptu.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://mc.yandex.ru/watch/102709375",
+      "error": "yuklab bo'lmadi"
+    },
+    "misis-of": {
+      "slug": "misis-of",
+      "name": "MISiS milliy texnologik tadqiqotlar universiteti Olmaliq filiali",
+      "website": "https://misis.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "iyiu": {
+      "slug": "iyiu",
+      "name": "Ipak yo'li innovatsiyalar universiteti",
+      "website": "https://iyiu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/iyiu.jpg",
+      "source_url": "https://iyiu.uz/storage/abouts/1776338936_69e0c7f813b59.jpg",
+      "error": ""
+    },
+    "greenu": {
+      "slug": "greenu",
+      "name": "Markaziy Osiyo atrof-muhit va iqlim o'zgarishini o'rganish universiteti (Green University)",
+      "website": "https://greenuniversity.uz",
+      "status": "ok",
+      "image_url": "/images/universities/greenu.jpg",
+      "source_url": "https://greenuniversity.uz/uploads/quata/c794c38bd5334f76964a82646dea08cf.png",
+      "error": ""
+    },
+    "auezov-chf": {
+      "slug": "auezov-chf",
+      "name": "M. Auezov nomidagi Janubiy Qozog'iston universiteti Chirchiq filiali",
+      "website": "https://auezov.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ozdjtsu": {
+      "slug": "ozdjtsu",
+      "name": "O'zbekiston davlat jismoniy tarbiya va sport universiteti",
+      "website": "https://www.jtsu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/ozdjtsu.jpg",
+      "source_url": "https://www.jtsu.uz/images/bayroquz.png",
+      "error": ""
+    },
+    "tatu-nf": {
+      "slug": "tatu-nf",
+      "name": "Toshkent axborot texnologiyalari universiteti Nurafshon filiali",
+      "website": "https://tuit.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://static.tuit.uz/uploads/files/m/w/5a0d867e08fe4.png",
+      "error": "yuklab bo'lmadi"
+    },
+    "tdau": {
+      "slug": "tdau",
+      "name": "Toshkent davlat agrar universiteti",
+      "website": "https://tdau.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tdtu-of": {
+      "slug": "tdtu-of",
+      "name": "Toshkent davlat texnika universiteti Olmaliq filiali",
+      "website": "https://odti.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tdtibbu-chf": {
+      "slug": "tdtibbu-chf",
+      "name": "Toshkent davlat tibbiyot universiteti Chirchiq filiali",
+      "website": "https://ttachf.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tivpi": {
+      "slug": "tivpi",
+      "name": "Toshkent iqtisodiyot va pedagogika instituti",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "belatki": {
+      "slug": "belatki",
+      "name": "Belarus-O'zbekiston qo'shma tarmoqlararo amaliy texnik kvalifikatsiyalar instituti",
+      "website": "https://belatki.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ipakyoli-tu": {
+      "slug": "ipakyoli-tu",
+      "name": "Ipak yo'li turizm va madaniy meros xalqaro universiteti",
+      "website": "https://univ-silkroad.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "oz-fin-pi": {
+      "slug": "oz-fin-pi",
+      "name": "O'zbekiston-Finlyandiya pedagogika instituti",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "samagroii": {
+      "slug": "samagroii",
+      "name": "Samarqand agroinnovatsiyalar va tadqiqotlar instituti",
+      "website": "https://samaguni.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "samaqqu": {
+      "slug": "samaqqu",
+      "name": "Samarqand davlat arxitektura-qurilish universiteti",
+      "website": "https://samgasi.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/samaqqu.jpg",
+      "source_url": "https://samgasi.uz/sites/default/files/gva-sliderlayer-upload/forum.png",
+      "error": ""
+    },
+    "samdchti": {
+      "slug": "samdchti",
+      "name": "Samarqand davlat chet tillari instituti",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "samdtu": {
+      "slug": "samdtu",
+      "name": "Samarqand davlat tibbiyot universiteti",
+      "website": "https://www.sammu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/samdtu.jpg",
+      "source_url": "https://www.sammu.uz/images/default-image.jpg",
+      "error": ""
+    },
+    "samdu-kf": {
+      "slug": "samdu-kf",
+      "name": "Samarqand davlat universiteti Kattaqo'rg'on filiali",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "samdvmu": {
+      "slug": "samdvmu",
+      "name": "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti",
+      "website": "https://ssuv.uz",
+      "status": "ok",
+      "image_url": "/images/universities/samdvmu.jpg",
+      "source_url": "https://ssuv.uz/frontend/web/slider/6a213c7f2f6b0.jpg",
+      "error": ""
+    },
+    "samisi": {
+      "slug": "samisi",
+      "name": "Samarqand iqtisodiyot va servis instituti",
+      "website": "http://sies.uz",
+      "status": "ok",
+      "image_url": "/images/universities/samisi.jpg",
+      "source_url": "https://sies.uz/img/og-image.webp",
+      "error": ""
+    },
+    "samxtu": {
+      "slug": "samxtu",
+      "name": "Samarqand xalqaro texnologiya universiteti",
+      "website": "https://siut.uz",
+      "status": "ok",
+      "image_url": "/images/universities/samxtu.jpg",
+      "source_url": "https://siut.uz/templates/yootheme/cache/80/bg-main-10-80c5e924.jpeg",
+      "error": ""
+    },
+    "samdu": {
+      "slug": "samdu",
+      "name": "Sharof Rashidov nomidagi Samarqand davlat universiteti",
+      "website": "https://www.samdu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/samdu.jpg",
+      "source_url": "https://www.samdu.uz/images/default-image.png",
+      "error": ""
+    },
+    "samdu-ugf": {
+      "slug": "samdu-ugf",
+      "name": "Sharof Rashidov nomidagi Samarqand davlat universiteti Urgut filiali",
+      "website": "https://samduuf.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tatu-sf": {
+      "slug": "tatu-sf",
+      "name": "Toshkent axborot texnologiyalari universiteti Samarqand filiali",
+      "website": "https://tuit.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://static.tuit.uz/uploads/files/m/w/5a0d867e08fe4.png",
+      "error": "yuklab bo'lmadi"
+    },
+    "tdiu-sf": {
+      "slug": "tdiu-sf",
+      "name": "Toshkent davlat iqtisodiyot universiteti Samarqand filiali",
+      "website": "https://sbtsue.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "anddchti": {
+      "slug": "anddchti",
+      "name": "Andijon davlat chet tillari instituti",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "anddpi": {
+      "slug": "anddpi",
+      "name": "Andijon davlat pedagogika instituti",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "anddti": {
+      "slug": "anddti",
+      "name": "Andijon davlat texnika instituti",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "anddtibbi": {
+      "slug": "anddtibbi",
+      "name": "Andijon davlat tibbiyot instituti",
+      "website": "https://adti.uz/uz",
+      "status": "ok",
+      "image_url": "/images/universities/anddtibbi.jpg",
+      "source_url": "https://adti.uz/uploads/posts/2026-05/medium/234129b6b5_1.jpg",
+      "error": ""
+    },
+    "anddu": {
+      "slug": "anddu",
+      "name": "Andijon davlat universiteti",
+      "website": "https://adu.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/anddu.jpg",
+      "source_url": "https://adu.uz/images/about-university.png",
+      "error": ""
+    },
+    "andqxai": {
+      "slug": "andqxai",
+      "name": "Andijon qishloq xo'jaligi va agrotexnologiyalar instituti",
+      "website": "https://andqxai.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "chu-af": {
+      "slug": "chu-af",
+      "name": "Collegium Humanum Varshava menejment universiteti Andijon filiali",
+      "website": "https://collegiumhumanum.uz",
+      "status": "ok",
+      "image_url": "/images/universities/chu-af.jpg",
+      "source_url": "https://varsovia.uz/wp-content/uploads/2026/04/rekru-slider.jpg",
+      "error": ""
+    },
+    "sharda": {
+      "slug": "sharda",
+      "name": "O'zbekistondagi Sharda universiteti",
+      "website": "https://sharda.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "uep": {
+      "slug": "uep",
+      "name": "University of Economics and Pedagogy",
+      "website": "https://uep.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "camu": {
+      "slug": "camu",
+      "name": "Central Asian Medical University",
+      "website": "https://camu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "fardtu": {
+      "slug": "fardtu",
+      "name": "Farg'ona davlat texnika universiteti",
+      "website": "https://fstu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "fardu": {
+      "slug": "fardu",
+      "name": "Farg'ona davlat universiteti",
+      "website": "https://fdu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/fardu.jpg",
+      "source_url": "https://fdu.uz/frontend/web/uploads/getImage61f12becee492.jpg",
+      "error": ""
+    },
+    "farjsti": {
+      "slug": "farjsti",
+      "name": "Farg'ona jamoat salomatligi tibbiyot instituti",
+      "website": "https://fjsti.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "kiu": {
+      "slug": "kiu",
+      "name": "Koreya xalqaro universiteti",
+      "website": "https://kiu.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://kiu.uz/wp-content/uploads/2025/08/002-university.png",
+      "error": "yuklab bo'lmadi"
+    },
+    "isma-ff": {
+      "slug": "isma-ff",
+      "name": "Latviyaning axborot tizimlari menejmenti oliy maktabi Farg'ona filiali",
+      "website": "https://isma.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "otvmxi": {
+      "slug": "otvmxi",
+      "name": "Oziq-ovqat texnologiyasi va muhandisligi xalqaro instituti",
+      "website": "https://iifte.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/otvmxi.jpg",
+      "source_url": "https://iifte.uz/storage/news/npUJoK8jaGMkuYyQXONrUmfAHxSgWBMdIeNiiKuf.jpg",
+      "error": ""
+    },
+    "qoqdu": {
+      "slug": "qoqdu",
+      "name": "Qo'qon davlat universiteti",
+      "website": "https://kokandsu.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/qoqdu.jpg",
+      "source_url": "https://kokandsu.uz/uploads/partners/1777697415_partner-4.png",
+      "error": ""
+    },
+    "qoqu": {
+      "slug": "qoqu",
+      "name": "Qo'qon universiteti",
+      "website": "https://kokandsu.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/qoqu.jpg",
+      "source_url": "https://kokandsu.uz/uploads/partners/1777697415_partner-4.png",
+      "error": ""
+    },
+    "impuls-bsr": {
+      "slug": "impuls-bsr",
+      "name": "IMPULS BSR",
+      "website": "https://impuls.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "namdchti": {
+      "slug": "namdchti",
+      "name": "Namangan davlat chet tillari instituti",
+      "website": "https://namsifl.uz",
+      "status": "ok",
+      "image_url": "/images/universities/namdchti.jpg",
+      "source_url": "https://namsifl.uz/assets/img/main.jpg",
+      "error": ""
+    },
+    "namdpi": {
+      "slug": "namdpi",
+      "name": "Namangan davlat pedagogika instituti",
+      "website": "https://namspi.uz",
+      "status": "ok",
+      "image_url": "/images/universities/namdpi.jpg",
+      "source_url": "https://namspi.uz/uploads/c83e39935fb06e22380b8554dc6c9a00.jpg",
+      "error": ""
+    },
+    "namdtu": {
+      "slug": "namdtu",
+      "name": "Namangan davlat texnika universiteti",
+      "website": "https://ndtu.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "namdu": {
+      "slug": "namdu",
+      "name": "Namangan davlat universiteti",
+      "website": "https://www.namdu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "turanu": {
+      "slug": "turanu",
+      "name": "Turan International University",
+      "website": "https://turan.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ubs": {
+      "slug": "ubs",
+      "name": "University of Business and Science",
+      "website": "https://ubs.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "acharyau": {
+      "slug": "acharyau",
+      "name": "Acharya University",
+      "website": "https://acharya.uz",
+      "status": "ok",
+      "image_url": "/images/universities/acharyau.jpg",
+      "source_url": "https://www.acharya.uz/images/slider/1.webp",
+      "error": ""
+    },
+    "buxdpi": {
+      "slug": "buxdpi",
+      "name": "Buxoro davlat pedagogika instituti",
+      "website": "https://buxdpi.uz",
+      "status": "ok",
+      "image_url": "/images/universities/buxdpi.jpg",
+      "source_url": "https://buxdpi.uz/static/assets/img/hero/shape_1_1.png",
+      "error": ""
+    },
+    "buxdtu": {
+      "slug": "buxdtu",
+      "name": "Buxoro davlat texnika universiteti",
+      "website": "https://bstu.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/buxdtu.jpg",
+      "source_url": "https://bstu.uz/uploads/images/2026-05-11/7uOY0s85XVrb0wVAVFtwOkERcNCd5bQjT48sOcdL.jpg",
+      "error": ""
+    },
+    "buxdtibbi": {
+      "slug": "buxdtibbi",
+      "name": "Buxoro davlat tibbiyot instituti",
+      "website": "https://bsmi.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/buxdtibbi.jpg",
+      "source_url": "https://bsmi.uz/wp-content/uploads/2026/04/2026-04-03-16.52.28.jpg",
+      "error": ""
+    },
+    "buxdu": {
+      "slug": "buxdu",
+      "name": "Buxoro davlat universiteti",
+      "website": "https://buxdu.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://buxdu.uz/static/images/bayroq/uzbek.png",
+      "error": "yuklab bo'lmadi"
+    },
+    "buxittu": {
+      "slug": "buxittu",
+      "name": "Buxoro innovatsion ta'lim va tibbiyot universiteti",
+      "website": "https://bitu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/buxittu.jpg",
+      "source_url": "https://bitu.uz/media/settings/hero/photo_2026-05-04_16-13-57.jpg",
+      "error": ""
+    },
+    "buxinvu": {
+      "slug": "buxinvu",
+      "name": "Buxoro innovatsiyalar universiteti",
+      "website": "https://binnov.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "bpvxti": {
+      "slug": "bpvxti",
+      "name": "Buxoro psixologiya va xorijiy tillar instituti",
+      "website": "https://bpsxi.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "oxu": {
+      "slug": "oxu",
+      "name": "Osiyo xalqaro universiteti",
+      "website": "https://osiyo.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "zarmed": {
+      "slug": "zarmed",
+      "name": "Zarmed universiteti",
+      "website": "https://zarmed.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "jizdpu": {
+      "slug": "jizdpu",
+      "name": "Jizzax davlat pedagogika universiteti",
+      "website": "https://jdpu.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/jizdpu.jpg",
+      "source_url": "https://jdpu.uz/wp-content/uploads/2026/03/photo_2026-02-27_16-29-50.jpg",
+      "error": ""
+    },
+    "jizpi": {
+      "slug": "jizpi",
+      "name": "Jizzax politexnika instituti",
+      "website": "https://jizpi.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/jizpi.jpg",
+      "source_url": "https://jizpi.uz/media/Photos/ekran_IMG/ekan5.jpg",
+      "error": ""
+    },
+    "kfu-jf": {
+      "slug": "kfu-jf",
+      "name": "Qozon federal universiteti Jizzax filiali",
+      "website": "https://kfu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ozmu-jf": {
+      "slug": "ozmu-jf",
+      "name": "Mirzo Ulug'bek nomidagi O'zbekiston milliy universiteti Jizzax filiali",
+      "website": "https://jbnuu.uz/",
+      "status": "ok",
+      "image_url": "/images/universities/ozmu-jf.jpg",
+      "source_url": "https://jbnuu.uz/new_site/assets/images/main/main2.jpg",
+      "error": ""
+    },
+    "sambhramu": {
+      "slug": "sambhramu",
+      "name": "Sambhram universiteti",
+      "website": "https://sambhram.uz",
+      "status": "ok",
+      "image_url": "/images/universities/sambhramu.jpg",
+      "source_url": "https://sambhram.uz/media/news/main/photo_2026-04-30_10-52-59.jpg",
+      "error": ""
+    },
+    "guldpi": {
+      "slug": "guldpi",
+      "name": "Guliston davlat pedagogika instituti",
+      "website": "https://gspi.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://cnt0.www.uz/counter/collect?",
+      "error": "yuklab bo'lmadi"
+    },
+    "guldu": {
+      "slug": "guldu",
+      "name": "Guliston davlat universiteti",
+      "website": "https://guldu.uz",
+      "status": "ok",
+      "image_url": "/images/universities/guldu.jpg",
+      "source_url": "https://images.guldu.uz/guldu/2024/04/19/Emblem_of_Uzbekistan.svg.png",
+      "error": ""
+    },
+    "tkti-yf": {
+      "slug": "tkti-yf",
+      "name": "Toshkent kimyo-texnologiya instituti Yangiyer filiali",
+      "website": "https://ticty.uz/",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://ticty.uz/preview-image.jpg",
+      "error": "yuklab bo'lmadi"
+    },
+    "atvmu": {
+      "slug": "atvmu",
+      "name": "Axborot texnologiyalari va menejment universiteti",
+      "website": "https://tuit.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://static.tuit.uz/uploads/files/m/w/5a0d867e08fe4.png",
+      "error": "yuklab bo'lmadi"
+    },
+    "ipeu": {
+      "slug": "ipeu",
+      "name": "Iqtisodiyot va pedagogika universiteti",
+      "website": "https://ipu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "otxu": {
+      "slug": "otxu",
+      "name": "Osiyo texnologiyalar universiteti",
+      "website": "https://atu-edu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "qardtu": {
+      "slug": "qardtu",
+      "name": "Qarshi davlat texnika universiteti",
+      "website": "https://kstu.uz/uz",
+      "status": "ok",
+      "image_url": "/images/universities/qardtu.jpg",
+      "source_url": "https://kstu.uz/frontend/images/faculties.webp",
+      "error": ""
+    },
+    "qardu": {
+      "slug": "qardu",
+      "name": "Qarshi davlat universiteti",
+      "website": "https://qarshidu.uz/oz",
+      "status": "ok",
+      "image_url": "/images/universities/qardu.jpg",
+      "source_url": "https://qarshidu.uz/img/about-2.jpg",
+      "error": ""
+    },
+    "qarxiu": {
+      "slug": "qarxiu",
+      "name": "Qarshi xalqaro universiteti",
+      "website": "https://qxiu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "shhdpi": {
+      "slug": "shhdpi",
+      "name": "Shahrisabz davlat pedagogika instituti",
+      "website": "https://shdpi.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "turonu": {
+      "slug": "turonu",
+      "name": "Turon universiteti",
+      "website": "https://turon.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "xinnovu": {
+      "slug": "xinnovu",
+      "name": "Xalqaro innovatsion universitet",
+      "website": "https://xinnov.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "dentpi": {
+      "slug": "dentpi",
+      "name": "Denov tadbirkorlik va pedagogika instituti",
+      "website": "https://dtpi.uz",
+      "status": "ok",
+      "image_url": "/images/universities/dentpi.jpg",
+      "source_url": "https://dtpi.uz/wp-content/uploads/2025/02/Denov-tadbirkorlik-va-pedagogika-instituti-7.png",
+      "error": ""
+    },
+    "terdmau": {
+      "slug": "terdmau",
+      "name": "Termiz davlat muhandislik va agrotexnologiyalar universiteti",
+      "website": "https://tdmau.uz",
+      "status": "ok",
+      "image_url": "/images/universities/terdmau.jpg",
+      "source_url": "https://tdmau.uz/wp-content/uploads/2025/05/cropped-photo_2024-12-23_17-31-55-removebg-preview-2.png",
+      "error": ""
+    },
+    "terdpi": {
+      "slug": "terdpi",
+      "name": "Termiz davlat pedagogika instituti",
+      "website": "https://terdpi.uz",
+      "status": "ok",
+      "image_url": "/images/universities/terdpi.jpg",
+      "source_url": "https://terdpi.uz/images/terdpi.png",
+      "error": ""
+    },
+    "terdu": {
+      "slug": "terdu",
+      "name": "Termiz davlat universiteti",
+      "website": "https://tersu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tivsu": {
+      "slug": "tivsu",
+      "name": "Termiz iqtisodiyot va servis universiteti",
+      "website": "https://tues.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://tues.uz/images/about/shape-13.png",
+      "error": "yuklab bo'lmadi"
+    },
+    "tdtibbu-tf": {
+      "slug": "tdtibbu-tf",
+      "name": "Toshkent davlat tibbiyot universiteti Termiz filiali",
+      "website": "https://ttatf.uz/",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://media.ttatf.uz/media/original/thumbnails/user/admin/bfbf1f58d73842a6866114ec1203885d.bayroq.gif_5HAMD6B.jpg",
+      "error": "yuklab bo'lmadi"
+    },
+    "navdktu": {
+      "slug": "navdktu",
+      "name": "Navoiy davlat konchilik va texnologiyalar universiteti",
+      "website": "https://nsumt.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "navdu": {
+      "slug": "navdu",
+      "name": "Navoiy davlat universiteti",
+      "website": "http://nsuni.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "navinvi": {
+      "slug": "navinvi",
+      "name": "Navoiy innovatsiyalar instituti",
+      "website": "https://nii.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tatu-zf": {
+      "slug": "tatu-zf",
+      "name": "Toshkent axborot texnologiyalari universiteti Zarafshon fakulteti",
+      "website": "https://tuit.uz/zarafshon-fakulteti",
+      "status": "ok",
+      "image_url": "/images/universities/tatu-zf.jpg",
+      "source_url": "https://static.tuit.uz/uploads/1/720__UB_-le4inCjXcr87LDrfaXWgEGNTRb_z.jpg",
+      "error": ""
+    },
+    "mamunu": {
+      "slug": "mamunu",
+      "name": "Ma'mun universiteti",
+      "website": "https://mamun.uz",
+      "status": "ok",
+      "image_url": "/images/universities/mamunu.jpg",
+      "source_url": "https://mamun.uz/uploads/2026/photo_2026-05-26_12-51-00.jpg",
+      "error": ""
+    },
+    "ozdxa-uf": {
+      "slug": "ozdxa-uf",
+      "name": "O'zbekiston davlat xoreografiya akademiyasi Urganch filiali",
+      "website": "https://uzdxauf.uz",
+      "status": "ok",
+      "image_url": "/images/universities/ozdxa-uf.jpg",
+      "source_url": "https://uzdxauf.uz/templates/uzdxauf/images/upload/about-bg-1.jpg",
+      "error": ""
+    },
+    "tatu-uf": {
+      "slug": "tatu-uf",
+      "name": "Toshkent axborot texnologiyalari universiteti Urganch filiali",
+      "website": "https://tuit.uz",
+      "status": "download_failed",
+      "image_url": "",
+      "source_url": "https://static.tuit.uz/uploads/files/m/w/5a0d867e08fe4.png",
+      "error": "yuklab bo'lmadi"
+    },
+    "urdpi": {
+      "slug": "urdpi",
+      "name": "Urganch davlat pedagogika instituti",
+      "website": "https://www.urspi.uz",
+      "status": "ok",
+      "image_url": "/images/universities/urdpi.jpg",
+      "source_url": "https://www.urspi.uz/img/slider1.jpg",
+      "error": ""
+    },
+    "urdti": {
+      "slug": "urdti",
+      "name": "Urganch davlat tibbiyot instituti",
+      "website": "https://urgfiltma.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "urdu": {
+      "slug": "urdu",
+      "name": "Urganch davlat universiteti",
+      "website": "https://urdu.uz/uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "urinvu": {
+      "slug": "urinvu",
+      "name": "Urganch innovatsion universiteti",
+      "website": "https://uiu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "urtu": {
+      "slug": "urtu",
+      "name": "Urganch Ranch texnologiya universiteti",
+      "website": "https://urtu.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "qordu": {
+      "slug": "qordu",
+      "name": "Berdaq nomidagi Qoraqalpoq davlat universiteti",
+      "website": "",
+      "status": "missing_website",
+      "image_url": "",
+      "source_url": "",
+      "error": "website yo'q"
+    },
+    "nukdpi": {
+      "slug": "nukdpi",
+      "name": "Nukus davlat pedagogika instituti",
+      "website": "https://ndpi.uz",
+      "status": "ok",
+      "image_url": "/images/universities/nukdpi.jpg",
+      "source_url": "https://ndpi.uz/wp-content/uploads/2024/08/nmpi-2-1-scaled.jpg",
+      "error": ""
+    },
+    "nukdtu": {
+      "slug": "nukdtu",
+      "name": "Nukus davlat texnika universiteti",
+      "website": "https://nukusstu.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "nukinvi": {
+      "slug": "nukinvi",
+      "name": "Nukus innovatsion instituti",
+      "website": "https://nukusii.uz",
+      "status": "ok",
+      "image_url": "/images/universities/nukinvi.jpg",
+      "source_url": "https://nukusii.uz/_next/static/media/cert1.0a5603fb.png",
+      "error": ""
+    },
+    "ozdk-nkf": {
+      "slug": "ozdk-nkf",
+      "name": "O'zbekiston davlat konservatoriyasi Nukus filiali",
+      "website": "https://uzdknf.uz/",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "ozdjtsu-nkf": {
+      "slug": "ozdjtsu-nkf",
+      "name": "O'zbekiston davlat jismoniy tarbiya va sport universiteti Nukus filiali",
+      "website": "https://uzdjtsunf.uz",
+      "status": "ok",
+      "image_url": "/images/universities/ozdjtsu-nkf.jpg",
+      "source_url": "https://uzdjtsunf.uz/wp-content/themes/sportnf/resources/img/og-default.jpg",
+      "error": ""
+    },
+    "ozdsmi-nkf": {
+      "slug": "ozdsmi-nkf",
+      "name": "O'zbekiston davlat san'at va madaniyat instituti Nukus filiali",
+      "website": "https://uzdsmi-nf.uz",
+      "status": "ok",
+      "image_url": "/images/universities/ozdsmi-nkf.jpg",
+      "source_url": "https://uzdsmi-nf.uz/wp-content/uploads/2025/06/qq-2.jpg",
+      "error": ""
+    },
+    "qorqxai": {
+      "slug": "qorqxai",
+      "name": "Qoraqalpog'iston qishloq xo'jaligi va agrotexnologiyalar instituti",
+      "website": "https://tdaunukus.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "qorti": {
+      "slug": "qorti",
+      "name": "Qoraqalpog'iston tibbiyot instituti",
+      "website": "https://kkmi.uz",
+      "status": "ok",
+      "image_url": "/images/universities/qorti.jpg",
+      "source_url": "https://kkmi.uz/wp-content/uploads/2024/08/emblem_kk.png",
+      "error": ""
+    },
+    "samdvmu-nkf": {
+      "slug": "samdvmu-nkf",
+      "name": "Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti Nukus filiali",
+      "website": "https://sdvunf.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    },
+    "tgfu": {
+      "slug": "tgfu",
+      "name": "Toshkent gumanitar fanlar universiteti",
+      "website": "https://tgf.uz",
+      "status": "not_found",
+      "image_url": "",
+      "source_url": "",
+      "error": "rasm topilmadi"
+    }
+  }
+}

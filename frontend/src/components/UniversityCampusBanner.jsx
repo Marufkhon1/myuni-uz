@@ -1,13 +1,8 @@
 import { useState } from "react";
-import {
-  CAMPUS_IMAGE_PATHS,
-  campusIndex,
-  getUniversityBannerUrl,
-} from "../utils/universityImage.js";
+import { DEFAULT_UNIVERSITY_IMAGE, getUniversityBannerUrl } from "../utils/universityImage.js";
 
 export default function UniversityCampusBanner({ university, className = "h-48" }) {
   const primaryUrl = getUniversityBannerUrl(university);
-  const fallbackUrl = CAMPUS_IMAGE_PATHS[campusIndex(university)];
   const [imageUrl, setImageUrl] = useState(primaryUrl);
 
   if (!imageUrl) {
@@ -28,8 +23,8 @@ export default function UniversityCampusBanner({ university, className = "h-48" 
         className="h-full w-full object-cover object-center"
         loading="lazy"
         onError={() => {
-          if (imageUrl !== fallbackUrl) {
-            setImageUrl(fallbackUrl);
+          if (imageUrl !== DEFAULT_UNIVERSITY_IMAGE) {
+            setImageUrl(DEFAULT_UNIVERSITY_IMAGE);
           }
         }}
       />

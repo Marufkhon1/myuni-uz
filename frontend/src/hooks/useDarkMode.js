@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const STORAGE_KEY = "myuni-theme";
 
@@ -33,6 +33,7 @@ export function readInitialDarkMode() {
 export function applyDarkMode(isDark) {
   const root = document.documentElement;
   root.classList.toggle("dark", isDark);
+  root.classList.remove("light");
   root.style.colorScheme = isDark ? "dark" : "light";
   try {
     localStorage.setItem(STORAGE_KEY, isDark ? "dark" : "light");
@@ -41,23 +42,59 @@ export function applyDarkMode(isDark) {
   }
 }
 
+let sharedIsDark = typeof window !== "undefined" ? readInitialDarkMode() : false;
+const listeners = new Set();
+
+function notifyThemeListeners(next) {
+  listeners.forEach((listener) => listener(next));
+}
+
+function setSharedDarkMode(value) {
+  const next = typeof value === "function" ? value(sharedIsDark) : value;
+  if (next === sharedIsDark) {
+    return;
+  }
+  sharedIsDark = next;
+  applyDarkMode(next);
+  notifyThemeListeners(next);
+}
+
+if (typeof window !== "undefined") {
+  applyDarkMode(sharedIsDark);
+}
+
 export function useDarkMode() {
-  const [isDark, setIsDark] = useState(() => readInitialDarkMode());
+  const [isDark, setLocalDark] = useState(sharedIsDark);
 
   useEffect(() => {
-    applyDarkMode(isDark);
-  }, [isDark]);
+    function handleChange(next) {
+      setLocalDark(next);
+    }
 
-  useEffect(() => {
+    listeners.add(handleChange);
+    setLocalDark(sharedIsDark);
+
     function handleStorage(event) {
-      if (event.key !== STORAGE_KEY) {
+      if (event.key !== STORAGE_KEY || event.newValue == null) {
         return;
       }
-      setIsDark(event.newValue === "dark");
+      const next = event.newValue === "dark";
+      if (next !== sharedIsDark) {
+        sharedIsDark = next;
+        applyDarkMode(next);
+        notifyThemeListeners(next);
+      }
     }
 
     window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
+    return () => {
+      listeners.delete(handleChange);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
+
+  const setIsDark = useCallback((value) => {
+    setSharedDarkMode(value);
   }, []);
 
   return { isDark, setIsDark };

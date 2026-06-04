@@ -1,0 +1,87 @@
+{
+  "Oz-Fin PI": {
+    "url": "https://uzfi.uz/uz/uzfi/bachelor/",
+    "len": 52216,
+    "status": "\n\n\n\n<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <!-- META ============================================= -->\n    <meta "
+  },
+  "GreenU": {
+    "url": "https://greenuniversity.uz/en/news/admissions-open-for-2025-2026-academic-year",
+    "len": 109,
+    "status": "ERROR:<urlopen error [SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol (_ssl.c:1081)>"
+  },
+  "FTU": {
+    "url": "https://ptu.uz/",
+    "len": 3731,
+    "status": "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <link rel=\"icon\" href=\"/favicon.ico\" />\n    <"
+  },
+  "TTechU": {
+    "url": "https://tashkenttech-edu.uz/",
+    "len": 11922,
+    "status": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf8\">\n  <meta name=\"viewport\" content=\"width=device-width,init"
+  },
+  "MSU": {
+    "url": "https://msu.uz/enrollee",
+    "len": 5013,
+    "status": "<!doctype html><html lang=\"ru\"><head><meta charset=\"utf-8\"/><link rel=\"shortcut icon\" href=\"favicon.ico\" type=\"image/x-i"
+  },
+  "Gubkin": {
+    "url": "https://gubkin.uz/uz/yonalishlar",
+    "len": 68,
+    "status": "ERROR:<urlopen error _ssl.c:1063: The handshake operation timed out>"
+  },
+  "MEPhI": {
+    "url": "https://mephi.uz/uz/yonalishlar",
+    "len": 119,
+    "status": "ERROR:<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1081)>"
+  },
+  "RHTU": {
+    "url": "https://muctr.uz/uz/yonalishlar",
+    "len": 31,
+    "status": "ERROR:HTTP Error 404: Not Found"
+  },
+  "RNIIMU": {
+    "url": "https://rnimu.uz/uz/yonalishlar",
+    "len": 54,
+    "status": "ERROR:<urlopen error [Errno 11001] getaddrinfo failed>"
+  },
+  "RGPU": {
+    "url": "https://rgpu.uz/uz/yonalishlar",
+    "len": 54,
+    "status": "ERROR:<urlopen error [Errno 11001] getaddrinfo failed>"
+  },
+  "MEI": {
+    "url": "https://mpei.uz/uz/yonalishlar",
+    "len": 31,
+    "status": "ERROR:HTTP Error 404: Not Found"
+  },
+  "BMU": {
+    "url": "https://bmu.uz/uz/yonalishlar",
+    "len": 54,
+    "status": "ERROR:<urlopen error [Errno 11001] getaddrinfo failed>"
+  },
+  "ATU": {
+    "url": "https://atu.uz/uz/yonalishlar",
+    "len": 153,
+    "status": "ERROR:<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not v"
+  },
+  "TIVSU": {
+    "url": "https://tivsu.uz/uz/yonalishlar",
+    "len": 54,
+    "status": "ERROR:<urlopen error [Errno 11001] getaddrinfo failed>"
+  },
+  "TGFU": {
+    "url": "https://tgf.uz/uz/yonalishlar",
+    "len": 153,
+    "status": "ERROR:<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not v"
+  },
+  "AngrenU": {
+    "url": "https://angrenuniversity.uz/uz/yonalishlar",
+    "len": 54,
+    "status": "ERROR:<urlopen error [Errno 11001] getaddrinfo failed>"
+  },
+  "AVIFU": {
+    "url": "https://avifu.uz/uz/yonalishlar",
+    "len": 54,
+    "status": "ERROR:<urlopen error [Errno 11001] getaddrinfo failed>"
+  }
+}

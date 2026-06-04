@@ -1,0 +1,100 @@
+﻿fallback 99
+priv Akfa | Akfa universiteti
+priv Alfraganus | Alfraganus universiteti
+priv ATU | Amerika texnologiyalar universiteti
+stat O'zMESI | Botir Zokirov nomidagi O'zbekiston milliy estrada san'a
+priv BinaryU | Binary xalqaro universiteti
+priv BMU | British Management University
+priv CAU | Central Asian University
+priv DigitalU | Digital University
+inte RHTU | D.I. Mendeleev nomidagi Rossiya kimyo-texnologiya unive
+priv DiplomatU | Diplomat University
+priv EMU | EMU-University
+priv FVTU | Fan va texnologiyalar universiteti
+priv FTVTI | Farmatsevtika ta'lim va tadqiqot instituti
+priv IVSFI | Ijtimoiy va siyosiy fanlar instituti
+inte Gubkin | I.M. Gubkin nomidagi Rossiya davlat neft va gaz univers
+priv ISFTS | International School of Finance Technology and Science
+priv IT Park U | IT Park University
+priv Japan DigitalU | Japan Digital University
+stat O'zMRDI | Kamoliddin Behzod nomidagi O'zbekiston milliy rassomlik
+priv MVIMA | Mehnat va ijtimoiy munosabatlar akademiyasi
+inte MEI | MEI milliy tadqiqot universiteti Toshkent filiali
+priv MillatU | Millat umidi universiteti
+inte MEPhI | MMFI milliy tadqiqot yadro universiteti Toshkent filial
+inte MSU | M.V. Lomonosov nomidagi Moskva davlat universiteti Tosh
+inte RNIIMU | N.I. Pirogov nomidagi Rossiya milliy tadqiqot tibbiyot 
+priv OrientalU | Oriental universiteti
+priv PDP | PDP University
+priv PerfectU | Perfect University
+inte PisaU | Pisa University in Tashkent
+priv ProfiU | Profi University
+priv RIVAU | Raqamli iqtisodiyot va agrotexnologiyalar universiteti
+priv RenessansU | Renessans ta'lim universiteti
+inte MGIMO | MGIMO (Moskva davlat xalqaro munosabatlar instituti) To
+priv SarbonU | Sarbon universiteti
+priv SharqU | Sharq University
+priv STARS IU | STARS International University
+priv TIUT | Tashkent International University
+priv TIUE | Tashkent International University of Education
+priv TMU | Tashkent Metropolitan University
+stat TTechU | Tashkent Tech universiteti
+priv TEAM | TEAM University
+priv OxusU | The Oxus universiteti
+priv TMC | TMC Institute
+priv TAFU | Toshkent amaliy fanlar universiteti
+priv TIIU | Toshkent ijtimoiy innovatsiya universiteti
+stat TIQXMMI | TIQXMMI milliy tadqiqot universiteti
+priv KIUT | Toshkent kimyo xalqaro universiteti
+inte RGPU | A.I. Gersen nomidagi Rossiya davlat pedagogika universi
+inte VGIK | S.A. Gerasimov nomidagi Butunrossiya davlat kinematogra
+inte MDIS | Singapur menejmentni rivojlantirish instituti (MDIS) To
+inte TTPU | Turin politexnika universiteti Toshkent
+inte TOBB ETU | Turkiyaning iqtisodiyot va texnologiyalar universiteti 
+inte Webster | Vebster universitetining ta'lim dasturlari markazi Tosh
+priv TXMBVTU | Toshkent xalqaro moliyaviy boshqaruv va texnologiyalar 
+inte WIUT | Toshkent xalqaro Vestminster universiteti
+priv TDXU | Turkiy davlatlar xalqaro universiteti
+priv UMFT | University of Management and Future Technologies
+priv NIU | Xalqaro Nordik universiteti
+inte IAU | Xalqaro qishloq xo'jaligi universiteti
+priv YangiAsrU | Yangi asr universiteti
+stat O'zMMSI | Yunus Rajabiy nomidagi O'zbek milliy musiqa san'ati ins
+priv AngrenU | Angren universiteti
+priv AVIFU | Aniq va ijtimoiy fanlar universiteti
+stat CyberU | Cyber University
+stat FTU | Farmatsevtika texnik universiteti
+inte MISiS OF | MISiS milliy texnologik tadqiqotlar universiteti Olmali
+priv IYIU | Ipak yo'li innovatsiyalar universiteti
+stat GreenU | Markaziy Osiyo atrof-muhit va iqlim o'zgarishini o'rgan
+inte Auezov ChF | M. Auezov nomidagi Janubiy Qozog'iston universiteti Chi
+inte BelATKI | Belarus-O'zbekiston qo'shma tarmoqlararo amaliy texnik 
+stat O'z-Fin PI | O'zbekiston-Finlyandiya pedagogika instituti
+priv SamXTU | Samarqand xalqaro texnologiya universiteti
+stat SamDU | Sharof Rashidov nomidagi Samarqand davlat universiteti
+inte CHU AF | Collegium Humanum Varshava menejment universiteti Andij
+inte Sharda | O'zbekistondagi Sharda universiteti
+priv UEP | University of Economics and Pedagogy
+priv CAMU | Central Asian Medical University
+priv KIU | Koreya xalqaro universiteti
+inte ISMA FF | Latviyaning axborot tizimlari menejmenti oliy maktabi F
+priv Impuls BSR | IMPULS BSR
+priv TuranU | Turan International University
+priv UBS | University of Business and Science
+priv AcharyaU | Acharya University
+priv BuxITTU | Buxoro innovatsion ta'lim va tibbiyot universiteti
+priv BPVXTI | Buxoro psixologiya va xorijiy tillar instituti
+priv OXU | Osiyo xalqaro universiteti
+priv Zarmed | Zarmed universiteti
+inte KFU JF | Qozon federal universiteti Jizzax filiali
+priv SambhramU | Sambhram universiteti
+priv OTXU | Osiyo texnologiyalar universiteti
+priv TuronU | Turon universiteti
+priv XinnovU | Xalqaro innovatsion universitet
+priv TIVSU | Termiz iqtisodiyot va servis universiteti
+stat NavDU | Navoiy davlat universiteti
+priv NavInvI | Navoiy innovatsiyalar instituti
+priv MamunU | Ma'mun universiteti
+priv URTU | Urganch Ranch texnologiya universiteti
+priv NukInvI | Nukus innovatsion instituti
+priv TGFU | Toshkent gumanitar fanlar universiteti

@@ -187,9 +187,6 @@ export default function ReviewComposeForm({
   onRatingChange,
   aspectRatings,
   onAspectChange,
-  studyDirectionId,
-  onStudyDirectionChange,
-  directions,
   reviewText,
   onReviewTextChange,
   isSubmitting,
@@ -319,13 +316,6 @@ export default function ReviewComposeForm({
                 </div>
               )}
             </div>
-
-            <ReviewAspectForm
-              step="details"
-              studyDirectionId={studyDirectionId}
-              onStudyDirectionChange={onStudyDirectionChange}
-              directions={directions}
-            />
           </div>
         </FormSection>
 

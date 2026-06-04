@@ -22,7 +22,6 @@ from universities.public_views import (
     PublicUniversityCatalogFiltersView,
     PublicUniversityDetailView,
     PublicUniversityListView,
-    PublicUniversityMapView,
 )
 
 urlpatterns = [
@@ -58,11 +57,6 @@ urlpatterns = [
         "api/public/reviews/top-universities/",
         PublicTopUniversityReviewsView.as_view(),
         name="public-top-university-reviews",
-    ),
-    path(
-        "api/public/universities/map/",
-        PublicUniversityMapView.as_view(),
-        name="public-university-map",
     ),
     path(
         "api/public/universities/filters/",

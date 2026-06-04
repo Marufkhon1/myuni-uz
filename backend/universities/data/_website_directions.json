@@ -1,0 +1,4615 @@
+{
+  "Farmatsevtika ta'lim va tadqiqot instituti": {
+    "website": "https://ftti.uz",
+    "direction_count": 3,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "Axborot-resurs markazi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "English",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro hamkorlik",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://ftti.uz pages=23"
+  },
+  "Oriental universiteti": {
+    "website": "https://orientaluniversity.uz",
+    "direction_count": 56,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "08.00.15 — Tadbirkorlik va kichik biznes iqtisodiyoti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "10.00.05 — Osiyo va Afrika xalqlari tili va adabiyoti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "10.00.06 — Qiyosiy adabiyotshunoslik, chog‘ishtirma tilshunoslik va tarjimashunoslik",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "13.00.07 — Ta’limda menejment",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Barcha huquqlar himoyalangan",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Biologiya – 3,1 ball Ona tili – 2,1 ball Chet tili – 1,1 ball",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Biznes va boshqaruv",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "filologiya fanlari doktori (DSc), professor",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filologiya va tillarni oʻqitish: arab tili",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filologiya va tillarni oʻqitish: ingliz tili",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filologiya va tillarni oʻqitish: koreys tili",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filologiya va tillarni oʻqitish: turk tili",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filologiya va tillarni oʻqitish: xitoy tili",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Finance and funding",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Gumanitar fanlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ijtimoiy-gumanitar fanlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ilmiy faoliyat Innovatsion pedagogika jurnali",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ilmiy faoliyat Innovatsion pedagogika jurnali Iqtisod-menejment jurnali Al-Buxoriy jurnali",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ingliz tili – 3,1 ball Ona tili – 2,1 ball Tarix – 1,1 ball",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Innovatsion pedagogika jurnali",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisod-menejment jurnali",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot (tarmoqlar va sohalar boʻyicha)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot fanlari bo‘yicha falsafa doktori (PhD)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot va moliya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "IT va aniq fanlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "jismoniy tarbiya va sport nazariyasi hamda metodikasini takomillashtirish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Lingvistika (tillar boʻyicha)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Maktabgacha va boshlangʻich taʼlimda jismoniy tarbiya va sport",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Matematika va AT",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Matematika – 3,1 ball Chet tili – 2,1 ball Ona tili – 1,1 ball",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Matematika – 3,1 ball Ona tili – 2,1 ball Chet tili – 1,1 ball",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Menejment (Taʼlim menejmenti)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Milliy yoki xalqaro til sertifikati (mavjud bo‘lsa)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pasport nusxasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "pedagogik kompetensiyalarni rivojlantirish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "pedagogika fanlari bo‘yicha falsafa doktori (PhD)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pedagogika va psixologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Sport ligasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "talabalarda jismoniy madaniyat va sport kompetensiyalarini shakllantirish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "ta’lim jarayonining pedagogik samaradorligini oshirish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ta’lim va psixologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tillar–1",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tillar–2",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Turizm (faoliyat yoʻnalishlari boyicha)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Uzluksiz ta'lim pedagogikasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro hamkorlik",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro Xalqaro hamkorlik",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro Xalqaro hamkorlik Akademik mobillik TOEFL AT-TANAL",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "yosh tadqiqotchilarni xalqaro ilmiy maydonga olib chiqish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "“BIZNES VA BOSHQARUV” KAFEDRASI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "“Biznes va boshqaruv” kafedrasi mudiri",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "“Matematika va axborot texnologiyalari” kafedrasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "“Matematika va axborot texnologiyalari” kafedrasi mudiri v.b., texnika fanlari bo‘yicha falsafa doktori (PhD), dotsent",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "“UZLUKSIZ TA’LIM PEDAGOGIKASI” KAFEDRASI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "“Uzluksiz ta’lim pedagogikasi” kafedrasi mudiri",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://orientaluniversity.uz pages=31"
+  },
+  "Pisa University in Tashkent": {
+    "website": "https://pisa.uz",
+    "direction_count": 2,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "Home Call Us on +998 97 759 44 00 English",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Information",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://pisa.uz pages=23"
+  },
+  "Tashkent International University": {
+    "website": "https://tiu.uz",
+    "direction_count": 25,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "Bank ishi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Biznes va innovatsion ta'lim fakulteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Buxgalteriya hisobi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Dasturiy injiniring",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filologiya va tillarni o'qitish: koreys tili",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot (ingliz tilida)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Jahon iqtisodiyoti va XIM",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Jahon iqtisodiyoti va XIM (ingliz tilida)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Kiberxavfsizlik injiniringi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Kiberxavfsizlik injiniringi (ingliz tilida)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Marketing",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Menejment",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliya va moliyaviy texnologiyalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliyaviy ma'lumot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Psixologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Sport",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "TIUdagi almashinuv dasturi shunchaki chet elda o'qish emas — bu to'laqonli xalqaro tajriba",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro aloqalar bo'limiga transkript, motivatsion xat va til sertifikatingiz bilan murojaat qiling",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro aloqalar tarmog'i",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro dasturlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro tajriba",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro TIUga kelish Qabul tartibi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xorijiy til va adabiyoti: ingliz tili",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://tiu.uz pages=30"
+  },
+  "Tashkent International University of Education": {
+    "website": "https://tiue.uz",
+    "direction_count": 59,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "1.2. Ingliz tilidagi dasturlarga:",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "1.2. Programs taught in ENGLISH",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "2.2. Programs taught in ENGLISH",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "2.2. TA’LIM INGLIZ tilidagi dasturlar bo’yicha:",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "3 Languages ​​of instruction: Uzbek, Russian, English",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "ACCOUNTING AND BUSINESS",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "ACCOUNTING AND BUSINESS (MSC)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Accounting and finance (msc)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Amaliy matematika",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Associate Professor at the Department of Business Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "AXBOROT TEXNOLOGIYALARI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "b) Identification: Copy of Passport or ID Card",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "b) pasport yoki ID-kartaning nusxasi;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BAKALAVRIAT AMALIY MATEMATIKA",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BIZNES BOSHQARUV",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BIZNES BOSHQARUVI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BUSINESS MANAGEMENT",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BUXGALTERIYA HISOBI VA BIZNES",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BUXGALTERIYA HISOBI VA MOLIYA (MSC)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Copy of passport / ID card",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "CYBERSECURITY",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "DATA SCIENCE (MSC)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "DATA TRANSMISSION GUIDE",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Doctor of Philosophy in Human Resource Management, Annamalai University, Tamilnadu, Chennai",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "EDUCATION AND MANAGEMENT OF LEARNING PROCESSES",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "EDUCATION AND TRAINING MANAGEMENT",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "EDUCATION MANAGEMENT AND LEADERSHIP (MSC)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "EDUCATIONAL MANAGEMENT AND LEADERSHIP (MSC)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "English",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "FILOLOGIYA VA TILLARNI O’QITISH",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "INFORMATION TECHNOLOGY",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "International educational programme: general information",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "IT HELP",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "IT – YORDAM",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "KIBERXAVFSIZLIK",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Languages ​​of instruction: Uzbek, Russian, English",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MAGISTRATURA PEDAGOGIKA NAZARIYASI VA TARIXI (MSC)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MANAGEMENT OF EDUCATIONAL INSTITUTIONS (MOE)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Management of educational institutions (msc)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MA’LUMOTLAR ILMI (DATA SCIENCE) (MSC)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MMIT’23",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MMIT’24",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MMIT’25",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MOLIYAVIY YORDAM VA TA’LIM UCHUN TO’LOV",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MOLIYAVIY YORDAM VA TA’LIM UCHUN TO’LOV TA’LIM UCHUN TO’LOV",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "PEDAGOGICAL THEORY AND HISTORY (MSC)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pedagogika nazariyasi va tarixi (msc)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "POSTGRADUATE THEORY AND HISTORY OF PEDAGOGY (MSC)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "RESEARCH CONFERENCES MMIT’26",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "SPORT",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "SPORT & RECREATION",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Submit application PROGRAMS",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "TADQIQOTLAR KONFERENSIYALAR MMIT’26",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "TA’LIM YO’NALISHLARI XALQARO TA’LIM DASTURI (IFP)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Theory and history of pedagogy (msc)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "TIUE offers the following educational programs in Uzbek, Russian and English languages",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "TIUE offers the following educational programs in Uzbek, Russian, and English:",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "TIUE oʻzbek, rus va ingliz tillarida quyidagi taʼlim dasturlarini taklif etadi:",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "XALQARO TA'LIM DASTURI (IFP)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://tiue.uz pages=25"
+  },
+  "Toshkent ijtimoiy innovatsiya universiteti": {
+    "website": "https://tiiu.uz",
+    "direction_count": 19,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "Abituriyentlarga Ta’lim yo’nalishlari Iqtisodiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Axborot tizimlari va texnologiyalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Axborot xizmati",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Axborot xizmati Raqamli kutubxona",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Buxgalteriya hisobi va audit",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filologiya va tillarni o’qitish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ilmiy maqolalar Iqtisodiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot va raqamli texnologiyalar kafedrasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "IT va Raqamli texnologiyalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Kafedralar Iqtisodiyot va raqamli texnologiyalar kafedrasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliya va moliyaviy texnologiyalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Page not found - Toshkent ijtimoiy innovatsiya universiteti Addmission Подача документа Hujjat topshirish Yangiliklar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pedagogika",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pedagogika va psixologiya kafedrasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Psixologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Qabul - Toshkent ijtimoiy innovatsiya universiteti Addmission Подача документа Hujjat topshirish Yangiliklar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Raqamli kutubxona",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tarix va Siyosatshunoslik",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://tiiu.uz pages=22"
+  },
+  "Toshkent kimyo xalqaro universiteti": {
+    "website": "https://kiut.uz",
+    "direction_count": 126,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "\"Biznesni boshqarish\" va \"Xalqaro iqtisodiy munosabatlar\" yo'nalishlari rahbari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "\"Biznesni boshqarish\" va \"Xalqaro iqtisodiy munosabatlar\" yo'nalishlari rahbari o'rinbosari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "\"Moliya\", \"Bank ishi\" va \"Buxgalteriya hisobi\" yo'nalishlari rahbar o'rinbosari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "\"Moliya\", \"Bank ishi\", \"Buxgalteriya hisobi\" yo'nalishlari rahbari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "1-smena Biologiya va kimyo // 2-smena uchun kasbiy(ijodiy) imtihon",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Almaty Management University",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Amaliy matematika",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Arxitektura va shaharsozlik",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Arxitektura va shaharsozlik (1+3)*",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Arxitektura va Shaharsozlik Dizaynerligi fakulteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Audit",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "audit va konsalting tashkilotlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "audit va moliyaviy tahlil",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "auditor",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Axborot - resurs markazi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Axborot tizimlari muhandisligi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Axborot tizimlari muhandisligi (1+3)*",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bank ishi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "bank ishi;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "bank xodimi;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "bank, moliya, sug‘urta va investitsiya kompaniyalari;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bino va inshootlar arxitekturasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bino va inshootlar qurilishi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Biologiya va kimyo",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Biologiya, kimyo va ona tili",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Biznes boshqaruvi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "biznes huquqi va biznes etikasi;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "biznes huquqi;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "biznes ingliz tili va professional kommunikatsiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "biznes tahlilchi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "biznes tahlilchi;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Biznes va moliya maktabi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Biznesni boshqarish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Biznesni boshqarish (MBA)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "budjetlashtirish va moliyaviy rejalashtirish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "buxgalter",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Buxgalteriya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Buxgalteriya hisobi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Buxgalteriya hisobi (tarmoqlar va sohalar bo'yicha)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "buxgalteriya hisobi;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "davlat moliya organlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Davlat moliyasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Dizayn (Interyer dizayn)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Dizayn (Liboslar dizayni)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "eksport-import kompaniyalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "elektron hisob va raqamli moliya tizimlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "elektron tijorat va raqamli moliya tizimlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "English Education",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "global akademik va biznes muhitida tajriba orttirish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ilmiy-pedagogik kadrlar tayyorlash",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "ilmiy-tadqiqot va innovatsion biznes rivojlantirish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Innovatsion markaz",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "innovatsion texnologiyalar va raqamli iqtisodiyot vositalarini qo‘llash;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "investitsion banklar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "kichik biznes va tadbirkorlik;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Kimyo International University in Tashkent",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Koreys filologiyasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Korporativ moliya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Liboslar dizayni",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Lift muhandisligi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Lingvistika (Ingliz tili)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Lingvistika (Rus tili)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "logistika boshqaruvi;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "logistika va supply chain menejeri",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "logistika va ta’minot zanjiri boshqaruvi;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "marketing asoslari;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "marketing va iste’molchi xulq-atvorini tahlil qilish;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "marketing, reklama va konsalting;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Maxsus pedagogika",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Maxsus pedagogika, defektologiya (Logopediya)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "menejment asoslari;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "moliya;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "moliyaviy analitik",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "moliyaviy konsalting xizmatlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "moliyaviy maslahatchi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "moliyaviy menejer",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "moliyaviy menejer;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "moliyaviy menejment, investitsiyalar va bank ishi asoslari;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "moliyaviy menejment;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "moliyaviy rejalashtirish va tahlil (FP&A)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "moliyaviy va boshqaruv hisobi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Muhandislik kommunikatsiyalari qurilish va montaji",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Muhandislik kommunikatsiyalari qurilishi va montaji",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Muhandislik maktabi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "O'zbek tili va adabiyoti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "O`zbek tili va adabiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "our alumni see more Muhammadieva Dinora Xalqaro iqtisodiy munosabatlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pasport nusxasi (rangli);",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pasport yoki ID nusxasi (rangli);",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Psixologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Psixologiya (faoliyat turlari bo'yicha)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Psixologiya (ijtimoiy psixologiya)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Qurilish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Qurilish (1+3)*",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "raqamli biznes va elektron tijorat texnologiyalari;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "raqamli biznes va elektron tijorat;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "risk-menejment",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Rus tili",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Shaharsozlik va landshaft arxitekturasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "soliq mutaxassisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "soliq tizimi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "soliqqa tortish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "soliqqa tortish tizimi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Stomatologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "strategik, operatsion va innovatsion boshqaruv;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tarjimashunoslik (xitoy, ingliz tili)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Taʼlim granti, Moliyaviy koʻmak",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tibbiyot injiniringi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tibbiyot maktabi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "tijorat banklari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Toshkent Kimyo xalqaro universiteti Namangan filiali",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Turizm",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Turizm (faoliyat turlari bo'yicha)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Turizm yo'nalishi bitiruvchisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Varna University of Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "xalqaro biznes",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "xalqaro biznes standartlari bilan ishlash;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro iqtisodiy munosabatlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro iqtisodiy munosabatlar yoʻnalishining bitiruvchisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "xalqaro kompaniyalarda stajirovkalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro marketing",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "xalqaro moliyaviy hisobot standartlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro talabalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "xalqaro va mahalliy kompaniyalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "zamonaviy boshqaruv va marketing yondashuvlarini o‘rganish;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://kiut.uz pages=35"
+  },
+  "Singapur menejmentni rivojlantirish instituti (MDIS) Toshkent": {
+    "website": "https://mdis.uz",
+    "direction_count": 30,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "BA (Hons) Accounting and Finance",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BA (Hons) Airline and Airport Management (Top-up)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BA (Hons) Business and Financial Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BA (Hons) Business and Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BA (Hons) Business and Marketing Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BA (Hons) Graphic Design & International Marketing",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bachelor of Arts (Hons) Human Resource Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bachelor of Arts (Hons) Project Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) Business Economics",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) Computer Science (AI)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) Data Science",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) Finance, Investment and Banking",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) in Banking and Finance",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) in Business and Economics",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) in Computer Information Systems for Business",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) in Finance, Investment and Risk",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) in Industrial Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) International Business in Tourism & Hospitality",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bsc (Hons) International Tourism and Hospitality Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) Tourism and Hospitality Management & Leadership",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Master of Business Administration, Finance;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Master of Business Administration, Human Resource Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Master of Business Administration, Marketing;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MBA (Human Resource Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MBA Finance",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MBA Marketing",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MEDICAL TOURISM IN THE CONTEXT OF GLOBALIZATION - …",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MSc Accounting and Finance (Applied)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MSc Sustainable Tourism",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Parking Information",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://mdis.uz pages=28"
+  },
+  "Turin politexnika universiteti Toshkent": {
+    "website": "https://polito.uz",
+    "direction_count": 48,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "1.4. Ingliz tili sertifikati",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Akademik siyosat",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Automatic Control and Computer Engineering",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Avtomatik boshqaruv va kompyuter muhandisligi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Barcha fanlar boʻyicha test ingliz tilida oʻtkaziladi!",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Business Economics",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Civil Engineering and Architecture",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Computer Science",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Corporate Management and Strategic Planning",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Course for administrative and personnel management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Course for financial and economic management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Economics",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Engineering programs co-developed with Politecnico di Torino. Choose your track and language of instruction",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "English (IELTS)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "English language (Technical)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Financial Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "German international accreditation for engineering programs — recognized worldwide",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "How it works",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "ILMIY IZLANISH & INNOVATSIYALAR | Ilmiy faoliyat Asosiy yo'nalishlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Information and Communication Technologies",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Information Resource Center",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Innovatsiyalar Universitet va sanoat o'rtasidagi hamkorlik",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Management Basics",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Management Psychology",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Management, Economics and Humanitarian Disciplines",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Marketing and enterprise development strategy",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Mechanical and Aerospace Engineering",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Menejment, Iqtisod va Gumanitar fanlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Menejment, Iqtisod va Gumanitar fanlar Yashil Universitet",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Mexanik va aerokosmik muhandisligi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliyaviy ko'rsatkichlar Universitet byudjeti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "News in accounting",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Passport (asli va nusxa) – hujjatning asli qaytarib beriladi;",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Personal efficiency and time management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Personnel Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Project Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Qurilish muhandisligi va arxitektura",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Receive admit card",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Sifat siyosati",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Sport complex",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Sport majmuasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "TA'LIM | Kafedralar Tabiiy-matematik fanlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tabiiy-matematik fanlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro almashuv dasturlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro hamkorlik Hamkor tashkilotlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro kengash",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro loyihalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro talabalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://polito.uz pages=28"
+  },
+  "Vebster universitetining ta'lim dasturlari markazi Toshkent": {
+    "website": "https://webster.uz",
+    "direction_count": 1,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "This page either doesn't exist, or it moved somewhere else",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://webster.uz pages=23"
+  },
+  "Toshkent xalqaro Vestminster universiteti": {
+    "website": "https://wiut.uz",
+    "direction_count": 26,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "BA (Hons) in Business Management and its Pathways",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BA (Hons) in Commercial Law",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BA (Hons) in Commercial Law BSc (Hons) in Computer Science",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) in Business Information Systems BSc (Hons) in Computer Science",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) in Computer Science",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) in Computer Science BA (Hons) in Commercial Law",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) in Economics and its Pathways",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) in Economics and its Pathways (Economics with Finance)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BSc (Hons) in Finance",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "For more information you may also visit our",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "LLM in International Commercial Law",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MA in Creative Industries Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Management (08.00.13)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MBA in Finance",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MOLIYAVIY TAHLIL",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "MSc in Applied Economics",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "School of Business and Economics (SOBE)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "School of Business and Economics (SOBE) School of Law, Technology, and Education (SOLTE)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "School of Business and Economics at Freie Universität Berlin",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "School of Law, Technology, and Education (SOLTE)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "School of Law, Technology, and Education (SOLTE) WIUT Business School",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Scientific Seminar Working Group — Management",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "SPORTS AT WIUT",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Step 1: Submit online application",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "TADBIRKORLIK: G'OYADAN BIZNES MODELGACHA",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "UNDERGRADUATE PROGRAMMES BA (Hons) in International Relations and Law",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://wiut.uz pages=27"
+  },
+  "Yangi asr universiteti": {
+    "website": "https://yangiasr.uz",
+    "direction_count": 34,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "Buxgalteriya hisobi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Dasturiy injiniring",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Dizayn: Interyerni lоyihalash",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Dizayn: liboslar dizayni",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filologiya va tillarni o'qitish: KOREYS TILI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filologiya va tillarni o'qitish: XITOY TILI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filоlоgiya va tillarni o‘qitish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filоlоgiya va tillarni o‘qitish: ARAB TILI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filоlоgiya va tillarni o‘qitish: INGLIZ TILI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filоlоgiya va tillarni o‘qitish: matnshunoslik va adabiy manbashunoslik",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filоlоgiya va tillarni o‘qitish: MUMTOZ SHARQ TILLARI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filоlоgiya va tillarni o‘qitish: O'ZBEK TILI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filоlоgiya va tillarni o‘qitish: RUS TILI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filоlоgiya va tillarni o‘qitish: TURK TILI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "jpeg\" alt=\"Raqamli transformatsiya davrida pedagogika va psixologiyaning rivojlanish tendensiyalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Kurs davomida malakaviy va pedagogik amaliyot mavjud. Kurs nihoyasida Bitiruv malakaviy ishi himoya qilinadi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Lingvistika: INGLIZ TILI",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Matematika",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Maxsus pedagogika: logopediya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Mazkur to‘plam “Zamonaviy ta’limda psixologik va pedagogik muammolar” mavzus",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliya va iqtisod ishlari bo'yicha prorektor",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliya va moliyaviy texnologiyalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pedagogika",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pedagogika nazariyasi va tarixi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Psixologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Raqamli transformatsiya davrida pedagogika va psixologiyaning rivojlanish tendensiyalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Soliqlar va soliqqa tortish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ta'limda axborot texnologiyalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro ilmiy-amaliy konferensiya materiallari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Zamonaviy jamiyatda ta’lim, pedagogika va psixologiya muammolari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "“Raqamli transformatsiya davrida pedagogika va psixologiyaning rivojlanish tendensiyalari&rdqu",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "“Zamonaviy jamiyatda ta’lim, pedagogika va psixologiya muammolari” mavzusidagi xal",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "🎓 Hurmatli professor-o'qituvchilar! Universitetimizda pedagogik jamoaning ilmiy va kasbiy salohiyatini yuksalti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://yangiasr.uz pages=30"
+  },
+  "Ipak yo'li innovatsiyalar universiteti": {
+    "website": "https://iyiu.uz",
+    "direction_count": 6,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "Ipak Yo‘li Innovatsiyalar Universiteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "message.Data not found",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pedagogika",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Psixologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Yuklanishni bekor qilish Ipak Yo‘li Innovatsiyalar Universiteti Biz haqimizda",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://iyiu.uz pages=23"
+  },
+  "Collegium Humanum Varshava menejment universiteti Andijon filiali": {
+    "website": "https://collegiumhumanum.uz",
+    "direction_count": 11,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "Axborot texnologiyalari va raqamli dizayn boshqaruvi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bojxona va soliq boshqaruvi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bugun bahorning eng go‘zal bayrami — 8-mart, Xalqaro xotin-qizlar kuni! 🌸",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Korporativ huquqni boshqarish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliya boshqaruvi va buxgalteriya hisobi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ommaviy axborot byulleteni",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Sog’liqni saqlash menejmenti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Transport, logistika va yuk tashish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Varsovia Biznes va Amaliy Fanlar Universiteti Andijon Filiali",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro biznes va marketing",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xavfsizlik va kiberxavfsizlik boshqaruvi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://collegiumhumanum.uz pages=23"
+  },
+  "Koreya xalqaro universiteti": {
+    "website": "https://kiu.uz",
+    "direction_count": 119,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "15 000 000 – 30 000 000+ (xalqaro sertifikatlar bilan)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "3. Milliy gʻoya, maʼnaviyat asoslari va huquq taʼlimi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "5. Iqtisodiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "6. Dasturiy injiniring (Software Engineering)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "7. Moliya va moliyaviy texnologiyalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "AI startaplar, moliyaviy texnologiyalar firmalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Audit firmalari, konsalting kompaniyalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Audit tashkilotlari, davlat nazorat organlari, mustaqil audit xizmatlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Audit va moliyaviy nazorat mutaxassisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Auditor",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Auditor yoki moliyaviy maslahatchi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Axborot texnologiyalari asosida buxgalteriya (1C, ERP tizimlari)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bank hisobchisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bank ilovalari funksional dizayneri (biznes-analitik)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bank iqtisodchisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bank tahlilchisi yoki kredit menejeri",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bank va kredit tizimi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bank, davlat tizimlari, korporatsiyalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Banklar, investitsiya firmalari, Fintech kompaniyalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Banklar, investitsiya kompaniyalari, sug‘urta va fond bozorida",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Biznes-rejalar tuzuvchi (startaplar uchun)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bolalar psixologi yordamchisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bolalar psixologiyasi va pedagogikasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Boshlang‘ich maktab pedagogikasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Boshqaruv buxgalteriyasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Burg‘ilash bo‘yicha muhandis",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Buxgalter",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Buxgalteriya hisobi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Chatni boshlash Tugmani bosish orqali siz maxfiylik siyosati",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Chet el sarmoyalari bilan ishlovchi firmalar, eksport-import kompaniyalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Dasturiy injiniring",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Dasturiy injiniring – QXU",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Dasturlash tillari (Python, JavaScript, Java, C++, C#)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Davlat byudjeti va soliq siyosati",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Davlat idoralaridagi yuqori lavozimdagi iqtisodchi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Davlat iqtisodiy rejalashtiruvchisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Davlat ko'magi bilan 14% kredit",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Davlat soliq qo‘mitalari, xususiy firmalar, konsalting kompaniyalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Davlat tashkilotlari, moliya idoralari, biznes-kompaniyalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Energetik tizimlar va sanoat xavfsizligi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Energetika loyihalar muhandisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Fintech tizimlar (onlayn banklar, P2P kreditlash)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Freelance dasturchi (xalqaro buyurtmalar)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Fuqarolik va konstitutsiyaviy huquq",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Gaz quvurlari muhandisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Glavbux (katta buxgalter)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Huquq fani o‘qituvchisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Huquqiy bilim asoslari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Huquqiy tarbiya mutaxassisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Huquqiy targ‘ibot sohasidagi mutaxassis",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ichki va tashqi audit",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ilmiy-innovatsion faoliyat",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ilmiy-innovatsion faoliyat Ilmiy jurnal",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Investitsiyalar va biznes rejalashtirish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Investitsiyalarni tahlil qilish va moliyaviy rejalashtirish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodchi (yangi bitiruvchi)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodchi-tahlilchi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiy tahlil va prognozlash",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot va moliya vazirligi, hokimliklar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot – QXU",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "IT kompaniyalar, startaplar, texnologik firmalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Katta buxgalter (glavbux)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Katta hajmli IT infratuzilmalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Kiberxavfsizlik va moliyaviy axborot muhofazasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Kiberxavfsizlik va tarmoq xavfsizligi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Kimyo va ekologik nazorat laboratoriyalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Konsalting firmalar, audit xizmatlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Korporativ moliya mutaxassisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Korporativ va xalqaro moliya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Korporatsiyalar, ishlab chiqarish korxonalari, logistika va savdo kompaniyalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Kredit kalkulyatori",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Kredit portfeli menejeri",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Kriptovalyuta birjalari, raqamli moliya startaplari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Laboratoriya muhandisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Matematika o‘qitish metodikasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Mikroiqtisodiyot va makroiqtisodiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Mikromoliya tashkilotlari, banklar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Milliy g’oya, ma’naviyat asoslari va huquqta’limi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Milliy g’oya, ma’naviyat asoslari va huquqta’limi – QXU",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliyaviy aniqlik va ishonchlilik sari birinchi qadam",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliyaviy buxgalteriya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliyaviy tahlil va rejalashtirish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Moliyaviy tahlilchi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Muhandis-texnolog",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Muhandislik grafikasi va avtomatlashtirilgan boshqaruv tizimlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Nodavlat tashkilotlar, OAV, gumanitar tashkilotlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Nodavlat ta’lim muassasalarida pedagog",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Open Dialogue with Youth and an Important Partnership for Cybersecurity",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "O‘quvchilar psixologiyasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pasport, ta'lim va yo'nalish — barchasini onlayn to'ldiring",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pedagog-metodist",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Psixologik yondashuvli pedagog",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Pul-moliya tizimi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Raqamli iqtisodiyot va statistika",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Raqamli to‘lov texnologiyalari (Payme, Apelsin, Click, VISA, Mastercard API)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Raqamli to‘lov tizimlari mutaxassisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Soliq hisobi va rejalashtirish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Soliq maslahatchisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Sun’iy intellekt muhandisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tadbirkorlik va innovatsion iqtisodiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tahlilchi yoki loyiha iqtisodchisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tajribali buxgalter",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tashkilotlar moliya boshqaruvi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tashqi savdo, eksport-import tashkilotlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tijorat banklari, mikromoliya tashkilotlari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro banklar, IT-finans loyihalar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro buxgalteriya standartlari (IFRS)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro dasturlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro hamkorlik",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro hamkorlik Xalqaro faoliyat",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro iqtisodiy aloqalar bo‘yicha mutaxassis",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro iqtisodiy munosabatlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro kompaniya loyihalari ishtirokchisi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro kompaniyadagi mutaxassis",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro moliyachi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqarolashitirishni Xalqaro hamkorlik strategiyasi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Yangi ish boshlagan buxgalter",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Yirik sanoat obyektlari, xalqaro loyihalar (CNPC, Petronas)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://kiu.uz pages=32"
+  },
+  "Acharya University": {
+    "website": "https://acharya.uz",
+    "direction_count": 17,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "Axborot texnologiyalari",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Axborot texnologiyalari: kompyuter savodxonligi asoslari va dasturlashga kirish. Full Stack Development",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BBA-IT",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Biznes tahlil",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Brendlar, mahsulotlar va xizmatlarni boshqarish va ilgari surish uchun raqamli",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Huquqiy hujjatlar",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Matematika: muammolarni hal qilish usullari va mantiqiy fikrlash",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Menejment maktabi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Muhandislik maktabi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "O‘zbekistondagi eng yaxshi muhandislik universiteti | Acharya Universiteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Raqamli marketing",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Sun'iy intellekt va uning ilg'or innovatsiyalarning bir qismiga aylaning",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tashkilotlarga ma'lumotlarga asoslangan biznes yechimlarini qanday taqdim etishni o'rganing",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "UI va UX dizayni",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ushbu BBA Moliyaviy texnologiya bilan kengayayotgan va talabchan sohasiga qo'shiling",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ushbu BTech bilan muvaffaqiyatli dasturiy ta'minot muhandisi bo'lish uchun",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ushbu yangi daraja bilan bulutli arxitekturada talabga javob beradigan",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://acharya.uz pages=27"
+  },
+  "Buxoro innovatsion ta'lim va tibbiyot universiteti": {
+    "website": "https://bitu.uz",
+    "direction_count": 26,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "\"Tibbiyotda Innovatsiyalar\"-nizomi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Axborot texnologiyalari Markazi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Axborot-resurs Markazi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bolalar jarrohlik stomatologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bolalar terapevtik stomatologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bu sayt reCAPTCHA bilan himoyalangan. Google Maxfiylik siyosati va Foydalanish shartlari qo'llaniladi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Buxgalteriya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Buxoro Innovatsion Ta'lim va Tibbiyot Universiteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Buxoro Innovatsion Ta’lim va Tibbiyot Universiteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "English",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filologiya (ingliz / rus / o‘zbek tili)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Filologiya va tillarni o'qitish",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodiyot / Psixologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Iqtisodi…\">",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Notibbiyot yo‘nalishi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "O'zbek tili va adabiyoti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Ortopedik stomatologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Psixolog",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Psixologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Stomatologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Terapevtik stomatologiya",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Tibbiyot yo‘nalishi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro ishlar bo'yicha prorektor",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "“BITU axborotnomasi”-nizomi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://bitu.uz pages=31"
+  },
+  "Sambhram universiteti": {
+    "website": "https://sambhram.uz",
+    "direction_count": 31,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "B.Tech IT Texnologiya bakalavri fakulteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "B.Tech IT Texnologiya bakalavri fakulteti dekani",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BBA Biznes boshqaruvi bakalavri fakulteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BBA Biznes boshqaruvi bakalavri fakulteti dekani, Katta o‘qituvchi, Fan nomzodi, PhD",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bosh sahifa / Fakultetlar / B.Tech IT Texnologiya bakalavri fakulteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bosh sahifa / Fakultetlar / BBA Biznes boshqaruvi bakalavri fakulteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Bosh sahifa / Fakultetlar / BS-IT Axborot Texnalogiyalari fanlari fakulteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BS-IT Axborot Texnalogiyalari fanlari fakultet dekani, Katta o‘qituvchi",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "BS-IT Axborot Texnalogiyalari fanlari fakulteti",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Jizzax Sambhram Universiteti — yuqori sifatli ta'lim va innovatsiyalar markazi. Biz bilan kelajagingizni quring",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Passport, diplom, foto (3x4)",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/bachelor/edit/<int:pk>/ [name='bachelor_edit_dashboard']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/centers/edit/<int:pk>/ [name='center_edit']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/contact/category/edit/<int:pk>/ [name='contact_category_edit_dashboard']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/contact/links/edit/ [name='contact_links_edit_dashboard']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/countries/edit/<int:pk>/ [name='partner_country_edit_dashboard']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/departments/edit/<int:pk>/ [name='department_edit']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/edu-docs/edit/<int:pk>/ [name='edu_doc_edit_dashboard']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/elon/edit/<int:pk>/ [name='elon_edit']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/faculties/edit/<int:pk>/ [name='faculty_edit']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/master/edit/<int:pk>/ [name='master_edit_dashboard']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/news/edit/<int:pk>/ [name='news_edit']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/programs/edit/<int:pk>/ [name='cooperation_program_edit_dashboard']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/projects/edit/<int:pk>/ [name='project_edit_dashboard']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/publication-stat/edit/<int:pk>/ [name='publication_stat_edit_dashboard']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/rectorate/edit/<int:pk>/ [name='rector_edit']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ dashboard/scientific-stat/edit/<int:pk>/ [name='scientific_stat_edit_dashboard']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "uz/ Xalqaro-aloqalar/ [name='XalqaroView']",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Xalqaro hamkorlik",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Zamonaviy ta'lim va ilm-fan markazi. O'zbekiston va xalqaro standartlariga mos ta'lim",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      },
+      {
+        "dirid": "",
+        "name": "Zamonaviy texnologiyalar orqali axborot texnologiyalari sohasida yetakchi mutaxassislarni tayyorlash",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://sambhram.uz pages=29"
+  },
+  "Ma'mun universiteti": {
+    "website": "https://mamun.uz",
+    "direction_count": 1,
+    "directions": [
+      {
+        "dirid": "",
+        "name": "Axborotnoma",
+        "exam_subjects": [],
+        "study_forms": [],
+        "languages": []
+      }
+    ],
+    "note": "website:https://mamun.uz pages=24"
+  }
+}

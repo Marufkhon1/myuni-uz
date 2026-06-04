@@ -78,9 +78,6 @@ export default function ReviewAspectForm({
   onRatingChange,
   aspectRatings,
   onAspectChange,
-  studyDirectionId,
-  onStudyDirectionChange,
-  directions = [],
   step = "all",
 }) {
   if (step === "overall") {
@@ -99,33 +96,6 @@ export default function ReviewAspectForm({
 
   if (step === "aspects") {
     return <AspectRatingRows aspectRatings={aspectRatings} onAspectChange={onAspectChange} />;
-  }
-
-  if (step === "details") {
-    if (directions.length === 0) {
-      return null;
-    }
-
-    return (
-      <div className="rounded-2xl border border-slate-200/70 bg-slate-50/60 p-4 dark:border-white/10 dark:bg-white/[0.02]">
-        <label htmlFor="review-direction" className="text-xs font-bold text-slate-600 dark:text-slate-300">
-          Yo&apos;nalish <span className="font-normal text-slate-400">(ixtiyoriy)</span>
-        </label>
-        <select
-          id="review-direction"
-          value={studyDirectionId}
-          onChange={(event) => onStudyDirectionChange(event.target.value)}
-          className="mt-2 h-11 w-full rounded-xl border-0 bg-white px-3 text-sm font-semibold ring-1 ring-slate-200/80 outline-none transition focus:ring-2 focus:ring-primary/40 dark:bg-white/[0.04] dark:ring-white/10"
-        >
-          <option value="">Tanlanmagan</option>
-          {directions.map((direction) => (
-            <option key={direction.id} value={direction.id}>
-              {direction.name}
-            </option>
-          ))}
-        </select>
-      </div>
-    );
   }
 
   return null;

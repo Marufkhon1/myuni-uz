@@ -30,18 +30,18 @@ describe("siteMeta", () => {
       title: "Test | MyUni.uz",
       description: "Test description",
       path: "/universitet/test",
-      image: "/images/campuses/campus-02.jpg",
+      image: "/images/universities/tdiu.jpg",
       imageAlt: "Test university",
     });
     expect(meta.title).toBe("Test | MyUni.uz");
-    expect(meta.absoluteImage).toContain("/images/campuses/campus-02.jpg");
+    expect(meta.absoluteImage).toContain("/images/universities/tdiu.jpg");
     expect(meta.imageAlt).toBe("Test university");
   });
 
   it("resolveArticleCoverImage normalizes production URLs to local paths", () => {
-    expect(resolveArticleCoverImage("https://myuni.uz/images/campuses/campus-02.jpg")).toBe(
-      "/images/campuses/campus-02.jpg"
+    expect(resolveArticleCoverImage("https://myuni.uz/images/universities/tdiu.jpg")).toBe(
+      "/images/universities/tdiu.jpg"
     );
-    expect(resolveArticleCoverImage("")).toContain("/images/campuses/");
+    expect(resolveArticleCoverImage("")).toContain("/images/universities/");
   });
 });

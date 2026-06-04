@@ -1,0 +1,265 @@
+"""Build uz_hei_207.json from infoedu.uz 2025 list + HEMIS additions."""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+DATA_PATH = Path(__file__).resolve().parent / "uz_hei_207.json"
+
+# (name, ownership_type, city, region)
+# ownership: state | private | international
+# Based on infoedu.uz/ozbekistonda-oliygohlar-royxati (2025) + Akfa, Binary, TATU Zarafshon
+
+HEIS: list[tuple[str, str, str, str]] = [
+    # --- Toshkent shahar (93 + Akfa + Binary = 95) ---
+    ("Akfa universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Alfraganus universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Amerika texnologiyalar universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Botir Zokirov nomidagi O'zbekiston milliy estrada san'ati instituti", "state", "Toshkent", "Toshkent shahar"),
+    ("Binary xalqaro universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("British Management University", "private", "Toshkent", "Toshkent shahar"),
+    ("Central Asian University", "private", "Toshkent", "Toshkent shahar"),
+    ("Digital University", "private", "Toshkent", "Toshkent shahar"),
+    ("D.I. Mendeleev nomidagi Rossiya kimyo-texnologiya universiteti Toshkent filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("Diplomat University", "private", "Toshkent", "Toshkent shahar"),
+    ("EMU-University", "private", "Toshkent", "Toshkent shahar"),
+    ("Fan va texnologiyalar universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Farmatsevtika ta'lim va tadqiqot instituti", "private", "Toshkent", "Toshkent shahar"),
+    ("G.V. Plehanov nomidagi Rossiya iqtisodiyot universiteti Toshkent filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("Ijtimoiy va siyosiy fanlar instituti", "private", "Toshkent", "Toshkent shahar"),
+    ("I.M. Gubkin nomidagi Rossiya davlat neft va gaz universiteti Toshkent filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("International School of Finance Technology and Science", "private", "Toshkent", "Toshkent shahar"),
+    ("IT Park University", "private", "Toshkent", "Toshkent shahar"),
+    ("Jahon iqtisodiyoti va diplomatiya universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Japan Digital University", "private", "Toshkent", "Toshkent shahar"),
+    ("Kamoliddin Behzod nomidagi O'zbekiston milliy rassomlik va dizayn instituti", "state", "Toshkent", "Toshkent shahar"),
+    ("Mehnat va ijtimoiy munosabatlar akademiyasi", "private", "Toshkent", "Toshkent shahar"),
+    ("MEI milliy tadqiqot universiteti Toshkent filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("Millat umidi universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("MMFI milliy tadqiqot yadro universiteti Toshkent filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("M.V. Lomonosov nomidagi Moskva davlat universiteti Toshkent filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("N.I. Pirogov nomidagi Rossiya milliy tadqiqot tibbiyot universiteti Toshkent filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("Oriental universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("O'zbekiston davlat jahon tillari universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("O'zbekiston davlat konservatoriyasi", "state", "Toshkent", "Toshkent shahar"),
+    ("O'zbekiston davlat san'at va madaniyat instituti", "state", "Toshkent", "Toshkent shahar"),
+    ("O'zbekiston davlat xoreografiya akademiyasi", "state", "Toshkent", "Toshkent shahar"),
+    ("O'zbekiston jurnalistika va ommaviy kommunikatsiyalar universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("O'zbekiston milliy pedagogika universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("O'zbekiston milliy universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("O'zbekiston xalqaro islom akademiyasi", "state", "Toshkent", "Toshkent shahar"),
+    ("O'zbekiston Respublikasi Huquqni muhofaza qilish akademiyasi", "state", "Toshkent", "Toshkent shahar"),
+    ("PDP University", "private", "Toshkent", "Toshkent shahar"),
+    ("Perfect University", "private", "Toshkent", "Toshkent shahar"),
+    ("Pisa University in Tashkent", "international", "Toshkent", "Toshkent shahar"),
+    ("Profi University", "private", "Toshkent", "Toshkent shahar"),
+    ("Raqamli iqtisodiyot va agrotexnologiyalar universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Renessans ta'lim universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("MGIMO (Moskva davlat xalqaro munosabatlar instituti) Toshkent filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti Toshkent filiali", "state", "Toshkent", "Toshkent shahar"),
+    ("Sankt-Peterburg davlat universiteti Toshkent filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("Sarbon universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Sharq University", "private", "Toshkent", "Toshkent shahar"),
+    ("STARS International University", "private", "Toshkent", "Toshkent shahar"),
+    ("Tashkent International University", "private", "Toshkent", "Toshkent shahar"),
+    ("Tashkent International University of Education", "private", "Toshkent", "Toshkent shahar"),
+    ("Tashkent Metropolitan University", "private", "Toshkent", "Toshkent shahar"),
+    ("Tashkent Tech universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("TEAM University", "private", "Toshkent", "Toshkent shahar"),
+    ("The Oxus universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("TMC Institute", "private", "Toshkent", "Toshkent shahar"),
+    ("Toshkent amaliy fanlar universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Toshkent arxitektura-qurilish universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent axborot texnologiyalari universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent davlat iqtisodiyot universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent davlat o'zbek tili va adabiyoti universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent davlat sharqshunoslik universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent davlat texnika universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent davlat tibbiyot universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent davlat transport universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent davlat yuridik universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent farmatsevtika instituti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent ijtimoiy innovatsiya universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Toshkent iqtisodiyot va texnologiyalari universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("TIQXMMI milliy tadqiqot universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent kimyo-texnologiya instituti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent kimyo xalqaro universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Toshkent shahridagi Yeodju texnika instituti", "international", "Toshkent", "Toshkent shahar"),
+    ("Toshkent menedjment va iqtisodiyot instituti", "private", "Toshkent", "Toshkent shahar"),
+    ("Toshkent shahridagi Adju universiteti", "international", "Toshkent", "Toshkent shahar"),
+    ("A.I. Gersen nomidagi Rossiya davlat pedagogika universiteti Toshkent filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("Toshkent shahridagi Amiti universiteti", "international", "Toshkent", "Toshkent shahar"),
+    ("Toshkent shahridagi Inha universiteti", "international", "Toshkent", "Toshkent shahar"),
+    ("Toshkent shahridagi N.E. Bauman nomidagi Moskva davlat texnika universiteti filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("Toshkent shahridagi Puchon universiteti", "international", "Toshkent", "Toshkent shahar"),
+    ("S.A. Gerasimov nomidagi Butunrossiya davlat kinematografiya instituti (VGIK) Toshkent filiali", "international", "Toshkent", "Toshkent shahar"),
+    ("Singapur menejmentni rivojlantirish instituti (MDIS) Toshkent", "international", "Toshkent", "Toshkent shahar"),
+    ("Turin politexnika universiteti Toshkent", "international", "Toshkent", "Toshkent shahar"),
+    ("Turkiyaning iqtisodiyot va texnologiyalar universiteti filiali (TOBB ETU) Toshkent", "international", "Toshkent", "Toshkent shahar"),
+    ("Vebster universitetining ta'lim dasturlari markazi Toshkent", "international", "Toshkent", "Toshkent shahar"),
+    ("Toshkent to'qimachilik va yengil sanoat instituti", "state", "Toshkent", "Toshkent shahar"),
+    ("Toshkent xalqaro moliyaviy boshqaruv va texnologiyalar universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Toshkent xalqaro Vestminster universiteti", "international", "Toshkent", "Toshkent shahar"),
+    ("Turkiy davlatlar xalqaro universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("University of Management and Future Technologies", "private", "Toshkent", "Toshkent shahar"),
+    ("Xalqaro Nordik universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Xalqaro qishloq xo'jaligi universiteti", "international", "Toshkent", "Toshkent shahar"),
+    ("Yangi asr universiteti", "private", "Toshkent", "Toshkent shahar"),
+    ("Yangi O'zbekiston universiteti", "state", "Toshkent", "Toshkent shahar"),
+    ("Yunus Rajabiy nomidagi O'zbek milliy musiqa san'ati instituti", "state", "Toshkent", "Toshkent shahar"),
+    # --- Toshkent viloyati (17) ---
+    ("Angren universiteti", "private", "Angren", "Toshkent viloyati"),
+    ("Aniq va ijtimoiy fanlar universiteti", "private", "Toshkent", "Toshkent viloyati"),
+    ("Astraxan davlat texnika universiteti Toshkent viloyati filiali", "international", "Toshkent", "Toshkent viloyati"),
+    ("Chirchiq davlat pedagogika universiteti", "state", "Chirchiq", "Toshkent viloyati"),
+    ("Cyber University", "state", "Toshkent", "Toshkent viloyati"),
+    ("Farmatsevtika texnik universiteti", "state", "Toshkent", "Toshkent viloyati"),
+    ("MISiS milliy texnologik tadqiqotlar universiteti Olmaliq filiali", "international", "Olmaliq", "Toshkent viloyati"),
+    ("Ipak yo'li innovatsiyalar universiteti", "private", "Toshkent", "Toshkent viloyati"),
+    ("Markaziy Osiyo atrof-muhit va iqlim o'zgarishini o'rganish universiteti (Green University)", "state", "Toshkent", "Toshkent viloyati"),
+    ("M. Auezov nomidagi Janubiy Qozog'iston universiteti Chirchiq filiali", "international", "Chirchiq", "Toshkent viloyati"),
+    ("O'zbekiston davlat jismoniy tarbiya va sport universiteti", "state", "Toshkent", "Toshkent viloyati"),
+    ("Toshkent axborot texnologiyalari universiteti Nurafshon filiali", "state", "Nurafshon", "Toshkent viloyati"),
+    ("Toshkent davlat agrar universiteti", "state", "Toshkent", "Toshkent viloyati"),
+    ("Toshkent davlat texnika universiteti Olmaliq filiali", "state", "Olmaliq", "Toshkent viloyati"),
+    ("Toshkent davlat tibbiyot universiteti Chirchiq filiali", "state", "Chirchiq", "Toshkent viloyati"),
+    ("Toshkent iqtisodiyot va pedagogika instituti", "private", "Toshkent", "Toshkent viloyati"),
+    ("Belarus-O'zbekiston qo'shma tarmoqlararo amaliy texnik kvalifikatsiyalar instituti", "international", "Toshkent", "Toshkent viloyati"),
+    # --- Samarqand viloyati (14) ---
+    ("Ipak yo'li turizm va madaniy meros xalqaro universiteti", "state", "Samarqand", "Samarqand viloyati"),
+    ("O'zbekiston-Finlyandiya pedagogika instituti", "state", "Samarqand", "Samarqand viloyati"),
+    ("Samarqand agroinnovatsiyalar va tadqiqotlar instituti", "state", "Samarqand", "Samarqand viloyati"),
+    ("Samarqand davlat arxitektura-qurilish universiteti", "state", "Samarqand", "Samarqand viloyati"),
+    ("Samarqand davlat chet tillari instituti", "state", "Samarqand", "Samarqand viloyati"),
+    ("Samarqand davlat tibbiyot universiteti", "state", "Samarqand", "Samarqand viloyati"),
+    ("Samarqand davlat universiteti Kattaqo'rg'on filiali", "state", "Kattaqo'rg'on", "Samarqand viloyati"),
+    ("Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti", "state", "Samarqand", "Samarqand viloyati"),
+    ("Samarqand iqtisodiyot va servis instituti", "state", "Samarqand", "Samarqand viloyati"),
+    ("Samarqand xalqaro texnologiya universiteti", "private", "Samarqand", "Samarqand viloyati"),
+    ("Sharof Rashidov nomidagi Samarqand davlat universiteti", "state", "Samarqand", "Samarqand viloyati"),
+    ("Sharof Rashidov nomidagi Samarqand davlat universiteti Urgut filiali", "state", "Urgut", "Samarqand viloyati"),
+    ("Toshkent axborot texnologiyalari universiteti Samarqand filiali", "state", "Samarqand", "Samarqand viloyati"),
+    ("Toshkent davlat iqtisodiyot universiteti Samarqand filiali", "state", "Samarqand", "Samarqand viloyati"),
+    # --- Andijon viloyati (9) ---
+    ("Andijon davlat chet tillari instituti", "state", "Andijon", "Andijon viloyati"),
+    ("Andijon davlat pedagogika instituti", "state", "Andijon", "Andijon viloyati"),
+    ("Andijon davlat texnika instituti", "state", "Andijon", "Andijon viloyati"),
+    ("Andijon davlat tibbiyot instituti", "state", "Andijon", "Andijon viloyati"),
+    ("Andijon davlat universiteti", "state", "Andijon", "Andijon viloyati"),
+    ("Andijon qishloq xo'jaligi va agrotexnologiyalar instituti", "state", "Andijon", "Andijon viloyati"),
+    ("Collegium Humanum Varshava menejment universiteti Andijon filiali", "international", "Andijon", "Andijon viloyati"),
+    ("O'zbekistondagi Sharda universiteti", "international", "Andijon", "Andijon viloyati"),
+    ("University of Economics and Pedagogy", "private", "Andijon", "Andijon viloyati"),
+    # --- Farg'ona viloyati (9) ---
+    ("Central Asian Medical University", "private", "Farg'ona", "Farg'ona viloyati"),
+    ("Farg'ona davlat texnika universiteti", "state", "Farg'ona", "Farg'ona viloyati"),
+    ("Farg'ona davlat universiteti", "state", "Farg'ona", "Farg'ona viloyati"),
+    ("Farg'ona jamoat salomatligi tibbiyot instituti", "state", "Marg'ilon", "Farg'ona viloyati"),
+    ("Koreya xalqaro universiteti", "private", "Farg'ona", "Farg'ona viloyati"),
+    ("Latviyaning axborot tizimlari menejmenti oliy maktabi Farg'ona filiali", "international", "Farg'ona", "Farg'ona viloyati"),
+    ("Oziq-ovqat texnologiyasi va muhandisligi xalqaro instituti", "state", "Qo'qon", "Farg'ona viloyati"),
+    ("Qo'qon davlat universiteti", "state", "Qo'qon", "Farg'ona viloyati"),
+    ("Qo'qon universiteti", "private", "Qo'qon", "Farg'ona viloyati"),
+    # --- Namangan viloyati (7) ---
+    ("IMPULS BSR", "private", "Namangan", "Namangan viloyati"),
+    ("Namangan davlat chet tillari instituti", "state", "Namangan", "Namangan viloyati"),
+    ("Namangan davlat pedagogika instituti", "state", "Namangan", "Namangan viloyati"),
+    ("Namangan davlat texnika universiteti", "state", "Namangan", "Namangan viloyati"),
+    ("Namangan davlat universiteti", "state", "Namangan", "Namangan viloyati"),
+    ("Turan International University", "private", "Namangan", "Namangan viloyati"),
+    ("University of Business and Science", "private", "Namangan", "Namangan viloyati"),
+    # --- Buxoro viloyati (10) ---
+    ("Acharya University", "private", "Buxoro", "Buxoro viloyati"),
+    ("Buxoro davlat pedagogika instituti", "state", "Buxoro", "Buxoro viloyati"),
+    ("Buxoro davlat texnika universiteti", "state", "Buxoro", "Buxoro viloyati"),
+    ("Buxoro davlat tibbiyot instituti", "state", "Buxoro", "Buxoro viloyati"),
+    ("Buxoro davlat universiteti", "state", "Buxoro", "Buxoro viloyati"),
+    ("Buxoro innovatsion ta'lim va tibbiyot universiteti", "private", "Buxoro", "Buxoro viloyati"),
+    ("Buxoro innovatsiyalar universiteti", "private", "Buxoro", "Buxoro viloyati"),
+    ("Buxoro psixologiya va xorijiy tillar instituti", "private", "Buxoro", "Buxoro viloyati"),
+    ("Osiyo xalqaro universiteti", "private", "Buxoro", "Buxoro viloyati"),
+    ("Zarmed universiteti", "private", "Buxoro", "Buxoro viloyati"),
+    # --- Jizzax viloyati (5) ---
+    ("Jizzax davlat pedagogika universiteti", "state", "Jizzax", "Jizzax viloyati"),
+    ("Jizzax politexnika instituti", "state", "Jizzax", "Jizzax viloyati"),
+    ("Qozon federal universiteti Jizzax filiali", "international", "Jizzax", "Jizzax viloyati"),
+    ("Mirzo Ulug'bek nomidagi O'zbekiston milliy universiteti Jizzax filiali", "state", "Jizzax", "Jizzax viloyati"),
+    ("Sambhram universiteti", "private", "Jizzax", "Jizzax viloyati"),
+    # --- Sirdaryo viloyati (3) ---
+    ("Guliston davlat pedagogika instituti", "state", "Guliston", "Sirdaryo viloyati"),
+    ("Guliston davlat universiteti", "state", "Guliston", "Sirdaryo viloyati"),
+    ("Toshkent kimyo-texnologiya instituti Yangiyer filiali", "state", "Yangiyer", "Sirdaryo viloyati"),
+    # --- Qashqadaryo viloyati (9) ---
+    ("Axborot texnologiyalari va menejment universiteti", "private", "Qarshi", "Qashqadaryo viloyati"),
+    ("Iqtisodiyot va pedagogika universiteti", "private", "Qarshi", "Qashqadaryo viloyati"),
+    ("Osiyo texnologiyalar universiteti", "private", "Qarshi", "Qashqadaryo viloyati"),
+    ("Qarshi davlat texnika universiteti", "state", "Qarshi", "Qashqadaryo viloyati"),
+    ("Qarshi davlat universiteti", "state", "Qarshi", "Qashqadaryo viloyati"),
+    ("Qarshi xalqaro universiteti", "private", "Qarshi", "Qashqadaryo viloyati"),
+    ("Shahrisabz davlat pedagogika instituti", "state", "Shahrisabz", "Qashqadaryo viloyati"),
+    ("Turon universiteti", "private", "Qarshi", "Qashqadaryo viloyati"),
+    ("Xalqaro innovatsion universitet", "private", "Qarshi", "Qashqadaryo viloyati"),
+    # --- Surxondaryo viloyati (6) ---
+    ("Denov tadbirkorlik va pedagogika instituti", "state", "Denov", "Surxondaryo viloyati"),
+    ("Termiz davlat muhandislik va agrotexnologiyalar universiteti", "state", "Termiz", "Surxondaryo viloyati"),
+    ("Termiz davlat pedagogika instituti", "state", "Termiz", "Surxondaryo viloyati"),
+    ("Termiz davlat universiteti", "state", "Termiz", "Surxondaryo viloyati"),
+    ("Termiz iqtisodiyot va servis universiteti", "private", "Termiz", "Surxondaryo viloyati"),
+    ("Toshkent davlat tibbiyot universiteti Termiz filiali", "state", "Termiz", "Surxondaryo viloyati"),
+    # --- Navoiy viloyati (4) ---
+    ("Navoiy davlat konchilik va texnologiyalar universiteti", "state", "Navoiy", "Navoiy viloyati"),
+    ("Navoiy davlat universiteti", "state", "Navoiy", "Navoiy viloyati"),
+    ("Navoiy innovatsiyalar instituti", "private", "Navoiy", "Navoiy viloyati"),
+    ("Toshkent axborot texnologiyalari universiteti Zarafshon fakulteti", "state", "Zarafshon", "Navoiy viloyati"),
+    # --- Xorazm viloyati (8) ---
+    ("Ma'mun universiteti", "private", "Urganch", "Xorazm viloyati"),
+    ("O'zbekiston davlat xoreografiya akademiyasi Urganch filiali", "state", "Urganch", "Xorazm viloyati"),
+    ("Toshkent axborot texnologiyalari universiteti Urganch filiali", "state", "Urganch", "Xorazm viloyati"),
+    ("Urganch davlat pedagogika instituti", "state", "Urganch", "Xorazm viloyati"),
+    ("Urganch davlat tibbiyot instituti", "state", "Urganch", "Xorazm viloyati"),
+    ("Urganch davlat universiteti", "state", "Urganch", "Xorazm viloyati"),
+    ("Urganch innovatsion universiteti", "private", "Urganch", "Xorazm viloyati"),
+    ("Urganch Ranch texnologiya universiteti", "private", "Urganch", "Xorazm viloyati"),
+    # --- Qoraqalpog'iston Respublikasi (11) ---
+    ("Berdaq nomidagi Qoraqalpoq davlat universiteti", "state", "Nukus", "Qoraqalpog'iston Respublikasi"),
+    ("Nukus davlat pedagogika instituti", "state", "Nukus", "Qoraqalpog'iston Respublikasi"),
+    ("Nukus davlat texnika universiteti", "state", "Nukus", "Qoraqalpog'iston Respublikasi"),
+    ("Nukus innovatsion instituti", "private", "Nukus", "Qoraqalpog'iston Respublikasi"),
+    ("O'zbekiston davlat konservatoriyasi Nukus filiali", "state", "Nukus", "Qoraqalpog'iston Respublikasi"),
+    ("O'zbekiston davlat jismoniy tarbiya va sport universiteti Nukus filiali", "state", "Nukus", "Qoraqalpog'iston Respublikasi"),
+    ("O'zbekiston davlat san'at va madaniyat instituti Nukus filiali", "state", "Nukus", "Qoraqalpog'iston Respublikasi"),
+    ("Qoraqalpog'iston qishloq xo'jaligi va agrotexnologiyalar instituti", "state", "Nukus", "Qoraqalpog'iston Respublikasi"),
+    ("Qoraqalpog'iston tibbiyot instituti", "state", "Nukus", "Qoraqalpog'iston Respublikasi"),
+    ("Samarqand davlat veterinariya meditsinasi, chorvachilik va biotexnologiyalar universiteti Nukus filiali", "state", "Nukus", "Qoraqalpog'iston Respublikasi"),
+    ("Toshkent gumanitar fanlar universiteti", "private", "Nukus", "Qoraqalpog'iston Respublikasi"),
+]
+
+
+def main() -> None:
+    if len(HEIS) != 207:
+        raise SystemExit(f"Expected 207 entries, got {len(HEIS)}")
+
+    names = [h[0] for h in HEIS]
+    if len(names) != len(set(names)):
+        dupes = [n for n in names if names.count(n) > 1]
+        raise SystemExit(f"Duplicate names: {set(dupes)}")
+
+    payload = [
+        {
+            "name": name,
+            "ownership_type": ownership,
+            "city": city,
+            "region": region,
+        }
+        for name, ownership, city, region in HEIS
+    ]
+
+    DATA_PATH.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    print(f"Wrote {len(payload)} entries to {DATA_PATH}")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 import UniversityRatingStars from "../dashboard/UniversityRatingStars.jsx";
+import FilterSelect from "../ui/FilterSelect.jsx";
 import { OWNERSHIP_LABELS } from "../../utils/universityCatalog.js";
 
 const inputClass =
-  "w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:ring-blue-400/25";
-
-const selectClass = inputClass;
+  "h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-slate-300 hover:shadow-md focus:border-primary/50 focus:ring-4 focus:ring-blue-100/80 dark:border-white/12 dark:bg-slate-900/80 dark:text-white dark:placeholder:text-slate-400 dark:hover:border-white/20 dark:focus:ring-blue-400/15";
 
 export default function UniversityFiltersBar({
   filters,
@@ -17,7 +16,32 @@ export default function UniversityFiltersBar({
 }) {
   const cities = filterOptions?.cities ?? [];
   const ownershipTypes = filterOptions?.ownership_types ?? [];
-  const sortOptions = filterOptions?.sort_options ?? [];
+  const sortOptions = filterOptions?.sort_options ?? [
+    { value: "name", label: "Nom bo'yicha" },
+    { value: "rating", label: "Reyting (yuqoridan)" },
+    { value: "reviews", label: "Sharh soni (ko'p)" },
+    { value: "reviews_asc", label: "Sharh soni (kam)" },
+  ];
+
+  const cityOptions = [
+    { value: "", label: "Barcha shaharlar" },
+    ...cities.map((city) => ({ value: city, label: city })),
+  ];
+
+  const ownershipOptions = [
+    { value: "", label: "Barcha turlar" },
+    ...ownershipTypes.map((option) => ({ value: option.value, label: option.label })),
+  ];
+
+  const minRatingOptions = [
+    { value: "", label: "Har qanday" },
+    ...[5, 4, 3, 2, 1].map((rating) => ({ value: String(rating), label: `${rating}+ / 5` })),
+  ];
+
+  const minReviewsOptions = [
+    { value: "", label: "Har qanday" },
+    ...[1, 3, 5, 10, 20].map((count) => ({ value: String(count), label: `${count}+ sharh` })),
+  ];
 
   function updateField(key, value) {
     onChange({ ...filters, [key]: value });
@@ -41,9 +65,11 @@ export default function UniversityFiltersBar({
         )}
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         <label className="block sm:col-span-2 xl:col-span-2">
-          <span className="mb-1.5 block text-xs font-bold text-slate-500 dark:text-slate-400">Qidiruv</span>
+          <span className="mb-2 block text-[11px] font-black uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">
+            Qidiruv
+          </span>
           <input
             type="search"
             value={filters.q}
@@ -53,85 +79,48 @@ export default function UniversityFiltersBar({
           />
         </label>
 
-        <label className="block">
-          <span className="mb-1.5 block text-xs font-bold text-slate-500 dark:text-slate-400">Shahar</span>
-          <select
-            value={filters.city}
-            onChange={(event) => updateField("city", event.target.value)}
-            className={selectClass}
-          >
-            <option value="">Barcha shaharlar</option>
-            {cities.map((city) => (
-              <option key={city} value={city}>
-                {city}
-              </option>
-            ))}
-          </select>
-        </label>
+        <FilterSelect
+          label="Shahar"
+          icon="city"
+          value={filters.city}
+          onChange={(city) => updateField("city", city)}
+          options={cityOptions}
+        />
 
-        <label className="block">
-          <span className="mb-1.5 block text-xs font-bold text-slate-500 dark:text-slate-400">Turi</span>
-          <select
-            value={filters.ownership}
-            onChange={(event) => updateField("ownership", event.target.value)}
-            className={selectClass}
-          >
-            <option value="">Barcha turlar</option>
-            {ownershipTypes.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <FilterSelect
+          label="Turi"
+          icon="ownership"
+          value={filters.ownership}
+          onChange={(ownership) => updateField("ownership", ownership)}
+          options={ownershipOptions}
+        />
 
-        <label className="block">
-          <span className="mb-1.5 block text-xs font-bold text-slate-500 dark:text-slate-400">Min. reyting</span>
-          <select
-            value={filters.min_rating}
-            onChange={(event) => updateField("min_rating", event.target.value)}
-            className={selectClass}
-          >
-            <option value="">Har qanday</option>
-            {[5, 4, 3, 2, 1].map((rating) => (
-              <option key={rating} value={rating}>
-                {rating}+ / 5
-              </option>
-            ))}
-          </select>
-        </label>
+        <FilterSelect
+          label="Min. reyting"
+          icon="rating"
+          value={filters.min_rating}
+          onChange={(min_rating) => updateField("min_rating", min_rating)}
+          options={minRatingOptions}
+        />
 
-        <label className="block">
-          <span className="mb-1.5 block text-xs font-bold text-slate-500 dark:text-slate-400">Min. sharhlar</span>
-          <select
-            value={filters.min_reviews}
-            onChange={(event) => updateField("min_reviews", event.target.value)}
-            className={selectClass}
-          >
-            <option value="">Har qanday</option>
-            {[1, 3, 5, 10, 20].map((count) => (
-              <option key={count} value={count}>
-                {count}+ sharh
-              </option>
-            ))}
-          </select>
-        </label>
+        <FilterSelect
+          label="Min. sharhlar"
+          icon="reviews"
+          value={filters.min_reviews}
+          onChange={(min_reviews) => updateField("min_reviews", min_reviews)}
+          options={minReviewsOptions}
+        />
 
         {showSort && (
-          <label className="block sm:col-span-2 xl:col-span-1">
-            <span className="mb-1.5 block text-xs font-bold text-slate-500 dark:text-slate-400">Saralash</span>
-            <select
-              value={filters.sort}
-              onChange={(event) => updateField("sort", event.target.value)}
-              className={selectClass}
-            >
-              {sortOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <FilterSelect
+            className="sm:col-span-2 xl:col-span-1"
+            label="Saralash"
+            icon="sort"
+            value={filters.sort}
+            defaultValue="name"
+            onChange={(sort) => updateField("sort", sort)}
+            options={sortOptions}
+          />
         )}
       </div>
     </section>

@@ -1,0 +1,118 @@
+﻿OK           https://sies.uz
+OK           https://tatu.uz
+OK           https://tsue.uz
+OK           https://samdu.uz
+OK           https://nuu.uz
+OK           https://uwed.uz
+OK           https://tsul.uz
+OK           https://tma.uz
+FAIL         https://yangiu.uz (ConnectionError)
+FAIL         https://cyber-university.uz (ConnectionError)
+FAIL         https://ftu.uz (SSLError)
+FAIL         https://tashkenttech.uz (ConnectionError)
+FAIL         https://akfauniversity.uz (ConnectionError)
+FAIL         https://alfraganusuniversity.uz (SSLError)
+FAIL         https://atu.uz (SSLError)
+FAIL         https://binary.uz (ConnectionError)
+FAIL         https://bmu.uz (ConnectionError)
+HTTP 415     https://cau.uz
+FAIL         https://digitaluniversity.uz (ConnectionError)
+OK           https://diplomat.university
+OK           https://emu.uz
+FAIL         https://ftu-edu.uz (ConnectionError)
+OK           https://ftti.uz
+FAIL         https://itpark.university (ConnectionError)
+OK           https://jdu.uz
+OK           https://millatumidi.uz
+OK           https://orientaluniversity.uz
+OK           https://pdp.university
+FAIL         https://perfectuniversity.uz (SSLError)
+OK           https://profiuniversity.uz
+OK           https://renessans-edu.uz
+FAIL         https://sarbon.university (SSLError)
+FAIL         https://sharquniversity.uz (ConnectionError)
+FAIL         https://stars.university (SSLError)
+OK           https://tiu.uz
+OK           https://tiue.uz
+FAIL         https://metropolitan.uz (ConnectionError)
+OK           https://teamuni.uz
+OK           https://oxusuniversity.uz
+OK           https://tmci.uz
+FAIL         https://tafu.uz (ConnectionError)
+OK           https://tiiu.uz
+FAIL         https://tiut.uz (ConnectionError)
+OK           https://kiut.uz
+FAIL         https://tmi.uz (SSLError)
+FAIL         https://txmbvtu.uz (ConnectionError)
+FAIL         https://tdxu.uz (ConnectionError)
+OK           https://umft.uz
+FAIL         https://niu.uz (SSLError)
+OK           https://yangiasr.uz
+FAIL         https://angrenuniversity.uz (ConnectionError)
+FAIL         https://avifu.uz (ConnectionError)
+OK           https://iyiu.uz
+FAIL         https://samxtu.uz (ConnectionError)
+FAIL         https://uep.uz (ConnectionError)
+FAIL         https://camu.uz (ConnectionError)
+OK           https://kiu.uz
+FAIL         https://impuls.uz (ReadTimeout)
+HTTP 500     https://turan.uz
+FAIL         https://ubs.uz (SSLError)
+OK           https://acharya.uz
+OK           https://bitu.uz
+FAIL         https://binnov.uz (ConnectionError)
+FAIL         https://bpsxi.uz (ConnectionError)
+OK           https://osiyo.uz
+FAIL         https://zarmed.uz (ConnectionError)
+OK           https://sambhram.uz
+OK           https://atmu.uz
+OK           https://ipu.uz
+FAIL         https://atu-edu.uz (ConnectionError)
+FAIL         https://qxiu.uz (ConnectionError)
+HTTP 415     https://turon.uz
+FAIL         https://xinnov.uz (ConnectionError)
+FAIL         https://tivsu.uz (ConnectionError)
+FAIL         https://nii.uz (SSLError)
+OK           https://mamun.uz
+FAIL         https://uiu.uz (SSLError)
+FAIL         https://urtu.uz (ConnectionError)
+OK           https://nukusii.uz
+FAIL         https://tgf.uz (SSLError)
+FAIL         https://qqu.uz (SSLError)
+FAIL         https://rivau.uz (ConnectionError)
+FAIL         https://ivsfi.uz (ConnectionError)
+FAIL         https://mvima.uz (ConnectionError)
+FAIL         https://isfts.uz (ConnectionError)
+OK           https://inha.uz
+OK           https://amity.uz
+OK           https://puchon.uz
+OK           https://wiut.uz
+OK           https://polito.uz
+OK           https://mgimo.uz
+OK           https://msu.uz
+FAIL         https://plekhanov.uz (ConnectionError)
+OK           https://muctr.uz
+OK           https://gubkin.uz
+FAIL         https://rnimu.uz (ConnectionError)
+OK           https://mpei.uz
+FAIL         https://mephi.uz (SSLError)
+OK           https://spbu.uz
+FAIL         https://yit.uz (ConnectionError)
+OK           https://ajou.uz
+FAIL         https://tobb.edu.uz (ConnectionError)
+OK           https://mdis.uz
+OK           https://webster.uz
+FAIL         https://iau.uz (SSLError)
+FAIL         https://pisa.uz (SSLError)
+OK           https://astu.uz
+FAIL         https://misis.uz (SSLError)
+FAIL         https://kfu.uz (ConnectionError)
+FAIL         https://sharda.uz (ConnectionError)
+OK           https://collegiumhumanum.uz
+FAIL         https://isma.uz (SSLError)
+OK           https://auezov.uz
+FAIL         https://rgpu.uz (ConnectionError)
+HTTP 500     https://vgik.uz
+FAIL         https://belatki.uz (ConnectionError)
+
+ok=53 bad=63

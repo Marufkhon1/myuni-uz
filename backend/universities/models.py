@@ -27,6 +27,7 @@ class University(models.Model):
         db_index=True,
     )
     summary = models.TextField(blank=True)
+    contract_pricing = models.JSONField(default=dict, blank=True)
     image_url = models.URLField(blank=True)
     gallery_urls = models.JSONField(default=list, blank=True)
     address = models.CharField(max_length=220, blank=True)
@@ -90,6 +91,9 @@ class StudyDirection(models.Model):
     )
     name = models.CharField(max_length=160)
     slug = models.SlugField(max_length=120)
+    dirid = models.CharField(max_length=16, blank=True, db_index=True)
+    exam_subjects = models.JSONField(default=list, blank=True)
+    study_forms = models.JSONField(default=list, blank=True)
     degree_level = models.CharField(
         max_length=20,
         choices=DegreeLevel.choices,

@@ -46,17 +46,6 @@ class PublicApiTests(TestCase):
         slugs = [item["slug"] for item in response.json()["results"]]
         self.assertIn("public-api-university", slugs)
 
-    def test_public_university_map(self):
-        self.university.city = "Andijon"
-        self.university.latitude = 40.7821
-        self.university.longitude = 72.3442
-        self.university.save(update_fields=["city", "latitude", "longitude"])
-        response = self.client.get("/api/public/universities/map/")
-        self.assertEqual(response.status_code, 200)
-        payload = response.json()
-        self.assertIn("markers", payload)
-        self.assertTrue(any(item["slug"] == "public-api-university" for item in payload["markers"]))
-
     def test_public_university_detail_by_slug(self):
         response = self.client.get("/api/public/universities/public-api-university/")
         self.assertEqual(response.status_code, 200)
@@ -167,6 +156,46 @@ class PublicApiTests(TestCase):
         first = payload[0]
         self.assertEqual(first["id"], review_a_top.id)
         self.assertEqual(first["helpful_count"], 2)
+
+    def test_public_top_university_reviews_orders_by_like_count_across_universities(self):
+        low_user = User.objects.create_user(
+            username="low@uni.test",
+            email="low@uni.test",
+            password="test-pass-123",
+        )
+        liked_user = User.objects.create_user(
+            username="liked@uni.test",
+            email="liked@uni.test",
+            password="test-pass-123",
+        )
+        uni_b = University.objects.create(
+            name="Second Public University",
+            short_name="SPU",
+            location="Samarqand",
+            slug="second-public-university-likes",
+        )
+        review_low = Review.objects.create(
+            university=self.university,
+            user=low_user,
+            rating=4,
+            text="Birinchi universitetda kam like",
+            status=Review.Status.APPROVED,
+        )
+        review_high = Review.objects.create(
+            university=uni_b,
+            user=liked_user,
+            rating=5,
+            text="Ikkinchi universitetda ko'proq like",
+            status=Review.Status.APPROVED,
+        )
+        ReviewLike.objects.create(user=self.user, review=review_high)
+
+        response = self.client.get("/api/public/reviews/top-universities/?limit=3")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        ids = [item["id"] for item in payload]
+        self.assertEqual(ids[0], review_high.id)
+        self.assertIn(review_low.id, ids[1:])
 
     def test_public_review_filters(self):
         response = self.client.get("/api/public/reviews/filters/")

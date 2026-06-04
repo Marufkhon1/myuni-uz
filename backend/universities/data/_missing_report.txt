@@ -1,0 +1,4 @@
+﻿Saved C:\Users\User\Desktop\DBM\backend\universities\data\uz_hei_directions_207.json
+Stats: {'infoedu_dtm': 90, 'official_website': 0, 'missing': 117}
+Total directions: 3137
+Missing:

@@ -4,10 +4,10 @@ const defaultBase =
   "inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl px-5 py-2.5 text-sm font-black transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2";
 
 const navbarBase =
-  "inline-flex min-h-9 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c1f4a] active:translate-y-0";
+  "inline-flex min-h-9 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold leading-none transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0c1f4a] active:translate-y-0";
 
 const navbarLightBase =
-  "inline-flex min-h-9 items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-bold transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white active:translate-y-0";
+  "inline-flex min-h-9 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold leading-none transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white active:translate-y-0";
 
 const styles = {
   default: {
@@ -54,12 +54,19 @@ export function PublicLoginButton({ to = "/login", className = "", onClick, tone
   );
 }
 
-export function PublicSignupButton({ to = "/signup", className = "", onClick, tone = "default" }) {
+export function PublicSignupButton({ to = "/signup", className = "", onClick, tone = "default", compact = false }) {
   const toneStyles = resolveTone(tone);
 
   return (
     <Link to={to} onClick={onClick} className={`${toneStyles.signup} ${className}`}>
-      Ro&apos;yxatdan o&apos;tish
+      {compact ? (
+        <>
+          <span className="xl:hidden">Ro&apos;yxat</span>
+          <span className="hidden xl:inline">Ro&apos;yxatdan o&apos;tish</span>
+        </>
+      ) : (
+        "Ro'yxatdan o'tish"
+      )}
     </Link>
   );
 }

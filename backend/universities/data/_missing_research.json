@@ -1,0 +1,604 @@
+{
+  "Amerika texnologiyalar universiteti": {
+    "name": "Amerika texnologiyalar universiteti",
+    "short_name": "ATU",
+    "sources": []
+  },
+  "Aniq va ijtimoiy fanlar universiteti": {
+    "name": "Aniq va ijtimoiy fanlar universiteti",
+    "short_name": "AVIFU",
+    "sources": []
+  },
+  "Acharya University": {
+    "name": "Acharya University",
+    "short_name": "AcharyaU",
+    "sources": [
+      "website"
+    ],
+    "website": {
+      "url": "https://acharya.uz",
+      "note": "website:https://acharya.uz pages=27",
+      "directions": [
+        "Axborot texnologiyalari",
+        "Axborot texnologiyalari: kompyuter savodxonligi asoslari va dasturlashga kirish. Full Stack Development",
+        "BBA-IT",
+        "Biznes tahlil",
+        "Brendlar, mahsulotlar va xizmatlarni boshqarish va ilgari surish uchun raqamli",
+        "Huquqiy hujjatlar",
+        "Matematika: muammolarni hal qilish usullari va mantiqiy fikrlash",
+        "Menejment maktabi",
+        "Muhandislik maktabi",
+        "O‘zbekistondagi eng yaxshi muhandislik universiteti | Acharya Universiteti",
+        "Raqamli marketing",
+        "Sun'iy intellekt va uning ilg'or innovatsiyalarning bir qismiga aylaning",
+        "Tashkilotlarga ma'lumotlarga asoslangan biznes yechimlarini qanday taqdim etishni o'rganing",
+        "UI va UX dizayni",
+        "Ushbu BBA Moliyaviy texnologiya bilan kengayayotgan va talabchan sohasiga qo'shiling",
+        "Ushbu BTech bilan muvaffaqiyatli dasturiy ta'minot muhandisi bo'lish uchun",
+        "Ushbu yangi daraja bilan bulutli arxitekturada talabga javob beradigan"
+      ]
+    }
+  },
+  "Angren universiteti": {
+    "name": "Angren universiteti",
+    "short_name": "AngrenU",
+    "sources": []
+  },
+  "M. Auezov nomidagi Janubiy Qozog'iston universiteti Chirchiq filiali": {
+    "name": "M. Auezov nomidagi Janubiy Qozog'iston universiteti Chirchiq filiali",
+    "short_name": "Auezov ChF",
+    "sources": []
+  },
+  "British Management University": {
+    "name": "British Management University",
+    "short_name": "BMU",
+    "sources": []
+  },
+  "Buxoro psixologiya va xorijiy tillar instituti": {
+    "name": "Buxoro psixologiya va xorijiy tillar instituti",
+    "short_name": "BPVXTI",
+    "sources": []
+  },
+  "Belarus-O'zbekiston qo'shma tarmoqlararo amaliy texnik kvalifikatsiyalar instituti": {
+    "name": "Belarus-O'zbekiston qo'shma tarmoqlararo amaliy texnik kvalifikatsiyalar instituti",
+    "short_name": "BelATKI",
+    "sources": []
+  },
+  "Diplomat University": {
+    "name": "Diplomat University",
+    "short_name": "DiplomatU",
+    "sources": []
+  },
+  "Farmatsevtika texnik universiteti": {
+    "name": "Farmatsevtika texnik universiteti",
+    "short_name": "FTU",
+    "sources": []
+  },
+  "Fan va texnologiyalar universiteti": {
+    "name": "Fan va texnologiyalar universiteti",
+    "short_name": "FVTU",
+    "sources": []
+  },
+  "Markaziy Osiyo atrof-muhit va iqlim o'zgarishini o'rganish universiteti (Green University)": {
+    "name": "Markaziy Osiyo atrof-muhit va iqlim o'zgarishini o'rganish universiteti (Green University)",
+    "short_name": "GreenU",
+    "sources": []
+  },
+  "I.M. Gubkin nomidagi Rossiya davlat neft va gaz universiteti Toshkent filiali": {
+    "name": "I.M. Gubkin nomidagi Rossiya davlat neft va gaz universiteti Toshkent filiali",
+    "short_name": "Gubkin",
+    "sources": []
+  },
+  "Xalqaro qishloq xo'jaligi universiteti": {
+    "name": "Xalqaro qishloq xo'jaligi universiteti",
+    "short_name": "IAU",
+    "sources": []
+  },
+  "International School of Finance Technology and Science": {
+    "name": "International School of Finance Technology and Science",
+    "short_name": "ISFTS",
+    "sources": []
+  },
+  "Latviyaning axborot tizimlari menejmenti oliy maktabi Farg'ona filiali": {
+    "name": "Latviyaning axborot tizimlari menejmenti oliy maktabi Farg'ona filiali",
+    "short_name": "ISMA FF",
+    "sources": []
+  },
+  "Ijtimoiy va siyosiy fanlar instituti": {
+    "name": "Ijtimoiy va siyosiy fanlar instituti",
+    "short_name": "IVSFI",
+    "sources": []
+  },
+  "Ipak yo'li innovatsiyalar universiteti": {
+    "name": "Ipak yo'li innovatsiyalar universiteti",
+    "short_name": "IYIU",
+    "sources": [
+      "website"
+    ],
+    "website": {
+      "url": "https://iyiu.uz",
+      "note": "website:https://iyiu.uz pages=23",
+      "directions": [
+        "Ipak Yo‘li Innovatsiyalar Universiteti",
+        "Iqtisodiyot",
+        "message.Data not found",
+        "Pedagogika",
+        "Psixologiya",
+        "Yuklanishni bekor qilish Ipak Yo‘li Innovatsiyalar Universiteti Biz haqimizda"
+      ]
+    }
+  },
+  "Japan Digital University": {
+    "name": "Japan Digital University",
+    "short_name": "Japan DigitalU",
+    "sources": []
+  },
+  "Qozon federal universiteti Jizzax filiali": {
+    "name": "Qozon federal universiteti Jizzax filiali",
+    "short_name": "KFU JF",
+    "sources": []
+  },
+  "MEI milliy tadqiqot universiteti Toshkent filiali": {
+    "name": "MEI milliy tadqiqot universiteti Toshkent filiali",
+    "short_name": "MEI",
+    "sources": []
+  },
+  "MMFI milliy tadqiqot yadro universiteti Toshkent filiali": {
+    "name": "MMFI milliy tadqiqot yadro universiteti Toshkent filiali",
+    "short_name": "MEPhI",
+    "sources": []
+  },
+  "MISiS milliy texnologik tadqiqotlar universiteti Olmaliq filiali": {
+    "name": "MISiS milliy texnologik tadqiqotlar universiteti Olmaliq filiali",
+    "short_name": "MISiS OF",
+    "sources": []
+  },
+  "M.V. Lomonosov nomidagi Moskva davlat universiteti Toshkent filiali": {
+    "name": "M.V. Lomonosov nomidagi Moskva davlat universiteti Toshkent filiali",
+    "short_name": "MSU",
+    "sources": []
+  },
+  "Mehnat va ijtimoiy munosabatlar akademiyasi": {
+    "name": "Mehnat va ijtimoiy munosabatlar akademiyasi",
+    "short_name": "MVIMA",
+    "sources": []
+  },
+  "Ma'mun universiteti": {
+    "name": "Ma'mun universiteti",
+    "short_name": "MamunU",
+    "sources": [
+      "website"
+    ],
+    "website": {
+      "url": "https://mamun.uz",
+      "note": "website:https://mamun.uz pages=24",
+      "directions": [
+        "Axborotnoma"
+      ]
+    }
+  },
+  "Millat umidi universiteti": {
+    "name": "Millat umidi universiteti",
+    "short_name": "MillatU",
+    "sources": []
+  },
+  "Xalqaro Nordik universiteti": {
+    "name": "Xalqaro Nordik universiteti",
+    "short_name": "NIU",
+    "sources": []
+  },
+  "Navoiy innovatsiyalar instituti": {
+    "name": "Navoiy innovatsiyalar instituti",
+    "short_name": "NavInvI",
+    "sources": []
+  },
+  "Nukus innovatsion instituti": {
+    "name": "Nukus innovatsion instituti",
+    "short_name": "NukInvI",
+    "sources": []
+  },
+  "O'zbekiston-Finlyandiya pedagogika instituti": {
+    "name": "O'zbekiston-Finlyandiya pedagogika instituti",
+    "short_name": "O'z-Fin PI",
+    "sources": []
+  },
+  "Osiyo texnologiyalar universiteti": {
+    "name": "Osiyo texnologiyalar universiteti",
+    "short_name": "OTXU",
+    "sources": []
+  },
+  "Osiyo xalqaro universiteti": {
+    "name": "Osiyo xalqaro universiteti",
+    "short_name": "OXU",
+    "sources": []
+  },
+  "Oriental universiteti": {
+    "name": "Oriental universiteti",
+    "short_name": "OrientalU",
+    "sources": [
+      "website"
+    ],
+    "website": {
+      "url": "https://orientaluniversity.uz",
+      "note": "website:https://orientaluniversity.uz pages=31",
+      "directions": [
+        "08.00.15 — Tadbirkorlik va kichik biznes iqtisodiyoti",
+        "10.00.05 — Osiyo va Afrika xalqlari tili va adabiyoti",
+        "10.00.06 — Qiyosiy adabiyotshunoslik, chog‘ishtirma tilshunoslik va tarjimashunoslik",
+        "13.00.07 — Ta’limda menejment",
+        "Barcha huquqlar himoyalangan",
+        "Biologiya – 3,1 ball Ona tili – 2,1 ball Chet tili – 1,1 ball",
+        "Biznes va boshqaruv",
+        "filologiya fanlari doktori (DSc), professor",
+        "Filologiya va tillarni oʻqitish: arab tili",
+        "Filologiya va tillarni oʻqitish: ingliz tili",
+        "Filologiya va tillarni oʻqitish: koreys tili",
+        "Filologiya va tillarni oʻqitish: turk tili",
+        "Filologiya va tillarni oʻqitish: xitoy tili",
+        "Finance and funding",
+        "Gumanitar fanlar",
+        "Ijtimoiy-gumanitar fanlar",
+        "Ilmiy faoliyat Innovatsion pedagogika jurnali",
+        "Ilmiy faoliyat Innovatsion pedagogika jurnali Iqtisod-menejment jurnali Al-Buxoriy jurnali",
+        "Ingliz tili – 3,1 ball Ona tili – 2,1 ball Tarix – 1,1 ball",
+        "Innovatsion pedagogika jurnali",
+        "Iqtisod-menejment jurnali",
+        "Iqtisodiyot (tarmoqlar va sohalar boʻyicha)",
+        "Iqtisodiyot fanlari bo‘yicha falsafa doktori (PhD)",
+        "Iqtisodiyot va moliya",
+        "IT va aniq fanlar",
+        "jismoniy tarbiya va sport nazariyasi hamda metodikasini takomillashtirish",
+        "Lingvistika (tillar boʻyicha)",
+        "Maktabgacha va boshlangʻich taʼlimda jismoniy tarbiya va sport",
+        "Matematika va AT",
+        "Matematika – 3,1 ball Chet tili – 2,1 ball Ona tili – 1,1 ball",
+        "Matematika – 3,1 ball Ona tili – 2,1 ball Chet tili – 1,1 ball",
+        "Menejment (Taʼlim menejmenti)",
+        "Milliy yoki xalqaro til sertifikati (mavjud bo‘lsa)",
+        "Pasport nusxasi",
+        "pedagogik kompetensiyalarni rivojlantirish",
+        "pedagogika fanlari bo‘yicha falsafa doktori (PhD)",
+        "Pedagogika va psixologiya",
+        "Sport ligasi",
+        "talabalarda jismoniy madaniyat va sport kompetensiyalarini shakllantirish",
+        "ta’lim jarayonining pedagogik samaradorligini oshirish",
+        "Ta’lim va psixologiya",
+        "Tillar–1",
+        "Tillar–2",
+        "Turizm (faoliyat yoʻnalishlari boyicha)",
+        "Uzluksiz ta'lim pedagogikasi",
+        "Xalqaro",
+        "Xalqaro hamkorlik",
+        "Xalqaro Xalqaro hamkorlik",
+        "Xalqaro Xalqaro hamkorlik Akademik mobillik TOEFL AT-TANAL",
+        "yosh tadqiqotchilarni xalqaro ilmiy maydonga olib chiqish",
+        "“BIZNES VA BOSHQARUV” KAFEDRASI",
+        "“Biznes va boshqaruv” kafedrasi mudiri",
+        "“Matematika va axborot texnologiyalari” kafedrasi",
+        "“Matematika va axborot texnologiyalari” kafedrasi mudiri v.b., texnika fanlari bo‘yicha falsafa doktori (PhD), dotsent",
+        "“UZLUKSIZ TA’LIM PEDAGOGIKASI” KAFEDRASI",
+        "“Uzluksiz ta’lim pedagogikasi” kafedrasi mudiri"
+      ]
+    }
+  },
+  "The Oxus universiteti": {
+    "name": "The Oxus universiteti",
+    "short_name": "OxusU",
+    "sources": []
+  },
+  "Perfect University": {
+    "name": "Perfect University",
+    "short_name": "PerfectU",
+    "sources": []
+  },
+  "Pisa University in Tashkent": {
+    "name": "Pisa University in Tashkent",
+    "short_name": "PisaU",
+    "sources": []
+  },
+  "A.I. Gersen nomidagi Rossiya davlat pedagogika universiteti Toshkent filiali": {
+    "name": "A.I. Gersen nomidagi Rossiya davlat pedagogika universiteti Toshkent filiali",
+    "short_name": "RGPU",
+    "sources": []
+  },
+  "D.I. Mendeleev nomidagi Rossiya kimyo-texnologiya universiteti Toshkent filiali": {
+    "name": "D.I. Mendeleev nomidagi Rossiya kimyo-texnologiya universiteti Toshkent filiali",
+    "short_name": "RHTU",
+    "sources": []
+  },
+  "Raqamli iqtisodiyot va agrotexnologiyalar universiteti": {
+    "name": "Raqamli iqtisodiyot va agrotexnologiyalar universiteti",
+    "short_name": "RIVAU",
+    "sources": []
+  },
+  "N.I. Pirogov nomidagi Rossiya milliy tadqiqot tibbiyot universiteti Toshkent filiali": {
+    "name": "N.I. Pirogov nomidagi Rossiya milliy tadqiqot tibbiyot universiteti Toshkent filiali",
+    "short_name": "RNIIMU",
+    "sources": []
+  },
+  "Renessans ta'lim universiteti": {
+    "name": "Renessans ta'lim universiteti",
+    "short_name": "RenessansU",
+    "sources": []
+  },
+  "STARS International University": {
+    "name": "STARS International University",
+    "short_name": "STARS IU",
+    "sources": []
+  },
+  "Samarqand xalqaro texnologiya universiteti": {
+    "name": "Samarqand xalqaro texnologiya universiteti",
+    "short_name": "SamXTU",
+    "sources": []
+  },
+  "Sambhram universiteti": {
+    "name": "Sambhram universiteti",
+    "short_name": "SambhramU",
+    "sources": [
+      "website"
+    ],
+    "website": {
+      "url": "https://sambhram.uz",
+      "note": "website:https://sambhram.uz pages=28",
+      "directions": [
+        "B.Tech IT Texnologiya bakalavri fakulteti",
+        "B.Tech IT Texnologiya bakalavri fakulteti dekani",
+        "BBA Biznes boshqaruvi bakalavri fakulteti",
+        "BBA Biznes boshqaruvi bakalavri fakulteti dekani, Katta o‘qituvchi, Fan nomzodi, PhD",
+        "Bosh sahifa / Fakultetlar / B.Tech IT Texnologiya bakalavri fakulteti",
+        "Bosh sahifa / Fakultetlar / BBA Biznes boshqaruvi bakalavri fakulteti",
+        "BS-IT Axborot Texnalogiyalari fanlari fakultet dekani, Katta o‘qituvchi",
+        "Jizzax Sambhram Universiteti — yuqori sifatli ta'lim va innovatsiyalar markazi. Biz bilan kelajagingizni quring",
+        "Passport, diplom, foto (3x4)",
+        "uz/ dashboard/bachelor/edit/<int:pk>/ [name='bachelor_edit_dashboard']",
+        "uz/ dashboard/centers/edit/<int:pk>/ [name='center_edit']",
+        "uz/ dashboard/contact/category/edit/<int:pk>/ [name='contact_category_edit_dashboard']",
+        "uz/ dashboard/contact/links/edit/ [name='contact_links_edit_dashboard']",
+        "uz/ dashboard/countries/edit/<int:pk>/ [name='partner_country_edit_dashboard']",
+        "uz/ dashboard/departments/edit/<int:pk>/ [name='department_edit']",
+        "uz/ dashboard/edu-docs/edit/<int:pk>/ [name='edu_doc_edit_dashboard']",
+        "uz/ dashboard/elon/edit/<int:pk>/ [name='elon_edit']",
+        "uz/ dashboard/faculties/edit/<int:pk>/ [name='faculty_edit']",
+        "uz/ dashboard/master/edit/<int:pk>/ [name='master_edit_dashboard']",
+        "uz/ dashboard/news/edit/<int:pk>/ [name='news_edit']",
+        "uz/ dashboard/programs/edit/<int:pk>/ [name='cooperation_program_edit_dashboard']",
+        "uz/ dashboard/projects/edit/<int:pk>/ [name='project_edit_dashboard']",
+        "uz/ dashboard/publication-stat/edit/<int:pk>/ [name='publication_stat_edit_dashboard']",
+        "uz/ dashboard/rectorate/edit/<int:pk>/ [name='rector_edit']",
+        "uz/ dashboard/scientific-stat/edit/<int:pk>/ [name='scientific_stat_edit_dashboard']",
+        "uz/ Xalqaro-aloqalar/ [name='XalqaroView']",
+        "Xalqaro hamkorlik",
+        "Zamonaviy ta'lim va ilm-fan markazi. O'zbekiston va xalqaro standartlariga mos ta'lim"
+      ]
+    }
+  },
+  "Sarbon universiteti": {
+    "name": "Sarbon universiteti",
+    "short_name": "SarbonU",
+    "sources": []
+  },
+  "Sharq University": {
+    "name": "Sharq University",
+    "short_name": "SharqU",
+    "sources": []
+  },
+  "Toshkent amaliy fanlar universiteti": {
+    "name": "Toshkent amaliy fanlar universiteti",
+    "short_name": "TAFU",
+    "sources": []
+  },
+  "Turkiy davlatlar xalqaro universiteti": {
+    "name": "Turkiy davlatlar xalqaro universiteti",
+    "short_name": "TDXU",
+    "sources": []
+  },
+  "Toshkent gumanitar fanlar universiteti": {
+    "name": "Toshkent gumanitar fanlar universiteti",
+    "short_name": "TGFU",
+    "sources": []
+  },
+  "Toshkent ijtimoiy innovatsiya universiteti": {
+    "name": "Toshkent ijtimoiy innovatsiya universiteti",
+    "short_name": "TIIU",
+    "sources": [
+      "website"
+    ],
+    "website": {
+      "url": "https://tiiu.uz",
+      "note": "website:https://tiiu.uz pages=25",
+      "directions": [
+        "Abituriyentlarga Ta’lim yo’nalishlari Iqtisodiyot",
+        "Axborot tizimlari va texnologiyalari",
+        "Axborot xizmati",
+        "Axborot xizmati Raqamli kutubxona",
+        "Bank ishi",
+        "Bank ishi Bank ishi",
+        "Buxgalteriya hisobi va audit",
+        "Filologiya va tillarni o’qitish",
+        "Ilmiy maqolalar Iqtisodiyot",
+        "Iqtisodiyot",
+        "Iqtisodiyot va raqamli texnologiyalar kafedrasi",
+        "IT va Raqamli texnologiyalar",
+        "Kafedralar Iqtisodiyot va raqamli texnologiyalar kafedrasi",
+        "Moliya va moliyaviy texnologiyalar",
+        "Page not found - Toshkent ijtimoiy innovatsiya universiteti Addmission Подача документа Hujjat topshirish Yangiliklar",
+        "Pedagogika",
+        "Pedagogika va psixologiya kafedrasi",
+        "Psixologiya",
+        "Qabul - Toshkent ijtimoiy innovatsiya universiteti Addmission Подача документа Hujjat topshirish Yangiliklar",
+        "Raqamli kutubxona",
+        "Tarix va Siyosatshunoslik"
+      ]
+    }
+  },
+  "Tashkent International University of Education": {
+    "name": "Tashkent International University of Education",
+    "short_name": "TIUE",
+    "sources": [
+      "website"
+    ],
+    "website": {
+      "url": "https://tiue.uz",
+      "note": "website:https://tiue.uz pages=25",
+      "directions": [
+        "1.2. Ingliz tilidagi dasturlarga:",
+        "1.2. Programs taught in ENGLISH",
+        "2.2. Programs taught in ENGLISH",
+        "2.2. TA’LIM INGLIZ tilidagi dasturlar bo’yicha:",
+        "3 Languages ​​of instruction: Uzbek, Russian, English",
+        "ACCOUNTING AND BUSINESS",
+        "ACCOUNTING AND BUSINESS (MSC)",
+        "Accounting and finance (msc)",
+        "Amaliy matematika",
+        "Associate Professor at the Department of Business Management",
+        "AXBOROT TEXNOLOGIYALARI",
+        "b) Identification: Copy of Passport or ID Card",
+        "b) pasport yoki ID-kartaning nusxasi;",
+        "BAKALAVRIAT AMALIY MATEMATIKA",
+        "BIZNES BOSHQARUV",
+        "BIZNES BOSHQARUVI",
+        "BUSINESS MANAGEMENT",
+        "BUXGALTERIYA HISOBI VA BIZNES",
+        "BUXGALTERIYA HISOBI VA MOLIYA (MSC)",
+        "Copy of passport / ID card",
+        "CYBERSECURITY",
+        "DATA SCIENCE (MSC)",
+        "DATA TRANSMISSION GUIDE",
+        "Doctor of Philosophy in Human Resource Management, Annamalai University, Tamilnadu, Chennai",
+        "EDUCATION AND MANAGEMENT OF LEARNING PROCESSES",
+        "EDUCATION AND TRAINING MANAGEMENT",
+        "EDUCATION MANAGEMENT AND LEADERSHIP (MSC)",
+        "EDUCATIONAL MANAGEMENT AND LEADERSHIP (MSC)",
+        "English",
+        "FILOLOGIYA VA TILLARNI O’QITISH",
+        "INFORMATION TECHNOLOGY",
+        "International educational programme: general information",
+        "IT HELP",
+        "IT – YORDAM",
+        "KIBERXAVFSIZLIK",
+        "Languages ​​of instruction: Uzbek, Russian, English",
+        "MAGISTRATURA PEDAGOGIKA NAZARIYASI VA TARIXI (MSC)",
+        "MANAGEMENT OF EDUCATIONAL INSTITUTIONS (MOE)",
+        "Management of educational institutions (msc)",
+        "MA’LUMOTLAR ILMI (DATA SCIENCE) (MSC)",
+        "MMIT’23",
+        "MMIT’24",
+        "MMIT’25",
+        "MOLIYAVIY YORDAM VA TA’LIM UCHUN TO’LOV",
+        "MOLIYAVIY YORDAM VA TA’LIM UCHUN TO’LOV TA’LIM UCHUN TO’LOV",
+        "PEDAGOGICAL THEORY AND HISTORY (MSC)",
+        "Pedagogika nazariyasi va tarixi (msc)",
+        "POSTGRADUATE THEORY AND HISTORY OF PEDAGOGY (MSC)",
+        "RESEARCH CONFERENCES MMIT’26",
+        "SPORT",
+        "SPORT & RECREATION",
+        "Submit application PROGRAMS",
+        "TADQIQOTLAR KONFERENSIYALAR MMIT’26",
+        "TA’LIM YO’NALISHLARI XALQARO TA’LIM DASTURI (IFP)",
+        "Theory and history of pedagogy (msc)",
+        "TIUE offers the following educational programs in Uzbek, Russian and English languages",
+        "TIUE offers the following educational programs in Uzbek, Russian, and English:",
+        "TIUE oʻzbek, rus va ingliz tillarida quyidagi taʼlim dasturlarini taklif etadi:",
+        "XALQARO TA'LIM DASTURI (IFP)"
+      ]
+    }
+  },
+  "Tashkent International University": {
+    "name": "Tashkent International University",
+    "short_name": "TIUT",
+    "sources": [
+      "website"
+    ],
+    "website": {
+      "url": "https://tiu.uz",
+      "note": "website:https://tiu.uz pages=30",
+      "directions": [
+        "Bank ishi",
+        "Biznes va innovatsion ta'lim fakulteti",
+        "Buxgalteriya hisobi",
+        "Dasturiy injiniring",
+        "Filologiya va tillarni o'qitish: koreys tili",
+        "Iqtisodiyot",
+        "Iqtisodiyot (ingliz tilida)",
+        "Jahon iqtisodiyoti va XIM",
+        "Jahon iqtisodiyoti va XIM (ingliz tilida)",
+        "Kiberxavfsizlik injiniringi",
+        "Kiberxavfsizlik injiniringi (ingliz tilida)",
+        "Marketing",
+        "Menejment",
+        "Moliya",
+        "Moliya va moliyaviy texnologiyalar",
+        "Moliyaviy ma'lumot",
+        "Psixologiya",
+        "Sport",
+        "TIUdagi almashinuv dasturi shunchaki chet elda o'qish emas — bu to'laqonli xalqaro tajriba",
+        "Xalqaro aloqalar bo'limiga transkript, motivatsion xat va til sertifikatingiz bilan murojaat qiling",
+        "Xalqaro aloqalar tarmog'i",
+        "Xalqaro dasturlar",
+        "Xalqaro tajriba",
+        "Xalqaro TIUga kelish Qabul tartibi",
+        "Xorijiy til va adabiyoti: ingliz tili"
+      ]
+    }
+  },
+  "Termiz iqtisodiyot va servis universiteti": {
+    "name": "Termiz iqtisodiyot va servis universiteti",
+    "short_name": "TIVSU",
+    "sources": []
+  },
+  "Tashkent Metropolitan University": {
+    "name": "Tashkent Metropolitan University",
+    "short_name": "TMU",
+    "sources": []
+  },
+  "Turkiyaning iqtisodiyot va texnologiyalar universiteti filiali (TOBB ETU) Toshkent": {
+    "name": "Turkiyaning iqtisodiyot va texnologiyalar universiteti filiali (TOBB ETU) Toshkent",
+    "short_name": "TOBB ETU",
+    "sources": []
+  },
+  "Tashkent Tech universiteti": {
+    "name": "Tashkent Tech universiteti",
+    "short_name": "TTechU",
+    "sources": []
+  },
+  "Toshkent xalqaro moliyaviy boshqaruv va texnologiyalar universiteti": {
+    "name": "Toshkent xalqaro moliyaviy boshqaruv va texnologiyalar universiteti",
+    "short_name": "TXMBVTU",
+    "sources": []
+  },
+  "Turan International University": {
+    "name": "Turan International University",
+    "short_name": "TuranU",
+    "sources": []
+  },
+  "University of Business and Science": {
+    "name": "University of Business and Science",
+    "short_name": "UBS",
+    "sources": []
+  },
+  "University of Economics and Pedagogy": {
+    "name": "University of Economics and Pedagogy",
+    "short_name": "UEP",
+    "sources": []
+  },
+  "University of Management and Future Technologies": {
+    "name": "University of Management and Future Technologies",
+    "short_name": "UMFT",
+    "sources": []
+  },
+  "Urganch Ranch texnologiya universiteti": {
+    "name": "Urganch Ranch texnologiya universiteti",
+    "short_name": "URTU",
+    "sources": []
+  },
+  "S.A. Gerasimov nomidagi Butunrossiya davlat kinematografiya instituti (VGIK) Toshkent filiali": {
+    "name": "S.A. Gerasimov nomidagi Butunrossiya davlat kinematografiya instituti (VGIK) Toshkent filiali",
+    "short_name": "VGIK",
+    "sources": []
+  },
+  "Xalqaro innovatsion universitet": {
+    "name": "Xalqaro innovatsion universitet",
+    "short_name": "XinnovU",
+    "sources": []
+  }
+}
