@@ -3,8 +3,9 @@ from urllib.parse import urlencode
 
 import requests
 from django.db.models import Q
-from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.core import signing
 from django.shortcuts import redirect
 from django.utils import timezone
@@ -19,12 +20,6 @@ from .chat_colors import CHAT_COLOR_SET
 from .models import Profile
 from .profile_access import can_view_chat_profile
 from .auth_cookies import clear_auth_cookies, set_auth_cookies
-from .email_verification import (
-    is_email_verified,
-    maybe_auto_verify_e2e_email,
-    record_verification_sent,
-    send_verification_email,
-)
 from .presence import touch_user_last_seen
 from .serializers import LoginSerializer, PublicUserSerializer, RegisterSerializer, UserSerializer
 
@@ -117,64 +112,38 @@ class RegisterView(APIView):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        auto_verified = maybe_auto_verify_e2e_email(user)
-        email_sent = False if auto_verified else send_verification_email(user)
-        if email_sent:
-            record_verification_sent(user.id)
 
+        refresh = RefreshToken.for_user(user)
         response_body = {
-            "detail": (
-                "Ro'yxatdan o'tdingiz. Hisob faollashtirildi (test rejimi)."
-                if auto_verified
-                else (
-                    "Ro'yxatdan o'tdingiz. Email manzilingizga tasdiqlash havolasi yuborildi. "
-                    "Hisobni faollashtirish uchun xatdagi havolani bosing."
-                    if email_sent
-                    else (
-                        "Ro'yxatdan o'tdingiz, lekin tasdiqlash xatini yuborib bo'lmadi. "
-                        "«Tasdiqlash xatini qayta yuborish» tugmasidan foydalaning."
-                    )
-                )
-            ),
-            "email": user.email,
-            "requires_email_verification": not auto_verified,
-            "email_sent": email_sent,
+            "detail": "Ro'yxatdan o'tdingiz.",
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "user": UserSerializer(user, context={"request": request}).data,
         }
-        if auto_verified:
-            refresh = RefreshToken.for_user(user)
-            response_body["access"] = str(refresh.access_token)
-            response_body["refresh"] = str(refresh)
-            response_body["user"] = UserSerializer(user, context={"request": request}).data
-            response = Response(response_body, status=status.HTTP_201_CREATED)
-            set_auth_cookies(response, refresh)
-            return response
-
-        return Response(response_body, status=status.HTTP_201_CREATED)
+        response = Response(response_body, status=status.HTTP_201_CREATED)
+        set_auth_cookies(response, refresh)
+        return response
 
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
-    def post(self, request):
-        email = str(request.data.get("email", "")).lower().strip()
-        password = request.data.get("password")
-        candidate = User.objects.filter(email=email).first()
-        if candidate:
-            authenticated_user = authenticate(username=candidate.username, password=password)
-            if authenticated_user and not is_email_verified(authenticated_user):
-                return Response(
-                    {
-                        "code": "email_not_verified",
-                        "detail": (
-                            "Email manzilingiz tasdiqlanmagan. Xatingizdagi havolani bosing "
-                            "yoki tasdiqlash xatini qayta yuboring."
-                        ),
-                        "email": authenticated_user.email,
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+    @staticmethod
+    def _normalize_login_payload(request):
+        data = request.data
+        username = data.get("username") or data.get("email") or data.get("login") or ""
+        password = data.get("password")
+        if isinstance(username, str):
+            username = username.strip()
+        if password is None:
+            password = ""
+        return {
+            "username": username,
+            "password": str(password),
+        }
 
-        serializer = LoginSerializer(data=request.data)
+    def post(self, request):
+        serializer = LoginSerializer(data=self._normalize_login_payload(request))
         serializer.is_valid(raise_exception=True)
         data = serializer.validated_data
         user_data = data.get("user") or {}
@@ -206,6 +175,27 @@ class MeView(APIView):
         full_name = request.data.get("full_name")
         university = request.data.get("university")
         bio = request.data.get("bio")
+        email = request.data.get("email")
+
+        if email is not None:
+            normalized_email = str(email).lower().strip()
+            if normalized_email:
+                try:
+                    validate_email(normalized_email)
+                except ValidationError:
+                    return Response(
+                        {"detail": "Email manzili noto'g'ri."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                if User.objects.filter(email=normalized_email).exclude(pk=user.pk).exists():
+                    return Response(
+                        {"detail": "Bu email boshqa hisobda ishlatilmoqda."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                user.email = normalized_email
+            else:
+                user.email = ""
+            user_update_fields.append("email")
 
         if full_name is not None and str(full_name).strip():
             profile.full_name = str(full_name).strip()
@@ -252,14 +242,15 @@ class MeView(APIView):
             profile.avatar = avatar
             update_fields.append("avatar")
 
-        if not update_fields:
+        if not update_fields and not user_update_fields:
             return Response(
                 {"detail": "Yangilanadigan ma'lumot yo'q."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        update_fields.append("updated_at")
-        profile.save(update_fields=update_fields)
+        if update_fields:
+            update_fields.append("updated_at")
+            profile.save(update_fields=update_fields)
         if user_update_fields:
             user.save(update_fields=user_update_fields)
         request.user.profile = profile

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import AuthLayout from "../layouts/AuthLayout.jsx";
-import { PAGE_META } from "../config/siteMeta.js";
-import { useAuth } from "../hooks/useAuth.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
-import { useToast } from "../hooks/useToast.js";
-import { confirmEmailVerification } from "../services/trustService.js";
-import { getApiErrorMessage } from "../utils/apiErrors.js";
-import { dashboardPathForRole } from "../utils/navigation.js";
+import AuthLayout from "@/layouts/AuthLayout.jsx";
+import { PAGE_META } from "@/config/siteMeta.js";
+import { useAuth } from "@/hooks/useAuth.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
+import { useToast } from "@/hooks/useToast.js";
+import { confirmEmailVerification } from "@/services/trustService.js";
+import { getApiErrorMessage } from "@/utils/apiErrors.js";
+import { dashboardPathForRole } from "@/utils/navigation.js";
 
 export default function VerifyEmailPage() {
   usePageMeta(PAGE_META.verifyEmail);

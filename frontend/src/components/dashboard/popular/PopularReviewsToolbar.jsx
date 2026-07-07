@@ -1,5 +1,6 @@
-import ReviewSortSelect from "../../reviews/ReviewSortSelect.jsx";
-import { RatingFilterGroup, buildReviewFeedSummary } from "../../reviews/ReviewFeedControls.jsx";
+import ReviewSortSelect from "@/components/reviews/ReviewSortSelect.jsx";
+import ReviewRatingFilterGroup from "@/components/reviews/ReviewRatingFilterGroup.jsx";
+import { buildReviewFeedSummary } from "@/utils/reviewFeedSummary.js";
 
 const SORT_OPTIONS = [
   { id: "likes", label: "Eng foydali" },
@@ -37,7 +38,7 @@ export default function PopularReviewsToolbar({
           <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-300">
             Baho bo&apos;yicha
           </p>
-          <RatingFilterGroup value={ratingFilter} onChange={onRatingFilterChange} />
+          <ReviewRatingFilterGroup value={ratingFilter} onChange={onRatingFilterChange} />
         </div>
       </div>
 

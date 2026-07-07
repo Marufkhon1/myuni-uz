@@ -1,10 +1,10 @@
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import AnimatedTypingDots from "./AnimatedTypingDots.jsx";
-import { getAuthorColorClass } from "../../utils/chatAuthorColor.js";
+import { getAuthorColorClass } from "@/utils/chatAuthorColor.js";
 import {
   estimateTypingMaxChars,
   formatGroupTypingDisplay,
-} from "../../utils/formatTypingText.js";
+} from "@/utils/formatTypingText.js";
 
 export default function TypingUsersLine({ users, className = "", mode = "group" }) {
   const containerRef = useRef(null);

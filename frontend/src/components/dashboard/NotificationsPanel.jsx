@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import EmptyState from "../ui/EmptyState.jsx";
 import { NotificationsListSkeleton } from "../skeletons/PublicPageSkeletons.jsx";
-import useFocusTrap from "../../hooks/useFocusTrap.js";
+import useFocusTrap from "@/hooks/useFocusTrap.js";
 
 function formatWhen(value) {
   if (!value) {

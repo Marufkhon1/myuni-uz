@@ -1,19 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthCheckSkeleton } from "../components/skeletons/DashboardSkeletons.jsx";
+import { AuthCheckSkeleton } from "@/components/skeletons/DashboardSkeletons.jsx";
 import StatusPageLayout, {
   StatusPrimaryButton,
   StatusSecondaryButton,
-} from "../components/ui/StatusPageLayout.jsx";
-import { PAGE_META } from "../config/siteMeta.js";
-import { useAuth } from "../hooks/useAuth.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
-import { useToast } from "../hooks/useToast.js";
+} from "@/components/ui/StatusPageLayout.jsx";
+import { PAGE_META } from "@/config/siteMeta.js";
+import { useAuth } from "@/hooks/useAuth.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
+import { useToast } from "@/hooks/useToast.js";
 import {
   clearGoogleOAuthHash,
   readGoogleOAuthHashTokens,
-} from "../utils/authPaths.js";
-import { dashboardPathForRole } from "../utils/navigation.js";
+} from "@/utils/authPaths.js";
+import { dashboardPathForRole } from "@/utils/navigation.js";
 
 function resolvePostAuthPath(user, nextParam, storedNext) {
   if (storedNext && storedNext.startsWith("/")) {

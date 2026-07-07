@@ -7,10 +7,11 @@ import {
   reactToDirectMessage,
   sendDirectMessage,
   unpinDirectMessage,
-} from "../../services/chatService.js";
-import { getApiErrorMessage } from "../../utils/apiErrors.js";
+} from "@/services/chatService.js";
+import { getApiErrorMessage } from "@/utils/apiErrors.js";
+import { mergeById } from "@/hooks/useMessageStream.js";
 
-export function useDirectChat({ reportChatError, clearChatError }) {
+export function useDirectChat({ reportChatError, clearChatError, onMessageCreated } = {}) {
   const [privateMessage, setPrivateMessage] = useState("");
   const [directMessages, setDirectMessages] = useState([]);
   const [privatePinnedMessage, setPrivatePinnedMessage] = useState(null);
@@ -61,7 +62,8 @@ export function useDirectChat({ reportChatError, clearChatError }) {
           setPrivateMessage("");
         } else {
           const created = await sendDirectMessage(selectedThreadId, trimmed);
-          setDirectMessages((current) => [...current, created]);
+          setDirectMessages((current) => mergeById(current, [created]));
+          onMessageCreated?.(created);
           setPrivateMessage("");
           const threads = await getDirectThreads();
           setDirectThreads(threads);
@@ -86,26 +88,15 @@ export function useDirectChat({ reportChatError, clearChatError }) {
       clearChatError,
       reportChatError,
       updateMessageInList,
+      onMessageCreated,
     ]
   );
 
-  const handleDeletePrivateMessage = useCallback(
-    async (message) => {
-      if (!window.confirm("Xabarni o'chirishni tasdiqlaysizmi?")) {
-        return;
-      }
-      try {
-        await deleteDirectMessage(message.id);
-        setDirectMessages((current) => current.filter((item) => item.id !== message.id));
-        if (privatePinnedMessage?.id === message.id) {
-          setPrivatePinnedMessage(null);
-        }
-      } catch (error) {
-        reportChatError(getApiErrorMessage(error, "Xabarni o'chirib bo'lmadi."));
-      }
-    },
-    [privatePinnedMessage, reportChatError]
-  );
+  const deletePrivateMessageById = useCallback(async (messageId) => {
+    await deleteDirectMessage(messageId);
+    setDirectMessages((current) => current.filter((item) => item.id !== messageId));
+    setPrivatePinnedMessage((current) => (current?.id === messageId ? null : current));
+  }, []);
 
   const handlePrivateReaction = useCallback(
     async (message, emoji, setReactingMessageId) => {
@@ -122,15 +113,29 @@ export function useDirectChat({ reportChatError, clearChatError }) {
     [reportChatError, updateMessageInList]
   );
 
-  const handlePinPrivateMessage = useCallback(async (message, selectedThreadId) => {
-    const updated = await pinDirectMessage(selectedThreadId, message.id);
-    setPrivatePinnedMessage(updated);
-  }, []);
+  const handlePinPrivateMessage = useCallback(
+    async (message, selectedThreadId) => {
+      try {
+        const updated = await pinDirectMessage(selectedThreadId, message.id);
+        setPrivatePinnedMessage(updated);
+      } catch (error) {
+        reportChatError(getApiErrorMessage(error, "Xabarni qadalib bo'lmadi."));
+      }
+    },
+    [reportChatError]
+  );
 
-  const handleUnpinPrivateMessage = useCallback(async (message, selectedThreadId) => {
-    await unpinDirectMessage(selectedThreadId, message.id);
-    setPrivatePinnedMessage(null);
-  }, []);
+  const handleUnpinPrivateMessage = useCallback(
+    async (message, selectedThreadId) => {
+      try {
+        await unpinDirectMessage(selectedThreadId, message.id);
+        setPrivatePinnedMessage(null);
+      } catch (error) {
+        reportChatError(getApiErrorMessage(error, "Qadalgan xabarni olib bo'lmadi."));
+      }
+    },
+    [reportChatError]
+  );
 
   return {
     privateMessage,
@@ -145,7 +150,7 @@ export function useDirectChat({ reportChatError, clearChatError }) {
     openEditPrivateMessage,
     cancelEditPrivateMessage,
     sendPrivateChatMessage,
-    handleDeletePrivateMessage,
+    deletePrivateMessageById,
     handlePrivateReaction,
     handlePinPrivateMessage,
     handleUnpinPrivateMessage,

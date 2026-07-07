@@ -18,6 +18,9 @@ const publicRouteToHash = {
 const navSectionIds = ["#home", "#how-it-works", "#universities", "#reviews", "#faq", "#about"];
 
 function isNavLinkActive(pathname, activeHash, linkHref) {
+  if (linkHref.startsWith("/")) {
+    return pathname === linkHref || pathname.startsWith(`${linkHref}/`);
+  }
   if (pathname === "/") {
     return normalizeNavHash(linkHref) === normalizeNavHash(activeHash);
   }
@@ -35,6 +38,7 @@ function isDashboardPath(pathname) {
 const navLinks = [
   { label: "Bosh sahifa", href: "#home" },
   { label: "Qanday ishlaydi", href: "#how-it-works" },
+  { label: "Katalog", href: "/universitetlar", route: true },
   { label: "Universitetlar", href: "#universities" },
   { label: "Sharhlar", href: "#reviews" },
   { label: "Savollar", href: "#faq" },
@@ -77,7 +81,7 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
   const navigate = useNavigate();
   const { activeHash, setActiveSection } = useLandingActiveSection(navSectionIds);
   const { isAuthenticated, isLoading, role } = useAuth();
-  const dashboardPath = role === "student" ? "/student/dashboard" : "/applicant/dashboard";
+  const dashboardPath = role === "student" ? "/student/dashboard/home" : "/applicant/dashboard/home";
   const themeToggle = onToggleTheme ? () => onToggleTheme() : undefined;
 
   useFocusTrap(isOpen, mobileMenuRef, {
@@ -148,7 +152,23 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
         <div className="hidden min-w-0 items-center justify-center px-1 lg:flex">
           <div className="flex w-max items-center justify-center gap-1 lg:gap-1.5 xl:gap-2.5">
             {navLinks.map((link) => {
-              const isActive = isNavLinkActive(pathname, activeHash, link.href);
+              const isActive = link.route
+                ? pathname === link.href
+                : isNavLinkActive(pathname, activeHash, link.href);
+
+              if (link.route) {
+                return (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className={desktopNavLinkClass(isActive, isDark)}
+                    aria-current={isActive ? "page" : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              }
+
               return (
                 <a
                   key={link.href}
@@ -237,7 +257,24 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
             >
               <div className="grid gap-0.5">
                 {navLinks.map((link) => {
-                  const isActive = isNavLinkActive(pathname, activeHash, link.href);
+                  const isActive = link.route
+                    ? pathname === link.href
+                    : isNavLinkActive(pathname, activeHash, link.href);
+
+                  if (link.route) {
+                    return (
+                      <Link
+                        key={link.href}
+                        to={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className={mobileNavLinkClass(isActive, isDark)}
+                        aria-current={isActive ? "page" : undefined}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  }
+
                   return (
                     <a
                       key={link.href}

@@ -9,7 +9,7 @@ import {
   SUPPORT_EMAIL,
 } from "../config/siteContact.js";
 import { scrollToLandingSection } from "../utils/landingScroll.js";
-import { scrollPageToTop } from "./ScrollToTop.jsx";
+import { scrollPageToTop } from "../utils/scrollPageToTop.js";
 const footerLinks = {
   Platforma: [
     { label: "Bosh sahifa", to: "/" },

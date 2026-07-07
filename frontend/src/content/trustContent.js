@@ -12,10 +12,10 @@ export const trustSafetyDocument = {
 Maqsad — haqorat, spam va yolg'on kontentni kamaytirish, lekin ochiq fikr almashish imkoniyatini saqlab qolish.`,
     },
     {
-      heading: "2. Email tasdiqlash",
-      body: `Email va parol bilan ro'yxatdan o'tgan foydalanuvchilar kirishdan oldin email manzilini tasdiqlashi kerak. Bu soxta hisoblarni kamaytirish va parol tiklash xavfsizligini oshirishga yordam beradi.
+      heading: "2. Kirish va parol",
+      body: `Ro'yxatdan o'tishda login, email va parol kiritiladi. Kirish uchun login ishlatiladi. Parolni unutganingizda ro'yxatdan o'tgan email manzilingizga tiklash havolasi yuboriladi.
 
-Google orqali kirishda email Google tomonidan allaqachon tasdiqlangan bo'lsa, qo'shimcha tasdiqlash talab qilinmaydi.`,
+Google orqali kirishda email Google hisobingizdan olinadi.`,
     },
     {
       heading: "3. Shikoyat qilish",

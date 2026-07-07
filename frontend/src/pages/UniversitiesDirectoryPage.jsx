@@ -1,18 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
-import JsonLd from "../components/seo/JsonLd.jsx";
+import CatalogFilterDrawer from "@/components/catalog/CatalogFilterDrawer.jsx";
+import JsonLd from "@/components/seo/JsonLd.jsx";
 import UniversityFiltersBar, {
   UniversityDirectoryCard,
-} from "../components/catalog/UniversityFiltersBar.jsx";
-import EmptyState from "../components/ui/EmptyState.jsx";
-import MainLayout from "../layouts/MainLayout.jsx";
-import { useCatalogFilters } from "../hooks/useCatalogFilters.js";
-import { getPublicUniversityCatalog, getPublicUniversityFilters } from "../services/publicService.js";
+} from "@/components/catalog/UniversityFiltersBar.jsx";
+import EmptyState from "@/components/ui/EmptyState.jsx";
+import MainLayout from "@/layouts/MainLayout.jsx";
+import { useCatalogFilters } from "@/hooks/useCatalogFilters.js";
+import { getPublicUniversityCatalog, getPublicUniversityFilters } from "@/services/publicService.js";
 import {
   activeFilterCount,
   DEFAULT_CATALOG_FILTERS,
-} from "../utils/universityCatalog.js";
-import { buildBreadcrumbSchema, buildWebPageSchema } from "../utils/structuredData.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
+} from "@/utils/universityCatalog.js";
+import { buildBreadcrumbSchema, buildWebPageSchema } from "@/utils/structuredData.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
 
 export default function UniversitiesDirectoryPage() {
   const { filters, debouncedFilters, setFilters } = useCatalogFilters();
@@ -21,6 +22,7 @@ export default function UniversitiesDirectoryPage() {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   usePageMeta({
     title: "Universitetlar katalogi | MyUni.uz",
@@ -137,6 +139,19 @@ export default function UniversitiesDirectoryPage() {
             filterOptions={filterOptions}
             onChange={applyFilters}
             onReset={resetFilters}
+            activeCount={activeCount}
+            resultCount={count}
+            onOpenMobileFilters={() => setMobileFiltersOpen(true)}
+          />
+          <CatalogFilterDrawer
+            open={mobileFiltersOpen}
+            onClose={() => setMobileFiltersOpen(false)}
+            filters={filters}
+            filterOptions={filterOptions}
+            onChange={applyFilters}
+            onReset={resetFilters}
+            onApply={() => applyFilters({ ...filters })}
+            resultCount={count}
             activeCount={activeCount}
           />
         </div>

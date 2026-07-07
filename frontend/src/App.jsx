@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { MotionConfig } from "framer-motion";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import SkipToContent from "./components/a11y/SkipToContent.jsx";
 import AnalyticsProvider from "./components/analytics/AnalyticsProvider.jsx";
@@ -14,24 +14,40 @@ import DashboardRedirect from "./pages/DashboardRedirect.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 
 const DashboardPage = lazy(() => import("./pages/DashboardPage.jsx"));
-import GoogleCallbackPage from "./pages/GoogleCallbackPage.jsx";
-import LandingPage from "./pages/LandingPage.jsx";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
-import ForgotPasswordSentPage from "./pages/ForgotPasswordSentPage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
-import ResetPasswordPage from "./pages/ResetPasswordPage.jsx";
-import SignupPage from "./pages/SignupPage.jsx";
-import NotFoundPage from "./pages/NotFoundPage.jsx";
-import LegalDocumentPage from "./pages/LegalDocumentPage.jsx";
-import UniversityPublicPage from "./pages/UniversityPublicPage.jsx";
-import UniversitiesDirectoryPage from "./pages/UniversitiesDirectoryPage.jsx";
-import FAQPage from "./pages/FAQPage.jsx";
-import FAQDetailPage from "./pages/FAQDetailPage.jsx";
-import VerifyEmailPage from "./pages/VerifyEmailPage.jsx";
-import VerifyEmailPendingPage from "./pages/VerifyEmailPendingPage.jsx";
-import TrustSafetyPage from "./pages/TrustSafetyPage.jsx";
-import CompareSharePage from "./pages/CompareSharePage.jsx";
-import ModeratorDashboardPage from "./pages/ModeratorDashboardPage.jsx";
+const LandingPage = lazy(() => import("./pages/LandingPage.jsx"));
+const UniversitiesDirectoryPage = lazy(() => import("./pages/UniversitiesDirectoryPage.jsx"));
+const UniversityPublicPage = lazy(() => import("./pages/UniversityPublicPage.jsx"));
+const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
+const SignupPage = lazy(() => import("./pages/SignupPage.jsx"));
+const GoogleCallbackPage = lazy(() => import("./pages/GoogleCallbackPage.jsx"));
+const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage.jsx"));
+const ForgotPasswordSentPage = lazy(() => import("./pages/ForgotPasswordSentPage.jsx"));
+const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage.jsx"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage.jsx"));
+const LegalDocumentPage = lazy(() => import("./pages/LegalDocumentPage.jsx"));
+const FAQPage = lazy(() => import("./pages/FAQPage.jsx"));
+const FAQDetailPage = lazy(() => import("./pages/FAQDetailPage.jsx"));
+const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage.jsx"));
+const VerifyEmailPendingPage = lazy(() => import("./pages/VerifyEmailPendingPage.jsx"));
+const TrustSafetyPage = lazy(() => import("./pages/TrustSafetyPage.jsx"));
+const CompareSharePage = lazy(() => import("./pages/CompareSharePage.jsx"));
+const ModeratorDashboardPage = lazy(() => import("./pages/ModeratorDashboardPage.jsx"));
+
+function PageFallback() {
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
+  );
+}
+
+function DashboardRoute({ role }) {
+  return (
+    <Suspense fallback={<DashboardPageShellSkeleton />}>
+      <DashboardPage role={role} />
+    </Suspense>
+  );
+}
 
 export default function App() {
   return (
@@ -44,6 +60,7 @@ export default function App() {
       <OfflineBanner />
       <PwaInstallPrompt />
       <AnalyticsProvider>
+      <Suspense fallback={<PageFallback />}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -56,6 +73,7 @@ export default function App() {
         <Route path="/ishonch-xavfsizlik" element={<TrustSafetyPage />} />
         <Route path="/universitet/:slug" element={<UniversityPublicPage />} />
         <Route path="/universitetlar" element={<UniversitiesDirectoryPage />} />
+        <Route path="/taqqoslash" element={<CompareSharePage />} />
         <Route path="/taqqoslash/:token" element={<CompareSharePage />} />
         <Route path="/savollar-javob" element={<FAQPage />} />
         <Route path="/savollar-javob/:slug" element={<FAQDetailPage />} />
@@ -68,27 +86,16 @@ export default function App() {
           <Route path="/moderator" element={<ModeratorDashboardPage />} />
         </Route>
         <Route element={<ProtectedRoute allowedRoles={["applicant"]} />}>
-          <Route
-            path="/applicant/dashboard"
-            element={
-              <Suspense fallback={<DashboardPageShellSkeleton />}>
-                <DashboardPage role="applicant" />
-              </Suspense>
-            }
-          />
+          <Route path="/applicant/dashboard" element={<Navigate to="/applicant/dashboard/home" replace />} />
+          <Route path="/applicant/dashboard/:section" element={<DashboardRoute role="applicant" />} />
         </Route>
         <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
-          <Route
-            path="/student/dashboard"
-            element={
-              <Suspense fallback={<DashboardPageShellSkeleton />}>
-                <DashboardPage role="student" />
-              </Suspense>
-            }
-          />
+          <Route path="/student/dashboard" element={<Navigate to="/student/dashboard/home" replace />} />
+          <Route path="/student/dashboard/:section" element={<DashboardRoute role="student" />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
+      </Suspense>
       </AnalyticsProvider>
       </MotionConfig>
     </AuthProvider>

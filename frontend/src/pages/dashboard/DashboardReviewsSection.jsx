@@ -1,8 +1,8 @@
-import ReviewUniversityList from "../../components/dashboard/ReviewUniversityList.jsx";
-import ReviewWorkspacePanel from "../../components/dashboard/ReviewWorkspacePanel.jsx";
+import ReviewUniversityList from "@/components/dashboard/ReviewUniversityList.jsx";
+import ReviewWorkspacePanel from "@/components/dashboard/ReviewWorkspacePanel.jsx";
+import { useDashboard } from "@/hooks/useDashboard.js";
 
 export default function DashboardReviewsSection({
-  isStudent,
   isPhone,
   isWideReview = false,
   reviewUniversity,
@@ -26,11 +26,10 @@ export default function DashboardReviewsSection({
   onReviewTextChange,
   isReviewSubmitting,
   onLike,
-  onDeleteReview,
-  onReportReview,
-  onOpenSection,
   onOpenChat,
 }) {
+  const { isStudent } = useDashboard();
+
   return (
     <div className="mx-auto w-full min-w-0 max-w-[1600px]">
       <section
@@ -53,7 +52,6 @@ export default function DashboardReviewsSection({
 
         <ReviewWorkspacePanel
           key={`${reviewUniversity}-${isStudent ? "student" : "applicant"}`}
-          isStudent={isStudent}
           isPhone={isPhone}
           reviewUniversity={reviewUniversity}
           reviewUniversityDetail={reviewUniversityDetail}
@@ -71,9 +69,6 @@ export default function DashboardReviewsSection({
           onReviewTextChange={onReviewTextChange}
           isReviewSubmitting={isReviewSubmitting}
           onLike={onLike}
-          onDeleteReview={onDeleteReview}
-          onReportReview={onReportReview}
-          onOpenSection={onOpenSection}
           onOpenChat={onOpenChat}
           className={`min-w-0 w-full ${isPhone && mobileReviewScreen !== "detail" ? "hidden" : ""}`}
         />

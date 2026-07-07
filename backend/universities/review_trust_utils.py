@@ -31,6 +31,9 @@ def is_verified_student_user(user, university_id) -> bool:
     if not profile or profile.role != Profile.Role.STUDENT:
         return False
 
+    if not getattr(profile, "email_verified_at", None):
+        return False
+
     if ChatMembership.objects.filter(user=user, university_id=university_id).exists():
         return True
 
@@ -43,7 +46,6 @@ def is_verified_student_user(user, university_id) -> bool:
     return University.objects.filter(id=university_id).filter(
         Q(name__iexact=university_name)
         | Q(short_name__iexact=university_name)
-        | Q(name__icontains=university_name)
     ).exists()
 
 

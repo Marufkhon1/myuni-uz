@@ -1,7 +1,7 @@
 import {
   SUPPORT_EMAIL,
   SUPPORT_PHONE_DISPLAY,
-} from "../../config/siteContact.js";
+} from "@/config/siteContact.js";
 
 export function getSupportBotReply(text, { isStudent = false } = {}) {
   const query = text.trim().toLowerCase();

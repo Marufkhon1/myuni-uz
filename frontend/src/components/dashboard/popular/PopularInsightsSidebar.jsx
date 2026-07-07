@@ -1,6 +1,7 @@
-import UserAvatar from "../UserAvatar.jsx";
-import UniversityAvatar from "../../UniversityAvatar.jsx";
-import { resolveMediaUrl } from "../../../utils/media.js";
+import UserAvatar from "@/components/dashboard/UserAvatar.jsx";
+import UniversityAvatar from "@/components/UniversityAvatar.jsx";
+import { useDashboard } from "@/hooks/useDashboard.js";
+import { resolveMediaUrl } from "@/utils/media.js";
 
 const STAT_ICONS = {
   reviews: (
@@ -211,9 +212,9 @@ export default function PopularInsightsSidebar({
   isStudent,
   stats,
   leaderContext,
-  onOpenSection,
   onOpenUniversity,
 }) {
+  const { changeSection } = useDashboard();
   const hasData = stats.count > 0;
   const leaderReview = leaderContext?.leaderReview ?? null;
   const leaderLabel = leaderContext?.sortLabel ?? "Yetakchi sharh";
@@ -285,24 +286,22 @@ export default function PopularInsightsSidebar({
           </>
         )}
 
-        {onOpenSection && (
-          <div className="space-y-2 border-t border-slate-100 pt-4 dark:border-white/10">
+        <div className="space-y-2 border-t border-slate-100 pt-4 dark:border-white/10">
             <button
               type="button"
-              onClick={() => onOpenSection("reviews")}
+              onClick={() => changeSection("reviews")}
               className="inline-flex min-h-10 w-full items-center justify-center rounded-xl bg-primary px-4 text-sm font-black text-white shadow-md shadow-primary/25 transition hover:bg-blue-600 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 active:scale-[0.99] dark:focus-visible:ring-offset-slate-900"
             >
               {isStudent ? "Sharh yozish" : "Barcha sharhlarni ko'rish"}
             </button>
             <button
               type="button"
-              onClick={() => onOpenSection("compare")}
+              onClick={() => changeSection("compare")}
               className="inline-flex min-h-10 w-full items-center justify-center rounded-xl border border-slate-200/90 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 dark:border-white/15 dark:bg-transparent dark:text-slate-200 dark:hover:border-primary/40 dark:hover:bg-primary/10 dark:hover:text-blue-200"
             >
               OTMlarni taqqoslash
             </button>
           </div>
-        )}
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
+import { useDashboard } from "@/hooks/useDashboard.js";
 import {
   getApplicantChecklistProgress,
   getDashboardChecklistSteps,
-} from "../../utils/applicantChecklist.js";
+} from "@/utils/applicantChecklist.js";
 
 function CheckIcon() {
   return (
@@ -12,12 +13,11 @@ function CheckIcon() {
 }
 
 export default function ApplicantProgressChecklist({
-  isStudent = false,
   profile,
   joinedChatCount,
   universities,
-  onOpenSection,
 }) {
+  const { isStudent, changeSection } = useDashboard();
   const steps = getDashboardChecklistSteps({ isStudent, profile, joinedChatCount, universities });
   const { doneCount, totalCount, isComplete } = getApplicantChecklistProgress(steps);
   const progressPercent = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
@@ -60,7 +60,7 @@ export default function ApplicantProgressChecklist({
           <li key={step.id}>
             <button
               type="button"
-              onClick={() => !step.done && onOpenSection(step.section)}
+              onClick={() => !step.done && changeSection(step.section)}
               disabled={step.done}
               className={`flex w-full items-center gap-3 rounded-2xl border px-3 py-3 text-left transition sm:px-4 ${
                 step.done

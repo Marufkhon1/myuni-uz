@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import { AuthCheckSkeleton } from "../components/skeletons/DashboardSkeletons.jsx";
-import { useAuth } from "../hooks/useAuth.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
-import { useToast } from "../hooks/useToast.js";
+import { AuthCheckSkeleton } from "@/components/skeletons/DashboardSkeletons.jsx";
+import { useAuth } from "@/hooks/useAuth.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
+import { useToast } from "@/hooks/useToast.js";
 import {
   getModeratorReports,
   updateMessageReport,
   updateReviewReport,
-} from "../services/moderatorService.js";
-import { getApiErrorMessage } from "../utils/apiErrors.js";
-import { dashboardPathForRole } from "../utils/navigation.js";
-import { mainContentProps } from "../utils/mainContent.js";
-import logo from "../assets/myuni-logo.png";
+} from "@/services/moderatorService.js";
+import { getApiErrorMessage } from "@/utils/apiErrors.js";
+import { dashboardPathForRole } from "@/utils/navigation.js";
+import { mainContentProps } from "@/utils/mainContent.js";
+import logo from "@/assets/myuni-logo.png";
 
 const STATUS_OPTIONS = [
   { value: "", label: "Barcha holatlar" },

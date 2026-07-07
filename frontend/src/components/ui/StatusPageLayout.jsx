@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { mainContentProps } from "../../utils/mainContent.js";
+import { mainContentProps } from "@/utils/mainContent.js";
 
 const illustrations = {
   notFound: (

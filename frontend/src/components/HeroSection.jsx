@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import heroPreviewBg from "../../public/images/universities/_default.jpg";
 import HeroRotatingText from "./HeroRotatingText.jsx";
+import HeroSearchBar from "./HeroSearchBar.jsx";
 import Skeleton from "./ui/Skeleton.jsx";
 import { useDarkMode } from "../hooks/useDarkMode.js";
 import { getPublicPlatformStats } from "../services/publicService.js";
 import { buildHeroStats, formatLandingStat } from "../utils/landingStats.js";
+import { useNavigate } from "react-router-dom";
 import { scrollToLandingSection } from "../utils/landingScroll.js";
 
 const headlineWords = ["toping", "tanlang", "solishtiring", "baholang"];
@@ -21,6 +22,8 @@ const previewRotatingPhrases = [
   "keng katalog",
   "jonli muhokama",
 ];
+
+const heroPreviewBg = "/images/hero/landing-campus.jpg";
 
 const previewTabs = [
   {
@@ -260,6 +263,7 @@ function HeroPreviewPanel({ isDark, universityCaption }) {
 }
 
 export default function HeroSection() {
+  const navigate = useNavigate();
   const { isDark } = useDarkMode();
   const [platformStats, setPlatformStats] = useState(null);
   const [isStatsLoading, setIsStatsLoading] = useState(true);
@@ -369,22 +373,27 @@ export default function HeroSection() {
             />
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
-            <a
-              href="#universities"
+          <HeroSearchBar className="mt-8" isDark={isDark} />
+
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:gap-4">
+            <button
+              type="button"
               className="landing-btn-gradient px-7 py-4 text-center text-base shadow-[0_12px_32px_-12px_rgba(37,99,235,0.55)]"
-              onClick={(event) => {
-                event.preventDefault();
-                scrollToLandingSection("#universities");
-                window.history.replaceState(null, "", "#universities");
-              }}
+              onClick={() => navigate("/universitetlar")}
             >
-              Universitetlarni ko&apos;rish
-            </a>
+              Barcha universitetlar
+            </button>
+            <button
+              type="button"
+              className="rounded-full border px-7 py-4 text-center text-base font-black transition bg-white/90 border-slate-300 text-slate-900 shadow-sm hover:border-primary/40 hover:bg-slate-50 dark:border-white/25 dark:bg-white/10 dark:text-white dark:hover:border-white/40 dark:hover:bg-white/15"
+              onClick={() => navigate("/login?next=/dashboard?section=compare")}
+            >
+              Universitetlarni taqqoslash
+            </button>
             <a
               href="#how-it-works"
               className={
-                "rounded-full border px-7 py-4 text-center text-base font-black transition " +
+                "rounded-full border px-7 py-4 text-center text-base font-black transition sm:hidden " +
                 (isDark
                   ? "border-white/25 bg-white/10 text-white hover:border-white/40 hover:bg-white/15"
                   : "border-slate-300 bg-white text-slate-900 shadow-sm hover:border-primary/40 hover:bg-slate-50")

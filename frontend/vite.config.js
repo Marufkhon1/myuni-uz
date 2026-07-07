@@ -1,3 +1,4 @@
+import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
@@ -54,6 +55,11 @@ function configureApiProxy(proxy) {
 }
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+  },
   plugins: [
     react(),
     interFontPreloadPlugin(),
@@ -147,6 +153,11 @@ export default defineConfig({
         target: "http://127.0.0.1:8000",
         changeOrigin: true,
       },
+      "/ws": {
+        target: "http://127.0.0.1:8000",
+        ws: true,
+        changeOrigin: true,
+      },
     },
   },
   preview: {
@@ -159,6 +170,11 @@ export default defineConfig({
       },
       "/media": {
         target: process.env.PRERENDER_API_URL || "http://127.0.0.1:8000",
+        changeOrigin: true,
+      },
+      "/ws": {
+        target: process.env.PRERENDER_API_URL || "http://127.0.0.1:8000",
+        ws: true,
         changeOrigin: true,
       },
     },

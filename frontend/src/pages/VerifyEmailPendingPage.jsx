@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import AuthLayout from "../layouts/AuthLayout.jsx";
-import RateLimitNotice from "../components/RateLimitNotice.jsx";
-import { PAGE_META } from "../config/siteMeta.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
-import { useToast } from "../hooks/useToast.js";
-import { resendEmailVerification } from "../services/trustService.js";
-import { getApiErrorMessage, getRateLimitInfo } from "../utils/apiErrors.js";
+import AuthLayout from "@/layouts/AuthLayout.jsx";
+import RateLimitNotice from "@/components/RateLimitNotice.jsx";
+import { PAGE_META } from "@/config/siteMeta.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
+import { useToast } from "@/hooks/useToast.js";
+import { resendEmailVerification } from "@/services/trustService.js";
+import { getApiErrorMessage, getRateLimitInfo } from "@/utils/apiErrors.js";
 
 export default function VerifyEmailPendingPage() {
   usePageMeta(PAGE_META.verifyEmailPending);

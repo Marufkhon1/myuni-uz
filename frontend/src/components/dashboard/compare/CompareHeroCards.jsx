@@ -1,9 +1,9 @@
-import UniversityAvatar from "../../UniversityAvatar.jsx";
+import UniversityAvatar from "@/components/UniversityAvatar.jsx";
 import { COMPARE_SLOT_THEMES } from "./compareTheme.js";
 import CompareRecommendBadge from "./CompareRecommendBadge.jsx";
-import { formatCompareRating } from "../../../utils/compareMath.js";
-import { getUniversityBannerUrl } from "../../../utils/universityImage.js";
-import { FractionalStars } from "../../ui/StarRatingDisplay.jsx";
+import { formatCompareRating } from "@/utils/compareMath.js";
+import { getUniversityBannerUrl, getUniversityBrandGradient } from "@/utils/universityImage.js";
+import { FractionalStars } from "@/components/ui/StarRatingDisplay.jsx";
 
 function heroImageForCard(university) {
   return getUniversityBannerUrl(university);
@@ -118,12 +118,20 @@ export default function CompareHeroCards({ universities, leaderId, onViewReviews
           >
             {/* Banner — faqat logo va nom */}
             <div className={`relative h-[8.5rem] shrink-0 overflow-hidden ${theme.accent}`}>
-              <img
-                src={imageUrl}
-                alt=""
-                role="presentation"
-                className="absolute inset-0 h-full w-full scale-105 object-cover transition duration-500 group-hover:scale-110"
-              />
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt=""
+                  role="presentation"
+                  className="absolute inset-0 h-full w-full scale-105 object-cover transition duration-500 group-hover:scale-110"
+                />
+              ) : (
+                <div
+                  className="absolute inset-0"
+                  style={{ background: getUniversityBrandGradient(university) }}
+                  aria-hidden="true"
+                />
+              )}
               <div className={`absolute inset-0 bg-gradient-to-br ${theme.headerGradient}`} />
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.12),transparent_55%)]" />
 

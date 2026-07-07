@@ -10,6 +10,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import InvalidToken
 
 from accounts.stream_tokens import resolve_stream_token
+from accounts.authentication import CookieJWTAuthentication
 
 from .chat_community_utils import filter_university_messages_for_viewer
 from .chat_permissions import get_user_direct_thread, user_is_university_member
@@ -37,6 +38,11 @@ def authenticate_stream_user(request):
         user_id = resolve_stream_token(stream_token)
         if user_id:
             return User.objects.filter(pk=user_id).first()
+
+    cookie_auth = CookieJWTAuthentication()
+    cookie_user = cookie_auth.authenticate(request)
+    if cookie_user:
+        return cookie_user[0]
 
     token = query_param(request, "token", "").strip()
     if not token:
@@ -187,10 +193,15 @@ def university_message_stream(request, university_id):
             else:
                 idle_ticks += 1
 
-            typing = get_typing_users(typing_cache_key(university_id), exclude_user_id=user.id)
-            yield sse_event("typing", {"users": typing})
+            if idle_ticks % 3 == 0:
+                typing = get_typing_users(typing_cache_key(university_id), exclude_user_id=user.id)
+                yield sse_event("typing", {"users": typing})
 
-            time.sleep(0.8)
+            if idle_ticks > 0 and idle_ticks % 15 == 0:
+                yield sse_event("ping", {"ts": timezone.now().isoformat()})
+
+            sleep_seconds = 0.8 if idle_ticks < 5 else (2.0 if idle_ticks < 30 else 4.0)
+            time.sleep(sleep_seconds)
 
     response = StreamingHttpResponse(generate(), content_type="text/event-stream")
     response["Cache-Control"] = "no-cache"
@@ -256,10 +267,15 @@ def direct_message_stream(request, thread_id):
             else:
                 idle_ticks += 1
 
-            typing = get_typing_users(direct_typing_cache_key(thread_id), exclude_user_id=user.id)
-            yield sse_event("typing", {"users": typing})
+            if idle_ticks % 3 == 0:
+                typing = get_typing_users(direct_typing_cache_key(thread_id), exclude_user_id=user.id)
+                yield sse_event("typing", {"users": typing})
 
-            time.sleep(0.8)
+            if idle_ticks > 0 and idle_ticks % 15 == 0:
+                yield sse_event("ping", {"ts": timezone.now().isoformat()})
+
+            sleep_seconds = 0.8 if idle_ticks < 5 else (2.0 if idle_ticks < 30 else 4.0)
+            time.sleep(sleep_seconds)
 
     response = StreamingHttpResponse(generate(), content_type="text/event-stream")
     response["Cache-Control"] = "no-cache"

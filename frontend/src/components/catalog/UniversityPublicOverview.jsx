@@ -1,4 +1,4 @@
-import { buildUniversityQuickFacts, summarizeDirections } from "../../utils/universityPublic.js";
+import { buildUniversityQuickFacts, summarizeDirections } from "@/utils/universityPublic.js";
 
 function StatPill({ label, value, accent = false }) {
   return (

@@ -1,6 +1,6 @@
-import UniversityAvatar from "../../UniversityAvatar.jsx";
+import UniversityAvatar from "@/components/UniversityAvatar.jsx";
 import CompareSearchInput from "./CompareSearchInput.jsx";
-import { MAX_COMPARE } from "../../../utils/compareMath.js";
+import { MAX_COMPARE } from "@/utils/compareMath.js";
 
 function filterUniversities(universities, query, disabledIds) {
   const disabled = new Set(disabledIds.map(String));

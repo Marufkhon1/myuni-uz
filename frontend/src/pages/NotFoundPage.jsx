@@ -1,9 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { PAGE_META } from "../config/siteMeta.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
+import { PAGE_META } from "@/config/siteMeta.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
 import StatusPageLayout, {
   StatusPrimaryButton,
-} from "../components/ui/StatusPageLayout.jsx";
+} from "@/components/ui/StatusPageLayout.jsx";
 
 export default function NotFoundPage() {
   const { pathname } = useLocation();

@@ -1,6 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from django.db.models import Q
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -8,6 +12,7 @@ from .avatar_access import avatar_url_for_viewer
 from .chat_colors import resolve_chat_color_key
 from .models import Notification, Profile
 from .presence import is_user_online, resolve_user_last_seen
+from .username_validation import normalize_username, validate_username_format
 
 User = get_user_model()
 
@@ -149,16 +154,28 @@ class RegisterSerializer(serializers.Serializer):
     )
 
     full_name = serializers.CharField(max_length=160)
-    email = serializers.EmailField()
+    username = serializers.CharField(min_length=3, max_length=30)
+    email = serializers.EmailField(max_length=254)
     password = serializers.CharField(write_only=True, min_length=8)
     role = serializers.ChoiceField(choices=ROLE_CHOICES)
     university = serializers.CharField(max_length=180, required=True, allow_blank=False)
     study_program = serializers.CharField(max_length=180, required=False, allow_blank=True)
 
+    def validate_username(self, value):
+        normalized_username = normalize_username(value)
+        validate_username_format(normalized_username)
+        if User.objects.filter(username=normalized_username).exists():
+            raise serializers.ValidationError("Bu login band.")
+        return normalized_username
+
     def validate_email(self, value):
-        normalized_email = value.lower().strip()
+        normalized_email = str(value).lower().strip()
+        try:
+            validate_email(normalized_email)
+        except ValidationError:
+            raise serializers.ValidationError("Email manzili noto'g'ri.") from None
         if User.objects.filter(email=normalized_email).exists():
-            raise serializers.ValidationError("Bu email bilan foydalanuvchi mavjud.")
+            raise serializers.ValidationError("Bu email band.")
         return normalized_email
 
     def validate_password(self, value):
@@ -170,10 +187,11 @@ class RegisterSerializer(serializers.Serializer):
         role = validated_data.pop("role")
         university = validated_data.pop("university", "")
         study_program = validated_data.pop("study_program", "")
-        email = validated_data["email"]
+        username = validated_data.pop("username")
+        email = validated_data.pop("email")
 
         user = User.objects.create_user(
-            username=email,
+            username=username,
             email=email,
             password=validated_data["password"],
             first_name=full_name,
@@ -184,25 +202,41 @@ class RegisterSerializer(serializers.Serializer):
             role=role,
             university=university,
             study_program=study_program,
+            email_verified_at=timezone.now(),
         )
         return user
 
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True)
+    username = serializers.CharField(required=False, allow_blank=True)
+    email = serializers.CharField(required=False, allow_blank=True)
+    password = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+        error_messages={
+            "blank": "Parol kiriting.",
+        },
+    )
 
     def validate(self, attrs):
-        email = attrs.get("email", "").lower().strip()
+        raw_login = str(attrs.get("username") or attrs.get("email") or "").strip()
         password = attrs.get("password")
-        user = User.objects.filter(email=email).first()
+        if not raw_login:
+            raise serializers.ValidationError({"username": "Login kiriting."})
+        if not password:
+            raise serializers.ValidationError({"password": "Parol kiriting."})
 
+        normalized_email = raw_login.lower()
+        user = User.objects.filter(
+            Q(username__iexact=raw_login) | Q(email__iexact=normalized_email)
+        ).first()
         if not user:
-            raise serializers.ValidationError("Email yoki parol noto'g'ri.")
+            raise serializers.ValidationError("Login yoki parol noto'g'ri.")
 
         authenticated_user = authenticate(username=user.username, password=password)
         if authenticated_user is None:
-            raise serializers.ValidationError("Email yoki parol noto'g'ri.")
+            raise serializers.ValidationError("Login yoki parol noto'g'ri.")
 
         refresh = RefreshToken.for_user(authenticated_user)
         return {

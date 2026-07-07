@@ -1,5 +1,5 @@
 import Skeleton from "../ui/Skeleton.jsx";
-import { mainContentProps } from "../../utils/mainContent.js";
+import { mainContentProps } from "@/utils/mainContent.js";
 
 export function DashboardChatSkeleton() {
   return (
@@ -56,6 +56,29 @@ export function DashboardChatSkeleton() {
         </div>
       </div>
     </section>
+  );
+}
+
+export function ChatMessagesAreaSkeleton({ className = "" }) {
+  return (
+    <div
+      className={`flex h-full min-h-[12rem] flex-col justify-center gap-4 p-2 ${className}`}
+      aria-busy="true"
+      aria-label="Xabarlar yuklanmoqda"
+    >
+      <div className="flex justify-start">
+        <Skeleton className="h-16 w-[min(18rem,70%)] rounded-2xl rounded-bl-md" />
+      </div>
+      <div className="flex justify-end">
+        <Skeleton className="h-12 w-[min(14rem,55%)] rounded-2xl rounded-br-md" />
+      </div>
+      <div className="flex justify-start">
+        <Skeleton className="h-14 w-[min(16rem,65%)] rounded-2xl rounded-bl-md" />
+      </div>
+      <div className="flex justify-end">
+        <Skeleton className="h-10 w-[min(12rem,50%)] rounded-2xl rounded-br-md" />
+      </div>
+    </div>
   );
 }
 

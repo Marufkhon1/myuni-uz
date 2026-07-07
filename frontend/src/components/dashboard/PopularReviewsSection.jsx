@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
+import { useDashboard } from "@/hooks/useDashboard.js";
 import EmptyState from "../ui/EmptyState.jsx";
 import {
   buildLeaderUniversityContext,
   buildPopularReviewStats,
-} from "../../utils/popularReviewStats.js";
+} from "@/utils/popularReviewStats.js";
 import PopularInsightsSidebar from "./popular/PopularInsightsSidebar.jsx";
 import PopularReviewsToolbar from "./popular/PopularReviewsToolbar.jsx";
 import PopularReviewCard from "./popular/PopularReviewCard.jsx";
@@ -26,13 +27,8 @@ function sortReviews(list, sortId) {
   }
 }
 
-export default function PopularReviewsSection({
-  popularReviews,
-  onLike,
-  onOpenSection,
-  onOpenUniversity,
-  isStudent = false,
-}) {
+export default function PopularReviewsSection({ popularReviews, onLike }) {
+  const { changeSection, isStudent, openReviewUniversityFromPopular } = useDashboard();
   const [sortId, setSortId] = useState(DEFAULT_SORT_ID);
   const [ratingFilter, setRatingFilter] = useState("all");
 
@@ -81,8 +77,7 @@ export default function PopularReviewsSection({
             stats={stats}
             leaderContext={leaderContext}
             sortId={sortId}
-            onOpenSection={onOpenSection}
-            onOpenUniversity={onOpenUniversity}
+            onOpenUniversity={openReviewUniversityFromPopular}
           />
         </aside>
 
@@ -120,14 +115,10 @@ export default function PopularReviewsSection({
                 variant="popular"
                 title="Hali mashhur sharh yo'q"
                 description="Birinchi sharhlar paydo bo'lgach, eng ko'p yoqqanlar shu yerda chiqadi."
-                action={
-                  onOpenSection
-                    ? {
-                        label: isStudent ? "Birinchi sharhni yozish" : "Sharhlarni ko'rish",
-                        onClick: () => onOpenSection("reviews"),
-                      }
-                    : undefined
-                }
+                action={{
+                  label: isStudent ? "Birinchi sharhni yozish" : "Sharhlarni ko'rish",
+                  onClick: () => changeSection("reviews"),
+                }}
               />
             ) : filteredReviews.length === 0 ? (
               <EmptyState
@@ -155,7 +146,7 @@ export default function PopularReviewsSection({
                         rank={isFeatured ? undefined : rank}
                         featured={isFeatured}
                         onLike={onLike}
-                        onOpenUniversity={onOpenUniversity}
+                        onOpenUniversity={openReviewUniversityFromPopular}
                         showStudentVoiceBadge={!isStudent}
                         defaultExpanded={isFeatured}
                       />

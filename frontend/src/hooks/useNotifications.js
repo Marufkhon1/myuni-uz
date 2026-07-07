@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { getNotifications, markNotificationsRead } from "../services/notificationService.js";
+import { getNotifications, markNotificationsRead } from "@/services/notificationService.js";
 
 const SYNTHETIC_CHAT_ID = "chat-unread-summary";
 

@@ -1,12 +1,13 @@
 import UserAvatar from "./UserAvatar.jsx";
 import IconDeleteButton from "../ui/IconDeleteButton.jsx";
 import UniversityAvatar from "../UniversityAvatar.jsx";
-import ReviewAspectRatings, { formatReviewDate } from "../reviews/ReviewAspectRatings.jsx";
+import ReviewAspectRatings from "../reviews/ReviewAspectRatings.jsx";
+import { formatReviewDate } from "@/utils/reviewFormat.js";
 import HelpfulLikeButton from "../reviews/HelpfulLikeButton.jsx";
 import { FractionalStars } from "../ui/StarRatingDisplay.jsx";
-import { resolveMediaUrl } from "../../utils/media.js";
-import { getPopularRankStyles } from "../../utils/popularReviewRank.js";
-import { hasReviewAspectRatings } from "../../utils/reviewAspects.js";
+import { resolveMediaUrl } from "@/utils/media.js";
+import { getPopularRankStyles } from "@/utils/popularReviewRank.js";
+import { hasReviewAspectRatings } from "@/utils/reviewAspects.js";
 
 const STATUS_LABELS = {
   pending: "Ko'rib chiqilmoqda",

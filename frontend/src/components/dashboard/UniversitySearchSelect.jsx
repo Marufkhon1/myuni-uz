@@ -1,6 +1,6 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import UniversityAvatar from "../UniversityAvatar.jsx";
-import { matchUniversityByText } from "../../utils/universityMatch.js";
+import { matchUniversityByText } from "@/utils/universityMatch.js";
 
 function formatUniversityLabel(university) {
   if (!university) {

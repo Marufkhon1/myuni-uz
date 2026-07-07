@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { pickActiveTyper, sortTypingQueue } from "../utils/typingQueue.js";
+import { pickActiveTyper, sortTypingQueue } from "@/utils/typingQueue.js";
 
 const TYPING_PHASE_MS = 2600;
 const MESSAGE_PHASE_MS = 3400;

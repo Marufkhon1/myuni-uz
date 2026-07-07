@@ -1,16 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
-import Footer from "../components/Footer.jsx";
-import Navbar from "../components/Navbar.jsx";
-import JsonLd from "../components/seo/JsonLd.jsx";
-import { scrollPageToTop } from "../components/ScrollToTop.jsx";
-import { legalDocuments } from "../content/legalContent.js";
-import { PAGE_META } from "../config/siteMeta.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
+import Footer from "@/components/Footer.jsx";
+import Navbar from "@/components/Navbar.jsx";
+import JsonLd from "@/components/seo/JsonLd.jsx";
+import { scrollPageToTop } from "@/utils/scrollPageToTop.js";
+import { legalDocuments } from "@/content/legalContent.js";
+import { PAGE_META } from "@/config/siteMeta.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
 import {
   buildBreadcrumbSchema,
   buildWebPageSchema,
-} from "../utils/structuredData.js";
-import { mainContentProps } from "../utils/mainContent.js";
+} from "@/utils/structuredData.js";
+import { mainContentProps } from "@/utils/mainContent.js";
 
 const pathToDoc = {
   "/foydalanish-shartlari": legalDocuments.terms,

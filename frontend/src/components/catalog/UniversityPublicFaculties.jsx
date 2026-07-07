@@ -4,7 +4,7 @@ import {
   filterDirections,
   groupFacultiesByDegree,
   summarizeDirections,
-} from "../../utils/universityPublic.js";
+} from "@/utils/universityPublic.js";
 
 function DirectionMeta({ direction }) {
   const parts = [];

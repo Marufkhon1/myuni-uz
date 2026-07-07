@@ -23,6 +23,16 @@ describe("getApiErrorMessage", () => {
     expect(getApiErrorMessage({ message: "boom" }, "Xatolik")).toBe("boom");
   });
 
+  it("translates default DRF required field errors", () => {
+    const error = {
+      response: {
+        status: 400,
+        data: { password: ["This field is required."] },
+      },
+    };
+    expect(getApiErrorMessage(error, "fallback")).toBe("Bu maydon to'ldirilishi shart.");
+  });
+
   it("formats rate limit responses with retry hint", () => {
     const error = {
       response: {

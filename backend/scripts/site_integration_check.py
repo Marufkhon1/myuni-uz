@@ -88,6 +88,7 @@ def main() -> int:
         f"{API}/api/auth/register/",
         json={
             "full_name": "Site Check Student",
+            "username": f"student_{suffix}",
             "email": student_email,
             "password": password,
             "role": "student",
@@ -102,6 +103,7 @@ def main() -> int:
         f"{API}/api/auth/register/",
         json={
             "full_name": "Site Check Applicant",
+            "username": f"applicant_{suffix}",
             "email": applicant_email,
             "password": password,
             "role": "applicant",
@@ -116,6 +118,7 @@ def main() -> int:
         f"{API}/api/auth/register/",
         json={
             "full_name": "Outsider",
+            "username": f"outsider_{suffix}",
             "email": outsider_email,
             "password": password,
             "role": "applicant",
@@ -127,14 +130,14 @@ def main() -> int:
 
     r = requests.post(
         f"{API}/api/auth/login/",
-        json={"email": student_email, "password": "wrong-password"},
+        json={"username": f"student_{suffix}", "password": "wrong-password"},
         timeout=10,
     )
     record("2.4-login-wrong-password", r.status_code in (400, 401), f"HTTP {r.status_code}")
 
     r = requests.post(
         f"{API}/api/auth/login/",
-        json={"email": student_email, "password": password},
+        json={"username": f"student_{suffix}", "password": password},
         timeout=10,
     )
     record("2.3-login-ok", r.status_code == 200 and "access" in r.json(), f"HTTP {r.status_code}")

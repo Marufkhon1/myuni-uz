@@ -1,5 +1,5 @@
 import AnimatedTypingDots from "./AnimatedTypingDots.jsx";
-import { formatUserPresence, getPresenceStyle } from "../../utils/userPresence.js";
+import { formatUserPresence, getPresenceStyle } from "@/utils/userPresence.js";
 
 function presenceTextClass(style, isOnline) {
   if (isOnline) {

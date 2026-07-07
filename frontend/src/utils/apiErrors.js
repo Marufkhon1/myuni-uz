@@ -73,13 +73,26 @@ export function getApiErrorMessage(error, fallback) {
     return "So'ralgan manba topilmadi (404).";
   }
   if (Array.isArray(data?.non_field_errors) && data.non_field_errors[0]) {
-    return data.non_field_errors[0];
+    return localizeApiErrorMessage(data.non_field_errors[0]);
   }
   if (data && typeof data === "object") {
     const firstFieldError = Object.values(data).flat()[0];
     if (firstFieldError) {
-      return Array.isArray(firstFieldError) ? firstFieldError[0] : firstFieldError;
+      const message = Array.isArray(firstFieldError) ? firstFieldError[0] : firstFieldError;
+      return localizeApiErrorMessage(message);
     }
   }
   return fallback;
+}
+
+const API_ERROR_TRANSLATIONS = {
+  "This field is required.": "Bu maydon to'ldirilishi shart.",
+  "This field may not be blank.": "Bu maydon bo'sh bo'lmasligi kerak.",
+};
+
+export function localizeApiErrorMessage(message) {
+  if (typeof message !== "string") {
+    return message;
+  }
+  return API_ERROR_TRANSLATIONS[message] ?? message;
 }

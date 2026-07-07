@@ -28,6 +28,9 @@ class UniversityMessageDeleteView(APIView):
         message.is_deleted = True
         message.updated_at = timezone.now()
         message.save(update_fields=["is_deleted", "updated_at"])
+        from .ws_broadcast import broadcast_university_message_deletes
+
+        broadcast_university_message_deletes(message.university_id, [message.id])
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -48,4 +51,7 @@ class DirectMessageDeleteView(APIView):
         message.is_deleted = True
         message.updated_at = timezone.now()
         message.save(update_fields=["is_deleted", "updated_at"])
+        from .ws_broadcast import broadcast_direct_message_deletes
+
+        broadcast_direct_message_deletes(thread.id, [message.id])
         return Response(status=status.HTTP_204_NO_CONTENT)

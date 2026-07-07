@@ -1,8 +1,8 @@
 import UniversityIdentity from "../UniversityIdentity.jsx";
 import ReviewAspectRatings from "../reviews/ReviewAspectRatings.jsx";
-import { formatStarRatingLabel } from "../../utils/starRatingA11y.js";
-import { getUniversityImageUrl } from "../../utils/universityImage.js";
-import { buildHeroSidePanel } from "../../utils/universityPublic.js";
+import { formatStarRatingLabel } from "@/utils/starRatingA11y.js";
+import { getUniversityImageUrl } from "@/utils/universityImage.js";
+import { buildHeroSidePanel } from "@/utils/universityPublic.js";
 import ReviewRatingDistribution from "./ReviewRatingDistribution.jsx";
 import { FractionalStars } from "../ui/StarRatingDisplay.jsx";
 

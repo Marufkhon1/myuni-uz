@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getSupportBotWelcome } from "../components/dashboard/supportBot.js";
+import { getSupportBotWelcome } from "@/components/dashboard/supportBot.js";
 
 export function useSupportChat(isStudent = false) {
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);

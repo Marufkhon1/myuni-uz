@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.db.models import Avg, Count, Exists, OuterRef, Q
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
@@ -25,7 +26,7 @@ from .chat_community_utils import (
     filter_university_messages_for_viewer,
     user_has_blocked_other,
 )
-from .compare_utils import build_compare_row, build_highlights, build_public_compare_snapshot
+from .compare_utils import build_compare_row, build_compare_rows, build_highlights, build_public_compare_snapshot
 from .compare_share_utils import compare_share_expires_at, generate_compare_share_token
 from .chat_permissions import require_university_member, user_is_university_member
 from .chat_utils import annotate_direct_threads_both_replied, get_or_create_direct_thread
@@ -204,12 +205,15 @@ class UniversityCompareView(APIView):
             )
         )
 
-        rows = [
-            build_compare_row(university, joined_ids, favorite_ids)
-            for university in universities
-        ]
+        cache_key = f"compare:v2:{request.user.id}:{ids_param}"
+        cached = cache.get(cache_key)
+        if cached is not None:
+            return Response(cached)
 
-        return Response({"universities": rows, "highlights": build_highlights(rows)})
+        rows = build_compare_rows(universities, joined_ids, favorite_ids)
+        payload = {"universities": rows, "highlights": build_highlights(rows)}
+        cache.set(cache_key, payload, timeout=300)
+        return Response(payload)
 
 
 class CompareShareCreateView(APIView):
@@ -242,10 +246,7 @@ class CompareShareCreateView(APIView):
             )
         )
 
-        rows = [
-            build_compare_row(university, joined_ids, favorite_ids)
-            for university in universities
-        ]
+        rows = build_compare_rows(universities, joined_ids, favorite_ids)
         highlights = build_highlights(rows)
         snapshot = build_public_compare_snapshot(rows, highlights)
         expires_at = compare_share_expires_at()
@@ -587,8 +588,12 @@ class UniversityMessageListCreateView(APIView):
         from accounts.chat_notify import notify_group_chat_message
 
         notify_group_chat_message(message)
+        payload = ChatMessageSerializer(message, context={"request": request}).data
+        from .ws_broadcast import broadcast_university_messages
+
+        broadcast_university_messages(university.id, [payload])
         return Response(
-            ChatMessageSerializer(message, context={"request": request}).data,
+            payload,
             status=status.HTTP_201_CREATED,
         )
 
@@ -618,6 +623,10 @@ class UniversityTypingView(APIView):
                 status=status.HTTP_403_FORBIDDEN,
             )
         set_typing_user(typing_cache_key(university_id), request.user)
+        from .ws_broadcast import broadcast_university_typing
+
+        users = get_typing_users(typing_cache_key(university_id), exclude_user_id=request.user.id)
+        broadcast_university_typing(university_id, users)
         return Response({"ok": True})
 
 
@@ -660,6 +669,10 @@ class DirectTypingView(APIView):
             pk=thread_id,
         )
         set_typing_user(direct_typing_cache_key(thread.id), request.user)
+        from .ws_broadcast import broadcast_direct_typing
+
+        users = get_typing_users(direct_typing_cache_key(thread.id), exclude_user_id=request.user.id)
+        broadcast_direct_typing(thread.id, users)
         return Response({"ok": True})
 
 
@@ -841,8 +854,12 @@ class DirectMessageListCreateView(APIView):
         from accounts.chat_notify import notify_direct_chat_message
 
         notify_direct_chat_message(message)
+        payload = DirectMessageSerializer(message, context={"request": request}).data
+        from .ws_broadcast import broadcast_direct_messages
+
+        broadcast_direct_messages(thread.id, [payload])
         return Response(
-            DirectMessageSerializer(message, context={"request": request}).data,
+            payload,
             status=status.HTTP_201_CREATED,
         )
 

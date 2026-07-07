@@ -1,40 +1,43 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import UniversityPublicAdmission from "../components/catalog/UniversityPublicAdmission.jsx";
+import UniversityPublicSectionNav from "@/components/catalog/UniversityPublicSectionNav.jsx";
+import { UNIVERSITY_PUBLIC_SECTIONS } from "@/utils/universityPublicSections.js";
+import { useUniversityPublicSection } from "@/hooks/useUniversityPublicSection.js";
+import UniversityPublicAdmission from "@/components/catalog/UniversityPublicAdmission.jsx";
 import UniversityPublicContact, {
   UniversityMapEmbed,
-} from "../components/catalog/UniversityPublicContact.jsx";
-import UniversityPublicFaculties from "../components/catalog/UniversityPublicFaculties.jsx";
-import UniversityPublicOverview from "../components/catalog/UniversityPublicOverview.jsx";
-import UniversityPublicSummary from "../components/catalog/UniversityPublicSummary.jsx";
-import Footer from "../components/Footer.jsx";
-import Navbar from "../components/Navbar.jsx";
-import JsonLd from "../components/seo/JsonLd.jsx";
-import { PublicBackHomeButton } from "../components/PublicPageButtons.jsx";
-import ReviewAuthPromptModal from "../components/ReviewAuthPromptModal.jsx";
-import ReviewCard from "../components/dashboard/ReviewCard.jsx";
-import ReviewAspectRatings from "../components/reviews/ReviewAspectRatings.jsx";
-import ReviewInsightSummary from "../components/reviews/ReviewInsightSummary.jsx";
-import UniversityCampusBanner from "../components/UniversityCampusBanner.jsx";
-import UniversityRatingStars from "../components/dashboard/UniversityRatingStars.jsx";
-import EmptyState from "../components/ui/EmptyState.jsx";
-import { UniversityPublicPageSkeleton } from "../components/skeletons/PublicPageSkeletons.jsx";
-import { getUniversityOgImagePath } from "../utils/universityImage.js";
-import { formatOwnershipLabel } from "../utils/universityCatalog.js";
+} from "@/components/catalog/UniversityPublicContact.jsx";
+import UniversityPublicFaculties from "@/components/catalog/UniversityPublicFaculties.jsx";
+import UniversityPublicOverview from "@/components/catalog/UniversityPublicOverview.jsx";
+import UniversityPublicSummary from "@/components/catalog/UniversityPublicSummary.jsx";
+import Footer from "@/components/Footer.jsx";
+import Navbar from "@/components/Navbar.jsx";
+import JsonLd from "@/components/seo/JsonLd.jsx";
+import { PublicBackHomeButton } from "@/components/PublicPageButtons.jsx";
+import ReviewAuthPromptModal from "@/components/ReviewAuthPromptModal.jsx";
+import ReviewCard from "@/components/dashboard/ReviewCard.jsx";
+import ReviewAspectRatings from "@/components/reviews/ReviewAspectRatings.jsx";
+import ReviewInsightSummary from "@/components/reviews/ReviewInsightSummary.jsx";
+import UniversityCampusBanner from "@/components/UniversityCampusBanner.jsx";
+import UniversityRatingStars from "@/components/dashboard/UniversityRatingStars.jsx";
+import EmptyState from "@/components/ui/EmptyState.jsx";
+import { UniversityPublicPageSkeleton } from "@/components/skeletons/PublicPageSkeletons.jsx";
+import { getUniversityOgImagePath } from "@/utils/universityImage.js";
+import { formatOwnershipLabel } from "@/utils/universityCatalog.js";
 import {
   buildBreadcrumbSchema,
   buildReviewSchemas,
   buildUniversitySchema,
-} from "../utils/structuredData.js";
+} from "@/utils/structuredData.js";
 import {
   buildDashboardReviewsUniversityNext,
   buildDashboardReviewsUniversityPath,
-} from "../utils/navigation.js";
-import { mainContentProps } from "../utils/mainContent.js";
-import { useAuth } from "../hooks/useAuth.js";
-import { useDarkMode } from "../hooks/useDarkMode.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
-import { getPublicUniversityBySlug } from "../services/publicService.js";
+} from "@/utils/navigation.js";
+import { mainContentProps } from "@/utils/mainContent.js";
+import { useAuth } from "@/hooks/useAuth.js";
+import { useDarkMode } from "@/hooks/useDarkMode.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
+import { getPublicUniversityBySlug } from "@/services/publicService.js";
 
 function normalizeWebsiteUrl(value) {
   if (!value) {
@@ -69,6 +72,7 @@ export default function UniversityPublicPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [showReviewAuthModal, setShowReviewAuthModal] = useState(false);
+  const { activeSection, handleSectionChange } = useUniversityPublicSection(slug);
 
   useEffect(() => {
     let cancelled = false;
@@ -95,19 +99,6 @@ export default function UniversityPublicPage() {
       cancelled = true;
     };
   }, [slug]);
-
-  useEffect(() => {
-    if (isAuthLoading || !isAuthenticated || !detail?.id) {
-      return;
-    }
-    navigate(
-      buildDashboardReviewsUniversityPath({
-        role: role || "applicant",
-        university: detail,
-      }),
-      { replace: true }
-    );
-  }, [isAuthLoading, isAuthenticated, role, detail, navigate]);
 
   const metaTitle = detail
     ? `${detail.name} — sharhlar va reyting | MyUni.uz`
@@ -161,8 +152,7 @@ export default function UniversityPublicPage() {
 
   const seoReady = !loading && (Boolean(detail) || Boolean(error));
   const isGuest = !isAuthLoading && !isAuthenticated;
-  const showPublicContent = isGuest && !loading && detail;
-  const showRedirecting = isAuthenticated && !isAuthLoading && !error;
+  const showPublicContent = !loading && detail;
   const reviewsNextPath = detail ? buildDashboardReviewsUniversityNext(detail) : "/dashboard?section=reviews";
   const signupTo = `/signup?next=${encodeURIComponent(reviewsNextPath)}`;
   const loginTo = `/login?next=${encodeURIComponent(reviewsNextPath)}`;
@@ -200,17 +190,13 @@ export default function UniversityPublicPage() {
         />
 
         <main {...mainContentProps} className="container-shell pb-12 pt-24 sm:pt-28 lg:pt-32">
-          {isGuest && !showRedirecting && (
+          {!isAuthenticated && !isAuthLoading && (
             <div className="mb-5 w-fit">
               <PublicBackHomeButton />
             </div>
           )}
 
           {(isAuthLoading || loading) && !error && <UniversityPublicPageSkeleton />}
-
-          {showRedirecting && !loading && (
-            <p className="mt-10 text-center font-black text-primary">Kabinetga yo&apos;naltirilmoqda...</p>
-          )}
 
           {error && (
             <EmptyState
@@ -250,7 +236,9 @@ export default function UniversityPublicPage() {
                   </h1>
                   <p className="mt-2 text-sm font-semibold text-slate-200 sm:text-base">{detail.location}</p>
                   <div className="mt-4 flex flex-wrap items-center gap-3">
-                    <UniversityRatingStars rating={detail.average_rating} />
+                    <UniversityRatingStars
+                      rating={detail.display_rating ?? detail.bayesian_rating ?? detail.average_rating}
+                    />
                     <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-black text-white">
                       {detail.review_count ?? 0} ta sharh
                     </span>
@@ -263,76 +251,95 @@ export default function UniversityPublicPage() {
                 </div>
               </div>
 
+              <div className="sticky top-[calc(4rem+env(safe-area-inset-top,0px))] z-20 lg:top-28">
+                <UniversityPublicSectionNav
+                  detail={detail}
+                  activeSection={activeSection}
+                  onSectionChange={handleSectionChange}
+                  isAuthenticated={isAuthenticated}
+                  role={role}
+                  onWriteReview={handleWriteReviewClick}
+                />
+              </div>
+
               <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
                 <div className="min-w-0">
-                  <UniversityPublicOverview detail={detail} />
-                  <UniversityPublicSummary summary={detail.summary} />
-                  <UniversityPublicContact detail={detail} />
-                  <UniversityPublicFaculties faculties={detail.faculties} />
-                  <UniversityPublicAdmission cycles={detail.admission_cycles} />
-
-                  {(detail.review_insight_summary || detail.aspect_averages?.review_count > 0) && (
-                    <div className="space-y-4 border-b border-slate-100 px-5 py-6 dark:border-white/10 sm:px-6">
-                      {detail.review_insight_summary && (
-                        <ReviewInsightSummary
-                          summary={detail.review_insight_summary}
-                          reviewCount={detail.aspect_averages?.review_count ?? detail.review_count}
-                        />
-                      )}
-                      {detail.aspect_averages?.review_count > 0 && (
-                        <div>
-                          <p className="text-xs font-black uppercase tracking-wide text-primary">
-                            Mezon bo&apos;yicha o&apos;rtacha
-                          </p>
-                          <ReviewAspectRatings averages={detail.aspect_averages} />
-                        </div>
-                      )}
-                    </div>
+                  {activeSection === UNIVERSITY_PUBLIC_SECTIONS.overview && (
+                    <>
+                      <UniversityPublicOverview detail={detail} />
+                      <UniversityPublicSummary summary={detail.summary} />
+                      <UniversityPublicContact detail={detail} />
+                      <UniversityPublicFaculties faculties={detail.faculties} />
+                      <UniversityPublicAdmission cycles={detail.admission_cycles} />
+                    </>
                   )}
 
-                  <div className="px-5 py-6 sm:px-6">
-                    <p className="text-xs font-black uppercase tracking-wide text-primary">Talabalar sharhlari</p>
-                    <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                      Barcha sharhlar talabalar tomonidan yozilgan — abituriyentlar o&apos;qishi mumkin.
-                    </p>
+                  {activeSection === UNIVERSITY_PUBLIC_SECTIONS.reviews && (
+                    <>
+                      {(detail.review_insight_summary || detail.aspect_averages?.review_count > 0) && (
+                        <div className="space-y-4 border-b border-slate-100 px-5 py-6 dark:border-white/10 sm:px-6">
+                          {detail.review_insight_summary && (
+                            <ReviewInsightSummary
+                              summary={detail.review_insight_summary}
+                              reviewCount={detail.aspect_averages?.review_count ?? detail.review_count}
+                            />
+                          )}
+                          {detail.aspect_averages?.review_count > 0 && (
+                            <div>
+                              <p className="text-xs font-black uppercase tracking-wide text-primary">
+                                Mezon bo&apos;yicha o&apos;rtacha
+                              </p>
+                              <ReviewAspectRatings averages={detail.aspect_averages} />
+                            </div>
+                          )}
+                        </div>
+                      )}
 
-                    {detail.reviews?.length > 0 ? (
-                      <ul className="mt-5 space-y-4">
-                        {detail.reviews.map((item) => (
-                          <li key={item.id}>
-                            <ReviewCard item={item} hideLike showHelpfulCount showStudentVoiceBadge />
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <EmptyState
-                        variant="reviews"
-                        title="Hali sharh yo'q"
-                        description="Birinchi sharhingizni qoldiring — abituriyentlar tanlov qilishda foydalanadi."
-                        action={{
-                          label: "Birinchi sharhingizni yozing",
-                          onClick: handleWriteReviewClick,
-                        }}
-                        className="mt-5"
-                      />
-                    )}
-
-                    {(detail.reviews?.length ?? 0) > 0 && (
-                      <div className="mt-8">
-                        <button
-                          type="button"
-                          onClick={handleWriteReviewClick}
-                          className="w-full rounded-2xl bg-premium-gradient px-6 py-3.5 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 sm:w-auto"
-                        >
-                          Sharh yozish
-                        </button>
-                        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                          Sharh yozish uchun talaba hisobi kerak. Bosganda ro&apos;yxatdan o&apos;tish yoki kirish
-                          taklif qilinadi.
+                      <div className="px-5 py-6 sm:px-6">
+                        <p className="text-xs font-black uppercase tracking-wide text-primary">Talabalar sharhlari</p>
+                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                          Barcha sharhlar talabalar tomonidan yozilgan — abituriyentlar o&apos;qishi mumkin.
                         </p>
+
+                        {detail.reviews?.length > 0 ? (
+                          <ul className="mt-5 space-y-4">
+                            {detail.reviews.map((item) => (
+                              <li key={item.id}>
+                                <ReviewCard item={item} hideLike showHelpfulCount showStudentVoiceBadge />
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <EmptyState
+                            variant="reviews"
+                            title="Hali sharh yo'q"
+                            description="Birinchi sharhingizni qoldiring — abituriyentlar tanlov qilishda foydalanadi."
+                            action={{
+                              label: "Birinchi sharhingizni yozing",
+                              onClick: handleWriteReviewClick,
+                            }}
+                            className="mt-5"
+                          />
+                        )}
+
+                        {(detail.reviews?.length ?? 0) > 0 && (
+                          <div className="mt-8">
+                            <button
+                              type="button"
+                              onClick={handleWriteReviewClick}
+                              className="w-full rounded-2xl bg-premium-gradient px-6 py-3.5 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 sm:w-auto"
+                            >
+                              Sharh yozish
+                            </button>
+                            <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                              Sharh yozish uchun talaba hisobi kerak. Bosganda ro&apos;yxatdan o&apos;tish yoki kirish
+                              taklif qilinadi.
+                            </p>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </>
+                  )}
                 </div>
 
                 <aside className="space-y-4 border-t border-slate-100 p-5 dark:border-white/10 lg:sticky lg:top-28 lg:border-t-0 lg:border-l lg:p-6">

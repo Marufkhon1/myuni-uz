@@ -1,16 +1,21 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth.js";
-import UniversitySearchSelect from "../components/dashboard/UniversitySearchSelect.jsx";
-import { matchUniversityByText } from "../utils/universityMatch.js";
-import AuthLayout from "../layouts/AuthLayout.jsx";
-import { PAGE_META } from "../config/siteMeta.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
-import { useToast } from "../hooks/useToast.js";
-import { getGoogleAuthUrl } from "../services/authService.js";
-import { getPublicUniversities } from "../services/publicService.js";
-import { getApiErrorMessage } from "../utils/apiErrors.js";
-import { dashboardPathForRole } from "../utils/navigation.js";
+import { useAuth } from "@/hooks/useAuth.js";
+import UniversitySearchSelect from "@/components/dashboard/UniversitySearchSelect.jsx";
+import FormField from "@/components/ui/FormField.jsx";
+import { matchUniversityByText } from "@/utils/universityMatch.js";
+import AuthLayout from "@/layouts/AuthLayout.jsx";
+import { PAGE_META } from "@/config/siteMeta.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
+import { useToast } from "@/hooks/useToast.js";
+import { useFormAutofillSync } from "@/hooks/useFormAutofillSync.js";
+import { getGoogleAuthUrl } from "@/services/authService.js";
+import { getPublicUniversities } from "@/services/publicService.js";
+import { getApiErrorMessage } from "@/utils/apiErrors.js";
+import { dashboardPathForRole } from "@/utils/navigation.js";
+import { readSignupFormValues } from "@/utils/authForm.js";
+import { emailValidationMessage } from "@/utils/email.js";
+import { usernameValidationMessage } from "@/utils/username.js";
 
 const roles = [
   {
@@ -42,6 +47,7 @@ export default function SignupPage() {
   const nextPath = searchParams.get("next");
   const [form, setForm] = useState({
     full_name: "",
+    username: "",
     email: "",
     password: "",
     role: "applicant",
@@ -50,6 +56,15 @@ export default function SignupPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [universities, setUniversities] = useState([]);
   const [isUniversitiesLoading, setIsUniversitiesLoading] = useState(true);
+
+  const syncAutofillFields = useCallback((snapshot) => {
+    setForm((current) => ({ ...current, ...snapshot }));
+  }, []);
+
+  const formRef = useFormAutofillSync(
+    ["full_name", "username", "email", "password"],
+    syncAutofillFields
+  );
 
   useEffect(() => {
     const googleError = searchParams.get("google_error");
@@ -108,26 +123,41 @@ export default function SignupPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    if (!ensureUniversitySelected()) {
+    if (isSubmitting) {
+      return;
+    }
+
+    const payload = {
+      ...readSignupFormValues(event.currentTarget),
+      role: form.role,
+      university: form.university,
+    };
+    setForm((current) => ({ ...current, ...payload }));
+
+    if (!matchUniversityByText(universities, payload.university)) {
+      toast.warning("Ro'yxatdan universitetni tanlang.");
+      return;
+    }
+    const usernameError = usernameValidationMessage(payload.username);
+    if (usernameError) {
+      toast.warning(usernameError);
+      return;
+    }
+    const emailError = emailValidationMessage(payload.email);
+    if (emailError) {
+      toast.warning(emailError);
       return;
     }
     setIsSubmitting(true);
 
     try {
-      const result = await register(form);
-      if (result.requires_email_verification) {
-        if (result.email_sent === false) {
-          toast.warning(result.detail);
-        }
-        navigate(
-          `/verify-email/pending?email=${encodeURIComponent(result.email || form.email)}`,
-          { replace: true }
-        );
+      const result = await register(payload);
+      const nextUser = result.user;
+      if (nextUser) {
+        navigate(resolveAfterAuthPath(nextUser, nextPath), { replace: true });
         return;
       }
-      if (result.user) {
-        navigate(resolveAfterAuthPath(result.user, nextPath), { replace: true });
-      }
+      toast.error("Ro'yxatdan o'tildi, lekin hisob ma'lumotlari qaytmadi. Qayta kiring.");
     } catch (requestError) {
       toast.error(getApiErrorMessage(requestError, "Ro'yxatdan o'tishda xatolik yuz berdi."));
     } finally {
@@ -162,7 +192,7 @@ export default function SignupPage() {
       toast.error(
         getApiErrorMessage(
           requestError,
-          "Google orqali ro'yxatdan o'tish hozircha yoqilmagan. Email bilan ro'yxatdan o'ting."
+          "Google orqali ro'yxatdan o'tish hozircha yoqilmagan. Login bilan ro'yxatdan o'ting."
         )
       );
     }
@@ -181,7 +211,7 @@ export default function SignupPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="mt-7 space-y-5">
+      <form ref={formRef} onSubmit={handleSubmit} className="mt-7 space-y-5" autoComplete="on" noValidate>
         <div className="grid gap-3 sm:grid-cols-2">
           {roles.map((role) => (
             <button
@@ -202,44 +232,52 @@ export default function SignupPage() {
           ))}
         </div>
 
-        <label className="block">
-          <span className="text-sm font-black text-slate-700 dark:text-slate-200">Ism-familiya</span>
-          <input
-            name="full_name"
-            value={form.full_name}
-            onChange={updateField}
-            required
-            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold outline-none transition focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/10 dark:bg-white/10"
-            placeholder="Masalan: Ali Valiyev"
-          />
-        </label>
+        <FormField
+          id="signup-full-name"
+          name="full_name"
+          label="Ism-familiya"
+          value={form.full_name}
+          onChange={updateField}
+          required
+          autoComplete="name"
+          placeholder="Masalan: Ali Valiyev"
+        />
 
-        <label className="block">
-          <span className="text-sm font-black text-slate-700 dark:text-slate-200">Email</span>
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={updateField}
-            required
-            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold outline-none transition focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/10 dark:bg-white/10"
-            placeholder="you@example.com"
-          />
-        </label>
+        <FormField
+          id="signup-username"
+          name="username"
+          label="Login"
+          value={form.username}
+          onChange={updateField}
+          required
+          autoComplete="username"
+          placeholder="masalan: ali_valiyev"
+        />
 
-        <label className="block">
-          <span className="text-sm font-black text-slate-700 dark:text-slate-200">Parol</span>
-          <input
-            type="password"
-            name="password"
-            value={form.password}
-            onChange={updateField}
-            required
-            minLength={8}
-            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold outline-none transition focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/10 dark:bg-white/10"
-            placeholder="Kamida 8 ta belgi"
-          />
-        </label>
+        <FormField
+          id="signup-email"
+          name="email"
+          label="Email"
+          type="email"
+          value={form.email}
+          onChange={updateField}
+          required
+          autoComplete="email"
+          placeholder="masalan: ali@example.com"
+        />
+
+        <FormField
+          id="signup-password"
+          name="password"
+          label="Parol"
+          type="password"
+          value={form.password}
+          onChange={updateField}
+          required
+          autoComplete="new-password"
+          minLength={8}
+          placeholder="Kamida 8 ta belgi"
+        />
 
         <div className="block">
           <label className="text-sm font-black text-slate-700 dark:text-slate-200">

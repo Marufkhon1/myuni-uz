@@ -13,9 +13,9 @@ export async function fetchUniversities(request) {
   return list;
 }
 
-export async function loginAccessToken(request, { email, password = E2E_PASSWORD }) {
+export async function loginAccessToken(request, { username, email, password = E2E_PASSWORD }) {
   const login = await request.post(`${API}/api/auth/login/`, {
-    data: { email, password },
+    data: { username: username || email, password },
   });
   expect(login.ok()).toBeTruthy();
   return (await login.json()).access;
@@ -23,12 +23,18 @@ export async function loginAccessToken(request, { email, password = E2E_PASSWORD
 
 export async function registerAccount(
   request,
-  { email, password = E2E_PASSWORD, role, universityName, fullName = "E2E Tekshiruv" }
+  { username, email, password = E2E_PASSWORD, role, universityName, fullName = "E2E Tekshiruv" }
 ) {
+  const resolvedUsername =
+    username ||
+    (email ? email.split("@")[0].replace(/[^a-z0-9._-]/gi, "_").slice(0, 30) : `e2e_${Date.now()}`);
+  const resolvedEmail = email || `${resolvedUsername}@sitecheck.test`;
+
   const register = await request.post(`${API}/api/auth/register/`, {
     data: {
       full_name: fullName,
-      email,
+      username: resolvedUsername,
+      email: resolvedEmail,
       password,
       role,
       university: universityName,
@@ -36,8 +42,8 @@ export async function registerAccount(
   });
   expect(register.status()).toBe(201);
   const body = await register.json();
-  const access = body.access || (await loginAccessToken(request, { email, password }));
-  return { access, body };
+  const access = body.access || (await loginAccessToken(request, { username: resolvedUsername, password }));
+  return { access, body, username: resolvedUsername };
 }
 
 export async function skipOnboardingForE2e(page) {
@@ -72,10 +78,10 @@ export async function waitForDashboardReady(page) {
   await expect(page.getByRole("heading", { name: /Salom/i }).first()).toBeVisible({ timeout: 30000 });
 }
 
-export async function loginViaUi(page, { email, password = E2E_PASSWORD, dashboardPattern }) {
+export async function loginViaUi(page, { username, email, password = E2E_PASSWORD, dashboardPattern }) {
   await page.goto(`${WEB}/login`);
   await skipOnboardingForE2e(page);
-  await page.fill('input[name="email"]', email);
+  await page.fill('input[name="username"]', username || email);
   await page.fill('input[name="password"]', password);
   await page.getByRole("button", { name: /^kirish$/i }).click();
   await page.waitForURL(dashboardPattern, { timeout: 20000 });

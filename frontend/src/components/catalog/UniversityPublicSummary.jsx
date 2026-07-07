@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { splitSummaryParagraphs } from "../../utils/universityPublic.js";
+import { splitSummaryParagraphs } from "@/utils/universityPublic.js";
 
 export default function UniversityPublicSummary({ summary }) {
   const paragraphs = splitSummaryParagraphs(summary);

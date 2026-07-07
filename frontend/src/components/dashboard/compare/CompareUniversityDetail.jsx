@@ -1,6 +1,6 @@
-import UniversityIdentity from "../../UniversityIdentity.jsx";
-import { formatUniversityMetaHeader } from "../../../utils/universityMetaFormat.js";
-import { formatOwnershipLabel } from "../../../utils/universityCatalog.js";
+import UniversityIdentity from "@/components/UniversityIdentity.jsx";
+import { formatUniversityMetaHeader } from "@/utils/universityMetaFormat.js";
+import { formatOwnershipLabel } from "@/utils/universityCatalog.js";
 import CompareStarBadge from "./CompareStarBadge.jsx";
 import CompareRecommendBadge from "./CompareRecommendBadge.jsx";
 

@@ -1,5 +1,5 @@
-import UniversityAvatar from "../../UniversityAvatar.jsx";
-import { resolveCompareHighlight } from "../../../utils/compareMath.js";
+import UniversityAvatar from "@/components/UniversityAvatar.jsx";
+import { resolveCompareHighlight } from "@/utils/compareMath.js";
 import { COMPARE_SLOT_THEMES, HIGHLIGHT_ICONS } from "./compareTheme.js";
 
 const ITEMS = [

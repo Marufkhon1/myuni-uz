@@ -1,8 +1,8 @@
-import UniversityAvatar from "../../UniversityAvatar.jsx";
-import { FractionalStars } from "../../ui/StarRatingDisplay.jsx";
+import UniversityAvatar from "@/components/UniversityAvatar.jsx";
+import { FractionalStars } from "@/components/ui/StarRatingDisplay.jsx";
 import CompareRecommendBadge from "./CompareRecommendBadge.jsx";
 import { COMPARE_SLOT_THEMES } from "./compareTheme.js";
-import { formatCompareRating, winSharePercent } from "../../../utils/compareMath.js";
+import { formatCompareRating, winSharePercent } from "@/utils/compareMath.js";
 
 function leaderSubtitle(leader, summary, content) {
   if (!leader?.university) {

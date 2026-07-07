@@ -1,8 +1,10 @@
 import { resolveMediaUrl } from "./media.js";
 
-export const DEFAULT_UNIVERSITY_IMAGE = "/images/universities/_default.jpg";
+/** @deprecated Faqat eski fallback — boshqa universitet brendini ko'rsatmasligi kerak */
+export const DEFAULT_UNIVERSITY_IMAGE = null;
 
 const LEGACY_CAMPUS_PREFIX = "/images/campuses/";
+const SITE_OG_IMAGE = "/og-image.png";
 
 function isLegacyPlaceholderUrl(url) {
   if (!url) {
@@ -14,8 +16,28 @@ function isLegacyPlaceholderUrl(url) {
     lower.includes("dicebear.com") ||
     lower.includes("unsplash.com") ||
     lower.includes("images.unsplash") ||
-    lower.startsWith(LEGACY_CAMPUS_PREFIX)
+    lower.startsWith(LEGACY_CAMPUS_PREFIX) ||
+    lower.includes("/_default.jpg")
   );
+}
+
+function hashString(value) {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash << 5) - hash + value.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+export function getUniversityBrandHue(university) {
+  const key = university?.slug || university?.short_name || university?.name || "uni";
+  return hashString(String(key)) % 360;
+}
+
+export function getUniversityBrandGradient(university) {
+  const hue = getUniversityBrandHue(university);
+  return `linear-gradient(135deg, hsl(${hue} 58% 46%) 0%, hsl(${(hue + 36) % 360} 52% 32%) 52%, hsl(${(hue + 72) % 360} 48% 20%) 100%)`;
 }
 
 export function universityImagePath(slug) {
@@ -35,13 +57,12 @@ export function getUniversityImageUrl(university) {
     return stored;
   }
 
-  const slugPath = universityImagePath(university.slug);
-  return slugPath || "";
+  return universityImagePath(university.slug) || "";
 }
 
 export function getUniversityBannerUrl(university) {
   const primary = getUniversityImageUrl(university);
-  return primary || DEFAULT_UNIVERSITY_IMAGE;
+  return primary || null;
 }
 
 export function hasCustomUniversityImage(university) {
@@ -54,7 +75,7 @@ export function getUniversityLogoUrl(university) {
 
 export function getUniversityOgImagePath(university) {
   const url = getUniversityImageUrl(university);
-  return url || DEFAULT_UNIVERSITY_IMAGE;
+  return url || SITE_OG_IMAGE;
 }
 
 /** @deprecated Eski campus fallback — faqat eski importlar uchun */

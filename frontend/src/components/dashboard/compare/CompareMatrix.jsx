@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import UniversityAvatar from "../../UniversityAvatar.jsx";
+import UniversityAvatar from "@/components/UniversityAvatar.jsx";
 import CompareStarBadge from "./CompareStarBadge.jsx";
 import CompareMetricBar from "./CompareMetricBar.jsx";
 import CompareRecommendBadge from "./CompareRecommendBadge.jsx";
@@ -8,14 +8,14 @@ import {
   COMPARE_ASPECTS,
   COMPARE_METRIC_GROUPS,
   COMPARE_METRICS,
-} from "../../../utils/compareRoleContent.js";
+} from "@/utils/compareRoleContent.js";
 import {
   hasCompareValue,
   metricMaxValue,
   numericWinner,
   relativeBarPercents,
   shouldShowCompareMetric,
-} from "../../../utils/compareMath.js";
+} from "@/utils/compareMath.js";
 
 const METRIC_BY_KEY = Object.fromEntries(COMPARE_METRICS.map((metric) => [metric.key, metric]));
 

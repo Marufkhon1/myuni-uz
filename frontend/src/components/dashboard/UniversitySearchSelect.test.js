@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { matchUniversityByText } from "../../utils/universityMatch.js";
+import { matchUniversityByText } from "@/utils/universityMatch.js";
 
 const universities = [
   { id: 1, name: "Andijon davlat universiteti", short_name: "ADU", location: "Andijon" },

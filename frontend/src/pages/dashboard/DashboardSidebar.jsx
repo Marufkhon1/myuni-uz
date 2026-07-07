@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
-import DashboardIcon from "../../components/dashboard/DashboardIcon.jsx";
-import SupportPanel from "../../components/dashboard/SupportPanel.jsx";
-import logo from "../../assets/myuni-logo.png";
+import DashboardIcon from "@/components/dashboard/DashboardIcon.jsx";
+import SupportPanel from "@/components/dashboard/SupportPanel.jsx";
+import logo from "@/assets/myuni-logo.png";
+import { buildDashboardSectionPath } from "@/utils/navigation.js";
 
 export default function DashboardSidebar({
+  role,
   cabinetEyebrow,
   visibleMenuItems,
   activeSection,
@@ -21,32 +23,37 @@ export default function DashboardSidebar({
       </Link>
 
       <nav className="mt-8 flex-1 space-y-2 overflow-y-auto" aria-label="Kabinet bo'limlari">
-        {visibleMenuItems.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            onClick={() => onChangeSection(item.id)}
-            aria-current={activeSection === item.id ? "page" : undefined}
-            aria-label={item.label}
-            className={`flex min-h-[4.5rem] w-full items-center gap-4 rounded-3xl p-4 text-left transition ${
-              activeSection === item.id
-                ? "bg-slate-950 text-white shadow-soft dark:bg-white dark:text-slate-950"
-                : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
-            }`}
-          >
-            <span
-              className={`grid h-11 w-11 place-items-center rounded-2xl ${
-                activeSection === item.id ? "bg-white/10" : "bg-slate-100 dark:bg-white/10"
+        {visibleMenuItems.map((item) => {
+          const href = buildDashboardSectionPath(role, item.id);
+          const isActive = activeSection === item.id;
+
+          return (
+            <Link
+              key={item.id}
+              to={href}
+              onClick={() => onChangeSection(item.id)}
+              aria-current={isActive ? "page" : undefined}
+              aria-label={item.label}
+              className={`flex min-h-[4.5rem] w-full items-center gap-4 rounded-3xl p-4 text-left transition ${
+                isActive
+                  ? "bg-slate-950 text-white shadow-soft dark:bg-white dark:text-slate-950"
+                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
               }`}
             >
-              <DashboardIcon name={item.id} />
-            </span>
-            <span>
-              <span className="block font-black">{item.label}</span>
-              <span className="mt-0.5 block text-xs font-semibold opacity-70">{item.helper}</span>
-            </span>
-          </button>
-        ))}
+              <span
+                className={`grid h-11 w-11 place-items-center rounded-2xl ${
+                  isActive ? "bg-white/10" : "bg-slate-100 dark:bg-white/10"
+                }`}
+              >
+                <DashboardIcon name={item.id} />
+              </span>
+              <span>
+                <span className="block font-black">{item.label}</span>
+                <span className="mt-0.5 block text-xs font-semibold opacity-70">{item.helper}</span>
+              </span>
+            </Link>
+          );
+        })}
       </nav>
 
       <SupportPanel key={isStudent ? "student" : "applicant"} isStudent={isStudent} />

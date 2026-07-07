@@ -42,6 +42,6 @@ describe("siteMeta", () => {
     expect(resolveArticleCoverImage("https://myuni.uz/images/universities/tdiu.jpg")).toBe(
       "/images/universities/tdiu.jpg"
     );
-    expect(resolveArticleCoverImage("")).toContain("/images/universities/");
+    expect(resolveArticleCoverImage("")).toContain("/images/hero/");
   });
 });

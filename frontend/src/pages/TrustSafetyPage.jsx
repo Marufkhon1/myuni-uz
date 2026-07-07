@@ -1,16 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
-import Footer from "../components/Footer.jsx";
-import Navbar from "../components/Navbar.jsx";
-import JsonLd from "../components/seo/JsonLd.jsx";
-import { scrollPageToTop } from "../components/ScrollToTop.jsx";
-import { trustSafetyDocument } from "../content/trustContent.js";
-import { PAGE_META } from "../config/siteMeta.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
+import Footer from "@/components/Footer.jsx";
+import Navbar from "@/components/Navbar.jsx";
+import JsonLd from "@/components/seo/JsonLd.jsx";
+import { scrollPageToTop } from "@/utils/scrollPageToTop.js";
+import { trustSafetyDocument } from "@/content/trustContent.js";
+import { PAGE_META } from "@/config/siteMeta.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
 import {
   buildBreadcrumbSchema,
   buildWebPageSchema,
-} from "../utils/structuredData.js";
-import { mainContentProps } from "../utils/mainContent.js";
+} from "@/utils/structuredData.js";
+import { mainContentProps } from "@/utils/mainContent.js";
 
 export default function TrustSafetyPage() {
   const doc = trustSafetyDocument;

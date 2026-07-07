@@ -1,4 +1,4 @@
-import { CHAT_REACTIONS } from "../../constants/chatReactions.js";
+import { CHAT_REACTIONS } from "@/constants/chatReactions.js";
 
 export default function ChatMessageContextMenu({
   message,

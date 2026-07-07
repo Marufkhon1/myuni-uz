@@ -1,14 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { deleteAvatar, updateProfileSettings, uploadAvatar } from "../../services/authService.js";
-import { useToast } from "../../hooks/useToast.js";
-import { resolveMediaUrl } from "../../utils/media.js";
+import { deleteAvatar, updateProfileSettings, uploadAvatar } from "@/services/authService.js";
+import { useToast } from "@/hooks/useToast.js";
+import { resolveMediaUrl } from "@/utils/media.js";
 import UniversitySearchSelect from "./UniversitySearchSelect.jsx";
-import { matchUniversityByText } from "../../utils/universityMatch.js";
+import { matchUniversityByText } from "@/utils/universityMatch.js";
 import ChatColorPicker from "./ChatColorPicker.jsx";
-import { getProfileContent, getProfileDigitalIdNarrative } from "../../utils/profileRoleContent.js";
-import { getAuthorColorHex, getNameInitials } from "../../utils/chatAuthorColor.js";
-import { buildFullName, splitFullName } from "../../utils/profileName.js";
+import { getProfileContent, getProfileDigitalIdNarrative } from "@/utils/profileRoleContent.js";
+import { getAuthorColorHex, getNameInitials } from "@/utils/chatAuthorColor.js";
+import { getApiErrorMessage } from "@/utils/apiErrors.js";
+import { buildFullName, splitFullName } from "@/utils/profileName.js";
 import IconDeleteButton from "../ui/IconDeleteButton.jsx";
 import ConfirmDialog from "../ConfirmDialog.jsx";
 
@@ -265,6 +266,7 @@ export default function ProfileSection({
   refreshUser,
   joinedChatCount = 0,
 }) {
+  const toast = useToast();
   const [avatarPreview, setAvatarPreview] = useState("");
   const [avatarError, setAvatarError] = useState("");
   const [isAvatarUploading, setIsAvatarUploading] = useState(false);
@@ -273,6 +275,7 @@ export default function ProfileSection({
   const [isSettingsSaving, setIsSettingsSaving] = useState(false);
   const [isColorSaving, setIsColorSaving] = useState(false);
   const [isBioSaving, setIsBioSaving] = useState(false);
+  const [isEmailSaving, setIsEmailSaving] = useState(false);
 
   const displayAvatarUrl = resolveMediaUrl(avatarPreview || savedAvatarUrl);
   const hasAvatar = Boolean(displayAvatarUrl);
@@ -605,9 +608,25 @@ export default function ProfileSection({
           icon="🔐"
         >
           <div className="space-y-3">
-            <ProfileAccountInfoCard icon="✉️" label="Email" hint={user?.email || "—"}>
-              <CopyEmailButton email={user?.email} />
-            </ProfileAccountInfoCard>
+            <ProfileAccountInfoCard icon="👤" label="Login" hint={user?.username || "—"} />
+
+            <ProfileEmailEditor
+              email={user?.email || ""}
+              isSaving={isEmailSaving}
+              onSave={async (nextEmail) => {
+                setIsEmailSaving(true);
+                try {
+                  await updateProfileSettings({ email: nextEmail });
+                  await refreshUser();
+                  toast.success("Email saqlandi.");
+                } catch (error) {
+                  toast.error(getApiErrorMessage(error, "Email saqlanmadi."));
+                  throw error;
+                } finally {
+                  setIsEmailSaving(false);
+                }
+              }}
+            />
 
             <ProfileAccountInfoCard
               icon="🎓"
@@ -1044,43 +1063,45 @@ function ProfileDigitalIdCard({
   );
 }
 
-function CopyEmailButton({ email }) {
-  const [copied, setCopied] = useState(false);
-  if (!email) return null;
+function ProfileEmailEditor({ email, isSaving, onSave }) {
+  const [draft, setDraft] = useState(email || "");
+  const trimmedDraft = draft.trim();
+  const trimmedSaved = (email || "").trim();
+  const isDirty = trimmedDraft !== trimmedSaved;
 
-  async function handleCopy(event) {
-    event.stopPropagation();
-    try {
-      await window.navigator.clipboard.writeText(email);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
+  useEffect(() => {
+    setDraft(email || "");
+  }, [email]);
+
+  async function handleSave() {
+    if (!isDirty || isSaving) {
+      return;
     }
+    await onSave(trimmedDraft);
   }
 
   return (
-    <button
-      type="button"
-      onClick={handleCopy}
-      className={`inline-flex min-h-9 items-center justify-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-black shadow-sm transition ${
-        copied
-          ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300"
-          : "border-slate-200 bg-white text-slate-700 hover:border-primary/30 hover:bg-primary/5 hover:text-primary dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:border-primary/40 dark:hover:bg-primary/10 dark:hover:text-primary"
-      }`}
-    >
-      {copied ? (
-        <>
-          <span aria-hidden="true">✓</span>
-          Nusxalandi
-        </>
-      ) : (
-        <>
-          <span aria-hidden="true">📋</span>
-          Nusxa olish
-        </>
-      )}
-    </button>
+    <ProfileFormField id="profile-email" label="Email" icon="✉️">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <input
+          id="profile-email"
+          type="email"
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          autoComplete="email"
+          placeholder="email@example.com"
+          className={profileFieldInputClass}
+        />
+        <button
+          type="button"
+          onClick={handleSave}
+          disabled={!isDirty || isSaving}
+          className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-primary px-4 text-xs font-black text-white transition disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {isSaving ? "Saqlanmoqda..." : "Saqlash"}
+        </button>
+      </div>
+    </ProfileFormField>
   );
 }
 

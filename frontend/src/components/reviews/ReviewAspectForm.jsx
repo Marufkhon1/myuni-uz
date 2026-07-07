@@ -1,5 +1,6 @@
-import { REVIEW_ASPECTS } from "../../utils/reviewAspects.js";
-import StarRatingRow, { getRatingHint } from "./StarRatingRow.jsx";
+import { REVIEW_ASPECTS } from "@/utils/reviewAspects.js";
+import { getRatingHint } from "@/utils/starRatingHints.js";
+import StarRatingRow from "./StarRatingRow.jsx";
 
 const ASPECT_STYLES = {
   teachers: {

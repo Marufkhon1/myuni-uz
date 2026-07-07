@@ -41,6 +41,11 @@ def set_auth_cookies(response, refresh_token):
 
 
 def clear_auth_cookies(response):
-    response.delete_cookie(ACCESS_COOKIE_NAME, path="/")
-    response.delete_cookie(REFRESH_COOKIE_NAME, path="/")
+    common = {
+        "path": "/",
+        "samesite": "Lax",
+        "secure": _cookie_secure(),
+    }
+    response.delete_cookie(ACCESS_COOKIE_NAME, **common)
+    response.delete_cookie(REFRESH_COOKIE_NAME, **common)
     return response

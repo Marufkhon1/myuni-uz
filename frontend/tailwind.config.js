@@ -8,6 +8,19 @@ export default {
         primary: "#2563eb",
         secondary: "#7c3aed",
         slateNight: "#0f172a",
+        success: "#059669",
+        warning: "#d97706",
+        danger: "#dc2626",
+      },
+      spacing: {
+        "section-y": "5rem",
+        "card-p": "1.25rem",
+        "toolbar-gap": "0.75rem",
+      },
+      fontSize: {
+        "display-xl": ["clamp(2rem,4vw,3.5rem)", { lineHeight: "1.12", fontWeight: "900" }],
+        "display-lg": ["clamp(1.5rem,3vw,2.25rem)", { lineHeight: "1.15", fontWeight: "900" }],
+        "label-caps": ["0.6875rem", { lineHeight: "1.2", fontWeight: "800", letterSpacing: "0.16em" }],
       },
       fontFamily: {
         sans: [

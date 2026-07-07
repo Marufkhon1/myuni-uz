@@ -5,7 +5,7 @@ import ChatMessageContextMenu from "../chat/ChatMessageContextMenu.jsx";
 import ChatMessageText from "../chat/ChatMessageText.jsx";
 import ChatReactionPicker from "../chat/ChatReactionPicker.jsx";
 import UserAvatarWithPresence from "./UserAvatarWithPresence.jsx";
-import { clampContextMenuPosition, getReactionPickerPosition } from "../../utils/chatMenuPosition.js";
+import { clampContextMenuPosition, getReactionPickerPosition } from "@/utils/chatMenuPosition.js";
 
 const MENU_ESTIMATE = { width: 210, height: 168 };
 const HOVER_HEART_DELAY_MS = 1500;
@@ -119,6 +119,19 @@ export default function ChatMessageBubble({
     event.preventDefault();
     event.stopPropagation();
     openMenuAt(event.clientX, event.clientY);
+  }
+
+  function handleMessageKeyDown(event) {
+    if (!hasContextMenuActions) {
+      return;
+    }
+    if (event.key === "ContextMenu" || (event.shiftKey && event.key === "F10")) {
+      event.preventDefault();
+      openMenuAt(
+        bubbleRef.current?.getBoundingClientRect().left ?? 0,
+        bubbleRef.current?.getBoundingClientRect().top ?? 0
+      );
+    }
   }
 
   function handleTouchStart(event) {
@@ -393,8 +406,12 @@ export default function ChatMessageBubble({
           ) : null}
           <div
             ref={bubbleRef}
+            role="group"
+            tabIndex={hasContextMenuActions ? 0 : undefined}
+            aria-label={hasContextMenuActions ? "Xabar menyusi" : undefined}
             className={`relative w-fit ${containerClassName}`}
             onContextMenu={handleMessageContextMenu}
+            onKeyDown={handleMessageKeyDown}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
             onTouchMove={handleTouchMove}
@@ -429,7 +446,7 @@ export default function ChatMessageBubble({
                 )
               )}
               <p
-                className={`text-[15px] leading-snug select-text ${
+                className={`break-words [overflow-wrap:anywhere] whitespace-pre-wrap text-[15px] leading-snug select-text ${
                   !isMine && displayName ? "mt-0.5" : ""
                 }`}
               >

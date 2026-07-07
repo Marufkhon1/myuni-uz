@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getJoinedChatsTyping } from "../services/chatService.js";
+import { getJoinedChatsTyping } from "@/services/chatService.js";
 
 export function useJoinedChatsTyping({ enabled, refreshMs = 2500 }) {
   const [typingByUniversity, setTypingByUniversity] = useState({});

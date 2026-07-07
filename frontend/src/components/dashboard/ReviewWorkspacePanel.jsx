@@ -1,19 +1,18 @@
 import { useMemo, useState } from "react";
+import { useDashboard } from "@/hooks/useDashboard.js";
 import EmptyState from "../ui/EmptyState.jsx";
 import ReviewCard from "./ReviewCard.jsx";
 import ReviewPanelPlaceholder from "./ReviewPanelPlaceholder.jsx";
 import ReviewComposeForm from "../reviews/ReviewComposeForm.jsx";
 import ReviewSectionHeader from "../reviews/ReviewSectionHeader.jsx";
 import ReviewUniversityProfile from "./ReviewUniversityProfile.jsx";
-import {
-  ReviewFeedControls,
-  buildReviewFeedSummary,
-} from "../reviews/ReviewFeedControls.jsx";
+import ReviewFeedControls from "../reviews/ReviewFeedControls.jsx";
+import { buildReviewFeedSummary } from "@/utils/reviewFeedSummary.js";
 import { ReviewPanelSkeleton } from "../skeletons/DashboardSkeletons.jsx";
 import ReviewWorkspaceHero from "./ReviewWorkspaceHero.jsx";
-import { formatUniversityMetaHeader } from "../../utils/universityMetaFormat.js";
-import { scrollElementIntoView } from "../../utils/scrollIntoView.js";
-import { getReviewPanelContent, getReviewSortOptions } from "../../utils/reviewRoleContent.js";
+import { formatUniversityMetaHeader } from "@/utils/universityMetaFormat.js";
+import { scrollElementIntoView } from "@/utils/scrollIntoView.js";
+import { getReviewPanelContent, getReviewSortOptions } from "@/utils/reviewRoleContent.js";
 
 function sortReviews(list, sortId) {
   const items = [...list];
@@ -120,7 +119,6 @@ function OverviewSidebar({
 }
 
 export default function ReviewWorkspacePanel({
-  isStudent,
   isPhone,
   reviewUniversity,
   reviewUniversityDetail,
@@ -138,12 +136,10 @@ export default function ReviewWorkspacePanel({
   onReviewTextChange,
   isReviewSubmitting,
   onLike,
-  onDeleteReview,
-  onReportReview,
-  onOpenSection,
   onOpenChat,
   className = "",
 }) {
+  const { isStudent, changeSection, openReviewReport, requestDeleteReview } = useDashboard();
   const content = getReviewPanelContent(isStudent);
   const sortOptions = getReviewSortOptions(isStudent);
   const [sortId, setSortId] = useState(content.defaultSort);
@@ -270,6 +266,9 @@ export default function ReviewWorkspacePanel({
                 onRatingChange={onRatingChange}
                 aspectRatings={aspectRatings}
                 onAspectChange={onAspectChange}
+                studyDirections={reviewUniversityDetail?.study_directions ?? []}
+                studyDirectionId={studyDirectionId}
+                onStudyDirectionChange={onStudyDirectionChange}
                 reviewText={reviewText}
                 onReviewTextChange={onReviewTextChange}
                 isSubmitting={isReviewSubmitting}
@@ -338,12 +337,10 @@ export default function ReviewWorkspacePanel({
                         : undefined
                   }
                   secondaryAction={
-                    onOpenSection
-                      ? {
-                          label: "Taqqoslash",
-                          onClick: () => onOpenSection("compare"),
-                        }
-                      : undefined
+                    {
+                      label: "Taqqoslash",
+                      onClick: () => changeSection("compare"),
+                    }
                   }
                 />
               ) : (
@@ -369,8 +366,8 @@ export default function ReviewWorkspacePanel({
                           <ReviewCard
                             item={item}
                             onLike={onLike}
-                            onDelete={isStudent ? onDeleteReview : undefined}
-                            onReport={onReportReview}
+                            onDelete={isStudent ? requestDeleteReview : undefined}
+                            onReport={openReviewReport}
                             featured={featured}
                             featuredLabel={content.featuredLabel}
                             elevated={!featured}

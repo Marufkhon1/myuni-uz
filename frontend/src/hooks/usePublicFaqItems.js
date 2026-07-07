@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPublicFaqItems } from "../services/publicService.js";
+import { getPublicFaqItems } from "@/services/publicService.js";
 
 export function normalizeFaqItems(data) {
   if (Array.isArray(data)) {

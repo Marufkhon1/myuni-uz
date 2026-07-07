@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/myuni-logo.png";
-import { PublicBackHomeButton } from "../components/PublicPageButtons.jsx";
-import { mainContentProps } from "../utils/mainContent.js";
+import logo from "@/assets/myuni-logo.png";
+import { PublicBackHomeButton } from "@/components/PublicPageButtons.jsx";
+import { mainContentProps } from "@/utils/mainContent.js";
 
 export default function AuthLayout({ eyebrow, title, subtitle, children, showBackHome = true }) {
   return (

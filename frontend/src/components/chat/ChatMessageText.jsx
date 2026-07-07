@@ -1,4 +1,4 @@
-import { parseHashtagParts, normalizeHashtag } from "../../utils/chatHashtags.js";
+import { parseHashtagParts, normalizeHashtag } from "@/utils/chatHashtags.js";
 
 export default function ChatMessageText({ text, onTagClick, className = "" }) {
   const parts = parseHashtagParts(text);

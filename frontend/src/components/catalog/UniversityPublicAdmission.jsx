@@ -1,4 +1,4 @@
-import { formatAdmissionDate } from "../../utils/universityCatalog.js";
+import { formatAdmissionDate } from "@/utils/universityCatalog.js";
 
 export default function UniversityPublicAdmission({ cycles = [] }) {
   if (!cycles.length) {

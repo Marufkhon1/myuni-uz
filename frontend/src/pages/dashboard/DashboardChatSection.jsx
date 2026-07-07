@@ -1,22 +1,30 @@
 import { useEffect, useRef } from "react";
-import ChatTagFilterBar from "../../components/chat/ChatTagFilterBar.jsx";
-import ChatComposeEditBar from "../../components/chat/ChatComposeEditBar.jsx";
-import ChatGroupJoinBar from "../../components/chat/ChatGroupJoinBar.jsx";
-import ChatGroupSearchPanel from "../../components/chat/ChatGroupSearchPanel.jsx";
-import PinnedMessageBar from "../../components/chat/PinnedMessageBar.jsx";
-import TypingUsersLine from "../../components/chat/TypingUsersLine.jsx";
-import PrivateChatHeaderStatus from "../../components/chat/PrivateChatHeaderStatus.jsx";
-import ChatUniversityRow from "../../components/ChatUniversityRow.jsx";
-import EmptyState from "../../components/ui/EmptyState.jsx";
-import ChatMessageBubble from "../../components/dashboard/ChatMessageBubble.jsx";
-import DashboardIcon from "../../components/dashboard/DashboardIcon.jsx";
-import GroupInfoModal from "../../components/dashboard/GroupInfoModal.jsx";
-import ProfileModal from "../../components/dashboard/ProfileModal.jsx";
-import UserAvatarWithPresence from "../../components/dashboard/UserAvatarWithPresence.jsx";
-import { chatTabs } from "../../components/dashboard/dashboardConstants.js";
-import { joinedUniversityIdsHas, sameUniversityId } from "../../utils/universityIds.js";
+import { useDashboard } from "@/hooks/useDashboard.js";
+import { useDashboardChatSection } from "@/hooks/useDashboardChatSection.js";
+import PrivateThreadRow from "@/components/dashboard/PrivateThreadRow.jsx";
+import ChatTagFilterBar from "@/components/chat/ChatTagFilterBar.jsx";
+import ChatComposeEditBar from "@/components/chat/ChatComposeEditBar.jsx";
+import ChatComposerTextarea from "@/components/chat/ChatComposerTextarea.jsx";
+import ChatGroupJoinBar from "@/components/chat/ChatGroupJoinBar.jsx";
+import ChatGroupSearchPanel from "@/components/chat/ChatGroupSearchPanel.jsx";
+import PinnedMessageBar from "@/components/chat/PinnedMessageBar.jsx";
+import TypingUsersLine from "@/components/chat/TypingUsersLine.jsx";
+import PrivateChatHeaderStatus from "@/components/chat/PrivateChatHeaderStatus.jsx";
+import ChatUniversityRow from "@/components/ChatUniversityRow.jsx";
+import EmptyState from "@/components/ui/EmptyState.jsx";
+import ChatMessageBubble from "@/components/dashboard/ChatMessageBubble.jsx";
+import DashboardIcon from "@/components/dashboard/DashboardIcon.jsx";
+import GroupInfoModal from "@/components/dashboard/GroupInfoModal.jsx";
+import ProfileModal from "@/components/dashboard/ProfileModal.jsx";
+import UserAvatarWithPresence from "@/components/dashboard/UserAvatarWithPresence.jsx";
+import { chatTabs } from "@/components/dashboard/dashboardConstants.js";
+import { ChatMessagesAreaSkeleton } from "@/components/skeletons/DashboardSkeletons.jsx";
+import Skeleton from "@/components/ui/Skeleton.jsx";
+import { joinedUniversityIdsHas, sameUniversityId } from "@/utils/universityIds.js";
 
-export default function DashboardChatSection(p) {
+export default function DashboardChatSection() {
+  const p = useDashboardChatSection();
+  const { openMessageReport } = useDashboard();
   const privateInputRef = useRef(null);
   const groupInputRef = useRef(null);
   const isPrivateThreadMuted =
@@ -25,13 +33,23 @@ export default function DashboardChatSection(p) {
 
   useEffect(() => {
     if (p.editingChatMessage?.scope === "private") {
-      privateInputRef.current?.focus();
+      const element = privateInputRef.current;
+      element?.focus();
+      if (element) {
+        const length = element.value.length;
+        element.setSelectionRange(length, length);
+      }
     }
   }, [p.editingChatMessage]);
 
   useEffect(() => {
     if (p.editingChatMessage?.scope === "group") {
-      groupInputRef.current?.focus();
+      const element = groupInputRef.current;
+      element?.focus();
+      if (element) {
+        const length = element.value.length;
+        element.setSelectionRange(length, length);
+      }
     }
   }, [p.editingChatMessage]);
 
@@ -114,7 +132,15 @@ export default function DashboardChatSection(p) {
                           className="mt-2 border-none bg-transparent dark:bg-transparent"
                         />
                       ) : (
-                        p.privateThreadList.map((thread) => p.renderPrivateThreadRow(thread))
+                        p.privateThreadList.map((thread) => (
+                          <PrivateThreadRow
+                            key={thread.id}
+                            thread={thread}
+                            isSelected={p.selectedThreadId === thread.id}
+                            isTyping={p.isPrivateThreadTyping(thread.id)}
+                            onSelect={p.selectPrivateThread}
+                          />
+                        ))
                       )
                     ) : p.filteredUniversities.length === 0 ? (
                       <EmptyState
@@ -144,6 +170,7 @@ export default function DashboardChatSection(p) {
                           isSelected={sameUniversityId(p.selectedUniversityId, university.id)}
                           isJoined={joinedUniversityIdsHas(p.joinedUniversityIds, university.id)}
                           onSelect={p.selectUniversityChat}
+                          onPrefetch={p.prefetchGroupMessages}
                           typingUsers={p.getUniversityTypingUsers?.(university.id) ?? []}
                         />
                       ))
@@ -278,7 +305,9 @@ export default function DashboardChatSection(p) {
                       <div
                         className={`bg-[#e8ecf4] px-4 py-4 sm:px-6 sm:py-5 dark:bg-slate-950/60 ${p.chatMessagesAreaClass}`}
                       >
-                        {p.directMessages.length === 0 ? (
+                        {p.isPrivateMessagesLoading ? (
+                          <ChatMessagesAreaSkeleton />
+                        ) : p.directMessages.length === 0 ? (
                           <EmptyState
                             compact
                             variant="messages"
@@ -322,7 +351,7 @@ export default function DashboardChatSection(p) {
                                 onPin={p.handlePinPrivateMessage}
                                 onUnpin={p.handleUnpinPrivateMessage}
                                 isPinned={p.privatePinnedMessage?.id === item.id}
-                                onReport={(msg) => p.openMessageReport(msg, "private")}
+                                onReport={(msg) => openMessageReport(msg, "private")}
                                 onMute={(msg) => p.onMuteChatUser?.(msg, "private")}
                                 isAuthorMuted={p.isChatUserMuted?.(
                                   item.sender_id ?? item.author_id,
@@ -363,9 +392,9 @@ export default function DashboardChatSection(p) {
                             onCancel={p.cancelEditChatMessage}
                           />
                         )}
-                        <div className="flex flex-col gap-3 sm:flex-row">
-                          <input
-                            ref={privateInputRef}
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                          <ChatComposerTextarea
+                            inputRef={privateInputRef}
                             value={p.privateMessage}
                             onChange={(event) => {
                               p.setPrivateMessage(event.target.value);
@@ -377,10 +406,15 @@ export default function DashboardChatSection(p) {
                               if (event.key === "Escape" && p.editingChatMessage?.scope === "private") {
                                 event.preventDefault();
                                 p.cancelEditChatMessage();
+                                return;
+                              }
+                              if (event.key === "Enter" && !event.shiftKey) {
+                                event.preventDefault();
+                                event.currentTarget.form?.requestSubmit();
                               }
                             }}
                             placeholder="Shaxsiy xabar yozing..."
-                            className="min-h-12 flex-1 rounded-2xl border border-slate-200 bg-white px-4 font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:ring-blue-400/25"
+                            className="min-h-12 flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-900 transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:ring-blue-400/25"
                           />
                           <button
                             type="submit"
@@ -415,6 +449,7 @@ export default function DashboardChatSection(p) {
                     </div>
                   ) : (
                     <div
+                      key={String(p.selectedUniversityId ?? "group")}
                       className={`${p.chatPanelInnerClass} ${
                         p.isGroupChatSearchOpen && !p.isPhone ? "md:flex-row" : ""
                       }`}
@@ -423,7 +458,7 @@ export default function DashboardChatSection(p) {
                         <>
                       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
                       <div className="shrink-0 border-b border-slate-200 p-4 sm:px-5 dark:border-white/10">
-                        {p.isPhone && p.selectedUniversity && (
+                        {p.isPhone && p.displayedGroupUniversity && (
                           <button
                             type="button"
                             onClick={p.backToChatList}
@@ -436,39 +471,52 @@ export default function DashboardChatSection(p) {
                           <button
                             type="button"
                             onClick={p.openGroupInfoModal}
-                            className="flex min-w-0 flex-1 items-center gap-3 rounded-2xl text-left transition hover:bg-slate-50 dark:hover:bg-white/5"
+                            disabled={!p.displayedGroupUniversity}
+                            className="flex min-w-0 flex-1 items-center gap-3 rounded-2xl text-left transition hover:bg-slate-50 disabled:cursor-default disabled:hover:bg-transparent dark:hover:bg-white/5"
                           >
                             <div className="min-w-0 flex-1">
                               <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">
                                 Guruh chat
                               </p>
-                              <h2 className="mt-1 text-2xl font-black sm:text-3xl hover:text-primary">
-                                {p.selectedUniversity?.short_name || p.selectedUniversity?.name || "Universitet"}
-                              </h2>
-                              {p.activeChatMembers.member_count > 0 && (
-                                <p className="mt-0.5 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                                  {p.activeChatMembers.member_count} ta a&apos;zo
-                                  {p.selectedUniversity?.location
-                                    ? ` · ${p.selectedUniversity.location}`
-                                    : ""}
-                                </p>
+                              {p.isGroupChatHeaderLoading ? (
+                                <div className="mt-2 space-y-2" aria-busy="true" aria-label="Chat sarlavhasi yuklanmoqda">
+                                  <Skeleton className="h-8 w-40 rounded-lg" />
+                                  <Skeleton className="h-4 w-56 rounded-md" />
+                                </div>
+                              ) : (
+                                <>
+                                  <h2 className="mt-1 text-2xl font-black sm:text-3xl hover:text-primary">
+                                    {p.displayedGroupUniversity?.short_name ||
+                                      p.displayedGroupUniversity?.name ||
+                                      "Universitet"}
+                                  </h2>
+                                  {p.activeChatMembers.member_count > 0 && (
+                                    <p className="mt-0.5 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                                      {p.activeChatMembers.member_count} ta a&apos;zo
+                                      {p.displayedGroupUniversity?.location
+                                        ? ` · ${p.displayedGroupUniversity.location}`
+                                        : ""}
+                                    </p>
+                                  )}
+                                  {p.activeChatMembers.member_count === 0 &&
+                                    p.displayedGroupUniversity?.location && (
+                                      <p className="mt-0.5 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                                        {p.displayedGroupUniversity.location}
+                                      </p>
+                                    )}
+                                  {p.hasJoinedSelectedChat && p.groupTypingUsers?.length > 0 ? (
+                                    <TypingUsersLine
+                                      users={p.groupTypingUsers}
+                                      mode="group"
+                                      className="mt-1 text-sm"
+                                    />
+                                  ) : null}
+                                </>
                               )}
-                              {p.activeChatMembers.member_count === 0 && p.selectedUniversity?.location && (
-                                <p className="mt-0.5 text-sm font-semibold text-slate-500 dark:text-slate-400">
-                                  {p.selectedUniversity.location}
-                                </p>
-                              )}
-                              {p.hasJoinedSelectedChat && p.groupTypingUsers?.length > 0 ? (
-                                <TypingUsersLine
-                                  users={p.groupTypingUsers}
-                                  mode="group"
-                                  className="mt-1 text-sm"
-                                />
-                              ) : null}
                             </div>
                           </button>
 
-                          {p.selectedUniversity && (
+                          {p.displayedGroupUniversity && (
                             <button
                               type="button"
                               onClick={() =>
@@ -498,12 +546,14 @@ export default function DashboardChatSection(p) {
                         </div>
                       </div>
 
-                      <PinnedMessageBar
-                        message={p.groupPinnedMessage}
-                        formatTime={p.formatTime}
-                        onUnpin={p.hasJoinedSelectedChat ? p.handleUnpinGroupMessage : undefined}
-                      />
-                      {p.hasJoinedSelectedChat ? (
+                      {!p.isGroupMessagesLoading && p.groupPinnedMessage ? (
+                        <PinnedMessageBar
+                          message={p.groupPinnedMessage}
+                          formatTime={p.formatTime}
+                          onUnpin={p.hasJoinedSelectedChat ? p.handleUnpinGroupMessage : undefined}
+                        />
+                      ) : null}
+                      {p.hasJoinedSelectedChat && !p.isGroupMessagesLoading ? (
                         <ChatTagFilterBar
                           tags={p.groupChatTags ?? []}
                           activeTag={p.activeGroupTag ?? ""}
@@ -514,7 +564,9 @@ export default function DashboardChatSection(p) {
                       <div
                         className={`bg-[#e8ecf4] px-4 py-4 sm:px-6 sm:py-5 dark:bg-slate-950/60 ${p.chatMessagesAreaClass}`}
                       >
-                        {p.groupMessages.length === 0 ? (
+                        {p.isGroupMessagesLoading ? (
+                          <ChatMessagesAreaSkeleton />
+                        ) : p.groupMessages.length === 0 ? (
                           <EmptyState
                             compact
                             variant="messages"
@@ -560,7 +612,7 @@ export default function DashboardChatSection(p) {
                                   isPinned={p.groupPinnedMessage?.id === item.id}
                                   onReport={
                                     p.hasJoinedSelectedChat
-                                      ? (msg) => p.openMessageReport(msg, "group")
+                                      ? (msg) => openMessageReport(msg, "group")
                                       : undefined
                                   }
                                   onMute={
@@ -603,9 +655,9 @@ export default function DashboardChatSection(p) {
                               onCancel={p.cancelEditChatMessage}
                             />
                           )}
-                          <div className="flex flex-col gap-3 sm:flex-row">
-                            <input
-                              ref={groupInputRef}
+                          <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                            <ChatComposerTextarea
+                              inputRef={groupInputRef}
                               value={p.groupMessage}
                               onChange={(event) => {
                                 p.setGroupMessage(event.target.value);
@@ -617,10 +669,15 @@ export default function DashboardChatSection(p) {
                                 if (event.key === "Escape" && p.editingChatMessage?.scope === "group") {
                                   event.preventDefault();
                                   p.cancelEditChatMessage();
+                                  return;
+                                }
+                                if (event.key === "Enter" && !event.shiftKey) {
+                                  event.preventDefault();
+                                  event.currentTarget.form?.requestSubmit();
                                 }
                               }}
                               placeholder="Xabar yozing..."
-                              className="min-h-12 flex-1 rounded-2xl border border-slate-200 bg-white px-4 font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:ring-blue-400/25"
+                              className="min-h-12 flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold text-slate-900 transition placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-blue-100 dark:border-white/15 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-400 dark:focus:ring-blue-400/25"
                             />
                             <button
                               type="submit"

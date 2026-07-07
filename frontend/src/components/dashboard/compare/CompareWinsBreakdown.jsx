@@ -1,5 +1,5 @@
-import { buildCompareBreakdown } from "../../../utils/compareMath.js";
-import { COMPARE_BREAKDOWN_KEYS, COMPARE_METRICS } from "../../../utils/compareRoleContent.js";
+import { buildCompareBreakdown } from "@/utils/compareMath.js";
+import { COMPARE_BREAKDOWN_KEYS, COMPARE_METRICS } from "@/utils/compareRoleContent.js";
 
 const METRIC_ICONS = Object.fromEntries(
   COMPARE_METRICS.filter((metric) => metric.icon).map((metric) => [metric.key, metric.icon])

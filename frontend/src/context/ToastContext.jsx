@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import ToastContainer from "../components/ui/ToastContainer.jsx";
+import ToastContainer from "@/components/ui/ToastContainer.jsx";
 import { ToastContext } from "./toastContext.js";
 
 let toastIdCounter = 0;

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CHAT_REACTIONS } from "../../constants/chatReactions.js";
+import { CHAT_REACTIONS } from "@/constants/chatReactions.js";
 
 const HEART_EMOJI = "❤️";
 

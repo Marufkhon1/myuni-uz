@@ -14,8 +14,9 @@ export function getDashboardMenuItems(isStudent) {
       { id: "chats", label: "Chatlar", shortLabel: "Chat", helper: "Guruh va shaxsiy xabarlar" },
       { id: "popular", label: "Mashhur sharhlar", shortLabel: "Mashhur", helper: "Eng ko'p yoqqanlar" },
       { id: "reviews", label: "Sharh yozish", shortLabel: "Sharh", helper: "Reyting va tajriba" },
-      { id: "compare", label: "Taqqoslash", shortLabel: "Solishtirish", helper: "3 ta OTM jadvali" },
-      { id: "profile", label: "Profil", shortLabel: "Profil", helper: "Ism, universitet, rasm" },
+    { id: "compare", label: "Taqqoslash", shortLabel: "Solishtirish", helper: "3 ta OTM jadvali" },
+    { id: "favorites", label: "Sevimlilar", shortLabel: "Saqlangan", helper: "Saqlangan universitetlar" },
+    { id: "profile", label: "Profil", shortLabel: "Profil", helper: "Ism, universitet, rasm" },
     ];
   }
 
@@ -25,6 +26,7 @@ export function getDashboardMenuItems(isStudent) {
     { id: "popular", label: "Mashhur sharhlar", shortLabel: "Mashhur", helper: "Talabalar tajribasini o'qing" },
     { id: "reviews", label: "Sharhlarni ko'rish", shortLabel: "Sharhlar", helper: "Universitet baholari" },
     { id: "compare", label: "Taqqoslash", shortLabel: "Solishtirish", helper: "3 ta OTM jadvali" },
+    { id: "favorites", label: "Sevimlilar", shortLabel: "Saqlangan", helper: "Saqlangan universitetlar" },
     { id: "profile", label: "Profil", shortLabel: "Profil", helper: "Qiziqilgan universitet" },
   ];
 }

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { getUniversityImageUrl } from "../utils/universityImage.js";
+import { useEffect, useState } from "react";
+import { getUniversityImageUrl, getUniversityBrandGradient } from "@/utils/universityImage.js";
 
 const sizeClasses = {
   "2xs": "h-6 w-6 text-[9px]",
@@ -25,19 +25,25 @@ export default function UniversityAvatar({ university, size = "md" }) {
   const initials = (university?.short_name || university?.name || "U").slice(0, 2).toUpperCase();
   const primaryUrl = getUniversityImageUrl(university);
   const [imageUrl, setImageUrl] = useState(primaryUrl);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState(!primaryUrl);
 
-  if (imageUrl && !failed) {
+  useEffect(() => {
+    const nextUrl = getUniversityImageUrl(university);
+    setImageUrl(nextUrl);
+    setFailed(!nextUrl);
+  }, [university]);
+
+  if (!failed && imageUrl) {
     return (
       <img
         src={imageUrl}
         alt=""
         role="presentation"
-        className={`${sizeClass} shrink-0 rounded-full object-cover shadow-sm ${frameClass}`}
+        className={`${sizeClass} shrink-0 rounded-full object-cover object-center shadow-sm ${frameClass}`}
         loading="lazy"
         onError={() => {
           setFailed(true);
-          setImageUrl("");
+          setImageUrl(null);
         }}
       />
     );
@@ -45,7 +51,8 @@ export default function UniversityAvatar({ university, size = "md" }) {
 
   return (
     <div
-      className={`${sizeClass} grid shrink-0 place-items-center rounded-full bg-gradient-to-br from-primary to-violet-500 font-black text-white shadow-sm dark:border-white/15 ${frameClass}`}
+      className={`${sizeClass} grid shrink-0 place-items-center rounded-full font-black text-white shadow-sm dark:border-white/15 ${frameClass}`}
+      style={{ background: getUniversityBrandGradient(university) }}
     >
       {initials}
     </div>

@@ -1,6 +1,6 @@
-import UniversityAvatar from "../../UniversityAvatar.jsx";
-import { FractionalStars } from "../../ui/StarRatingDisplay.jsx";
-import { MAX_COMPARE, formatCompareRating } from "../../../utils/compareMath.js";
+import UniversityAvatar from "@/components/UniversityAvatar.jsx";
+import { FractionalStars } from "@/components/ui/StarRatingDisplay.jsx";
+import { MAX_COMPARE, formatCompareRating } from "@/utils/compareMath.js";
 import { COMPARE_SLOT_THEMES } from "./compareTheme.js";
 
 function SlotRating({ university, theme }) {

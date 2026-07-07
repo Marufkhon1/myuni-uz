@@ -99,6 +99,12 @@ export async function getPublicFaqDetail(slug) {
   return data;
 }
 
+export async function getPublicCompareByIds(ids) {
+  const normalized = Array.isArray(ids) ? ids.join(",") : String(ids);
+  const { data } = await api.get("/public/compare/", { params: { ids: normalized } });
+  return data;
+}
+
 export async function getPublicCompareShare(token) {
   const { data } = await api.get(`/public/compare/${token}/`);
   return data;

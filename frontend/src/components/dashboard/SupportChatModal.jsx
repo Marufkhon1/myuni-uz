@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import RateLimitNotice from "../RateLimitNotice.jsx";
-import useFocusTrap from "../../hooks/useFocusTrap.js";
-import { sendSupportMessage } from "../../services/supportService.js";
+import useFocusTrap from "@/hooks/useFocusTrap.js";
+import { sendSupportMessage } from "@/services/supportService.js";
 import { getSupportBotReply, getSupportQuickQuestions } from "./supportBot.js";
-import { getRateLimitInfo } from "../../utils/apiErrors.js";
+import { getRateLimitInfo } from "@/utils/apiErrors.js";
 
 export default function SupportChatModal({
   isOpen,

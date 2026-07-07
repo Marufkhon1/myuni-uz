@@ -1,8 +1,12 @@
 import axios from "axios";
 import { isGoogleOAuthCallbackPath } from "../utils/authPaths.js";
-
-const ACCESS_TOKEN_KEY = "myuni_access_token";
-const REFRESH_TOKEN_KEY = "myuni_refresh_token";
+import {
+  clearTokens,
+  getAccessToken,
+  getRefreshToken,
+  markCookieSession,
+  saveTokens,
+} from "../utils/authStorage.js";
 
 function resolveApiBaseUrl() {
   if (import.meta.env.VITE_API_BASE_URL) {
@@ -11,7 +15,9 @@ function resolveApiBaseUrl() {
   if (import.meta.env.DEV) {
     return "/api";
   }
-  return "http://127.0.0.1:8000/api";
+  throw new Error(
+    "VITE_API_BASE_URL is required for production builds. Set it in frontend/.env.production."
+  );
 }
 
 export const api = axios.create({
@@ -23,7 +29,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+  const token = getAccessToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -48,32 +54,31 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const refresh = localStorage.getItem(REFRESH_TOKEN_KEY);
-    const access = localStorage.getItem(ACCESS_TOKEN_KEY);
-
-    // Mehmon yoki token yo'q — refresh urinmasin (401 spam va ortiqcha so'rovlar oldini oladi).
-    if (!refresh && !access) {
-      return Promise.reject(error);
-    }
+    const refresh = getRefreshToken();
 
     originalRequest._retry = true;
 
     try {
+      const refreshBody = refresh ? { refresh } : {};
       const { data } = await axios.post(
         `${api.defaults.baseURL}/auth/token/refresh/`,
-        refresh ? { refresh } : {},
+        refreshBody,
         { withCredentials: true }
       );
 
       if (data.access) {
-        localStorage.setItem(ACCESS_TOKEN_KEY, data.access);
-        originalRequest.headers.Authorization = `Bearer ${data.access}`;
+        if (refresh) {
+          saveTokens({ access: data.access, refresh: data.refresh ?? refresh });
+          originalRequest.headers.Authorization = `Bearer ${data.access}`;
+        } else {
+          markCookieSession();
+          delete originalRequest.headers.Authorization;
+        }
       }
       return api(originalRequest);
     } catch (refreshError) {
       if (!isGoogleOAuthCallbackPath()) {
-        localStorage.removeItem(ACCESS_TOKEN_KEY);
-        localStorage.removeItem(REFRESH_TOKEN_KEY);
+        clearTokens();
       }
       return Promise.reject(refreshError);
     }

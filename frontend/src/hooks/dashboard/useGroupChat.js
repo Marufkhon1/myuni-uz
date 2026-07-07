@@ -8,10 +8,11 @@ import {
   reactToUniversityMessage,
   sendUniversityMessage,
   unpinUniversityMessage,
-} from "../../services/chatService.js";
-import { getApiErrorMessage } from "../../utils/apiErrors.js";
+} from "@/services/chatService.js";
+import { getApiErrorMessage } from "@/utils/apiErrors.js";
+import { mergeById } from "@/hooks/useMessageStream.js";
 
-export function useGroupChat({ reportChatError, clearChatError }) {
+export function useGroupChat({ reportChatError, clearChatError, onMessageCreated } = {}) {
   const [groupMessage, setGroupMessage] = useState("");
   const [groupMessages, setGroupMessages] = useState([]);
   const [groupPinnedMessage, setGroupPinnedMessage] = useState(null);
@@ -23,7 +24,7 @@ export function useGroupChat({ reportChatError, clearChatError }) {
     setter((current) => current.map((item) => (item.id === updated.id ? updated : item)));
   }, []);
 
-  const openEditChatMessage = useCallback(
+  const openEditGroupMessage = useCallback(
     (message) => {
       setEditingChatMessage({ message, scope: "group" });
       clearChatError();
@@ -32,7 +33,7 @@ export function useGroupChat({ reportChatError, clearChatError }) {
     [clearChatError]
   );
 
-  const cancelEditChatMessage = useCallback(() => {
+  const cancelEditGroupMessage = useCallback(() => {
     setEditingChatMessage((current) => {
       if (current?.scope === "group") {
         setGroupMessage("");
@@ -63,7 +64,8 @@ export function useGroupChat({ reportChatError, clearChatError }) {
           setGroupMessage("");
         } else {
           const created = await sendUniversityMessage(selectedUniversityId, trimmed);
-          setGroupMessages((current) => [...current, created]);
+          setGroupMessages((current) => mergeById(current, [created]));
+          onMessageCreated?.(created);
           setGroupMessage("");
         }
       } catch (error) {
@@ -85,26 +87,15 @@ export function useGroupChat({ reportChatError, clearChatError }) {
       clearChatError,
       reportChatError,
       updateMessageInList,
+      onMessageCreated,
     ]
   );
 
-  const handleDeleteGroupMessage = useCallback(
-    async (message) => {
-      if (!window.confirm("Xabarni o'chirishni tasdiqlaysizmi?")) {
-        return;
-      }
-      try {
-        await deleteUniversityMessage(message.id);
-        setGroupMessages((current) => current.filter((item) => item.id !== message.id));
-        if (groupPinnedMessage?.id === message.id) {
-          setGroupPinnedMessage(null);
-        }
-      } catch (error) {
-        reportChatError(getApiErrorMessage(error, "Xabarni o'chirib bo'lmadi."));
-      }
-    },
-    [groupPinnedMessage, reportChatError]
-  );
+  const deleteGroupMessageById = useCallback(async (messageId) => {
+    await deleteUniversityMessage(messageId);
+    setGroupMessages((current) => current.filter((item) => item.id !== messageId));
+    setGroupPinnedMessage((current) => (current?.id === messageId ? null : current));
+  }, []);
 
   const handleGroupReaction = useCallback(
     async (message, emoji, setReactingMessageId) => {
@@ -121,15 +112,31 @@ export function useGroupChat({ reportChatError, clearChatError }) {
     [reportChatError, updateMessageInList]
   );
 
-  const handlePinGroupMessage = useCallback(async (message) => {
-    const updated = await pinUniversityMessage(message.university_id ?? message.university, message.id);
-    setGroupPinnedMessage(updated);
-  }, []);
+  const handlePinGroupMessage = useCallback(
+    async (message, selectedUniversityId) => {
+      try {
+        const universityId = selectedUniversityId ?? message.university_id ?? message.university;
+        const updated = await pinUniversityMessage(universityId, message.id);
+        setGroupPinnedMessage(updated);
+      } catch (error) {
+        reportChatError(getApiErrorMessage(error, "Xabarni qadalib bo'lmadi."));
+      }
+    },
+    [reportChatError]
+  );
 
-  const handleUnpinGroupMessage = useCallback(async (message) => {
-    await unpinUniversityMessage(message.university_id ?? message.university, message.id);
-    setGroupPinnedMessage(null);
-  }, []);
+  const handleUnpinGroupMessage = useCallback(
+    async (message, selectedUniversityId) => {
+      try {
+        const universityId = selectedUniversityId ?? message.university_id ?? message.university;
+        await unpinUniversityMessage(universityId, message.id);
+        setGroupPinnedMessage(null);
+      } catch (error) {
+        reportChatError(getApiErrorMessage(error, "Qadalgan xabarni olib bo'lmadi."));
+      }
+    },
+    [reportChatError]
+  );
 
   return {
     groupMessage,
@@ -143,10 +150,10 @@ export function useGroupChat({ reportChatError, clearChatError }) {
     setIsGroupJoining,
     editingChatMessage,
     setEditingChatMessage,
-    openEditGroupMessage: openEditChatMessage,
-    cancelEditChatMessage,
+    openEditGroupMessage,
+    cancelEditGroupMessage,
     sendGroupChatMessage,
-    handleDeleteGroupMessage,
+    deleteGroupMessageById,
     handleGroupReaction,
     handlePinGroupMessage,
     handleUnpinGroupMessage,

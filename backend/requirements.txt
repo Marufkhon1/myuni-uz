@@ -11,5 +11,8 @@ pytest-cov
 pip-audit
 pywebpush
 django-redis
+channels>=4.1,<5
+channels-redis>=4.2,<5
+daphne>=4.1,<5
 drf-spectacular
 sentry-sdk

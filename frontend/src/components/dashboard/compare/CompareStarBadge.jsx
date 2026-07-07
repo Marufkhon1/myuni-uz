@@ -1,4 +1,4 @@
-import StarRatingDisplay from "../../ui/StarRatingDisplay.jsx";
+import StarRatingDisplay from "@/components/ui/StarRatingDisplay.jsx";
 
 export default function CompareStarBadge({ rating, size = "md" }) {
   const pillClass = size === "sm" ? "px-2 py-0.5" : "px-2.5 py-1";

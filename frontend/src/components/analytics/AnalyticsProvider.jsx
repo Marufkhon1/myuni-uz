@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { initAnalytics, normalizeAnalyticsPath, trackPageView } from "../../lib/analytics.js";
+import { initAnalytics, normalizeAnalyticsPath, trackPageView } from "@/lib/analytics.js";
 
 export default function AnalyticsProvider({ children }) {
   const location = useLocation();

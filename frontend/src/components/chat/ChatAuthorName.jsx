@@ -1,4 +1,4 @@
-import { getAuthorColorHex } from "../../utils/chatAuthorColor.js";
+import { getAuthorColorHex } from "@/utils/chatAuthorColor.js";
 
 export default function ChatAuthorName({
   name,

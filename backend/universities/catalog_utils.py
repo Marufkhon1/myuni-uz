@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from django.db.models import Avg, Count, F, Q
+from django.db.models import Avg, Case, Count, F, FloatField, Q, Value, When
 
 from .compare_utils import rating_distribution
 from .models import (
@@ -10,6 +10,8 @@ from .models import (
     StudyDirection,
     University,
 )
+from .rating_utils import annotate_bayesian_rating, bayesian_rating, rating_confidence_label
+from .search_utils import apply_university_search
 from .serializers import UniversitySerializer
 
 CITY_COORDINATES = {
@@ -39,7 +41,7 @@ MAX_COMPARE = 3
 
 SORT_ORDERS = {
     "name": ("name",),
-    "rating": (F("average_rating").desc(nulls_last=True), "name"),
+    "rating": (F("bayesian_rating").desc(nulls_last=True), F("review_count").desc(nulls_last=True), "name"),
     "reviews": (F("review_count").desc(nulls_last=True), "name"),
     "reviews_asc": ("review_count", "short_name"),
 }
@@ -81,16 +83,18 @@ def build_gallery_urls(university):
 
 
 def annotated_universities_queryset():
-    return University.objects.annotate(
-        review_count=Count(
-            "reviews",
-            filter=Q(reviews__status=Review.Status.APPROVED),
-            distinct=True,
-        ),
-        average_rating=Avg(
-            "reviews__rating",
-            filter=Q(reviews__status=Review.Status.APPROVED),
-        ),
+    return annotate_bayesian_rating(
+        University.objects.annotate(
+            review_count=Count(
+                "reviews",
+                filter=Q(reviews__status=Review.Status.APPROVED),
+                distinct=True,
+            ),
+            average_rating=Avg(
+                "reviews__rating",
+                filter=Q(reviews__status=Review.Status.APPROVED),
+            ),
+        )
     )
 
 
@@ -113,13 +117,9 @@ def parse_compare_ids(ids_param):
 
 def apply_catalog_filters(queryset, params):
     search = (params.get("q") or params.get("search") or "").strip()
+    search_applied = False
     if search:
-        queryset = queryset.filter(
-            Q(name__icontains=search)
-            | Q(short_name__icontains=search)
-            | Q(location__icontains=search)
-            | Q(city__icontains=search)
-        )
+        queryset, search_applied = apply_university_search(queryset, search)
 
     city = (params.get("city") or "").strip()
     if city:
@@ -132,7 +132,7 @@ def apply_catalog_filters(queryset, params):
     min_rating = params.get("min_rating")
     if min_rating not in (None, ""):
         try:
-            queryset = queryset.filter(average_rating__gte=float(min_rating))
+            queryset = queryset.filter(bayesian_rating__gte=float(min_rating))
         except (TypeError, ValueError):
             pass
 
@@ -145,6 +145,8 @@ def apply_catalog_filters(queryset, params):
 
     sort = (params.get("sort") or "name").strip()
     order = SORT_ORDERS.get(sort, SORT_ORDERS["name"])
+    if search_applied and sort == "name":
+        return queryset.order_by("search_rank", *order)
     return queryset.order_by(*order)
 
 
@@ -204,6 +206,11 @@ def serialize_admission_cycle(cycle):
 
 def serialize_university_card(university):
     average = getattr(university, "average_rating", None)
+    review_count = getattr(university, "review_count", 0) or 0
+    bayesian = getattr(university, "bayesian_rating", None)
+    if bayesian is None and average is not None:
+        bayesian = bayesian_rating(average, review_count)
+    display_rating = round(bayesian, 1) if bayesian is not None else None
     return {
         **UniversitySerializer(university).data,
         "city": university.city,
@@ -214,7 +221,10 @@ def serialize_university_card(university):
         "latitude": float(university.latitude) if university.latitude is not None else None,
         "longitude": float(university.longitude) if university.longitude is not None else None,
         "average_rating": round(average, 1) if average is not None else None,
-        "review_count": getattr(university, "review_count", 0) or 0,
+        "bayesian_rating": display_rating,
+        "display_rating": display_rating,
+        "review_count": review_count,
+        "rating_confidence": rating_confidence_label(review_count),
     }
 
 
@@ -227,6 +237,9 @@ def serialize_university_detail(university, *, include_faculties=False, include_
         review_count=Count("id"),
     )
     average = stats["average_rating"]
+    review_count = stats["review_count"] or 0
+    bayesian = bayesian_rating(average, review_count)
+    display_rating = round(bayesian, 1) if bayesian is not None else None
     payload = {
         **UniversitySerializer(university).data,
         "city": university.city,
@@ -244,7 +257,10 @@ def serialize_university_detail(university, *, include_faculties=False, include_
         "latitude": float(university.latitude) if university.latitude is not None else None,
         "longitude": float(university.longitude) if university.longitude is not None else None,
         "average_rating": round(average, 1) if average is not None else None,
-        "review_count": stats["review_count"] or 0,
+        "bayesian_rating": display_rating,
+        "display_rating": display_rating,
+        "review_count": review_count,
+        "rating_confidence": rating_confidence_label(review_count),
         "rating_distribution": rating_distribution(university.id),
     }
 
@@ -270,24 +286,65 @@ def serialize_university_detail(university, *, include_faculties=False, include_
     return payload
 
 
-def catalog_filter_options():
-    cities = (
-        University.objects.exclude(city="")
-        .values_list("city", flat=True)
-        .distinct()
+def catalog_filter_options(base_queryset=None):
+    """Facet options with live counts for catalog UI."""
+    qs = base_queryset if base_queryset is not None else annotated_universities_queryset()
+
+    city_rows = (
+        qs.exclude(city="")
+        .values("city")
+        .annotate(count=Count("id", distinct=True))
         .order_by("city")
     )
+    cities = [{"value": row["city"], "label": row["city"], "count": row["count"]} for row in city_rows]
+
+    ownership_rows = (
+        qs.values("ownership_type")
+        .annotate(count=Count("id", distinct=True))
+        .order_by("ownership_type")
+    )
+    ownership_types = []
+    for row in ownership_rows:
+        if not row["ownership_type"]:
+            continue
+        choice = University.OwnershipType(row["ownership_type"])
+        ownership_types.append(
+            {"value": choice.value, "label": choice.label, "count": row["count"]}
+        )
+
+    total_count = qs.count()
+
     return {
-        "cities": list(cities),
-        "ownership_types": [
-            {"value": choice.value, "label": choice.label}
-            for choice in University.OwnershipType
-        ],
+        "total_count": total_count,
+        "cities": cities,
+        "ownership_types": ownership_types,
         "sort_options": [
             {"value": "name", "label": "Nom bo'yicha"},
-            {"value": "rating", "label": "Reyting (yuqoridan)"},
+            {"value": "rating", "label": "Reyting (ishonchli)"},
             {"value": "reviews", "label": "Sharh soni (ko'p)"},
             {"value": "reviews_asc", "label": "Sharh soni (kam)"},
+        ],
+        "min_rating_options": [
+            {"value": "", "label": "Har qanday", "count": total_count},
+            *[
+                {
+                    "value": str(rating),
+                    "label": f"{rating}+ / 5",
+                    "count": qs.filter(bayesian_rating__gte=rating).count(),
+                }
+                for rating in (5, 4, 3, 2, 1)
+            ],
+        ],
+        "min_reviews_options": [
+            {"value": "", "label": "Har qanday", "count": total_count},
+            *[
+                {
+                    "value": str(count),
+                    "label": f"{count}+ sharh",
+                    "count": qs.filter(review_count__gte=count).count(),
+                }
+                for count in (1, 3, 5, 10, 20)
+            ],
         ],
     }
 

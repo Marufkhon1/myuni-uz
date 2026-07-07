@@ -1,6 +1,6 @@
 import AnimatedTypingDots from "./AnimatedTypingDots.jsx";
-import { useChatListPreviewRotation } from "../../hooks/useChatListPreviewRotation.js";
-import { getAuthorColorClass } from "../../utils/chatAuthorColor.js";
+import { useChatListPreviewRotation } from "@/hooks/useChatListPreviewRotation.js";
+import { getAuthorColorClass } from "@/utils/chatAuthorColor.js";
 
 export default function ChatListPreviewLine({ typingUsers, messagePreview, className = "" }) {
   const { phase, currentTyper, hasTypers } = useChatListPreviewRotation({ typingUsers });

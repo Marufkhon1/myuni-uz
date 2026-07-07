@@ -2,8 +2,8 @@ import {
   SUPPORT_EMAIL,
   SUPPORT_PHONE,
   SUPPORT_PHONE_DISPLAY,
-} from "../../config/siteContact.js";
-import { useSupportChat } from "../../hooks/useSupportChat.js";
+} from "@/config/siteContact.js";
+import { useSupportChat } from "@/hooks/useSupportChat.js";
 import SupportChatModal from "./SupportChatModal.jsx";
 
 function SupportIcon({ children, className = "" }) {

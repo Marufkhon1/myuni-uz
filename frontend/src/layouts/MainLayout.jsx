@@ -1,7 +1,7 @@
-import Navbar from "../components/Navbar.jsx";
-import Footer from "../components/Footer.jsx";
-import { useDarkMode } from "../hooks/useDarkMode.js";
-import { mainContentProps } from "../utils/mainContent.js";
+import Navbar from "@/components/Navbar.jsx";
+import Footer from "@/components/Footer.jsx";
+import { useDarkMode } from "@/hooks/useDarkMode.js";
+import { mainContentProps } from "@/utils/mainContent.js";
 
 export default function MainLayout({ children }) {
   const { isDark, setIsDark } = useDarkMode();

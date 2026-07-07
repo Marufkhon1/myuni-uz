@@ -8,7 +8,7 @@ import {
   SITE_NAME,
   TWITTER_HANDLE,
   buildPageMeta,
-} from "../config/siteMeta.js";
+} from "@/config/siteMeta.js";
 
 function upsertMetaByName(name, content) {
   let element = document.querySelector(`meta[name="${name}"]`);

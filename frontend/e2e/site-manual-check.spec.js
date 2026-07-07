@@ -52,10 +52,12 @@ async function fillReviewForm(page, reviewText) {
 
   await rateFiveStars(composeForm.getByRole("radiogroup", { name: /qanday baho ber/i }));
 
-  const aspectRows = composeForm.locator(".divide-y > div");
-  await rateFiveStars(aspectRows.nth(0).getByRole("radiogroup"));
-  await rateFiveStars(aspectRows.nth(1).getByRole("radiogroup"));
-  await rateFiveStars(aspectRows.nth(2).getByRole("radiogroup"));
+  const aspectsBlock = composeForm.locator("section").filter({ hasText: /mezonlar bo'yicha/i });
+  const aspectGroups = aspectsBlock.getByRole("radiogroup");
+  await expect(aspectGroups).toHaveCount(3, { timeout: 10000 });
+  for (let index = 0; index < 3; index += 1) {
+    await rateFiveStars(aspectGroups.nth(index));
+  }
 
   const submitButton = composeForm.getByRole("button", { name: /sharhni yuborish/i });
   await expect(submitButton).toBeEnabled({ timeout: 10000 });
@@ -115,8 +117,9 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
       .first();
     await expect(postedReview).toBeVisible({ timeout: 20000 });
 
-    page.once("dialog", (dialog) => dialog.accept());
     await postedReview.getByRole("button", { name: "O'chirish" }).click();
+    await expect(page.getByRole("heading", { name: /sharhni o'chirish/i })).toBeVisible();
+    await page.getByRole("button", { name: "Ha", exact: true }).click();
     await expect(
       page.getByRole("article").filter({ hasText: reviewText })
     ).toHaveCount(0, { timeout: 15000 });
@@ -130,7 +133,7 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
   test("M3 — login va dashboard (talaba)", async ({ page }) => {
     await loginStudent(page);
     await waitForDashboardReady(page);
-    await page.getByRole("navigation").getByRole("button", { name: /^profil/i }).click();
+    await page.getByRole("link", { name: /^profil$/i }).click();
     await expect(page.getByText("Raqamli ID")).toBeVisible();
     await expect(page.getByText("Talaba").first()).toBeVisible();
   });
@@ -149,16 +152,18 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
 
   test("M9 — taqqoslash bo'limi", async ({ page }) => {
     await loginStudent(page);
-    await page.getByRole("button", { name: /taqqoslash/i }).first().click();
+    await waitForDashboardReady(page);
+    await page.getByRole("link", { name: /^taqqoslash$/i }).click();
     await expect(page.getByRole("heading", { name: /OTMlarni solishtiring/i })).toBeVisible();
-    await expect(page.getByText(/Ikkita turli universitet/i)).toBeVisible();
+    await expect(page.getByText(/Aynan 3 ta universitetni yonma-yon jadvalda/i)).toBeVisible();
   });
 
   test("M4 — qorong'u rejim", async ({ page }) => {
     await loginStudent(page);
+    await waitForDashboardReady(page);
     const html = page.locator("html");
     const before = await html.evaluate((el) => el.classList.contains("dark"));
-    const toggle = page.getByRole("button", { name: /rang rejimini almashtirish/i });
+    const toggle = page.locator('button[aria-label*="rejimga"]');
     await expect(toggle).toBeVisible();
     await toggle.click();
     const after = await html.evaluate((el) => el.classList.contains("dark"));
@@ -185,12 +190,8 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    await page.reload();
+    await page.goto(`${WEB}/student/dashboard/chats?university_id=${uni.id}`);
     await waitForDashboardReady(page);
-    await page.getByRole("navigation").getByRole("button", { name: /^chatlar/i }).click();
-    await page.getByRole("button", { name: "Qo'shilgan", exact: true }).click();
-    const uniPick = (uni.short_name || uni.name).slice(0, 12).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    await page.getByRole("button", { name: new RegExp(`^${uniPick}`, "i") }).first().click();
 
     const uniqueText = `E2E xabar ${suffix}`;
     const input = page.getByPlaceholder(/xabar yozing/i).first();
@@ -209,13 +210,8 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    await page.reload();
+    await page.goto(`${WEB}/student/dashboard/chats?university_id=${uniId}`);
     await waitForDashboardReady(page);
-    await page.getByRole("navigation").getByRole("button", { name: /^chatlar/i }).click();
-    await page.getByRole("button", { name: "Qo'shilgan", exact: true }).click();
-    const uni = seedUniversities[0];
-    const uniPick = (uni.short_name || uni.name).slice(0, 12).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    await page.getByRole("button", { name: new RegExp(`^${uniPick}`, "i") }).first().click();
 
     await page.route(
       (url) => /\/api\/universities\/\d+\/messages\/?$/.test(url.pathname),

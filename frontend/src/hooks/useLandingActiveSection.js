@@ -3,9 +3,9 @@ import { useLocation } from "react-router-dom";
 import {
   normalizeNavHash,
   resolveActiveSectionFromScroll,
-} from "../utils/landingNav.js";
+} from "@/utils/landingNav.js";
 
-export { normalizeNavHash } from "../utils/landingNav.js";
+export { normalizeNavHash } from "@/utils/landingNav.js";
 
 /**
  * Bosh sahifada URL hash va scroll bo'yicha aktiv menyu bo'limi.

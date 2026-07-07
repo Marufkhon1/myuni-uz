@@ -1,7 +1,7 @@
 import UniversityAvatar from "../UniversityAvatar.jsx";
 import EmptyState from "../ui/EmptyState.jsx";
-import { formatUniversityPreview } from "../../utils/universityMetaFormat.js";
-import { getReviewListContent } from "../../utils/reviewRoleContent.js";
+import { formatUniversityPreview } from "@/utils/universityMetaFormat.js";
+import { getReviewListContent } from "@/utils/reviewRoleContent.js";
 
 function SearchIcon() {
   return (

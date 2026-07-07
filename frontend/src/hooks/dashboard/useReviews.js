@@ -5,15 +5,21 @@ import {
   getUniversityDetail,
   getReviews,
   toggleReviewLike,
-} from "../../services/universityService.js";
+} from "@/services/universityService.js";
 import {
   aspectRatingsComplete,
   buildDefaultAspectRatings,
   flattenReviewPayload,
-} from "../../utils/reviewAspects.js";
-import { getApiErrorMessage } from "../../utils/apiErrors.js";
+} from "@/utils/reviewAspects.js";
+import { getApiErrorMessage } from "@/utils/apiErrors.js";
 
-export function useReviews({ isStudent, activeSection, universities }) {
+export function useReviews({
+  isStudent,
+  activeSection,
+  universities,
+  onReviewLikeUpdate,
+  onReviewSubmitted,
+}) {
   const [reviewUniversity, setReviewUniversity] = useState("");
   const [reviewUniversityDetail, setReviewUniversityDetail] = useState(null);
   const [reviewUniversitySearch, setReviewUniversitySearch] = useState("");
@@ -74,12 +80,30 @@ export function useReviews({ isStudent, activeSection, universities }) {
     };
   }, [reviewUniversity, activeSection]);
 
-  const selectReviewUniversity = useCallback((universityId) => {
-    setReviewUniversity(String(universityId));
-    setMobileReviewScreen("detail");
-    setReviewSubmitError("");
+  const resetReviewComposeForm = useCallback(() => {
+    setRating(0);
+    setAspectRatings(buildDefaultAspectRatings());
     setStudyDirectionId("");
+    setReviewText("");
+    setReviewUniversityDetail(null);
+    setReviews([]);
   }, []);
+
+  const selectReviewUniversity = useCallback(
+    (universityId) => {
+      const nextId = String(universityId);
+      if (reviewUniversity === nextId) {
+        setMobileReviewScreen("detail");
+        setReviewSubmitError("");
+        return;
+      }
+      resetReviewComposeForm();
+      setReviewUniversity(nextId);
+      setMobileReviewScreen("detail");
+      setReviewSubmitError("");
+    },
+    [reviewUniversity, resetReviewComposeForm]
+  );
 
   const backToReviewList = useCallback(() => {
     setMobileReviewScreen("list");
@@ -101,8 +125,9 @@ export function useReviews({ isStudent, activeSection, universities }) {
           }
         : item;
     setReviews((current) => current.map(updateItem));
+    onReviewLikeUpdate?.(updateItem);
     return updateItem;
-  }, []);
+  }, [onReviewLikeUpdate]);
 
   const handleDeleteReview = useCallback(
     async (reviewId) => {
@@ -114,9 +139,12 @@ export function useReviews({ isStudent, activeSection, universities }) {
           setReviewUniversityDetail(detail);
         }
       } catch (requestError) {
-        setReviewSubmitError(
-          getApiErrorMessage(requestError, "Sharhni o'chirib bo'lmadi. Qayta urinib ko'ring.")
+        const message = getApiErrorMessage(
+          requestError,
+          "Sharhni o'chirib bo'lmadi. Qayta urinib ko'ring."
         );
+        setReviewSubmitError(message);
+        throw requestError;
       }
     },
     [reviewUniversity]
@@ -155,6 +183,8 @@ export function useReviews({ isStudent, activeSection, universities }) {
         setReviewText("");
         const detail = await getUniversityDetail(reviewUniversity);
         setReviewUniversityDetail(detail);
+        onReviewSubmitted?.(nextReview);
+        return nextReview;
       } catch (requestError) {
         setReviewSubmitError(
           getApiErrorMessage(requestError, "Sharh yuborilmadi. Qayta urinib ko'ring.")
@@ -170,6 +200,7 @@ export function useReviews({ isStudent, activeSection, universities }) {
       aspectRatings,
       reviewText,
       studyDirectionId,
+      onReviewSubmitted,
     ]
   );
 

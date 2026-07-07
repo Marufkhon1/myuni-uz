@@ -1,4 +1,4 @@
-import { getPresenceStyle } from "../../utils/userPresence.js";
+import { getPresenceStyle } from "@/utils/userPresence.js";
 
 export default function PresenceBadge({ isOnline, lastSeenAt, size = "sm" }) {
   const style = getPresenceStyle({ isOnline, lastSeenAt });

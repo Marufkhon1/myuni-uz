@@ -4,7 +4,7 @@ import {
   CHAT_COLOR_OPTIONS,
   getAuthorColorHex,
   getColorOption,
-} from "../../utils/chatAuthorColor.js";
+} from "@/utils/chatAuthorColor.js";
 
 function ChatColorPreview({
   displayName,

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDebouncedValue } from "./useDebouncedValue.js";
 import {
@@ -6,14 +6,12 @@ import {
   catalogFiltersEqual,
   catalogFiltersKey,
   parseCatalogSearchParams,
-} from "../utils/universityCatalog.js";
+} from "@/utils/universityCatalog.js";
 
 export function useCatalogFilters(debounceMs = 350) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState(() => parseCatalogSearchParams(searchParams));
   const debouncedFilters = useDebouncedValue(filters, debounceMs);
-  const searchParamsRef = useRef(searchParams);
-  searchParamsRef.current = searchParams;
 
   useEffect(() => {
     const urlFilters = parseCatalogSearchParams(searchParams);
@@ -22,12 +20,12 @@ export function useCatalogFilters(debounceMs = 350) {
 
   useEffect(() => {
     const nextParams = buildCatalogSearchParams(debouncedFilters);
-    const currentKey = catalogFiltersKey(parseCatalogSearchParams(searchParamsRef.current));
+    const currentKey = catalogFiltersKey(parseCatalogSearchParams(searchParams));
     if (nextParams.toString() === currentKey) {
       return;
     }
     setSearchParams(nextParams, { replace: true });
-  }, [debouncedFilters, setSearchParams]);
+  }, [debouncedFilters, setSearchParams, searchParams]);
 
   return {
     filters,

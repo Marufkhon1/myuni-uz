@@ -2,7 +2,7 @@ import UniversityAvatar from "../UniversityAvatar.jsx";
 import UserAvatar from "../dashboard/UserAvatar.jsx";
 import ChatAuthorName from "./ChatAuthorName.jsx";
 import SearchMatchSnippet from "./SearchMatchSnippet.jsx";
-import { formatMessageSearchDate, formatMessageSearchTime } from "../../utils/formatMessageDate.js";
+import { formatMessageSearchDate, formatMessageSearchTime } from "@/utils/formatMessageDate.js";
 
 export default function ChatGroupSearchPanel({
   query,

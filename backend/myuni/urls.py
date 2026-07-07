@@ -5,6 +5,7 @@ from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from universities.public_views import (
+    PublicCompareByIdsView,
     PublicCompareShareView,
     PublicArticleDetailView,
     PublicArticleListView,
@@ -102,6 +103,11 @@ urlpatterns = [
         "api/public/sitemap.xml",
         PublicSitemapView.as_view(),
         name="public-sitemap",
+    ),
+    path(
+        "api/public/compare/",
+        PublicCompareByIdsView.as_view(),
+        name="public-compare-by-ids",
     ),
     path(
         "api/public/compare/<str:token>/",

@@ -2,12 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import UniversityAvatar from "../UniversityAvatar.jsx";
 import UniversitySearchSelect from "./UniversitySearchSelect.jsx";
 import ModalOverlay from "../ui/ModalOverlay.jsx";
-import { useToast } from "../../hooks/useToast.js";
-import { updateProfileSettings } from "../../services/authService.js";
-import { getApiErrorMessage } from "../../utils/apiErrors.js";
-import { getInitialOnboardingStep, markOnboardingComplete } from "../../utils/onboardingStorage.js";
-import { buildFullName, splitFullName } from "../../utils/profileName.js";
-import { matchUniversityByText } from "../../utils/universityMatch.js";
+import { useToast } from "@/hooks/useToast.js";
+import { updateProfileSettings } from "@/services/authService.js";
+import { getApiErrorMessage } from "@/utils/apiErrors.js";
+import { getInitialOnboardingStep, markOnboardingComplete } from "@/utils/onboardingStorage.js";
+import { buildFullName, splitFullName } from "@/utils/profileName.js";
+import { matchUniversityByText } from "@/utils/universityMatch.js";
 
 const steps = [
   {

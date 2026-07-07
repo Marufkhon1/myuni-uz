@@ -77,7 +77,14 @@ def should_hide_avatar_due_to_block(profile_user_id, viewer_id):
 
 
 def filter_university_messages_for_viewer(queryset, viewer, university_id):
-    return queryset
+    if not viewer or not getattr(viewer, "is_authenticated", False):
+        return queryset
+
+    blocked_ids = blocked_user_ids_for(viewer.id)
+    if not blocked_ids:
+        return queryset
+
+    return queryset.exclude(user_id__in=blocked_ids)
 
 
 def filter_direct_messages_for_viewer(queryset, viewer):

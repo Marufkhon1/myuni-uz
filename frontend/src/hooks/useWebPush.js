@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { ensurePushSubscription } from "../services/pushService.js";
+import { ensurePushSubscription } from "@/services/pushService.js";
 
 export function useWebPush({ enabled = false } = {}) {
   const attemptedRef = useRef(false);

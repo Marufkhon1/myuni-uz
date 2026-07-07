@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { trackPwaInstall } from "../../lib/analytics.js";
-import useFocusTrap from "../../hooks/useFocusTrap.js";
+import { trackPwaInstall } from "@/lib/analytics.js";
+import useFocusTrap from "@/hooks/useFocusTrap.js";
 
 const DISMISS_KEY = "myuni-pwa-install-dismissed";
 

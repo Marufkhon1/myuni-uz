@@ -26,6 +26,7 @@ export default function ChatUniversityRow({
   isSelected,
   isJoined,
   onSelect,
+  onPrefetch,
   showUnread = true,
   typingUsers = [],
   variant = "list",
@@ -49,6 +50,8 @@ export default function ChatUniversityRow({
     <button
       type="button"
       onClick={() => onSelect(university.id)}
+      onMouseEnter={() => onPrefetch?.(university.id)}
+      onFocus={() => onPrefetch?.(university.id)}
       className={`flex w-full items-center gap-3.5 text-left transition-all ${
         isCard ? `rounded-2xl border px-3.5 py-3.5 ${surfaceClass}` : `rounded-2xl px-2 py-3 ${surfaceClass}`
       }`}

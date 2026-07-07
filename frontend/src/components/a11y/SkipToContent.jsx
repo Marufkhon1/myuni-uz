@@ -1,5 +1,5 @@
-import { MAIN_CONTENT_ID } from "../../utils/mainContent.js";
-import { prefersReducedMotion } from "../../utils/prefersReducedMotion.js";
+import { MAIN_CONTENT_ID } from "@/utils/mainContent.js";
+import { prefersReducedMotion } from "@/utils/prefersReducedMotion.js";
 
 export default function SkipToContent() {
   function handleSkip(event) {

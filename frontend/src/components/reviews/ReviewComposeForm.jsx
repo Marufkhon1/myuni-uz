@@ -1,5 +1,5 @@
-import { aspectRatingsComplete } from "../../utils/reviewAspects.js";
-import ReviewAspectForm, { AspectRatingRows } from "./ReviewAspectForm.jsx";
+import { aspectRatingsComplete } from "@/utils/reviewAspects.js";
+import { AspectRatingRows } from "./ReviewAspectForm.jsx";
 import StarRatingRow from "./StarRatingRow.jsx";
 
 const COMPOSE_STEPS = [
@@ -187,6 +187,9 @@ export default function ReviewComposeForm({
   onRatingChange,
   aspectRatings,
   onAspectChange,
+  studyDirections = [],
+  studyDirectionId = "",
+  onStudyDirectionChange,
   reviewText,
   onReviewTextChange,
   isSubmitting,
@@ -280,6 +283,35 @@ export default function ReviewComposeForm({
         <FormSection title="Mezonlar bo'yicha" hint={aspectHint} done={hasAspects} tone="violet">
           <AspectRatingRows aspectRatings={aspectRatings} onAspectChange={onAspectChange} />
         </FormSection>
+
+        {studyDirections.length > 0 && (
+          <FormSection
+            title="Ta'lim yo'nalishi"
+            hint="Ixtiyoriy — qaysi yo'nalish bo'yicha o'qigansiz yoki qiziqasiz"
+            done={Boolean(studyDirectionId)}
+            tone="default"
+          >
+            <label className="block" htmlFor="review-study-direction">
+              <span className="mb-2 block text-sm font-bold text-slate-700 dark:text-slate-200">
+                Yo&apos;nalish
+              </span>
+              <select
+                id="review-study-direction"
+                name="study_direction_id"
+                value={studyDirectionId}
+                onChange={(event) => onStudyDirectionChange?.(event.target.value)}
+                className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-900 outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-blue-100/80 dark:border-white/12 dark:bg-slate-900/80 dark:text-white dark:focus:ring-blue-400/15"
+              >
+                <option value="">Tanlanmagan</option>
+                {studyDirections.map((direction) => (
+                  <option key={direction.id} value={String(direction.id)}>
+                    {direction.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </FormSection>
+        )}
 
         <FormSection
           title="Sharh matni"

@@ -1,4 +1,4 @@
-import { REVIEW_ASPECTS } from "../../utils/reviewAspects.js";
+import { REVIEW_ASPECTS } from "@/utils/reviewAspects.js";
 
 /** Yelp Review Insights — mezon bo'yicha tez ko'rish */
 export default function ReviewAspectInsights({ averages, onSelectAspect }) {

@@ -6,34 +6,17 @@ import CompareMatrix from "./CompareMatrix.jsx";
 import CompareUniversityDetail from "./CompareUniversityDetail.jsx";
 import CompareResultsToolbar from "./CompareResultsToolbar.jsx";
 import CompareWinsBreakdown from "./CompareWinsBreakdown.jsx";
-import { createCompareShareLink } from "../../../services/universityService.js";
-import { getApiErrorMessage } from "../../../utils/apiErrors.js";
-import { copyTextToClipboard } from "../../../utils/copyText.js";
-import { useToast } from "../../../hooks/useToast.js";
+import { getApiErrorMessage } from "@/utils/apiErrors.js";
+import { copyTextToClipboard } from "@/utils/copyText.js";
+import { useToast } from "@/hooks/useToast.js";
 import {
   buildCompareSummary,
   hasAspectComparison,
   orderCompareUniversities,
   orderCompareUniversitiesWithLeaderCenter,
-} from "../../../utils/compareMath.js";
+} from "@/utils/compareMath.js";
 
 const DETAIL_TINTS = ["blue", "violet", "emerald"];
-
-function formatShareExpiry(isoString) {
-  if (!isoString) {
-    return "";
-  }
-  try {
-    return new Intl.DateTimeFormat("uz-UZ", {
-      day: "numeric",
-      month: "long",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(isoString));
-  } catch {
-    return "";
-  }
-}
 
 export default function CompareResults({
   data,
@@ -53,15 +36,18 @@ export default function CompareResults({
     if (readOnly || copyState === "creating") {
       return;
     }
+    if (selectedIds.length !== 3) {
+      toast.warning("Havola uchun 3 ta universitet tanlang.");
+      return;
+    }
     setCopyState("creating");
     try {
-      const payload = await createCompareShareLink(selectedIds);
-      const url = `${window.location.origin}/taqqoslash/${payload.token}`;
+      const url = `${window.location.origin}/taqqoslash?ids=${selectedIds.join(",")}`;
       const copied = await copyTextToClipboard(url);
-      setShareExpiry(formatShareExpiry(payload.expires_at));
+      setShareExpiry("");
       setCopyState("copied");
       if (!copied) {
-        toast.info("Havola yaratildi — brauzer nusxalashni blokladi.");
+        toast.info("Havola tayyor — brauzer nusxalashni blokladi.");
       }
     } catch (error) {
       setCopyState("error");

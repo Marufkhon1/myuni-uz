@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getFocusableElements } from "../hooks/useFocusTrap.js";
+import { getFocusableElements } from "@/hooks/useFocusTrap.js";
 
 describe("getFocusableElements", () => {
   it("returns visible interactive elements in tab order", () => {

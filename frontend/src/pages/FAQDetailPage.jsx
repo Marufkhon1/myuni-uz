@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import JsonLd from "../components/seo/JsonLd.jsx";
-import { buildPageMeta } from "../config/siteMeta.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
-import { BlogListSkeleton } from "../components/skeletons/PublicPageSkeletons.jsx";
-import EmptyState from "../components/ui/EmptyState.jsx";
-import MainLayout from "../layouts/MainLayout.jsx";
-import { getPublicFaqDetail } from "../services/publicService.js";
+import JsonLd from "@/components/seo/JsonLd.jsx";
+import { buildPageMeta } from "@/config/siteMeta.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
+import { BlogListSkeleton } from "@/components/skeletons/PublicPageSkeletons.jsx";
+import EmptyState from "@/components/ui/EmptyState.jsx";
+import MainLayout from "@/layouts/MainLayout.jsx";
+import { getPublicFaqDetail } from "@/services/publicService.js";
 import {
   buildBreadcrumbSchema,
   buildFaqPageSchema,
   buildWebPageSchema,
-} from "../utils/structuredData.js";
+} from "@/utils/structuredData.js";
 
 export default function FAQDetailPage() {
   const { slug } = useParams();

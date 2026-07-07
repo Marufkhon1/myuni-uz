@@ -38,6 +38,11 @@ INSTALLED_APPS = [
     "universities",
 ]
 
+_enable_channels = os.getenv("ENABLE_CHANNELS", "True") == "True"
+if _enable_channels:
+    INSTALLED_APPS.insert(0, "daphne")
+    INSTALLED_APPS.append("channels")
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -202,6 +207,23 @@ elif not DEBUG:
     logging.getLogger(__name__).warning(
         "REDIS_URL is not set in production — rate limits and SSE tokens are per-process only."
     )
+
+if _enable_channels:
+    if _redis_url:
+        CHANNEL_LAYERS = {
+            "default": {
+                "BACKEND": "channels_redis.core.RedisChannelLayer",
+                "CONFIG": {
+                    "hosts": [_redis_url],
+                },
+            }
+        }
+    else:
+        CHANNEL_LAYERS = {
+            "default": {
+                "BACKEND": "channels.layers.InMemoryChannelLayer",
+            }
+        }
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",

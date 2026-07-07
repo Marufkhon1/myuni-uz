@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import useFocusTrap from "../../hooks/useFocusTrap.js";
+import useFocusTrap from "@/hooks/useFocusTrap.js";
 
 export default function ModalOverlay({
   onClose,

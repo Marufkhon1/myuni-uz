@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import logo from "../assets/myuni-logo.png";
-import ThemeToggle from "../components/ThemeToggle.jsx";
-import { useDarkMode } from "../hooks/useDarkMode.js";
-import { mainContentProps } from "../utils/mainContent.js";
+import logo from "@/assets/myuni-logo.png";
+import ThemeToggle from "@/components/ThemeToggle.jsx";
+import { useDarkMode } from "@/hooks/useDarkMode.js";
+import { mainContentProps } from "@/utils/mainContent.js";
 
 export function JoinMyUniButton({ className = "" }) {
   return (

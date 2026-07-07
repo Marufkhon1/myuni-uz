@@ -1,4 +1,4 @@
-import { formatStarRatingLabel } from "../../utils/starRatingA11y.js";
+import { formatStarRatingLabel } from "@/utils/starRatingA11y.js";
 
 export function FractionalStars({
   rating,

@@ -1,4 +1,4 @@
-import { getPresenceDotStyle } from "../../utils/userPresence.js";
+import { getPresenceDotStyle } from "@/utils/userPresence.js";
 import UserAvatar from "./UserAvatar.jsx";
 
 const dotSizes = {

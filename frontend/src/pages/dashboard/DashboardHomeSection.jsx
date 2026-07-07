@@ -1,20 +1,21 @@
 import { useMemo } from "react";
-import ChatUniversityRow from "../../components/ChatUniversityRow.jsx";
-import UniversityAvatar from "../../components/UniversityAvatar.jsx";
-import UniversityRatingStars from "../../components/dashboard/UniversityRatingStars.jsx";
-import UserAvatar from "../../components/dashboard/UserAvatar.jsx";
-import UnreadBadge from "../../components/UnreadBadge.jsx";
-import ApplicantProgressChecklist from "../../components/dashboard/ApplicantProgressChecklist.jsx";
-import EmptyState from "../../components/ui/EmptyState.jsx";
+import { useDashboard } from "@/hooks/useDashboard.js";
+import ChatUniversityRow from "@/components/ChatUniversityRow.jsx";
+import UniversityAvatar from "@/components/UniversityAvatar.jsx";
+import UniversityRatingStars from "@/components/dashboard/UniversityRatingStars.jsx";
+import UserAvatar from "@/components/dashboard/UserAvatar.jsx";
+import UnreadBadge from "@/components/UnreadBadge.jsx";
+import ApplicantProgressChecklist from "@/components/dashboard/ApplicantProgressChecklist.jsx";
+import EmptyState from "@/components/ui/EmptyState.jsx";
 import {
   getCompareSuggestion,
   getRecentJoinedChats,
-} from "../../utils/applicantChecklist.js";
+} from "@/utils/applicantChecklist.js";
 import {
   getDashboardHomeContent,
   getDashboardHomeQuickActions,
-} from "../../utils/dashboardHomeContent.js";
-import { resolveMediaUrl } from "../../utils/media.js";
+} from "@/utils/dashboardHomeContent.js";
+import { resolveMediaUrl } from "@/utils/media.js";
 
 function DashboardHomeHero({
   greeting,
@@ -281,7 +282,6 @@ function PopularReviewPreview({ review, onOpen }) {
 
 export default function DashboardHomeSection({
   displayName,
-  isStudent,
   profile,
   universities,
   joinedUniversityIds,
@@ -291,13 +291,11 @@ export default function DashboardHomeSection({
   totalPrivateUnread,
   userUniversity,
   checklistVersion,
-  onOpenSection,
-  onOpenUniversityChat,
-  onOpenUniversityReviews,
   onOpenCompareSuggestion,
   onOpenPrivateThread,
   getUniversityTypingUsers,
 }) {
+  const { isStudent, changeSection, openUniversityChat, openUniversityReviews } = useDashboard();
   const homeContent = getDashboardHomeContent();
   const quickActions = getDashboardHomeQuickActions(isStudent);
 
@@ -340,7 +338,7 @@ export default function DashboardHomeSection({
             eyebrow="Chatlar"
             title="Oxirgi suhbatlar"
             actionLabel="Barchasi"
-            onAction={() => onOpenSection("chats")}
+            onAction={() => changeSection("chats")}
             icon="💬"
             accent="chat"
           >
@@ -353,7 +351,7 @@ export default function DashboardHomeSection({
                     isSelected={false}
                     isJoined
                     variant="card"
-                    onSelect={onOpenUniversityChat}
+                    onSelect={openUniversityChat}
                     typingUsers={getUniversityTypingUsers?.(university.id) ?? []}
                   />
                 ))}
@@ -364,7 +362,7 @@ export default function DashboardHomeSection({
                 variant="chat"
                 title="Hali chatga qo'shilmagansiz"
                 description="Universitet chatiga qo'shilib, talabalardan savol bering."
-                action={{ label: "Chatlarni ko'rish", onClick: () => onOpenSection("chats") }}
+                action={{ label: "Chatlarni ko'rish", onClick: () => changeSection("chats") }}
               />
             )}
 
@@ -390,7 +388,7 @@ export default function DashboardHomeSection({
             eyebrow="Sharhlar"
             title={homeContent.reviewsTitle}
             actionLabel="Ko'proq"
-            onAction={() => onOpenSection(homeContent.reviewsMoreSection)}
+            onAction={() => changeSection(homeContent.reviewsMoreSection)}
             icon="⭐"
             accent="reviews"
           >
@@ -400,7 +398,7 @@ export default function DashboardHomeSection({
                   <PopularReviewPreview
                     key={review.id}
                     review={review}
-                    onOpen={onOpenUniversityReviews}
+                    onOpen={openUniversityReviews}
                   />
                 ))}
               </div>
@@ -412,7 +410,7 @@ export default function DashboardHomeSection({
                 description="Talabalar sharh yozganda bu yerda ko'rinadi."
                 action={{
                   label: isStudent ? "Sharh yozish" : "Sharhlarni ko'rish",
-                  onClick: () => onOpenSection("reviews"),
+                  onClick: () => changeSection("reviews"),
                 }}
               />
             )}
@@ -465,7 +463,7 @@ export default function DashboardHomeSection({
                   helper={action.helper}
                   icon={action.icon}
                   accent={action.accent}
-                  onClick={() => onOpenSection(action.section)}
+                  onClick={() => changeSection(action.section)}
                 />
               ))}
             </div>
@@ -474,11 +472,9 @@ export default function DashboardHomeSection({
 
         <ApplicantProgressChecklist
           key={`${checklistVersion}-${isStudent ? "student" : "applicant"}`}
-          isStudent={isStudent}
           profile={profile}
           joinedChatCount={joinedUniversityIds.size}
           universities={universities}
-          onOpenSection={onOpenSection}
         />
       </div>
     </div>

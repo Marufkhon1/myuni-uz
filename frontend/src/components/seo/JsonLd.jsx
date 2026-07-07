@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { buildJsonLdGraph, serializeJsonLd } from "../../utils/structuredData.js";
+import { buildJsonLdGraph, serializeJsonLd } from "@/utils/structuredData.js";
 
 function upsertJsonLd(id, payload) {
   if (!payload) {

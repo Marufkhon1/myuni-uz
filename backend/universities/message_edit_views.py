@@ -39,7 +39,11 @@ class UniversityMessageEditView(APIView):
         message.updated_at = timezone.now()
         message.save(update_fields=["text", "tags", "updated_at"])
 
-        return Response(ChatMessageSerializer(message, context={"request": request}).data)
+        payload = ChatMessageSerializer(message, context={"request": request}).data
+        from .ws_broadcast import broadcast_university_message_updates
+
+        broadcast_university_message_updates(message.university_id, [payload])
+        return Response(payload)
 
 
 class DirectMessageEditView(APIView):
@@ -67,4 +71,8 @@ class DirectMessageEditView(APIView):
         message.updated_at = timezone.now()
         message.save(update_fields=["text", "updated_at"])
 
-        return Response(DirectMessageSerializer(message, context={"request": request}).data)
+        payload = DirectMessageSerializer(message, context={"request": request}).data
+        from .ws_broadcast import broadcast_direct_message_updates
+
+        broadcast_direct_message_updates(thread.id, [payload])
+        return Response(payload)

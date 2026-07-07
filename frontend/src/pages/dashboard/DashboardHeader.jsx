@@ -1,10 +1,10 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
-import logo from "../../assets/myuni-logo.png";
-import ThemeToggle from "../../components/ThemeToggle.jsx";
-import DashboardIcon from "../../components/dashboard/DashboardIcon.jsx";
-import UnreadBadge from "../../components/UnreadBadge.jsx";
-import NotificationsPanel from "../../components/dashboard/NotificationsPanel.jsx";
+import logo from "@/assets/myuni-logo.png";
+import ThemeToggle from "@/components/ThemeToggle.jsx";
+import DashboardIcon from "@/components/dashboard/DashboardIcon.jsx";
+import UnreadBadge from "@/components/UnreadBadge.jsx";
+import NotificationsPanel from "@/components/dashboard/NotificationsPanel.jsx";
 
 export default function DashboardHeader({
   cabinetEyebrow,
@@ -14,6 +14,7 @@ export default function DashboardHeader({
   isDark,
   onToggleTheme,
   onLogout,
+  isLoggingOut = false,
   notifications,
 }) {
   const notificationsRef = useRef(null);
@@ -71,13 +72,15 @@ export default function DashboardHeader({
           <ThemeToggle isDark={isDark} onToggle={onToggleTheme} className="!h-11 !w-11 !shadow-soft" />
           <button
             type="button"
-            onClick={onLogout}
-            className="dashboard-toolbar-btn !min-w-0 px-3 sm:px-5"
+            onClick={() => void onLogout?.()}
+            disabled={isLoggingOut}
+            aria-busy={isLoggingOut}
+            className="dashboard-toolbar-btn !min-w-0 px-3 disabled:cursor-not-allowed disabled:opacity-60 sm:px-5"
             aria-label="Chiqish"
           >
-            <span className="hidden sm:inline">Chiqish</span>
+            <span className="hidden sm:inline">{isLoggingOut ? "Chiqilmoqda..." : "Chiqish"}</span>
             <span className="sm:hidden" aria-hidden="true">
-              ⎋
+              {isLoggingOut ? "…" : "⎋"}
             </span>
           </button>
         </div>

@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import AuthLayout from "../layouts/AuthLayout.jsx";
-import { PAGE_META } from "../config/siteMeta.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
-import { useToast } from "../hooks/useToast.js";
-import { confirmPasswordReset, getPasswordResetStatus } from "../services/authService.js";
-import { getApiErrorMessage } from "../utils/apiErrors.js";
+import FormField from "@/components/ui/FormField.jsx";
+import AuthLayout from "@/layouts/AuthLayout.jsx";
+import { PAGE_META } from "@/config/siteMeta.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
+import { useToast } from "@/hooks/useToast.js";
+import { confirmPasswordReset, getPasswordResetStatus } from "@/services/authService.js";
+import { getApiErrorMessage } from "@/utils/apiErrors.js";
 
 function formatCountdown(totalSeconds) {
   const minutes = Math.floor(totalSeconds / 60);
@@ -143,39 +144,34 @@ export default function ResetPasswordPage() {
         <div className="rounded-xl bg-amber-50 px-3 py-2 text-center text-sm font-black text-amber-800 dark:bg-amber-400/10 dark:text-amber-200">
           Sessiya: {formatCountdown(secondsRemaining)}
         </div>
-        <div>
-          <label htmlFor="new-password" className="text-xs font-black uppercase tracking-wide text-slate-400">
-            Yangi parol
-          </label>
-          <input
-            id="new-password"
-            type="password"
-            required
-            minLength={8}
-            autoComplete="new-password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            className="mt-1.5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold outline-none focus:border-primary dark:border-white/15 dark:bg-slate-800 dark:text-white"
-          />
-        </div>
-        <div>
-          <label htmlFor="confirm-password" className="text-xs font-black uppercase tracking-wide text-slate-400">
-            Parolni tasdiqlang
-          </label>
-          <input
-            id="confirm-password"
-            type="password"
-            required
-            minLength={8}
-            autoComplete="new-password"
-            value={passwordConfirm}
-            onChange={(event) => setPasswordConfirm(event.target.value)}
-            className="mt-1.5 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 font-semibold outline-none focus:border-primary dark:border-white/15 dark:bg-slate-800 dark:text-white"
-          />
-        </div>
-        {(clientError) && (
-          <p className="text-sm font-semibold text-amber-700 dark:text-amber-300">{clientError}</p>
-        )}
+        <FormField
+          id="new-password"
+          name="password"
+          label="Yangi parol"
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          required
+          autoComplete="new-password"
+          minLength={8}
+          error={clientError && password.length > 0 && password.length < 8 ? clientError : undefined}
+        />
+
+        <FormField
+          id="confirm-password"
+          name="password_confirm"
+          label="Parolni tasdiqlang"
+          type="password"
+          value={passwordConfirm}
+          onChange={(event) => setPasswordConfirm(event.target.value)}
+          required
+          autoComplete="new-password"
+          minLength={8}
+          error={
+            clientError && passwordConfirm && password !== passwordConfirm ? clientError : undefined
+          }
+        />
+
         <button
           type="submit"
           disabled={isSubmitting || Boolean(clientError)}

@@ -37,6 +37,13 @@ function NavIcon({ name }) {
       </svg>
     );
   }
+  if (name === "favorites") {
+    return (
+      <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+      </svg>
+    );
+  }
   return (
     <svg viewBox="0 0 24 24" className={common} fill="none" stroke="currentColor" strokeWidth="2">
       <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z" />

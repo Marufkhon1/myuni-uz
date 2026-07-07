@@ -1,5 +1,5 @@
-import { resolveMediaUrl } from "../../utils/media.js";
-import { getAuthorColorHex, getNameInitials } from "../../utils/chatAuthorColor.js";
+import { resolveMediaUrl } from "@/utils/media.js";
+import { getAuthorColorHex, getNameInitials } from "@/utils/chatAuthorColor.js";
 
 const userAvatarSizes = {
   xs: { box: "h-7 w-7", text: "text-[10px]", textPair: "text-[9px]" },

@@ -5,7 +5,7 @@ export const TWITTER_HANDLE = "@myuniuz";
 export const DEFAULT_TITLE = "MyUni.uz | Universitetlar reytingi va talabalar sharhlari";
 export const DEFAULT_DESCRIPTION =
   "MyUni.uz — O'zbekiston universitetlari haqida talabalar sharhlari, reyting va tanlov uchun ochiq ma'lumot platformasi.";
-export const DEFAULT_OG_IMAGE = "/images/universities/_default.jpg";
+export const DEFAULT_OG_IMAGE = "/images/hero/landing-campus.jpg";
 export const DEFAULT_OG_IMAGE_ALT = "MyUni.uz — universitet sharhlari va reyting platformasi";
 export const OG_IMAGE_WIDTH = 1200;
 export const OG_IMAGE_HEIGHT = 630;

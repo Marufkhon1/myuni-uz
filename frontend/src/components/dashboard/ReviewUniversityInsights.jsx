@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { buildUniversityPublicPath } from "../../utils/navigation.js";
+import { buildUniversityPublicPath } from "@/utils/navigation.js";
 
 function FactRow({ label, value }) {
   if (!value) {

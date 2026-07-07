@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
-import CompareShareLayout from "../layouts/CompareShareLayout.jsx";
-import CompareResults from "../components/dashboard/compare/CompareResults.jsx";
-import { getPublicCompareShare } from "../services/publicService.js";
-import { PUBLIC_COMPARE_CONTENT } from "../utils/compareRoleContent.js";
-import { usePageMeta } from "../hooks/usePageMeta.js";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
+import CompareShareLayout from "@/layouts/CompareShareLayout.jsx";
+import CompareResults from "@/components/dashboard/compare/CompareResults.jsx";
+import { getPublicCompareByIds, getPublicCompareShare } from "@/services/publicService.js";
+import { PUBLIC_COMPARE_CONTENT } from "@/utils/compareRoleContent.js";
+import { usePageMeta } from "@/hooks/usePageMeta.js";
 
 function formatExpiry(isoString) {
   if (!isoString) {
@@ -23,6 +23,16 @@ function formatExpiry(isoString) {
   }
 }
 
+function parseIdsParam(raw) {
+  if (!raw) {
+    return [];
+  }
+  return raw
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
 function StatusCard({ icon, title, description }) {
   return (
     <div className="mx-auto max-w-lg rounded-3xl bg-white px-6 py-10 text-center shadow-xl ring-1 ring-slate-200/80 dark:bg-[#0b1220] dark:ring-white/10">
@@ -37,48 +47,51 @@ function StatusCard({ icon, title, description }) {
 
 export default function CompareSharePage() {
   const { token } = useParams();
+  const [searchParams] = useSearchParams();
+  const idsParam = searchParams.get("ids");
+  const compareIds = useMemo(() => parseIdsParam(idsParam), [idsParam]);
   const [state, setState] = useState({ status: "loading" });
+
+  const pagePath = token
+    ? `/taqqoslash/${token}`
+    : compareIds.length
+      ? `/taqqoslash?ids=${compareIds.join(",")}`
+      : "/taqqoslash";
 
   usePageMeta({
     title: "Universitetlar taqqoslashi — MyUni.uz",
     description: "3 ta OTM ni yonma-yon solishtiring — sharhlar, reyting va qabul ma'lumotlari.",
-    path: token ? `/taqqoslash/${token}` : "/taqqoslash",
-    robots: "noindex, nofollow",
+    path: pagePath,
+    robots: token ? "noindex, nofollow" : "index, follow",
   });
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadShare() {
-      setState({ status: "loading" });
-      try {
+  const loadCompare = useCallback(async () => {
+    setState({ status: "loading" });
+    try {
+      if (token) {
         const data = await getPublicCompareShare(token);
-        if (!cancelled) {
-          setState({ status: "ready", data });
-        }
-      } catch (error) {
-        if (cancelled) {
-          return;
-        }
-        const statusCode = error?.response?.status;
-        if (statusCode === 410) {
-          setState({ status: "expired" });
-          return;
-        }
-        setState({ status: "error" });
+        setState({ status: "ready", data, mode: "share" });
+        return;
       }
-    }
-
-    if (token) {
-      loadShare();
-    } else {
+      if (compareIds.length === 3) {
+        const data = await getPublicCompareByIds(compareIds);
+        setState({ status: "ready", data, mode: "ids" });
+        return;
+      }
+      setState({ status: "error" });
+    } catch (error) {
+      const statusCode = error?.response?.status;
+      if (statusCode === 410) {
+        setState({ status: "expired" });
+        return;
+      }
       setState({ status: "error" });
     }
+  }, [token, compareIds]);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [token]);
+  useEffect(() => {
+    loadCompare();
+  }, [loadCompare]);
 
   const selectedIds = useMemo(() => {
     if (state.status !== "ready") {
@@ -119,12 +132,16 @@ export default function CompareSharePage() {
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-white/80 px-4 py-3 shadow-sm ring-1 ring-slate-200/70 backdrop-blur dark:bg-white/[0.04] dark:ring-white/10 sm:text-right">
-                <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Amal qilish muddati</p>
-                <p className="mt-0.5 text-sm font-black text-slate-800 dark:text-white">
-                  {formatExpiry(state.data.expires_at)} gacha
-                </p>
-              </div>
+              {state.mode === "share" && state.data?.expires_at && (
+                <div className="rounded-2xl bg-white/80 px-4 py-3 shadow-sm ring-1 ring-slate-200/70 backdrop-blur dark:bg-white/[0.04] dark:ring-white/10 sm:text-right">
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
+                    Amal qilish muddati
+                  </p>
+                  <p className="mt-0.5 text-sm font-black text-slate-800 dark:text-white">
+                    {formatExpiry(state.data.expires_at)} gacha
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
@@ -146,7 +163,11 @@ export default function CompareSharePage() {
             <StatusCard
               icon="!"
               title="Taqqoslash topilmadi"
-              description="Havola noto'g'ri yoki muddati tugagan bo'lishi mumkin."
+              description={
+                compareIds.length > 0 && compareIds.length !== 3
+                  ? "Taqqoslash uchun aniq 3 ta universitet ID kerak (?ids=1,2,3)."
+                  : "Havola noto'g'ri yoki muddati tugagan bo'lishi mumkin."
+              }
             />
           )}
 

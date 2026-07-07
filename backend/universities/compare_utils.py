@@ -220,3 +220,57 @@ def build_highlights(rows):
         "reviews": pick_highlight("review_count", rows, higher_is_better=True),
         "chat_activity": pick_highlight("member_count", rows, higher_is_better=True),
     }
+
+
+def batch_rating_distributions(university_ids):
+    distributions = {
+        university_id: {str(star): 0 for star in range(1, 6)} for university_id in university_ids
+    }
+    if not university_ids:
+        return distributions
+
+    for row in (
+        Review.objects.filter(university_id__in=university_ids, status=Review.Status.APPROVED)
+        .values("university_id", "rating")
+        .annotate(total=Count("id"))
+    ):
+        distributions[row["university_id"]][str(row["rating"])] = row["total"]
+    return distributions
+
+
+def build_compare_rows(universities, joined_ids, favorite_ids):
+    """Build compare rows with shared batch queries to avoid N+1."""
+    if not universities:
+        return []
+
+    university_ids = [university.id for university in universities]
+    distributions = batch_rating_distributions(university_ids)
+
+    member_counts = dict(
+        ChatMembership.objects.filter(university_id__in=university_ids)
+        .values("university_id")
+        .annotate(total=Count("id"))
+        .values_list("university_id", "total")
+    )
+    message_counts = dict(
+        ChatMessage.objects.filter(university_id__in=university_ids, is_deleted=False)
+        .values("university_id")
+        .annotate(total=Count("id"))
+        .values_list("university_id", "total")
+    )
+    favorite_counts = dict(
+        UniversityFavorite.objects.filter(university_id__in=university_ids)
+        .values("university_id")
+        .annotate(total=Count("id"))
+        .values_list("university_id", "total")
+    )
+
+    rows = []
+    for university in universities:
+        row = build_compare_row(university, joined_ids, favorite_ids)
+        row["rating_distribution"] = distributions.get(university.id, row["rating_distribution"])
+        row["member_count"] = member_counts.get(university.id, row["member_count"])
+        row["message_count"] = message_counts.get(university.id, row["message_count"])
+        row["favorites_count"] = favorite_counts.get(university.id, row["favorites_count"])
+        rows.append(row)
+    return rows

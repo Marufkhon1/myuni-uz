@@ -2,6 +2,28 @@ export function dashboardPathForRole(role) {
   return role === "student" ? "/student/dashboard" : "/applicant/dashboard";
 }
 
+export function buildDashboardSectionPath(role, section = "home", options = {}) {
+  const base = `${dashboardPathForRole(role)}/${section}`;
+  const params = new URLSearchParams();
+  if (options.universityId != null) {
+    params.set("university_id", String(options.universityId));
+  }
+  if (options.threadId != null) {
+    params.set("thread_id", String(options.threadId));
+    params.set("chat_panel", "private");
+  }
+  const query = params.toString();
+  return query ? `${base}?${query}` : base;
+}
+
+export function parseDashboardSectionFromPath(pathname) {
+  const match = pathname.match(/\/(applicant|student)\/dashboard\/([a-z]+)/);
+  if (!match) {
+    return null;
+  }
+  return match[2];
+}
+
 export function buildUniversityPublicPath(university) {
   if (university?.slug) {
     return `/universitet/${university.slug}`;
@@ -9,7 +31,15 @@ export function buildUniversityPublicPath(university) {
   return "/#universities";
 }
 
-function reviewsUniversitySearchParams(university) {
+/** Kirishdan keyin — rolga qarab to'g'ri kabinet. */
+export function buildDashboardReviewsUniversityPath({ role, university }) {
+  return buildDashboardSectionPath(role || "applicant", "reviews", {
+    universityId: university?.id,
+  });
+}
+
+/** Mehmon uchun login/signup `next` — `/dashboard` rolga yo'naltiradi. */
+export function buildDashboardReviewsUniversityNext(university) {
   const params = new URLSearchParams({ section: "reviews" });
   if (university?.id != null) {
     params.set("university_id", String(university.id));
@@ -18,19 +48,6 @@ function reviewsUniversitySearchParams(university) {
   } else if (university?.name) {
     params.set("university", university.name);
   }
-  return params;
-}
-
-/** Kirishdan keyin — rolga qarab to'g'ri kabinet. */
-export function buildDashboardReviewsUniversityPath({ role, university }) {
-  const params = reviewsUniversitySearchParams(university);
-  const base = role ? dashboardPathForRole(role) : "/dashboard";
-  return `${base}?${params.toString()}`;
-}
-
-/** Mehmon uchun login/signup `next` — `/dashboard` rolga yo'naltiradi. */
-export function buildDashboardReviewsUniversityNext(university) {
-  const params = reviewsUniversitySearchParams(university);
   return `/dashboard?${params.toString()}`;
 }
 

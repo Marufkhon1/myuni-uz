@@ -1,4 +1,4 @@
-import { MAX_COMPARE } from "../../../utils/compareMath.js";
+import { MAX_COMPARE } from "@/utils/compareMath.js";
 
 const STEPS = [
   { id: "pick", label: "Tanlang", hint: "3 ta OTM" },

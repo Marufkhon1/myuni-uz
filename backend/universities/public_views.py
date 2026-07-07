@@ -5,10 +5,11 @@ from urllib.parse import urlparse
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db.models import Avg, Count, Q
+from django.db.models import Avg, Count, F, Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -16,12 +17,15 @@ from rest_framework.views import APIView
 from accounts.models import Profile
 
 from .catalog_utils import (
+    annotate_bayesian_rating,
     apply_catalog_filters,
     annotated_universities_queryset,
     catalog_filter_options,
+    parse_compare_ids,
     serialize_university_card,
     serialize_university_detail,
 )
+from .compare_utils import build_compare_rows, build_highlights, build_public_compare_snapshot
 from .university_images import build_university_image_url, is_legacy_placeholder_url
 from .review_trust_utils import (
     annotate_reviews_with_likes,
@@ -111,19 +115,26 @@ def _landing_demo_chat_thread(limit=12):
 
 def _top_universities_queryset(limit=6):
     return (
-        University.objects.annotate(
-            review_count=Count(
-                "reviews",
-                filter=Q(reviews__status=Review.Status.APPROVED),
-                distinct=True,
-            ),
-            average_rating=Avg(
-                "reviews__rating",
-                filter=Q(reviews__status=Review.Status.APPROVED),
-            ),
-            member_count=Count("chat_memberships", distinct=True),
+        annotate_bayesian_rating(
+            University.objects.annotate(
+                review_count=Count(
+                    "reviews",
+                    filter=Q(reviews__status=Review.Status.APPROVED),
+                    distinct=True,
+                ),
+                average_rating=Avg(
+                    "reviews__rating",
+                    filter=Q(reviews__status=Review.Status.APPROVED),
+                ),
+                member_count=Count("chat_memberships", distinct=True),
+            )
         )
-        .order_by("-review_count", "-member_count", "-average_rating", "name")[:limit]
+        .order_by(
+            F("bayesian_rating").desc(nulls_last=True),
+            "-review_count",
+            "-member_count",
+            "name",
+        )[:limit]
     )
 
 
@@ -175,15 +186,16 @@ class PublicUniversityListView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        base_queryset = annotated_universities_queryset()
         queryset = apply_catalog_filters(
-            annotated_universities_queryset(),
+            base_queryset,
             request.query_params,
         )
         results = [serialize_university_card(university) for university in queryset]
         return Response(
             {
                 "count": len(results),
-                "filters": catalog_filter_options(),
+                "filters": catalog_filter_options(base_queryset),
                 "results": results,
             }
         )
@@ -523,7 +535,7 @@ DEFAULT_DESCRIPTION = (
     "MyUni.uz — O'zbekiston universitetlari haqida talabalar sharhlari, "
     "reyting va tanlov uchun ochiq ma'lumot platformasi."
 )
-DEFAULT_OG_IMAGE = "/images/universities/_default.jpg"
+DEFAULT_OG_IMAGE = "/images/hero/landing-campus.jpg"
 META_DESCRIPTION_MAX = 160
 
 LEGAL_PAGES = {
@@ -798,6 +810,32 @@ class PublicSharePreviewView(APIView):
         path = request.GET.get("path") or "/"
         meta = _build_share_meta_for_path(path)
         return HttpResponse(_render_share_html(meta), content_type="text/html; charset=utf-8")
+
+
+class PublicCompareByIdsView(APIView):
+    """Umumiy taqqoslash — 3 ta universitet ID bo'yicha (authsiz)."""
+
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        ids_param = request.query_params.get("ids", "")
+        university_ids, error = parse_compare_ids(ids_param)
+        if error:
+            return Response({"detail": error}, status=status.HTTP_400_BAD_REQUEST)
+
+        universities = list(University.objects.filter(pk__in=university_ids))
+        if len(universities) != len(university_ids):
+            return Response(
+                {"detail": "Tanlangan universitetlardan biri topilmadi."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        order = {university_id: index for index, university_id in enumerate(university_ids)}
+        universities.sort(key=lambda item: order[item.id])
+
+        rows = build_compare_rows(universities, set(), set())
+        highlights = build_highlights(rows)
+        return Response(build_public_compare_snapshot(rows, highlights))
 
 
 class PublicCompareShareView(APIView):

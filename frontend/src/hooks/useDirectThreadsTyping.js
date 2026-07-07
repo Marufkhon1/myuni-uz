@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getDirectThreadsTyping } from "../services/chatService.js";
+import { getDirectThreadsTyping } from "@/services/chatService.js";
 
 export function useDirectThreadsTyping({ enabled, refreshMs = 2500 }) {
   const [typingByThread, setTypingByThread] = useState({});

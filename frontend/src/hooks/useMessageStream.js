@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
-import { fetchStreamToken } from "../services/authService.js";
+import { fetchStreamToken } from "@/services/authService.js";
+import { AUTH_LOGOUT_EVENT } from "@/utils/authEvents.js";
+import { isCookieSession } from "@/utils/authStorage.js";import { handleChatStreamPayload } from "@/utils/chatStreamHandlers.js";
 
 function mergeById(current, incoming) {
   const map = new Map(current.map((item) => [item.id, item]));
@@ -13,6 +15,24 @@ export function maxMessageId(messages) {
   }
   return messages.reduce((max, item) => (item.id > max ? item.id : max), 0);
 }
+
+function attachEventSourceHandlers(source, handlers, sinceIdRef) {
+  const dispatch = (eventName) => (event) => {
+    const lastId = handleChatStreamPayload(eventName, event.data, handlers);
+    if (lastId) {
+      sinceIdRef.current = Math.max(sinceIdRef.current, lastId);
+    }
+  };
+
+  source.addEventListener("messages", dispatch("messages"));
+  source.addEventListener("message_updated", dispatch("message_updated"));
+  source.addEventListener("message_deleted", dispatch("message_deleted"));
+  source.addEventListener("typing", dispatch("typing"));
+  source.addEventListener("ping", () => {
+    // keep-alive from server
+  });
+}
+
 export function useMessageStream({
   streamUrl,
   enabled,
@@ -22,26 +42,21 @@ export function useMessageStream({
   onTyping,
 }) {
   const sinceIdRef = useRef(0);
-  const onMessagesRef = useRef(onMessages);
-  const onMessageUpdatedRef = useRef(onMessageUpdated);
-  const onMessageDeletedRef = useRef(onMessageDeleted);
-  const onTypingRef = useRef(onTyping);
+  const handlersRef = useRef({
+    onMessages,
+    onMessageUpdated,
+    onMessageDeleted,
+    onTyping,
+  });
 
   useEffect(() => {
-    onMessagesRef.current = onMessages;
-  }, [onMessages]);
-
-  useEffect(() => {
-    onMessageUpdatedRef.current = onMessageUpdated;
-  }, [onMessageUpdated]);
-
-  useEffect(() => {
-    onMessageDeletedRef.current = onMessageDeleted;
-  }, [onMessageDeleted]);
-
-  useEffect(() => {
-    onTypingRef.current = onTyping;
-  }, [onTyping]);
+    handlersRef.current = {
+      onMessages,
+      onMessageUpdated,
+      onMessageDeleted,
+      onTyping,
+    };
+  }, [onMessages, onMessageUpdated, onMessageDeleted, onTyping]);
 
   useEffect(() => {
     sinceIdRef.current = 0;
@@ -56,74 +71,42 @@ export function useMessageStream({
     let reconnectTimer;
     let cancelled = false;
 
+    function stopStream() {
+      cancelled = true;
+      window.clearTimeout(reconnectTimer);
+      source?.close();
+      source = undefined;
+    }
+
+    function onAuthLogout() {
+      stopStream();
+    }
+
+    window.addEventListener(AUTH_LOGOUT_EVENT, onAuthLogout);
+
     async function connect() {
       if (cancelled) {
         return;
       }
 
-      let streamToken;
-      try {
-        streamToken = await fetchStreamToken();
-      } catch {
-        reconnectTimer = window.setTimeout(connect, 3000);
-        return;
-      }
-
-      if (cancelled) {
-        return;
-      }
-
       const separator = streamUrl.includes("?") ? "&" : "?";
-      const url = `${streamUrl}${separator}stream_token=${encodeURIComponent(streamToken)}&since_id=${sinceIdRef.current}`;
-      source = new EventSource(url, { withCredentials: true });
+      let url = `${streamUrl}${separator}since_id=${sinceIdRef.current}`;
 
-      source.addEventListener("messages", (event) => {
+      if (!isCookieSession()) {
         try {
-          const payload = JSON.parse(event.data);
-          if (!Array.isArray(payload) || payload.length === 0) {
+          const streamToken = await fetchStreamToken();
+          if (cancelled) {
             return;
           }
-          const lastId = payload[payload.length - 1]?.id;
-          if (lastId) {
-            sinceIdRef.current = Math.max(sinceIdRef.current, lastId);
-          }
-          onMessagesRef.current?.(payload);
+          url = `${url}&stream_token=${encodeURIComponent(streamToken)}`;
         } catch {
-          // ignore malformed events
+          reconnectTimer = window.setTimeout(connect, 3000);
+          return;
         }
-      });
+      }
 
-      source.addEventListener("message_updated", (event) => {
-        try {
-          const payload = JSON.parse(event.data);
-          if (Array.isArray(payload) && payload.length > 0) {
-            onMessageUpdatedRef.current?.(payload);
-          }
-        } catch {
-          // ignore
-        }
-      });
-
-      source.addEventListener("message_deleted", (event) => {
-        try {
-          const payload = JSON.parse(event.data);
-          const ids = payload?.ids;
-          if (Array.isArray(ids) && ids.length > 0) {
-            onMessageDeletedRef.current?.(ids);
-          }
-        } catch {
-          // ignore
-        }
-      });
-
-      source.addEventListener("typing", (event) => {
-        try {
-          const payload = JSON.parse(event.data);
-          onTypingRef.current?.(payload.users || []);
-        } catch {
-          // ignore
-        }
-      });
+      source = new EventSource(url, { withCredentials: true });
+      attachEventSourceHandlers(source, handlersRef.current, sinceIdRef);
 
       source.onerror = () => {
         source?.close();
@@ -134,9 +117,8 @@ export function useMessageStream({
     connect();
 
     return () => {
-      cancelled = true;
-      window.clearTimeout(reconnectTimer);
-      source?.close();
+      window.removeEventListener(AUTH_LOGOUT_EVENT, onAuthLogout);
+      stopStream();
     };
   }, [streamUrl, enabled]);
 

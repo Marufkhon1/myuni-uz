@@ -1,4 +1,4 @@
-import { useSupportChat } from "../../hooks/useSupportChat.js";
+import { useSupportChat } from "@/hooks/useSupportChat.js";
 import SupportChatModal from "./SupportChatModal.jsx";
 
 export default function DashboardMobileSupport({ isStudent = false }) {

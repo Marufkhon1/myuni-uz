@@ -221,7 +221,33 @@ class PublicApiTests(TestCase):
         body = response.content.decode()
         self.assertIn("Public API University", body)
         self.assertIn("og:description", body)
-        self.assertIn("/images/campuses/", body)
+        self.assertIn("og:image", body)
+        self.assertTrue(
+            "/images/hero/" in body or "/images/universities/" in body,
+            msg="Expected share preview OG image path",
+        )
+
+    def test_public_compare_by_ids(self):
+        ids = f"{self.university.id},1,2"
+        # Need 3 valid universities — create two more
+        u2 = University.objects.create(
+            name="Compare Two",
+            short_name="CT",
+            location="Toshkent",
+            slug="compare-two",
+        )
+        u3 = University.objects.create(
+            name="Compare Three",
+            short_name="C3",
+            location="Samarqand",
+            slug="compare-three",
+        )
+        ids = f"{self.university.id},{u2.id},{u3.id}"
+        response = self.client.get("/api/public/compare/", {"ids": ids})
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(len(payload["universities"]), 3)
+        self.assertIn("highlights", payload)
 
     def test_public_articles_list(self):
         response = self.client.get("/api/public/articles/")

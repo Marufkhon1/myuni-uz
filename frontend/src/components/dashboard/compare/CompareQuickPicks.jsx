@@ -1,4 +1,4 @@
-import UniversityAvatar from "../../UniversityAvatar.jsx";
+import UniversityAvatar from "@/components/UniversityAvatar.jsx";
 
 export default function CompareQuickPicks({ pairs, onApply, label }) {
   if (!pairs.length) {

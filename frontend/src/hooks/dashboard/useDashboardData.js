@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from "react";
 import {
   getDirectThreads,
   getJoinedUniversityIds,
-} from "../../services/chatService.js";
-import { getPopularReviews, getUniversities } from "../../services/universityService.js";
-import { matchUniversityByText } from "../../utils/universityMatch.js";
+} from "@/services/chatService.js";
+import { getPopularReviews, getUniversities } from "@/services/universityService.js";
+import { matchUniversityByText } from "@/utils/universityMatch.js";
 
 export function useDashboardData({
   profileUniversity,

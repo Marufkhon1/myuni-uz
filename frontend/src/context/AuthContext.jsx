@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   clearTokens,
   establishAuthSession,
@@ -6,9 +6,9 @@ import {
   login as loginRequest,
   logoutSession,
   register as registerRequest,
-} from "../services/authService.js";
+} from "@/services/authService.js";
 import { AuthContext } from "./authContext.js";
-import { isGoogleOAuthCallbackPath, readGoogleOAuthHashTokens } from "../utils/authPaths.js";
+import { isGoogleOAuthCallbackPath, readGoogleOAuthHashTokens } from "@/utils/authPaths.js";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -52,6 +52,14 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
+  const logout = useCallback(async () => {
+    try {
+      await logoutSession();
+    } finally {
+      setUser(null);
+    }
+  }, []);
+
   const value = useMemo(
     () => ({
       user,
@@ -76,10 +84,7 @@ export function AuthProvider({ children }) {
         setUser(nextUser);
         return nextUser;
       },
-      async logout() {
-        await logoutSession();
-        setUser(null);
-      },
+      logout,
       async refreshUser() {
         const nextUser = await getCurrentUser();
         setUser(nextUser);
@@ -87,7 +92,7 @@ export function AuthProvider({ children }) {
       },
       setUser,
     }),
-    [isLoading, user]
+    [isLoading, logout, user]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

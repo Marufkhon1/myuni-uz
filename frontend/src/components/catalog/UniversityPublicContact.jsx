@@ -1,4 +1,4 @@
-import { formatContractPricingLines } from "../../utils/universityCatalog.js";
+import { formatContractPricingLines } from "@/utils/universityCatalog.js";
 
 function normalizeWebsiteUrl(value) {
   if (!value) {

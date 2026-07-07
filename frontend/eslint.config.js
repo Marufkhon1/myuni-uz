@@ -34,6 +34,7 @@ export default [
         URL: "readonly",
         URLSearchParams: "readonly",
         window: "readonly",
+        WebSocket: "readonly",
         process: "readonly",
         HTMLElement: "readonly",
       },
@@ -50,12 +51,62 @@ export default [
         "warn",
         { allowConstantExport: true },
       ],
-      "jsx-a11y/alt-text": "warn",
-      "jsx-a11y/anchor-is-valid": "warn",
-      "jsx-a11y/click-events-have-key-events": "warn",
-      "jsx-a11y/heading-has-content": "warn",
-      "jsx-a11y/label-has-associated-control": "warn",
-      "jsx-a11y/no-static-element-interactions": "warn",
+      "jsx-a11y/alt-text": "error",
+      "jsx-a11y/anchor-is-valid": "error",
+      "jsx-a11y/click-events-have-key-events": "error",
+      "jsx-a11y/heading-has-content": "error",
+      "jsx-a11y/label-has-associated-control": "error",
+      "jsx-a11y/no-static-element-interactions": "error",
+    },
+  },
+  {
+    files: [
+      "src/components/dashboard/**/*.{js,jsx}",
+      "src/components/chat/**/*.{js,jsx}",
+      "src/components/reviews/**/*.{js,jsx}",
+      "src/components/catalog/**/*.{js,jsx}",
+      "src/components/ui/**/*.{js,jsx}",
+      "src/components/skeletons/**/*.{js,jsx}",
+      "src/components/pwa/**/*.{js,jsx}",
+      "src/components/seo/**/*.{js,jsx}",
+      "src/components/analytics/**/*.{js,jsx}",
+      "src/components/a11y/**/*.{js,jsx}",
+      "src/components/**/compare/**/*.{js,jsx}",
+      "src/components/**/popular/**/*.{js,jsx}",
+      "src/pages/**/*.{js,jsx}",
+      "src/pages/dashboard/**/*.{js,jsx}",
+      "src/hooks/dashboard/**/*.{js,jsx}",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["../../*", "../../../*", "../../../../*"],
+              message:
+                "Chuqur papkalarda `@/` aliasidan foydalaning (masalan: `import { x } from \"@/utils/foo.js\"`).",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ["src/pages/**/*.{js,jsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["../*"],
+              message:
+                "Sahifalarda `@/` aliasidan foydalaning (masalan: `import { x } from \"@/hooks/useAuth.js\"`).",
+            },
+          ],
+        },
+      ],
     },
   },
   {
