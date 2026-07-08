@@ -48,6 +48,22 @@ export const COMPARE_SLOT_THEMES = [
     headerRing: "ring-emerald-400/30",
     label: "text-emerald-700 dark:text-emerald-300",
   },
+  {
+    ring: "ring-amber-400/40",
+    accent: "border-amber-500",
+    headerGradient: "from-amber-600/70 via-[#2a1a0a]/95 to-slate-950",
+    headerGlow: "shadow-lg shadow-amber-500/15",
+    bar: "bg-amber-500",
+    badge: "bg-gradient-to-r from-amber-400 to-amber-500 text-amber-950 shadow-md shadow-amber-900/30",
+    matrixBadge: "bg-amber-600 text-white dark:bg-amber-500",
+    statIcon: "bg-amber-500/15 text-amber-700 dark:text-amber-300",
+    footerHover:
+      "hover:bg-amber-600 hover:text-white dark:hover:bg-amber-600 dark:hover:text-white dark:hover:shadow-lg dark:hover:shadow-amber-500/25",
+    bg: "bg-amber-50/90 dark:bg-amber-500/10",
+    column: "bg-amber-50/50 dark:bg-amber-500/[0.08]",
+    headerRing: "ring-amber-400/30",
+    label: "text-amber-800 dark:text-amber-300",
+  },
 ];
 
 export const HIGHLIGHT_ICONS = {

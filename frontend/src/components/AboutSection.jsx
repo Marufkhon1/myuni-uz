@@ -69,7 +69,7 @@ export default function AboutSection() {
               qulay formatda taqdim etish.
             </p>
             <p className="mt-4 text-sm font-semibold text-slate-500 dark:text-slate-400">
-              Quyidagi raqamlar platformadagi jonli ma&apos;lumotlardan olinadi — statik reklama emas.
+              Quyidagi raqamlar platforma bazasidan avtomatik olinadi — qo&apos;lda yozilgan reklama emas.
             </p>
           </div>
 

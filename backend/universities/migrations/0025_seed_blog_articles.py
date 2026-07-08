@@ -83,7 +83,7 @@ SEED_ARTICLES = [
     _article(
         "MyUni.uz da birinchi sharhingizni qanday yozasiz?",
         "myuni-da-birinchi-sharh-yozish-qollanmasi",
-        "Ishonchli va foydali sharh yozish uchun 5 ta qoida — moderatsiya va verified student haqida.",
+        "Ishonchli va foydali sharh yozish uchun 5 ta qoida — moderatsiya va «Kampus ovozi» belgisi haqida.",
         (
             "Platformadagi sharhlar abituriyentlar uchun eng qimmatli manba. Siz ham tajribangizni "
             "ulashishingiz mumkin — bu boshqalarga universitet tanlashda yordam beradi.\n\n"
@@ -92,7 +92,8 @@ SEED_ARTICLES = [
             "o'qituvchilar, yotoqxona, infratuzilma alohida.\n\n"
             "Uchinchi qoida: shaxsiy hujjumlardan qoching. Moderatorlar qoidalar bo'yicha "
             "tekshiradi; haqoratli matnlar rad etiladi. To'rtinchi qoida: talaba yoki abituriyent "
-            "sifatida profil to'ldiring — verified student belgisi ishonchni oshiradi.\n\n"
+            "sifatida profil to'ldiring — «Kampus ovozi» belgisi (yumshoq kampus "
+            "aloqasi) ishonchni oshiradi.\n\n"
             "Beshinchi qoda: sharh yozgandan keyin chatda savollarga javob bering. Faol hamjamiyat "
             "a'zosi bo'lish sizning tajribangizni yanada qimmatli qiladi."
         ),

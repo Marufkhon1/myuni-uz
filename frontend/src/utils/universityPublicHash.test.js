@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { UNIVERSITY_PUBLIC_SECTIONS } from "@/utils/universityPublicSections.js";
 import {
+  UNIVERSITY_PUBLIC_OVERVIEW_HASH,
   UNIVERSITY_PUBLIC_REVIEWS_HASH,
   buildUniversityPublicSectionUrl,
   resolveUniversityPublicSectionFromHash,
@@ -26,13 +27,13 @@ describe("buildUniversityPublicSectionUrl", () => {
     ).toBe(`/universitet/tsue${UNIVERSITY_PUBLIC_REVIEWS_HASH}`);
   });
 
-  it("keeps query string and omits hash for overview", () => {
+  it("appends overview hash for overview section", () => {
     expect(
       buildUniversityPublicSectionUrl(
         "/universitet/tsue",
         "?utm=1",
         UNIVERSITY_PUBLIC_SECTIONS.overview
       )
-    ).toBe("/universitet/tsue?utm=1");
+    ).toBe(`/universitet/tsue?utm=1${UNIVERSITY_PUBLIC_OVERVIEW_HASH}`);
   });
 });

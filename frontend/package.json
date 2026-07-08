@@ -15,6 +15,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "smoke:e2e": "playwright test e2e/critical-flows.spec.js e2e/site-manual-check.spec.js --reporter=line",
+    "smoke:api": "cd ../backend && python scripts/site_integration_check.py",
+    "smoke": "npm run smoke:api && npm run smoke:e2e",
     "cleanup:test-users": "cd ../backend && .venv\\Scripts\\python.exe manage.py purge_test_accounts"
   },
   "dependencies": {

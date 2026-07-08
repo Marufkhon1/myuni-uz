@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import UniversityPublicSectionNav from "@/components/catalog/UniversityPublicSectionNav.jsx";
-import { UNIVERSITY_PUBLIC_SECTIONS } from "@/utils/universityPublicSections.js";
 import { useUniversityPublicSection } from "@/hooks/useUniversityPublicSection.js";
 import UniversityPublicAdmission from "@/components/catalog/UniversityPublicAdmission.jsx";
 import UniversityPublicContact, {
@@ -24,6 +23,7 @@ import EmptyState from "@/components/ui/EmptyState.jsx";
 import { UniversityPublicPageSkeleton } from "@/components/skeletons/PublicPageSkeletons.jsx";
 import { getUniversityOgImagePath } from "@/utils/universityImage.js";
 import { formatOwnershipLabel } from "@/utils/universityCatalog.js";
+import { resolveUniversityLocationDisplay } from "@/utils/universityLocation.js";
 import {
   buildBreadcrumbSchema,
   buildReviewSchemas,
@@ -158,6 +158,10 @@ export default function UniversityPublicPage() {
   const loginTo = `/login?next=${encodeURIComponent(reviewsNextPath)}`;
   const websiteUrl = normalizeWebsiteUrl(detail?.website);
   const ownershipLabel = formatOwnershipLabel(detail);
+  const locationDisplay = useMemo(
+    () => (detail ? resolveUniversityLocationDisplay(detail) : null),
+    [detail]
+  );
 
   function handleWriteReviewClick() {
     if (isAuthenticated) {
@@ -264,82 +268,88 @@ export default function UniversityPublicPage() {
 
               <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
                 <div className="min-w-0">
-                  {activeSection === UNIVERSITY_PUBLIC_SECTIONS.overview && (
-                    <>
-                      <UniversityPublicOverview detail={detail} />
-                      <UniversityPublicSummary summary={detail.summary} />
-                      <UniversityPublicContact detail={detail} />
-                      <UniversityPublicFaculties faculties={detail.faculties} />
-                      <UniversityPublicAdmission cycles={detail.admission_cycles} />
-                    </>
-                  )}
+                  {/* Stacked sections — ikkala kontent ham har doim HTML da va ko'rinadi (crawler-friendly). */}
+                  <div id="university-overview-panel">
+                    <UniversityPublicOverview detail={detail} />
+                    <UniversityPublicSummary summary={detail.summary} />
+                    <UniversityPublicContact detail={detail} />
+                    <UniversityPublicFaculties faculties={detail.faculties} />
+                    <UniversityPublicAdmission cycles={detail.admission_cycles} />
+                  </div>
 
-                  {activeSection === UNIVERSITY_PUBLIC_SECTIONS.reviews && (
-                    <>
-                      {(detail.review_insight_summary || detail.aspect_averages?.review_count > 0) && (
-                        <div className="space-y-4 border-b border-slate-100 px-5 py-6 dark:border-white/10 sm:px-6">
-                          {detail.review_insight_summary && (
-                            <ReviewInsightSummary
-                              summary={detail.review_insight_summary}
-                              reviewCount={detail.aspect_averages?.review_count ?? detail.review_count}
-                            />
-                          )}
-                          {detail.aspect_averages?.review_count > 0 && (
-                            <div>
-                              <p className="text-xs font-black uppercase tracking-wide text-primary">
-                                Mezon bo&apos;yicha o&apos;rtacha
-                              </p>
-                              <ReviewAspectRatings averages={detail.aspect_averages} />
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      <div className="px-5 py-6 sm:px-6">
-                        <p className="text-xs font-black uppercase tracking-wide text-primary">Talabalar sharhlari</p>
-                        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                          Barcha sharhlar talabalar tomonidan yozilgan — abituriyentlar o&apos;qishi mumkin.
-                        </p>
-
-                        {detail.reviews?.length > 0 ? (
-                          <ul className="mt-5 space-y-4">
-                            {detail.reviews.map((item) => (
-                              <li key={item.id}>
-                                <ReviewCard item={item} hideLike showHelpfulCount showStudentVoiceBadge />
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <EmptyState
-                            variant="reviews"
-                            title="Hali sharh yo'q"
-                            description="Birinchi sharhingizni qoldiring — abituriyentlar tanlov qilishda foydalanadi."
-                            action={{
-                              label: "Birinchi sharhingizni yozing",
-                              onClick: handleWriteReviewClick,
-                            }}
-                            className="mt-5"
+                  <section id="reviews" aria-labelledby="university-reviews-heading">
+                    {(detail.review_insight_summary || detail.aspect_averages?.review_count > 0) && (
+                      <div className="space-y-4 border-b border-slate-100 px-5 py-6 dark:border-white/10 sm:px-6">
+                        {detail.review_insight_summary && (
+                          <ReviewInsightSummary
+                            summary={detail.review_insight_summary}
+                            reviewCount={detail.aspect_averages?.review_count ?? detail.review_count}
                           />
                         )}
-
-                        {(detail.reviews?.length ?? 0) > 0 && (
-                          <div className="mt-8">
-                            <button
-                              type="button"
-                              onClick={handleWriteReviewClick}
-                              className="w-full rounded-2xl bg-premium-gradient px-6 py-3.5 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 sm:w-auto"
-                            >
-                              Sharh yozish
-                            </button>
-                            <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                              Sharh yozish uchun talaba hisobi kerak. Bosganda ro&apos;yxatdan o&apos;tish yoki kirish
-                              taklif qilinadi.
+                        {detail.aspect_averages?.review_count > 0 && (
+                          <div>
+                            <p className="text-xs font-black uppercase tracking-wide text-primary">
+                              Mezon bo&apos;yicha o&apos;rtacha
                             </p>
+                            <ReviewAspectRatings averages={detail.aspect_averages} />
                           </div>
                         )}
                       </div>
-                    </>
-                  )}
+                    )}
+
+                    <div className="px-5 py-6 sm:px-6">
+                      <p
+                        id="university-reviews-heading"
+                        className="text-xs font-black uppercase tracking-wide text-primary"
+                      >
+                        Talabalar sharhlari
+                      </p>
+                      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                        Moderatsiyadan o&apos;tgan sharhlar. «Kampus ovozi» — chat a&apos;zoligi
+                        signali, rasmiy OTM tasdiqi emas.{" "}
+                        <Link to="/metodologiya" className="font-bold text-primary hover:underline">
+                          Metodologiya
+                        </Link>
+                      </p>
+
+                      {detail.reviews?.length > 0 ? (
+                        <ul className="mt-5 space-y-4">
+                          {detail.reviews.map((item) => (
+                            <li key={item.id}>
+                              <ReviewCard item={item} hideLike showHelpfulCount showStudentVoiceBadge />
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <EmptyState
+                          variant="reviews"
+                          title="Hali sharh yo'q"
+                          description="Birinchi sharhingizni qoldiring — abituriyentlar tanlov qilishda foydalanadi."
+                          action={{
+                            label: "Birinchi sharhingizni yozing",
+                            onClick: handleWriteReviewClick,
+                          }}
+                          className="mt-5"
+                        />
+                      )}
+
+                      {(detail.reviews?.length ?? 0) > 0 && (
+                        <div className="mt-8">
+                          <button
+                            type="button"
+                            onClick={handleWriteReviewClick}
+                            className="w-full rounded-2xl bg-premium-gradient px-6 py-3.5 text-sm font-black text-white shadow-glow transition hover:-translate-y-0.5 sm:w-auto"
+                          >
+                            Sharh yozish
+                          </button>
+                          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                            Sharh yozish uchun talaba hisobi kerak. Bosganda ro&apos;yxatdan o&apos;tish yoki kirish
+                            taklif qilinadi.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </section>
                 </div>
 
                 <aside className="space-y-4 border-t border-slate-100 p-5 dark:border-white/10 lg:sticky lg:top-28 lg:border-t-0 lg:border-l lg:p-6">
@@ -365,16 +375,31 @@ export default function UniversityPublicPage() {
                   )}
 
                   <SidebarCard title="Joylashuv">
-                    <UniversityMapEmbed
-                      latitude={detail.latitude}
-                      longitude={detail.longitude}
-                      name={detail.name}
-                    />
-                    {(detail.address || detail.location) && (
-                      <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                        {detail.address || detail.location}
+                    {locationDisplay?.showMap ? (
+                      <UniversityMapEmbed
+                        latitude={locationDisplay.latitude}
+                        longitude={locationDisplay.longitude}
+                        name={detail.name}
+                        showMarker={locationDisplay.showMarker}
+                        honestyLabel={locationDisplay.honestyLabel}
+                        cityLabel={locationDisplay.cityLabel}
+                      />
+                    ) : (
+                      <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
+                        {locationDisplay?.honestyLabel ||
+                          "Aniq kampus koordinatasi yo'q — faqat matnli manzil."}
                       </p>
                     )}
+                    {(locationDisplay?.addressLabel || locationDisplay?.cityLabel) && (
+                      <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                        {locationDisplay.addressLabel || locationDisplay.cityLabel}
+                      </p>
+                    )}
+                    {locationDisplay?.precision === "city" && locationDisplay.showMap ? (
+                      <p className="mt-2 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+                        Shahar darajasi — kampus deb o&apos;qimang.
+                      </p>
+                    ) : null}
                   </SidebarCard>
 
                   <SidebarCard title="Sharh qoldiring">

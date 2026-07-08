@@ -22,7 +22,16 @@ class Profile(models.Model):
         default=Role.APPLICANT,
     )
     full_name = models.CharField(max_length=160)
+    # Legacy display string — kept for API/backfill while university_ref is adopted.
     university = models.CharField(max_length=180, blank=True)
+    university_ref = models.ForeignKey(
+        "universities.University",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="profiles",
+        help_text="Katalog OTM (FK). Matnli `university` bilan dual-write.",
+    )
     study_program = models.CharField(max_length=180, blank=True)
     avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
     avatar_visibility = models.CharField(

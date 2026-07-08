@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.test import TestCase
 from rest_framework.test import APIClient
 
@@ -9,6 +10,7 @@ User = get_user_model()
 
 class PublicApiTests(TestCase):
     def setUp(self):
+        cache.clear()
         self.client = APIClient()
         self.university = University.objects.create(
             name="Public API University",
@@ -53,6 +55,14 @@ class PublicApiTests(TestCase):
         self.assertEqual(payload["name"], self.university.name)
         self.assertEqual(payload["review_count"], 1)
         self.assertEqual(len(payload["reviews"]), 1)
+        self.assertIn("tuition_honesty", payload)
+        self.assertIn("disclaimer_kind", payload["tuition_honesty"])
+        self.assertIn(payload["tuition_honesty"]["disclaimer_kind"], {
+            "national_estimate",
+            "estimate",
+            "published_catalog",
+            "unavailable",
+        })
 
     def test_public_sitemap_xml(self):
         response = self.client.get("/api/public/sitemap.xml")
@@ -228,8 +238,6 @@ class PublicApiTests(TestCase):
         )
 
     def test_public_compare_by_ids(self):
-        ids = f"{self.university.id},1,2"
-        # Need 3 valid universities — create two more
         u2 = University.objects.create(
             name="Compare Two",
             short_name="CT",
@@ -248,6 +256,13 @@ class PublicApiTests(TestCase):
         payload = response.json()
         self.assertEqual(len(payload["universities"]), 3)
         self.assertIn("highlights", payload)
+
+        two = self.client.get(
+            "/api/public/compare/",
+            {"ids": f"{self.university.id},{u2.id}"},
+        )
+        self.assertEqual(two.status_code, 200)
+        self.assertEqual(len(two.json()["universities"]), 2)
 
     def test_public_articles_list(self):
         response = self.client.get("/api/public/articles/")
@@ -277,8 +292,12 @@ class PublicApiTests(TestCase):
 
         sitemap_response = self.client.get("/api/public/sitemap.xml")
         sitemap_body = sitemap_response.content.decode()
-        self.assertNotIn("/maqolalar", sitemap_body)
-        self.assertNotIn("test-maqola", sitemap_body)
+        self.assertIn("/maqolalar", sitemap_body)
+        self.assertIn("/maqolalar/test-maqola", sitemap_body)
+        self.assertIn("/metodologiya", sitemap_body)
+        self.assertIn("/ishonch-xavfsizlik", sitemap_body)
+        self.assertNotIn("/login", sitemap_body)
+        self.assertNotIn("/signup", sitemap_body)
 
         share_response = self.client.get("/api/public/share-preview/?path=/maqolalar/test-maqola/")
         self.assertEqual(share_response.status_code, 200)

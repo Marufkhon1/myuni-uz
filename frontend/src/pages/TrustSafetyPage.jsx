@@ -18,6 +18,7 @@ export default function TrustSafetyPage() {
   const { pathname } = useLocation();
 
   const relatedLinks = [
+    { to: "/metodologiya", label: "Metodologiya" },
     { to: "/ishonch-xavfsizlik", label: "Ishonch va xavfsizlik" },
     { to: "/maxfiylik-siyosati", label: "Maxfiylik siyosati" },
     { to: "/sharh-qoidalari", label: "Sharh qoidalari" },
@@ -62,7 +63,7 @@ export default function TrustSafetyPage() {
             <p className="text-base leading-relaxed text-slate-600 dark:text-slate-300">
               {doc.description}
             </p>
-            <p className="text-sm font-semibold text-slate-400">Yangilangan: {doc.updatedAt}</p>
+            <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">Yangilangan: {doc.updatedAt}</p>
           </header>
 
           <div className="mt-10 space-y-8">
@@ -101,7 +102,7 @@ export default function TrustSafetyPage() {
                   }}
                   className={
                     pathname === link.to
-                      ? "text-slate-400 dark:text-slate-500"
+                      ? "text-slate-600 dark:text-slate-300"
                       : "text-primary hover:underline"
                   }
                   aria-current={pathname === link.to ? "page" : undefined}

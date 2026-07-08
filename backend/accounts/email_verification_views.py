@@ -6,7 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.contrib.auth import get_user_model
 
-from .auth_cookies import set_auth_cookies
+from .auth_response import auth_json_response
 from .email_verification import (
     is_email_verified,
     mark_email_verified,
@@ -44,16 +44,12 @@ class EmailVerifyConfirmView(APIView):
             return Response({"detail": error}, status=status.HTTP_400_BAD_REQUEST)
 
         refresh = RefreshToken.for_user(user)
-        response = Response(
-            {
-                "detail": "Email muvaffaqiyatli tasdiqlandi.",
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
-                "user": UserSerializer(user, context={"request": request}).data,
-            }
+        return auth_json_response(
+            refresh,
+            user_data=UserSerializer(user, context={"request": request}).data,
+            extra={"detail": "Email muvaffaqiyatli tasdiqlandi."},
+            request=request,
         )
-        set_auth_cookies(response, refresh)
-        return response
 
 
 class EmailVerifyResendView(APIView):

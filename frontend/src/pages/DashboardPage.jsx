@@ -131,7 +131,7 @@ export default function DashboardPage({ role }) {
   const refreshChatSummariesRef = useRef(refreshChatSummaries);
 
   useEffect(() => {
-    refreshChatSummariesRef.current = refreshChatSummaries;
+  refreshChatSummariesRef.current = refreshChatSummaries;
   }, [refreshChatSummaries]);
 
   const reviewNavBridgeRef = useRef({
@@ -502,9 +502,9 @@ export default function DashboardPage({ role }) {
 
   useDashboardOnboarding({
     isDataLoading,
-    profile,
+      profile,
     joinedUniversityIds,
-    universities,
+      universities,
     setOnboardingOpen,
   });
 
@@ -525,10 +525,10 @@ export default function DashboardPage({ role }) {
 
     setIsLoggingOut(true);
     try {
-      await logout();
+    await logout();
     } finally {
-      navigate("/", { replace: true });
-    }
+    navigate("/", { replace: true });
+  }
   }, [isLoggingOut, logout, navigate]);
 
   const dashboardChatSectionValue = useDashboardChatSectionValue({
@@ -610,22 +610,22 @@ export default function DashboardPage({ role }) {
     requestDeletePrivateMessage,
   });
 
-  return (
+    return (
     <DashboardProvider value={dashboardContextValue}>
     <>
     <DashboardLayout
       role={role}
-      cabinetEyebrow={cabinetEyebrow}
-      visibleMenuItems={visibleMenuItems}
-      activeSection={activeSection}
-      onChangeSection={changeSection}
-      isStudent={isStudent}
-      displayName={displayName}
-      isDark={isDark}
-      onToggleTheme={() => setIsDark((value) => !value)}
-      onLogout={handleLogout}
+          cabinetEyebrow={cabinetEyebrow}
+          visibleMenuItems={visibleMenuItems}
+          activeSection={activeSection}
+          onChangeSection={changeSection}
+          isStudent={isStudent}
+            displayName={displayName}
+            isDark={isDark}
+            onToggleTheme={() => setIsDark((value) => !value)}
+            onLogout={handleLogout}
       isLoggingOut={isLoggingOut}
-      notifications={notifications}
+            notifications={notifications}
       isDataLoading={isDataLoading}
       isWideChatLayout={dashboardChatSectionValue.isWideChatLayout}
     >

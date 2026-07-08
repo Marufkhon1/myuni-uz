@@ -23,7 +23,7 @@ export function buildHeroStats(stats) {
     },
     {
       value: formatLandingStat(stats.review_count),
-      label: "Tasdiqlangan sharh",
+      label: "Sharhlar",
     },
     {
       value: formatLandingStat(stats.member_count),
@@ -39,7 +39,7 @@ export function buildAboutStats(stats) {
 
   return [
     { value: formatLandingStat(stats.university_count), label: "Universitet" },
-    { value: formatLandingStat(stats.review_count), label: "Tasdiqlangan sharh" },
+    { value: formatLandingStat(stats.review_count), label: "Sharhlar" },
     { value: formatLandingStat(stats.member_count), label: "Ro'yxatdan o'tgan" },
     { value: formatLandingStat(stats.chat_member_count), label: "Chat a'zosi" },
   ];
@@ -69,7 +69,7 @@ export function buildSocialProofHighlights(stats) {
   if (stats.chat_member_count > 0) {
     highlights.push({
       value: formatLandingStat(stats.chat_member_count),
-      label: "Chatda faol foydalanuvchi",
+      label: "Chat a'zosi",
     });
   }
 

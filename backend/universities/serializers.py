@@ -17,7 +17,11 @@ from .models import (
     University,
 )
 from .review_validation import validate_aspect_rating, validate_review_text
-from .review_trust_utils import MAX_REVIEW_IMAGES, is_verified_student_user
+from .review_trust_utils import (
+    MAX_REVIEW_IMAGES,
+    campus_affiliation_label,
+    is_campus_affiliated_user,
+)
 from .reaction_utils import reactions_summary_for_message
 from .unread_utils import (
     direct_unread_message_count,
@@ -203,7 +207,10 @@ class ReviewSerializer(serializers.ModelSerializer):
     helpful_count = serializers.SerializerMethodField()
     liked_by_me = serializers.BooleanField(read_only=True, default=False)
     is_mine = serializers.SerializerMethodField()
+    campus_affiliated = serializers.SerializerMethodField()
+    # Deprecated alias of campus_affiliated — keep until clients migrate.
     is_verified_student = serializers.SerializerMethodField()
+    campus_affiliation_label = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
     official_reply = serializers.SerializerMethodField()
     status = serializers.CharField(read_only=True)
@@ -234,7 +241,9 @@ class ReviewSerializer(serializers.ModelSerializer):
             "helpful_count",
             "liked_by_me",
             "is_mine",
+            "campus_affiliated",
             "is_verified_student",
+            "campus_affiliation_label",
             "images",
             "official_reply",
         ]
@@ -254,7 +263,9 @@ class ReviewSerializer(serializers.ModelSerializer):
             "helpful_count",
             "liked_by_me",
             "is_mine",
+            "campus_affiliated",
             "is_verified_student",
+            "campus_affiliation_label",
             "images",
             "official_reply",
         ]
@@ -267,8 +278,14 @@ class ReviewSerializer(serializers.ModelSerializer):
     def get_helpful_count(self, obj):
         return getattr(obj, "like_count", None) or obj.likes.count()
 
+    def get_campus_affiliated(self, obj):
+        return is_campus_affiliated_user(obj.user, obj.university_id)
+
     def get_is_verified_student(self, obj):
-        return is_verified_student_user(obj.user, obj.university_id)
+        return self.get_campus_affiliated(obj)
+
+    def get_campus_affiliation_label(self, obj):
+        return campus_affiliation_label(obj.user, obj.university_id)
 
     def get_images(self, obj):
         request = self.context.get("request")

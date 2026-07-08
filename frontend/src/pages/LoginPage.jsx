@@ -9,11 +9,10 @@ import { useToast } from "@/hooks/useToast.js";
 import { getGoogleAuthUrl } from "@/services/authService.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { getApiErrorMessage } from "@/utils/apiErrors.js";
-import {
-  collectLoginPayloadWithRetry,
-  validateLoginPayload,
-} from "@/utils/authForm.js";
+import { mergeLoginPayload, validateLoginPayload } from "@/utils/authForm.js";
 import { dashboardPathForRole } from "@/utils/navigation.js";
+
+const LOGIN_AUTOFILL_FIELDS = ["username", "password"];
 
 function resolveAfterAuthPath(user, nextParam) {
   if (nextParam && nextParam.startsWith("/")) {
@@ -34,6 +33,7 @@ export default function LoginPage() {
   const nextPath = searchParams.get("next");
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
+  const submittingRef = useRef(false);
   const [form, setForm] = useState({ username: "", password: "" });
   const [fieldErrors, setFieldErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,7 +42,7 @@ export default function LoginPage() {
     setForm((current) => ({ ...current, ...snapshot }));
   }, []);
 
-  const formRef = useFormAutofillSync(["username", "password"], syncAutofillFields);
+  const formRef = useFormAutofillSync(LOGIN_AUTOFILL_FIELDS, syncAutofillFields);
 
   useEffect(() => {
     const googleError = searchParams.get("google_error");
@@ -52,7 +52,7 @@ export default function LoginPage() {
   }, [searchParams, toast]);
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
+    if (!isLoading && isAuthenticated && !submittingRef.current) {
       navigate(resolveAfterAuthPath(user, nextPath), { replace: true });
     }
   }, [isAuthenticated, isLoading, navigate, nextPath, user]);
@@ -65,27 +65,31 @@ export default function LoginPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
-    if (isSubmitting) {
+    if (submittingRef.current) {
       return;
     }
 
     const formElement = event.currentTarget;
+    submittingRef.current = true;
     setIsSubmitting(true);
     setFieldErrors({});
 
     try {
-      const payload = await collectLoginPayloadWithRetry(formElement, {
+      const payload = mergeLoginPayload(formElement, {
         usernameRef,
         passwordRef,
         state: form,
       });
-      setForm((current) => ({ ...current, ...payload }));
+      setForm((current) => ({
+        ...current,
+        username: payload.username,
+        password: payload.password,
+      }));
 
       const validationErrors = validateLoginPayload(payload);
       if (Object.keys(validationErrors).length > 0) {
         setFieldErrors(validationErrors);
-        const firstError = validationErrors.username || validationErrors.password;
-        toast.error(firstError);
+        toast.error(validationErrors.username || validationErrors.password);
         return;
       }
 
@@ -99,6 +103,7 @@ export default function LoginPage() {
         )
       );
     } finally {
+      submittingRef.current = false;
       setIsSubmitting(false);
     }
   }
@@ -129,7 +134,7 @@ export default function LoginPage() {
       <div>
         <h1 className="text-2xl font-black tracking-tight sm:text-3xl">Kirish</h1>
         <p className="mt-3 text-slate-600 dark:text-slate-300">
-          Login va parolingiz bilan kiring.
+          Login yoki email va parolingiz bilan kiring.
         </p>
       </div>
 
@@ -149,14 +154,14 @@ export default function LoginPage() {
         <FormField
           id="login-username"
           name="username"
-          label="Login"
+          label="Login yoki email"
           value={form.username}
           onChange={updateField}
           inputRef={usernameRef}
           error={fieldErrors.username}
           required
           autoComplete="username"
-          placeholder="masalan: ali_valiyev"
+          placeholder="masalan: ali_valiyev yoki email"
           inputClassName="myuni-autofill-aware"
         />
 

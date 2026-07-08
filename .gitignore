@@ -11,6 +11,7 @@ backend/.env
 frontend/.env
 frontend/.env.local
 frontend/.env.production
+deploy/turon/production.env
 
 # Python
 .venv/

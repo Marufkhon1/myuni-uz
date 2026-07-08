@@ -8,7 +8,7 @@ import {
 } from "../utils/authStorage.js";
 import { dispatchAuthLogout } from "../utils/authEvents.js";
 
-export { clearTokens };
+export { clearTokens, markCookieSession };
 
 const LOGOUT_REQUEST_TIMEOUT_MS = 8000;
 
@@ -52,6 +52,17 @@ export async function establishAuthSession(tokens) {
 
 
 
+export async function exchangeAuthCode(code) {
+  const { data } = await api.post(
+    "/auth/exchange/",
+    { code },
+    { timeout: 20000 }
+  );
+  return finalizeAuthSession(data);
+}
+
+
+
 export async function logoutSession() {
   dispatchAuthLogout();
 
@@ -81,8 +92,8 @@ export async function login(payload) {
   const password = String(payload?.password ?? "");
 
   if (!username) {
-    throw Object.assign(new Error("Login kiriting."), {
-      response: { data: { username: ["Login kiriting."] } },
+    throw Object.assign(new Error("Login yoki email kiriting."), {
+      response: { data: { username: ["Login yoki email kiriting."] } },
     });
   }
   if (!password) {
@@ -91,12 +102,20 @@ export async function login(payload) {
     });
   }
 
-  const { data } = await api.post("/auth/login/", { username, password });
+  const { data } = await api.post(
+    "/auth/login/",
+    { username, password },
+    { timeout: 20000 }
+  );
+
+  if (!data?.user) {
+    throw Object.assign(new Error("Kirish muvaffaqiyatsiz. Qayta urinib ko'ring."), {
+      response: { data: { detail: "Kirish muvaffaqiyatsiz. Qayta urinib ko'ring." } },
+    });
+  }
 
   finalizeAuthSession(data);
-
   return data.user;
-
 }
 
 

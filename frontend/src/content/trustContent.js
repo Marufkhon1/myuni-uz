@@ -12,32 +12,42 @@ export const trustSafetyDocument = {
 Maqsad — haqorat, spam va yolg'on kontentni kamaytirish, lekin ochiq fikr almashish imkoniyatini saqlab qolish.`,
     },
     {
-      heading: "2. Kirish va parol",
-      body: `Ro'yxatdan o'tishda login, email va parol kiritiladi. Kirish uchun login ishlatiladi. Parolni unutganingizda ro'yxatdan o'tgan email manzilingizga tiklash havolasi yuboriladi.
+      heading: "2. Kirish, login va email",
+      body: `Ro'yxatdan o'tishda login, email va parol kiritiladi. Hisob darhol faollashadi — emailni tasdiqlash sharh yozish yoki kirish uchun talab qilinmaydi.
+
+Kirish uchun login yoki email + parol ishlatiladi. Parolni unutganingizda ro'yxatdan o'tgan email manzilingizga tiklash havolasi yuboriladi (bu oqim email orqali tasdiqlanadi).
 
 Google orqali kirishda email Google hisobingizdan olinadi.`,
     },
     {
-      heading: "3. Shikoyat qilish",
+      heading: "3. Sharh belgilari",
+      body: `Sharh yonidagi «Kampus ovozi» belgisi — bu universitet chatiga a'zo bo'lgan yoki profilida shu OTM ni ko'rsatgan talaba ekanligini bildiradi. Bu rasmiy universitet tasdig'i yoki hujjatli tekshiruv emas.
+
+Boshqa belgilar («Talaba tajribasi», «Abituriyent fikri») muallifning rolini ko'rsatadi.`,
+    },
+    {
+      heading: "4. Shikoyat qilish",
       body: `Har qanday sharh yoki chat xabarini shikoyat qilishingiz mumkin. Shikoyat yuborilgach, holati «Ko'rib chiqish kutilmoqda» yoki «Ko'rib chiqilmoqda» deb ko'rsatiladi.
 
 Holat o'zgarganda bildirishnoma ham keladi.`,
     },
     {
-      heading: "4. Moderatsiya",
-      body: `Sharhlar va shikoyatlar moderatorlar tomonidan ko'rib chiqiladi. Moderatorlar platforma qoidalariga asoslanib kontentni tasdiqlaydi, yashiradi yoki foydalanuvchini cheklaydi.
+      heading: "5. Moderatsiya",
+      body: `Ishlab chiqarish muhitida yangi sharhlar avval moderatsiya navbatiga tushadi, keyin ommaviy ko'rinadi. Moderatorlar platforma qoidalariga asoslanib kontentni tasdiqlaydi, yashiradi yoki foydalanuvchini cheklaydi.
 
 Shikoyat holatlari: kutilmoqda, ko'rib chiqilmoqda, hal qilindi, rad etildi. Har bir holat foydalanuvchiga tushunarli tarzda ko'rsatiladi.`,
     },
     {
-      heading: "5. Bloklash va cheklovlar",
+      heading: "6. Bloklash va cheklovlar",
       body: `Chatda foydalanuvchini bloklashingiz mumkin — ularning xabarlari sizga ko'rinmaydi. Platforma spam va suiiste'mol oldini olish uchun so'rovlar tezligini (rate limit) cheklashi mumkin.
 
 Limitga yetganda aniq vaqt ko'rsatiladi — qancha kutish kerakligi ekranda yoziladi.`,
     },
     {
-      heading: "6. Ma'lumotlaringiz himoyasi",
+      heading: "7. Ma'lumotlaringiz himoyasi",
       body: `Shaxsiy ma'lumotlar maxfiylik siyosatiga muvofiq saqlanadi. Parollar shifrlangan holda saqlanadi. Profil rasmi ko'rinishini o'zingiz boshqarasiz.
+
+Kirish sessiyasi httpOnly cookie orqali saqlanadi — JWT tokenlar brauzer manzil satriga (URL) yozilmaydi. Google orqali kirishda bir martalik kod ishlatiladi, keyin cookie o'rnatiladi. Kirish va ro'yxatdan o'tish so'rovlari tezligi cheklangan (brute-force himoyasi).
 
 Savollar bo'yicha: hello@myuni.uz`,
     },

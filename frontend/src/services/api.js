@@ -7,6 +7,7 @@ import {
   markCookieSession,
   saveTokens,
 } from "../utils/authStorage.js";
+import { attachCsrfHeader, getCsrfToken, isUnsafeHttpMethod } from "../utils/csrf.js";
 
 function resolveApiBaseUrl() {
   if (import.meta.env.VITE_API_BASE_URL) {
@@ -26,12 +27,40 @@ export const api = axios.create({
     "Content-Type": "application/json",
   },
   withCredentials: true,
+  xsrfCookieName: "csrftoken",
+  xsrfHeaderName: "X-CSRFToken",
 });
 
-api.interceptors.request.use((config) => {
+let csrfBootstrapPromise = null;
+
+/** Ensure readable csrftoken cookie exists (idempotent). */
+export async function ensureCsrfCookie() {
+  if (getCsrfToken()) {
+    return getCsrfToken();
+  }
+  if (!csrfBootstrapPromise) {
+    csrfBootstrapPromise = api
+      .get("/auth/csrf/")
+      .then(() => getCsrfToken())
+      .catch(() => "")
+      .finally(() => {
+        csrfBootstrapPromise = null;
+      });
+  }
+  return csrfBootstrapPromise;
+}
+
+api.interceptors.request.use(async (config) => {
   const token = getAccessToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  if (isUnsafeHttpMethod(config.method) && !getCsrfToken()) {
+    await ensureCsrfCookie();
+  }
+  if (isUnsafeHttpMethod(config.method)) {
+    Object.assign(config.headers, attachCsrfHeader());
   }
   return config;
 });
@@ -59,11 +88,15 @@ api.interceptors.response.use(
     originalRequest._retry = true;
 
     try {
+      await ensureCsrfCookie();
       const refreshBody = refresh ? { refresh } : {};
       const { data } = await axios.post(
         `${api.defaults.baseURL}/auth/token/refresh/`,
         refreshBody,
-        { withCredentials: true }
+        {
+          withCredentials: true,
+          headers: attachCsrfHeader({ "Content-Type": "application/json" }),
+        }
       );
 
       if (data.access) {

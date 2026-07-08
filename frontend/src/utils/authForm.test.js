@@ -75,7 +75,7 @@ describe("collectLoginPayloadWithRetry", () => {
 describe("validateLoginPayload", () => {
   it("returns uzbek field errors for missing values", () => {
     expect(validateLoginPayload({ username: "", password: "" })).toEqual({
-      username: "Login kiriting.",
+      username: "Login yoki email kiriting.",
       password: "Parol kiriting.",
     });
   });

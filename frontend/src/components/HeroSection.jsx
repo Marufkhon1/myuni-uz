@@ -1,27 +1,16 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import HeroRotatingText from "./HeroRotatingText.jsx";
 import HeroSearchBar from "./HeroSearchBar.jsx";
 import Skeleton from "./ui/Skeleton.jsx";
 import { useDarkMode } from "../hooks/useDarkMode.js";
 import { getPublicPlatformStats } from "../services/publicService.js";
 import { buildHeroStats, formatLandingStat } from "../utils/landingStats.js";
-import { useNavigate } from "react-router-dom";
-import { scrollToLandingSection } from "../utils/landingScroll.js";
 
 const headlineWords = ["toping", "tanlang", "solishtiring", "baholang"];
 
-const liveTaglines = [
-  "talabalar hozir sharh yozmoqda",
-  "qabul bo'yicha savollar berilmoqda",
-  "universitetlar solishtirilmoqda",
-];
-
-const previewRotatingPhrases = [
-  "haqiqiy sharhlar",
-  "keng katalog",
-  "jonli muhokama",
-];
+const previewRotatingPhrases = ["haqiqiy sharhlar", "keng katalog", "talaba suhbatlari"];
 
 const heroPreviewBg = "/images/hero/landing-campus.jpg";
 
@@ -31,7 +20,7 @@ const previewTabs = [
     label: "Sharhlar",
     caption: "Talaba tajribasi",
     panelTitle: "Haqiqiy sharhlar",
-    panelText: "Talabalar tajribasi, reyting va fikrlar bir joyda.",
+    panelText: "Reyting, tafsilotlar va moderatsiyadan o'tgan fikrlar bir joyda.",
   },
   {
     id: "universities",
@@ -43,9 +32,9 @@ const previewTabs = [
   {
     id: "community",
     label: "Hamjamiyat",
-    caption: "Jonli chat",
-    panelTitle: "Jonli muhokama",
-    panelText: "Qabul, grant va talaba hayoti haqida savol-javob.",
+    caption: "OTM guruhlari",
+    panelTitle: "Talaba suhbatlari",
+    panelText: "Qabul, grant va talaba hayoti haqida ochiq savol-javob.",
   },
 ];
 
@@ -64,7 +53,7 @@ const innerFloatCards = [
 
 const loadingStats = [
   { value: "…", label: "Universitet" },
-  { value: "…", label: "Tasdiqlangan sharh" },
+  { value: "…", label: "Sharhlar" },
   { value: "…", label: "Ro'yxatdan o'tgan" },
 ];
 
@@ -78,7 +67,7 @@ function HeroStatsGrid({ stats, isLoading, isDark }) {
   return (
     <dl
       className={
-        "mt-10 grid grid-cols-1 gap-6 rounded-2xl border p-4 sm:grid-cols-3 sm:gap-4 sm:p-5 " +
+        "mt-8 grid grid-cols-1 gap-4 rounded-2xl border p-4 sm:grid-cols-3 sm:gap-4 sm:p-5 " +
         (isDark ? "border-white/10 bg-white/[0.03]" : "border-slate-200/80 bg-white/70 shadow-sm")
       }
     >
@@ -110,16 +99,45 @@ function HeroStatsGrid({ stats, isLoading, isDark }) {
   );
 }
 
-function HeroPreviewPanel({ isDark, universityCaption }) {
+function HeroTrustStrip({ isDark, reviewCount }) {
+  const chipClass =
+    "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold transition sm:text-[13px] " +
+    (isDark
+      ? "bg-white/[0.06] text-slate-300 ring-1 ring-inset ring-white/10 hover:bg-white/[0.1] hover:text-white hover:ring-white/20"
+      : "bg-slate-100/90 text-slate-600 ring-1 ring-inset ring-slate-200/80 hover:bg-white hover:text-primary hover:ring-primary/25");
+
+  return (
+    <div className="mt-5 flex flex-wrap items-center gap-2" aria-label="Ishonch va tez ishlar">
+      <span
+        className={
+          "inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-xs font-bold sm:text-[13px] " +
+          (isDark
+            ? "bg-emerald-400/10 text-emerald-200 ring-1 ring-inset ring-emerald-400/25"
+            : "bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200/80")
+        }
+      >
+        <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
+        {reviewCount != null
+          ? `${formatLandingStat(reviewCount)} ta moderatsiyadan o'tgan sharh`
+          : "Moderatsiyadan o'tgan sharhlar"}
+      </span>
+
+      <Link to="/ishonch-xavfsizlik" className={chipClass}>
+        Ishonch qoidalari
+      </Link>
+      <Link to="/taqqoslash" className={chipClass}>
+        OTMlarni taqqoslash
+        <span aria-hidden="true" className="text-[10px] opacity-70">
+          →
+        </span>
+      </Link>
+    </div>
+  );
+}
+
+function HeroPreviewPanel({ isDark, universityCaption, footerStat }) {
   const [activeTabId, setActiveTabId] = useState("reviews");
-  const [isLive, setIsLive] = useState(true);
-
   const activeTab = previewTabs.find((tab) => tab.id === activeTabId) ?? previewTabs[0];
-
-  function handleLiveToggle() {
-    setIsLive((current) => !current);
-    setActiveTabId("community");
-  }
 
   return (
     <div
@@ -226,44 +244,27 @@ function HeroPreviewPanel({ isDark, universityCaption }) {
       >
         <div className="min-w-0">
           <p className={"text-[11px] font-bold uppercase tracking-wide " + (isDark ? "text-slate-400" : "text-slate-500")}>
-            Muhokamada
+            Ishonch
           </p>
           <p className={"mt-0.5 text-sm font-black leading-snug " + (isDark ? "text-white" : "text-slate-950")}>
-            Talabalar bilan qabul bo&apos;yicha savol-javob
+            Moderatsiya · Kampus ovozi · Shikoyat
           </p>
         </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={isLive}
-          aria-label={isLive ? "Jonli rejimni o'chirish" : "Jonli rejimni yoqish"}
-          onClick={handleLiveToggle}
+        <span
           className={
-            "inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-black transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/50 " +
-            (isLive
-              ? isDark
-                ? "bg-emerald-400/15 text-emerald-300"
-                : "bg-emerald-100 text-emerald-700"
-              : isDark
-                ? "bg-slate-700/50 text-slate-400"
-                : "bg-slate-100 text-slate-500")
+            "inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-black " +
+            (isDark ? "bg-emerald-400/15 text-emerald-300" : "bg-emerald-100 text-emerald-700")
           }
         >
-          <span
-            className={
-              "h-1.5 w-1.5 rounded-full transition-colors " +
-              (isLive ? "animate-pulse bg-emerald-500" : "bg-slate-400")
-            }
-          />
-          {isLive ? "Jonli" : "Oflayn"}
-        </button>
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+          {footerStat}
+        </span>
       </div>
     </div>
   );
 }
 
 export default function HeroSection() {
-  const navigate = useNavigate();
   const { isDark } = useDarkMode();
   const [platformStats, setPlatformStats] = useState(null);
   const [isStatsLoading, setIsStatsLoading] = useState(true);
@@ -297,7 +298,10 @@ export default function HeroSection() {
   const heroStats = buildHeroStats(platformStats);
   const universityCaption = platformStats?.university_count
     ? `${formatLandingStat(platformStats.university_count)} ta OTM`
-    : "207 ta OTM";
+    : "OTM katalogi";
+  const footerStat = platformStats?.review_count
+    ? `${formatLandingStat(platformStats.review_count)} sharh`
+    : "Haqiqiy ma'lumot";
 
   return (
     <section
@@ -312,7 +316,7 @@ export default function HeroSection() {
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <div
           className={
-            "absolute -right-24 top-16 h-72 w-72 rounded-full blur-3xl " +
+            "absolute -right-24 top-28 h-72 w-72 rounded-full blur-3xl " +
             (isDark ? "bg-blue-500/15" : "bg-blue-400/20")
           }
         />
@@ -324,7 +328,7 @@ export default function HeroSection() {
         />
         <div
           className={
-            "absolute left-1/2 top-1/3 h-96 w-96 -translate-x-1/2 rounded-full blur-3xl " +
+            "absolute left-1/2 top-[42%] h-96 w-96 -translate-x-1/2 rounded-full blur-3xl " +
             (isDark ? "bg-primary/10" : "bg-blue-300/15")
           }
         />
@@ -352,67 +356,23 @@ export default function HeroSection() {
               (isDark ? "text-slate-300" : "text-slate-600")
             }
           >
-            Universitetlarni solishtiring, ishonchli sharhlarni o&apos;qing va kelajagingiz
-            uchun muhim qaror qabul qilishdan oldin real talabalar fikrini bilib oling.
-          </p>
-
-          <p
-            className={
-              "mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold " +
-              (isDark ? "text-slate-400" : "text-slate-500")
-            }
-          >
-            <span className="inline-flex items-center gap-1.5">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
-              Hozir:
-            </span>
-            <HeroRotatingText
-              words={liveTaglines}
-              intervalMs={3200}
-              className="inline-block overflow-visible py-0.5 font-bold"
-            />
+            Universitetlarni solishtiring, moderatsiyadan o&apos;tgan sharhlarni o&apos;qing va
+            qaroringizni real talaba fikri asosida qabul qiling.
           </p>
 
           <HeroSearchBar className="mt-8" isDark={isDark} />
 
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:gap-4">
-            <button
-              type="button"
-              className="landing-btn-gradient px-7 py-4 text-center text-base shadow-[0_12px_32px_-12px_rgba(37,99,235,0.55)]"
-              onClick={() => navigate("/universitetlar")}
-            >
-              Barcha universitetlar
-            </button>
-            <button
-              type="button"
-              className="rounded-full border px-7 py-4 text-center text-base font-black transition bg-white/90 border-slate-300 text-slate-900 shadow-sm hover:border-primary/40 hover:bg-slate-50 dark:border-white/25 dark:bg-white/10 dark:text-white dark:hover:border-white/40 dark:hover:bg-white/15"
-              onClick={() => navigate("/login?next=/dashboard?section=compare")}
-            >
-              Universitetlarni taqqoslash
-            </button>
-            <a
-              href="#how-it-works"
-              className={
-                "rounded-full border px-7 py-4 text-center text-base font-black transition sm:hidden " +
-                (isDark
-                  ? "border-white/25 bg-white/10 text-white hover:border-white/40 hover:bg-white/15"
-                  : "border-slate-300 bg-white text-slate-900 shadow-sm hover:border-primary/40 hover:bg-slate-50")
-              }
-              onClick={(event) => {
-                event.preventDefault();
-                scrollToLandingSection("#how-it-works");
-                window.history.replaceState(null, "", "#how-it-works");
-              }}
-            >
-              Qanday ishlaydi?
-            </a>
-          </div>
+          <HeroTrustStrip isDark={isDark} reviewCount={platformStats?.review_count} />
 
           <HeroStatsGrid stats={heroStats} isLoading={isStatsLoading} isDark={isDark} />
         </div>
 
         <div className="hero-enter-right mx-auto w-full max-w-md lg:max-w-none [animation:hero-fade-scale_0.7s_ease-out_0.15s_both]">
-          <HeroPreviewPanel isDark={isDark} universityCaption={universityCaption} />
+          <HeroPreviewPanel
+            isDark={isDark}
+            universityCaption={universityCaption}
+            footerStat={footerStat}
+          />
         </div>
       </div>
     </section>

@@ -13,6 +13,7 @@ from .models import (
 from .rating_utils import annotate_bayesian_rating, bayesian_rating, rating_confidence_label
 from .search_utils import apply_university_search
 from .serializers import UniversitySerializer
+from .published_tuition import tuition_honesty_for_university
 
 CITY_COORDINATES = {
     "Toshkent": (Decimal("41.299500"), Decimal("69.240100")),
@@ -36,8 +37,8 @@ OWNERSHIP_FROM_INSTITUTION = {
     "Xalqaro universitet": University.OwnershipType.INTERNATIONAL,
 }
 
-MIN_COMPARE = 3
-MAX_COMPARE = 3
+MIN_COMPARE = 2
+MAX_COMPARE = 4
 
 SORT_ORDERS = {
     "name": ("name",),
@@ -106,8 +107,11 @@ def parse_compare_ids(ids_param):
     except ValueError:
         return None, "Universities id lari noto'g'ri."
 
-    if len(university_ids) != MAX_COMPARE:
-        return None, f"Taqqoslash uchun aynan {MAX_COMPARE} ta universitet tanlang."
+    if not (MIN_COMPARE <= len(university_ids) <= MAX_COMPARE):
+        return (
+            None,
+            f"Taqqoslash uchun {MIN_COMPARE}–{MAX_COMPARE} ta universitet tanlang.",
+        )
 
     if len(set(university_ids)) != len(university_ids):
         return None, "Bir xil universitetni ikki marta tanlab bo'lmaydi."
@@ -225,6 +229,7 @@ def serialize_university_card(university):
         "display_rating": display_rating,
         "review_count": review_count,
         "rating_confidence": rating_confidence_label(review_count),
+        "tuition_honesty": tuition_honesty_for_university(university),
     }
 
 
@@ -262,6 +267,7 @@ def serialize_university_detail(university, *, include_faculties=False, include_
         "review_count": review_count,
         "rating_confidence": rating_confidence_label(review_count),
         "rating_distribution": rating_distribution(university.id),
+        "tuition_honesty": tuition_honesty_for_university(university),
     }
 
     if include_faculties:

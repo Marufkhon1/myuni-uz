@@ -435,7 +435,7 @@ export default function DashboardHomeSection({
                     {compareSuggestion.universities.map((u) => u.short_name).join(" · ")}
                   </p>
                   <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400">
-                    3 ta OTM — reyting, sharhlar va chat faolligini solishtiring.
+                    2–4 ta OTM — reyting, sharhlar va chat faolligini solishtiring.
                   </p>
                   <button
                     type="button"

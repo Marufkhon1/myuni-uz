@@ -48,7 +48,7 @@ export default function UniversityPublicFaculties({ faculties = [] }) {
   });
 
   return (
-    <section className="border-b border-slate-100 px-5 py-6 dark:border-white/10 sm:px-6">
+    <section className="border-b border-slate-100 px-5 py-6 dark:border-white/10 sm:px-6" id="programs">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-xs font-black uppercase tracking-wide text-primary">Ta&apos;lim yo&apos;nalishlari</p>

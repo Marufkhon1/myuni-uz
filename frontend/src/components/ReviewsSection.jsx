@@ -8,6 +8,7 @@ import FilterSelect from "./ui/FilterSelect.jsx";
 import { useToast } from "../hooks/useToast.js";
 import { getPublicRecentReviews, getPublicReviewFilters } from "../services/publicService.js";
 import { resolveMediaUrl } from "../utils/media.js";
+import { campusAffiliationLabel, isCampusAffiliated } from "../utils/campusAffiliation.js";
 
 const DEFAULT_FILTERS = {
   city: "",
@@ -165,8 +166,8 @@ export default function ReviewsSection() {
             Haqiqiy talaba tajribalari.
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">
-            O&apos;qituvchilar, yotoqxona va infratuzilma bo&apos;yicha baholar, tasdiqlangan talaba
-            belgisi va qulay filtrlar — universitet tanlash uchun haqiqiy fikrlar.
+            O&apos;qituvchilar, yotoqxona va infratuzilma bo&apos;yicha baholar. «Kampus ovozi»
+            chat a&apos;zoligini bildiradi; yangi sharhlar moderatsiyadan o&apos;tadi.
           </p>
         </div>
 
@@ -275,9 +276,9 @@ export default function ReviewsSection() {
                   <div className="min-w-0">
                     <p className="flex flex-wrap items-center gap-2 font-black">
                       <span>{review.author}</span>
-                      {review.is_verified_student && (
+                      {isCampusAffiliated(review) && (
                         <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-black uppercase text-emerald-700 dark:bg-emerald-400/20 dark:text-emerald-200">
-                          ✓ Tasdiqlangan
+                          {campusAffiliationLabel(review)}
                         </span>
                       )}
                     </p>

@@ -154,9 +154,8 @@ function DemoBrowserChrome({ activeScene, children, isLoading, sceneProgress }) 
               myuni.uz — {activeScene.label}
             </span>
           </div>
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-emerald-700 ring-1 ring-emerald-500/20 dark:text-emerald-300">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
-            Live
+          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-slate-950/5 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-slate-600 ring-1 ring-slate-200/80 dark:bg-white/10 dark:text-slate-200 dark:ring-white/15">
+            Demo
           </span>
         </div>
       </div>
@@ -303,7 +302,7 @@ function ReviewsScene({ review }) {
           numericClassName="ml-2 text-sm font-black text-slate-500 dark:text-slate-400"
         />
         <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-700 ring-1 ring-emerald-500/20 dark:text-emerald-300">
-          ✓ Tasdiqlangan
+          Kampus ovozi
         </span>
       </div>
     </div>
@@ -315,7 +314,7 @@ function CompareScene({ universities }) {
     return (
       <DemoEmptyState
         title="Taqqoslash uchun yetarli ma'lumot yo'q"
-        description="Kamida uchta universitet va sharhlar bo'lganda taqqoslash ko'rsatiladi."
+        description="Kamida ikkita universitet va sharhlar bo'lganda taqqoslash ko'rsatiladi."
       />
     );
   }
@@ -427,11 +426,6 @@ function ChatScene({ messages, chatUniversity }) {
               </motion.div>
             );
           })}
-          <div className="mr-auto flex items-center gap-1 rounded-2xl bg-white px-3 py-2 shadow-sm ring-1 ring-slate-200/80 dark:bg-white/[0.06] dark:ring-white/10">
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:0ms]" />
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:120ms]" />
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-slate-400 [animation-delay:240ms]" />
-          </div>
         </div>
       </div>
     </div>
@@ -581,8 +575,7 @@ export default function ProductDemoSection() {
           <div className="flex flex-wrap items-center gap-3">
             <span className="eyebrow">Platforma demo</span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-950 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white dark:bg-white dark:text-slate-950">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              Jonli ma&apos;lumot
+              Bazadan
             </span>
           </div>
 
@@ -653,13 +646,13 @@ export default function ProductDemoSection() {
             })}
           </ol>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <Link to="/signup" className="landing-btn-gradient px-7 py-4 text-center text-base">
               Bepul boshlash
             </Link>
             <a
               href="#universities"
-              className="landing-btn-outline px-7 py-4 text-center text-base"
+              className="px-2 py-2 text-center text-sm font-bold text-slate-500 underline-offset-4 transition hover:text-primary hover:underline dark:text-slate-400 dark:hover:text-blue-300 sm:px-3"
               onClick={(event) => {
                 event.preventDefault();
                 scrollToLandingSection("#universities");
@@ -697,7 +690,7 @@ export default function ProductDemoSection() {
                   {isPlaying ? "Pauza" : "Davom etish"}
                 </button>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  {availableScenes.length} ta jonli sahna
+                  {availableScenes.length} ta demo sahna
                 </span>
               </div>
               <DemoTimelineBar

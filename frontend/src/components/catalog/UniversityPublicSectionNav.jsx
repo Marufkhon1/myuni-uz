@@ -1,5 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { buildDashboardSectionPath } from "@/utils/navigation.js";
+import {
+  UNIVERSITY_PUBLIC_REVIEWS_HASH,
+  buildUniversityPublicSectionUrl,
+} from "@/utils/universityPublicHash.js";
 import { UNIVERSITY_PUBLIC_SECTIONS } from "@/utils/universityPublicSections.js";
 
 function formatRating(value) {
@@ -9,12 +13,15 @@ function formatRating(value) {
   return Number(value).toFixed(1);
 }
 
-function SectionTab({ active, onClick, children }) {
+function SectionTabLink({ active, href, onNavigate, children }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
+    <a
+      href={href}
       aria-current={active ? "page" : undefined}
+      onClick={(event) => {
+        event.preventDefault();
+        onNavigate();
+      }}
       className={`rounded-xl px-3.5 py-2 text-xs font-black transition ${
         active
           ? "bg-slate-950 text-white shadow-sm dark:bg-white dark:text-slate-950"
@@ -22,7 +29,7 @@ function SectionTab({ active, onClick, children }) {
       }`}
     >
       {children}
-    </button>
+    </a>
   );
 }
 
@@ -53,6 +60,19 @@ export default function UniversityPublicSectionNav({
     return null;
   }
 
+  const pathname = `/universitet/${detail.slug || ""}`;
+  const search = typeof window !== "undefined" ? window.location.search : "";
+  const overviewHref = buildUniversityPublicSectionUrl(
+    pathname,
+    search,
+    UNIVERSITY_PUBLIC_SECTIONS.overview
+  );
+  const reviewsHref = buildUniversityPublicSectionUrl(
+    pathname,
+    search,
+    UNIVERSITY_PUBLIC_SECTIONS.reviews
+  );
+
   const comparePath = role
     ? `${buildDashboardSectionPath(role, "compare")}?compare_ids=${detail.id}`
     : `/login?next=${encodeURIComponent(`/dashboard?section=compare&compare_ids=${detail.id}`)}`;
@@ -75,22 +95,24 @@ export default function UniversityPublicSectionNav({
   return (
     <div className="border-b border-slate-200/80 bg-white/95 backdrop-blur-md dark:border-white/10 dark:bg-slate-950/90">
       <div className="flex flex-col gap-3 px-5 py-3 sm:px-6 lg:flex-row lg:items-center">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-1 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
+        <nav className="flex flex-wrap items-center gap-2" aria-label="Universitet bo'limlari">
+          <span className="mr-1 text-[10px] font-black uppercase tracking-[0.16em] text-slate-600 dark:text-slate-300">
             Bo&apos;lim
           </span>
-          <SectionTab
+          <SectionTabLink
             active={activeSection === UNIVERSITY_PUBLIC_SECTIONS.overview}
-            onClick={() => onSectionChange(UNIVERSITY_PUBLIC_SECTIONS.overview)}
+            href={overviewHref || "#overview"}
+            onNavigate={() => onSectionChange(UNIVERSITY_PUBLIC_SECTIONS.overview)}
           >
             Umumiy ma&apos;lumot
-          </SectionTab>
-          <SectionTab
+          </SectionTabLink>
+          <SectionTabLink
             active={activeSection === UNIVERSITY_PUBLIC_SECTIONS.reviews}
-            onClick={() => onSectionChange(UNIVERSITY_PUBLIC_SECTIONS.reviews)}
+            href={reviewsHref.includes(UNIVERSITY_PUBLIC_REVIEWS_HASH) ? reviewsHref : "#reviews"}
+            onNavigate={() => onSectionChange(UNIVERSITY_PUBLIC_SECTIONS.reviews)}
           >
             Sharhlarni ko&apos;rish
-          </SectionTab>
+          </SectionTabLink>
           {isAuthenticated ? (
             <>
               <a
@@ -113,7 +135,7 @@ export default function UniversityPublicSectionNav({
               Sharh yozish
             </button>
           )}
-        </div>
+        </nav>
 
         <div className="flex flex-wrap items-center gap-2 lg:ml-auto">
           {isAuthenticated && activeSection === UNIVERSITY_PUBLIC_SECTIONS.reviews && (
@@ -129,6 +151,12 @@ export default function UniversityPublicSectionNav({
             {formatRating(detail.display_rating ?? detail.bayesian_rating ?? detail.average_rating)}
             {detail.rating_confidence === "low" && " · kam sharh"}
           </span>
+          <Link
+            to="/metodologiya"
+            className="text-[11px] font-bold text-slate-400 underline-offset-2 hover:text-primary hover:underline"
+          >
+            Metodologiya
+          </Link>
         </div>
       </div>
     </div>

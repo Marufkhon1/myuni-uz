@@ -19,6 +19,7 @@ const pathToDoc = {
 };
 
 const relatedLinks = [
+  { to: "/metodologiya", label: "Metodologiya" },
   { to: "/ishonch-xavfsizlik", label: "Ishonch va xavfsizlik" },
   { to: "/foydalanish-shartlari", label: legalDocuments.terms.title },
   { to: "/maxfiylik-siyosati", label: legalDocuments.privacy.title },
@@ -85,7 +86,7 @@ export default function LegalDocumentPage() {
             <p className="max-w-none text-base leading-8 text-pretty text-slate-600 sm:text-lg sm:leading-8 dark:text-slate-300">
               {doc.description}
             </p>
-            <p className="text-sm text-slate-400 dark:text-slate-500">
+            <p className="text-sm text-slate-600 dark:text-slate-300">
               Oxirgi yangilanish: {doc.updatedAt}
             </p>
           </header>
@@ -118,7 +119,7 @@ export default function LegalDocumentPage() {
               }}
               className={
                 pathname === link.to
-                  ? "text-slate-400 dark:text-slate-500"
+                  ? "text-slate-600 dark:text-slate-300"
                   : "text-primary hover:underline"
               }
               aria-current={pathname === link.to ? "page" : undefined}

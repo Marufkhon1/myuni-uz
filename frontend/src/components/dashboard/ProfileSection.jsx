@@ -17,8 +17,8 @@ const BIO_MIN_LENGTH = 3;
 const BIO_MAX_LENGTH = 70;
 
 const sectionLabelClass = "text-[10px] font-black uppercase tracking-[0.16em] text-primary";
-const hintTextClass = "text-xs leading-relaxed text-slate-500 dark:text-slate-400";
-const metaTextClass = "text-[11px] font-semibold text-slate-500 dark:text-slate-400";
+const hintTextClass = "text-xs leading-relaxed text-slate-600 dark:text-slate-300";
+const metaTextClass = "text-[11px] font-semibold text-slate-600 dark:text-slate-300";
 
 const profileFieldInputClass =
   "h-11 w-full rounded-xl border border-slate-200/90 bg-white px-3.5 py-2 text-sm font-semibold text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/15 dark:bg-slate-900/60 dark:text-white dark:placeholder:text-slate-500 dark:focus:ring-primary/30";
@@ -1163,6 +1163,7 @@ function ProfileSettingsForm({
       await updateProfileSettings({
         full_name: fullName,
         university: universityToSave,
+        university_id: matched.id,
       });
       await refreshUser();
       setEditUniversity(universityToSave);

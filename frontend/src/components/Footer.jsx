@@ -14,11 +14,12 @@ const footerLinks = {
   Platforma: [
     { label: "Bosh sahifa", to: "/" },
     { label: "Universitetlar", to: "/universitetlar" },
-    { label: "Sharhlar", to: "/", hash: "#reviews" },
-    { label: "Qanday ishlaydi", to: "/", hash: "#how-it-works" },
-    { label: "Savollar (FAQ)", to: "/", hash: "#faq" },
+    { label: "Taqqoslash", to: "/taqqoslash" },
+    { label: "Maqolalar", to: "/maqolalar" },
+    { label: "Savollar (FAQ)", to: "/savollar-javob" },
   ],
   Huquqiy: [
+    { label: "Metodologiya", to: "/metodologiya" },
     { label: "Ishonch va xavfsizlik", to: "/ishonch-xavfsizlik" },
     { label: "Foydalanish shartlari", to: "/foydalanish-shartlari" },
     { label: "Maxfiylik siyosati", to: "/maxfiylik-siyosati" },

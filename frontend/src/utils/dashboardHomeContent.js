@@ -33,7 +33,7 @@ export function getDashboardHomeQuickActions(isStudent) {
     {
       id: "compare",
       label: "Taqqoslash",
-      helper: "3 ta OTM jadvali",
+      helper: "2–4 ta OTM",
       section: "compare",
       icon: "⚖️",
       accent: "violet",

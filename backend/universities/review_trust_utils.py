@@ -26,16 +26,28 @@ def annotate_reviews_with_likes(queryset, user):
     )
 
 
-def is_verified_student_user(user, university_id) -> bool:
+CAMPUS_AFFILIATION_LABEL = "Kampus ovozi"
+
+
+def is_campus_affiliated_user(user, university_id) -> bool:
+    """
+    Soft campus-affiliation signal — NOT institutional verification.
+
+    True when the author is a student and either joined that university's chat
+    or set the same university on their profile. Does not require email inbox
+    confirmation (signup never blocks on email verification).
+    """
     profile = getattr(user, "profile", None)
     if not profile or profile.role != Profile.Role.STUDENT:
         return False
 
-    if not getattr(profile, "email_verified_at", None):
-        return False
-
     if ChatMembership.objects.filter(user=user, university_id=university_id).exists():
         return True
+
+    # Prefer FK when dual-write / backfill has linked the catalog university.
+    ref_id = getattr(profile, "university_ref_id", None)
+    if ref_id is not None:
+        return int(ref_id) == int(university_id)
 
     university_name = (profile.university or "").strip().lower()
     if not university_name:
@@ -47,6 +59,16 @@ def is_verified_student_user(user, university_id) -> bool:
         Q(name__iexact=university_name)
         | Q(short_name__iexact=university_name)
     ).exists()
+
+
+# Backward-compatible alias — prefer is_campus_affiliated_user in new code.
+is_verified_student_user = is_campus_affiliated_user
+
+
+def campus_affiliation_label(user, university_id) -> str | None:
+    if is_campus_affiliated_user(user, university_id):
+        return CAMPUS_AFFILIATION_LABEL
+    return None
 
 
 def aspect_averages_for_university(university_id):

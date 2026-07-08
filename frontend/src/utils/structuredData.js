@@ -11,9 +11,10 @@ export function buildOrganizationSchema({
   description = DEFAULT_DESCRIPTION,
   logoPath = "/favicon.png",
 } = {}) {
+  // Platforma — universitet emas. EducationalOrganization ishlatilmaydi (SEO toksiklik).
   return {
     "@context": "https://schema.org",
-    "@type": ["Organization", "EducationalOrganization"],
+    "@type": "Organization",
     name: SITE_NAME,
     url: buildCanonicalUrl("/"),
     logo: resolveAbsoluteUrl(logoPath),
@@ -89,17 +90,81 @@ export function buildUniversitySchema({ detail, slug, imagePath }) {
   if (!detail || !slug) {
     return null;
   }
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "CollegeOrUniversity",
     name: detail.name,
     url: buildCanonicalUrl(`/universitet/${slug}`),
-    address: detail.location,
   };
+
+  if (detail.short_name && detail.short_name !== detail.name) {
+    schema.alternateName = detail.short_name;
+  }
+
   const image = imagePath || detail.image_url;
   if (image) {
     schema.image = resolveAbsoluteUrl(image);
   }
+
+  const city = String(detail.city || "").trim() || String(detail.location || "").split(",")[0].trim();
+  const street = String(detail.address || "").trim();
+  if (street || city || detail.location) {
+    schema.address = {
+      "@type": "PostalAddress",
+      addressCountry: "UZ",
+    };
+    if (street) {
+      schema.address.streetAddress = street;
+    }
+    if (city) {
+      schema.address.addressLocality = city;
+    } else if (detail.location) {
+      schema.address.addressLocality = String(detail.location).split(",")[0].trim();
+    }
+  }
+
+  // Aniq kampus geo faqat street-signal bilan — seed city-jitter hech qachon schema.geo ga kirmaydi.
+  const lat = Number(detail.latitude);
+  const lng = Number(detail.longitude);
+  const preciseAddress =
+    street &&
+    (/\d/.test(street) ||
+      /(ko['ʻ’`]?cha|str\.|street|улица|проспект)/i.test(street));
+  if (preciseAddress && Number.isFinite(lat) && Number.isFinite(lng)) {
+    schema.geo = {
+      "@type": "GeoCoordinates",
+      latitude: lat,
+      longitude: lng,
+    };
+  }
+
+  if (detail.phone) {
+    schema.telephone = detail.phone;
+  }
+  if (detail.email) {
+    schema.email = detail.email;
+  }
+
+  const officialSite = String(detail.website || "").trim();
+  if (officialSite) {
+    const normalized = /^https?:\/\//i.test(officialSite)
+      ? officialSite
+      : `https://${officialSite.replace(/^\/+/, "")}`;
+    schema.sameAs = [normalized];
+    if (detail.telegram_url) {
+      schema.sameAs.push(detail.telegram_url);
+    }
+    if (detail.instagram_url) {
+      schema.sameAs.push(detail.instagram_url);
+    }
+  } else {
+    const links = [detail.telegram_url, detail.instagram_url].filter(Boolean);
+    if (links.length) {
+      schema.sameAs = links;
+    }
+  }
+
   if (detail.review_count > 0 && detail.average_rating != null) {
     schema.aggregateRating = {
       "@type": "AggregateRating",
@@ -133,7 +198,7 @@ export function buildReviewSchemas({ reviews = [], universityName, slug, limit =
     },
     author: {
       "@type": "Person",
-      name: review.author || "Talaba",
+      name: review.author || "Foydalanuvchi",
     },
     reviewBody: truncateMetaDescription(review.text, 500),
     datePublished: review.created_at,

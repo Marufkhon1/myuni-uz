@@ -1,0 +1,146 @@
+{
+  "version": "2025-07-08",
+  "academic_year": "2025/2026",
+  "entries": {
+    "TDIU": {
+      "slug": "tdiu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari (iqtisod klasteri)",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; TDIU iqtisod/moliya klasteri bo'yicha tasdiqlangan (stipendiyasiz, bakalavriat)."
+    },
+    "TATU": {
+      "slug": "tatu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari (IT klasteri)",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; TATU axborot texnologiyalari klasteri bo'yicha tasdiqlangan."
+    },
+    "O'zMU": {
+      "slug": "ozmu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; O'zMU yo'nalish klasteri bo'yicha tasdiqlangan."
+    },
+    "JIDU": {
+      "slug": "jidu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari (xalqaro iqtisod)",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; JIDU xalqaro iqtisod klasteri bo'yicha tasdiqlangan."
+    },
+    "Yang'i O'zU": {
+      "slug": "yangi-ozu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; Yangi O'zbekiston universiteti klasteri bo'yicha tasdiqlangan."
+    },
+    "TDTU": {
+      "slug": "tdtu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari (muhandislik)",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; TDTU muhandislik klasteri bo'yicha tasdiqlangan."
+    },
+    "TDTibbU": {
+      "slug": "tdtibbu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari (tibbiyot)",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; TDTibbU tibbiyot klasteri bo'yicha tasdiqlangan."
+    },
+    "TDYU": {
+      "slug": "tdyu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari (huquq)",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; TDYU huquq klasteri bo'yicha tasdiqlangan."
+    },
+    "SamDU": {
+      "slug": "samdu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; SamDU yo'nalish klasteri bo'yicha tasdiqlangan."
+    },
+    "AndDU": {
+      "slug": "anddu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; AndDU klasteri bo'yicha tasdiqlangan."
+    },
+    "BuxDU": {
+      "slug": "buxdu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; BuxDU klasteri bo'yicha tasdiqlangan."
+    },
+    "FarDU": {
+      "slug": "fardu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; FarDU klasteri bo'yicha tasdiqlangan."
+    },
+    "NamDU": {
+      "slug": "namdu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; NamDU klasteri bo'yicha tasdiqlangan."
+    },
+    "TAQU": {
+      "slug": "taqu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari (qurilish/arxitektura)",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; TAQU qurilish klasteri bo'yicha tasdiqlangan."
+    },
+    "TKTI": {
+      "slug": "tkti",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; TKTI klasteri bo'yicha tasdiqlangan."
+    },
+    "O'zDJTU": {
+      "slug": "ozdjtu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari (filologiya)",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; O'zDJTU filologiya klasteri bo'yicha tasdiqlangan."
+    },
+    "QarDU": {
+      "slug": "qardu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; QarDU klasteri bo'yicha tasdiqlangan."
+    },
+    "UrDU": {
+      "slug": "urdu",
+      "published_at": "2025-06-15",
+      "source_url": "https://kontrakt.edu.uz/",
+      "catalog_reference": "Davlat OTMlari 2025/2026 bazaviy kontrakt tariflari",
+      "note": "2025/2026 o'quv yili uchun Vazirlik tomonidan e'lon qilingan davlat bazaviy kontrakt tariflari asosida; UrDU klasteri bo'yicha tasdiqlangan."
+    },
+    "WIUT": {
+      "slug": "wiut",
+      "published_at": "2025-07-01",
+      "source_url": "https://www.wiut.uz/",
+      "catalog_reference": "WIUT rasmiy sayt — 2025/2026 kontrakt to'lovlari",
+      "note": "Toshkent xalqaro Vestminster universiteti rasmiy saytida e'lon qilingan kontrakt summalari (bakalavriat, kunduzgi)."
+    },
+    "Inha": {
+      "slug": "inha",
+      "published_at": "2025-07-01",
+      "source_url": "https://inha.uz/",
+      "catalog_reference": "Inha universiteti rasmiy sayt — 2025/2026 kontrakt to'lovlari",
+      "note": "Inha universiteti rasmiy saytida e'lon qilingan kontrakt summalari (bakalavriat, kunduzgi)."
+    }
+  }
+}

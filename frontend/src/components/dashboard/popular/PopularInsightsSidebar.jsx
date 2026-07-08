@@ -261,11 +261,11 @@ export default function PopularInsightsSidebar({
                 label="OTM"
                 value={stats.universityCount}
               />
-              {stats.verifiedCount > 0 ? (
+              {stats.campusAffiliatedCount > 0 ? (
                 <StatTile
                   icon={STAT_ICONS.rating}
-                  label="Tasdiqlangan"
-                  value={stats.verifiedCount}
+                  label="Kampus ovozi"
+                  value={stats.campusAffiliatedCount}
                 />
               ) : (
                 <StatTile

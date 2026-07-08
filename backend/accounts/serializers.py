@@ -4,7 +4,6 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.db.models import Q
-from django.utils import timezone
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -21,6 +20,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     role_label = serializers.CharField(source="get_role_display", read_only=True)
     avatar_visibility_label = serializers.CharField(source="get_avatar_visibility_display", read_only=True)
     avatar_url = serializers.SerializerMethodField()
+    university_id = serializers.IntegerField(source="university_ref_id", read_only=True, allow_null=True)
 
     class Meta:
         model = Profile
@@ -29,6 +29,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "role_label",
             "full_name",
             "university",
+            "university_id",
             "study_program",
             "avatar_url",
             "avatar_visibility",
@@ -77,6 +78,9 @@ class PublicUserSerializer(serializers.ModelSerializer):
     role = serializers.CharField(source="profile.role", read_only=True)
     role_label = serializers.CharField(source="profile.get_role_display", read_only=True)
     university = serializers.CharField(source="profile.university", read_only=True)
+    university_id = serializers.IntegerField(
+        source="profile.university_ref_id", read_only=True, allow_null=True
+    )
     study_program = serializers.CharField(source="profile.study_program", read_only=True)
     bio = serializers.CharField(source="profile.bio", read_only=True)
     chat_color = serializers.SerializerMethodField()
@@ -94,6 +98,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
             "role",
             "role_label",
             "university",
+            "university_id",
             "study_program",
             "bio",
             "chat_color",
@@ -159,6 +164,7 @@ class RegisterSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, min_length=8)
     role = serializers.ChoiceField(choices=ROLE_CHOICES)
     university = serializers.CharField(max_length=180, required=True, allow_blank=False)
+    university_id = serializers.IntegerField(required=False, allow_null=True)
     study_program = serializers.CharField(max_length=180, required=False, allow_blank=True)
 
     def validate_username(self, value):
@@ -182,10 +188,41 @@ class RegisterSerializer(serializers.Serializer):
         validate_password(value)
         return value
 
+    def validate(self, attrs):
+        from .university_resolution import (
+            normalize_university_text,
+            resolve_university_by_id,
+            resolve_university_by_text,
+        )
+
+        university_id = attrs.get("university_id")
+        university_text = normalize_university_text(attrs.get("university"))
+        matched = None
+        if university_id not in (None, ""):
+            matched = resolve_university_by_id(university_id)
+            if matched is None:
+                raise serializers.ValidationError(
+                    {"university_id": "university_id noto'g'ri yoki topilmadi."}
+                )
+        elif university_text:
+            matched = resolve_university_by_text(university_text)
+
+        if matched is not None:
+            attrs["university"] = matched.name
+            attrs["_resolved_university"] = matched
+        else:
+            attrs["university"] = university_text
+            attrs["_resolved_university"] = None
+            if not university_text:
+                raise serializers.ValidationError({"university": "Universitet majburiy."})
+        return attrs
+
     def create(self, validated_data):
         full_name = validated_data.pop("full_name")
         role = validated_data.pop("role")
         university = validated_data.pop("university", "")
+        validated_data.pop("university_id", None)
+        resolved = validated_data.pop("_resolved_university", None)
         study_program = validated_data.pop("study_program", "")
         username = validated_data.pop("username")
         email = validated_data.pop("email")
@@ -196,13 +233,15 @@ class RegisterSerializer(serializers.Serializer):
             password=validated_data["password"],
             first_name=full_name,
         )
+        # Email inbox verification is NOT required on signup — login works immediately.
+        # email_verified_at stays null until Google OAuth / explicit verify / password-reset proof flows.
         Profile.objects.create(
             user=user,
             full_name=full_name,
             role=role,
             university=university,
+            university_ref=resolved,
             study_program=study_program,
-            email_verified_at=timezone.now(),
         )
         return user
 
@@ -223,14 +262,16 @@ class LoginSerializer(serializers.Serializer):
         raw_login = str(attrs.get("username") or attrs.get("email") or "").strip()
         password = attrs.get("password")
         if not raw_login:
-            raise serializers.ValidationError({"username": "Login kiriting."})
+            raise serializers.ValidationError({"username": "Login yoki email kiriting."})
         if not password:
             raise serializers.ValidationError({"password": "Parol kiriting."})
 
-        normalized_email = raw_login.lower()
-        user = User.objects.filter(
-            Q(username__iexact=raw_login) | Q(email__iexact=normalized_email)
-        ).first()
+        login_key = normalize_username(raw_login)
+        user = (
+            User.objects.filter(Q(username__iexact=login_key) | Q(email__iexact=login_key))
+            .select_related("profile")
+            .first()
+        )
         if not user:
             raise serializers.ValidationError("Login yoki parol noto'g'ri.")
 

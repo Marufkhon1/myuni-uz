@@ -3,6 +3,7 @@ import { UNIVERSITY_PUBLIC_SECTIONS } from "@/utils/universityPublicSections.js"
 import {
   buildUniversityPublicSectionUrl,
   readUniversityPublicSectionFromWindow,
+  scrollUniversityPublicSectionIntoView,
 } from "@/utils/universityPublicHash.js";
 
 function currentDocumentUrl() {
@@ -29,6 +30,16 @@ export function useUniversityPublicSection(slug) {
     };
   }, [syncSectionFromLocation]);
 
+  useEffect(() => {
+    const section = readUniversityPublicSectionFromWindow();
+    if (section === UNIVERSITY_PUBLIC_SECTIONS.reviews) {
+      // Prerender / deep-link: sharhlar blokiga o'tish.
+      window.requestAnimationFrame(() => {
+        scrollUniversityPublicSectionIntoView(section, { behavior: "auto" });
+      });
+    }
+  }, [slug]);
+
   const handleSectionChange = useCallback((section) => {
     const nextUrl = buildUniversityPublicSectionUrl(
       window.location.pathname,
@@ -36,13 +47,11 @@ export function useUniversityPublicSection(slug) {
       section
     );
 
-    if (nextUrl === currentDocumentUrl()) {
-      setActiveSection(section);
-      return;
+    if (nextUrl !== currentDocumentUrl()) {
+      window.history.pushState(null, "", nextUrl);
     }
-
     setActiveSection(section);
-    window.history.pushState(null, "", nextUrl);
+    scrollUniversityPublicSectionIntoView(section);
   }, []);
 
   return {

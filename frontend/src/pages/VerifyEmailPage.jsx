@@ -15,7 +15,7 @@ export default function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const toast = useToast();
-  const { completeGoogleAuth } = useAuth();
+  const { completeCookieAuth, completeGoogleAuth } = useAuth();
   const uid = searchParams.get("uid") || "";
   const token = searchParams.get("token") || "";
   const [status, setStatus] = useState("loading");
@@ -36,7 +36,11 @@ export default function VerifyEmailPage() {
         if (cancelled) {
           return;
         }
-        await completeGoogleAuth({ access: data.access, refresh: data.refresh });
+        if (data?.access && data?.refresh) {
+          await completeGoogleAuth({ access: data.access, refresh: data.refresh });
+        } else {
+          await completeCookieAuth();
+        }
         setStatus("success");
         toast.success("Email muvaffaqiyatli tasdiqlandi!");
         navigate(dashboardPathForRole(data.user?.profile?.role), { replace: true });
@@ -55,7 +59,7 @@ export default function VerifyEmailPage() {
     return () => {
       cancelled = true;
     };
-  }, [completeGoogleAuth, navigate, toast, token, uid]);
+  }, [completeCookieAuth, completeGoogleAuth, navigate, toast, token, uid]);
 
   return (
     <AuthLayout
@@ -80,11 +84,6 @@ export default function VerifyEmailPage() {
               Kirish sahifasiga qaytish
             </Link>
           </>
-        )}
-        {status === "success" && (
-          <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
-            Muvaffaqiyatli! Kabinetga yo&apos;naltirilmoqdasiz...
-          </p>
         )}
       </div>
     </AuthLayout>

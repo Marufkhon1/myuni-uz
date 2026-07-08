@@ -11,12 +11,34 @@ import { copyTextToClipboard } from "@/utils/copyText.js";
 import { useToast } from "@/hooks/useToast.js";
 import {
   buildCompareSummary,
+  compareSlotGridClass,
   hasAspectComparison,
+  isValidCompareCount,
+  MIN_COMPARE,
+  MAX_COMPARE,
   orderCompareUniversities,
   orderCompareUniversitiesWithLeaderCenter,
 } from "@/utils/compareMath.js";
+import { createCompareShareLink } from "@/services/universityService.js";
 
-const DETAIL_TINTS = ["blue", "violet", "emerald"];
+const DETAIL_TINTS = ["blue", "violet", "emerald", "amber"];
+
+function formatShareExpiry(isoString) {
+  if (!isoString) {
+    return "";
+  }
+  try {
+    return new Intl.DateTimeFormat("uz-UZ", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(isoString));
+  } catch {
+    return isoString;
+  }
+}
 
 export default function CompareResults({
   data,
@@ -36,22 +58,36 @@ export default function CompareResults({
     if (readOnly || copyState === "creating") {
       return;
     }
-    if (selectedIds.length !== 3) {
-      toast.warning("Havola uchun 3 ta universitet tanlang.");
+    if (!isValidCompareCount(selectedIds.length)) {
+      toast.warning(`Havola uchun ${MIN_COMPARE}–${MAX_COMPARE} ta universitet tanlang.`);
       return;
     }
     setCopyState("creating");
     try {
-      const url = `${window.location.origin}/taqqoslash?ids=${selectedIds.join(",")}`;
+      const share = await createCompareShareLink(selectedIds);
+      const url = `${window.location.origin}/taqqoslash/${share.token}`;
       const copied = await copyTextToClipboard(url);
-      setShareExpiry("");
+      setShareExpiry(formatShareExpiry(share.expires_at));
       setCopyState("copied");
       if (!copied) {
         toast.info("Havola tayyor — brauzer nusxalashni blokladi.");
+      } else {
+        toast.success("Ulashish havolasi nusxalandi.");
       }
     } catch (error) {
-      setCopyState("error");
-      toast.error(getApiErrorMessage(error, "Havola yaratib bo'lmadi."));
+      // Fallback: live ids URL for guests/share failures.
+      try {
+        const fallback = `${window.location.origin}/taqqoslash?ids=${selectedIds.join(",")}`;
+        await copyTextToClipboard(fallback);
+        setShareExpiry("");
+        setCopyState("copied");
+        toast.warning(
+          getApiErrorMessage(error, "Token havola yaratilmadi — IDS havolasi nusxalandi.")
+        );
+      } catch {
+        setCopyState("error");
+        toast.error(getApiErrorMessage(error, "Havola yaratib bo'lmadi."));
+      }
     }
     window.setTimeout(() => setCopyState("idle"), 4000);
   }, [readOnly, selectedIds, copyState, toast]);
@@ -62,21 +98,21 @@ export default function CompareResults({
   );
 
   const summary = useMemo(
-    () => (universities.length >= 3 ? buildCompareSummary(universities) : null),
+    () => (isValidCompareCount(universities.length) ? buildCompareSummary(universities) : null),
     [universities]
   );
 
   const leaderId = summary?.leader?.university?.id ?? null;
 
   const displayUniversities = useMemo(() => {
-    if (universities.length < 3) {
+    if (!isValidCompareCount(universities.length)) {
       return [];
     }
     return orderCompareUniversitiesWithLeaderCenter(universities, leaderId, selectedIds);
   }, [universities, leaderId, selectedIds]);
 
   const showAspects = useMemo(
-    () => (universities.length >= 3 ? hasAspectComparison(universities) : false),
+    () => (isValidCompareCount(universities.length) ? hasAspectComparison(universities) : false),
     [universities]
   );
 
@@ -85,7 +121,7 @@ export default function CompareResults({
     [universities]
   );
 
-  if (universities.length < 3 || !summary) {
+  if (!isValidCompareCount(universities.length) || !summary) {
     return null;
   }
 
@@ -153,16 +189,16 @@ export default function CompareResults({
       )}
 
       {activeTab === "details" && (
-        <div className="grid items-start gap-4 xl:grid-cols-3">
-          {displayUniversities.map((university, index) => (
+        <div className={`grid items-start gap-4 ${compareSlotGridClass(displayUniversities.length)}`}>
+          {displayUniversities.map((university) => (
             <CompareUniversityDetail
               key={university.id}
               university={university}
-              tint={DETAIL_TINTS[index % DETAIL_TINTS.length]}
+              tint={DETAIL_TINTS[displayUniversities.indexOf(university) % DETAIL_TINTS.length]}
               onToggleFavorite={readOnly ? null : onToggleFavorite}
               onViewReviews={readOnly ? null : onViewReviews}
               favoriteBusyId={readOnly ? null : favoriteBusyId}
-              isRecommended={index === 1 && leaderId != null}
+              isRecommended={leaderId != null && String(leaderId) === String(university.id)}
               readOnly={readOnly}
             />
           ))}

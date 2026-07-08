@@ -55,6 +55,21 @@ class CompareShareLinkTests(TestCase):
         self.assertFalse(public_payload["universities"][0]["is_joined"])
         self.assertIn("expires_at", public_payload)
 
+    def test_create_share_link_accepts_two_ids(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")
+        response = self.client.post(
+            "/api/universities/compare/share/",
+            {"ids": f"{self.uni_a.id},{self.uni_b.id}"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 201)
+        payload = response.json()
+        self.assertEqual(len(payload["university_ids"]), 2)
+
+        public = self.client.get(f"/api/public/compare/{payload['token']}/")
+        self.assertEqual(public.status_code, 200)
+        self.assertEqual(len(public.json()["universities"]), 2)
+
     def test_expired_share_link_returns_410(self):
         share = CompareShareLink.objects.create(
             token="expiredtoken1234",

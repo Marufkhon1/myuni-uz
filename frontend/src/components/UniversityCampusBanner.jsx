@@ -25,6 +25,7 @@ export default function UniversityCampusBanner({ university, className = "h-48" 
   const primaryUrl = getUniversityBannerUrl(university);
   const [imageUrl, setImageUrl] = useState(primaryUrl);
   const [useFallback, setUseFallback] = useState(!primaryUrl);
+  const name = university?.name || university?.short_name || "Universitet";
 
   useEffect(() => {
     const nextUrl = getUniversityBannerUrl(university);
@@ -41,8 +42,7 @@ export default function UniversityCampusBanner({ university, className = "h-48" 
       <img
         key={imageUrl}
         src={imageUrl}
-        alt=""
-        role="presentation"
+        alt={`${name} kampus tasviri`}
         className="h-full w-full object-cover object-center"
         loading="lazy"
         onError={() => {

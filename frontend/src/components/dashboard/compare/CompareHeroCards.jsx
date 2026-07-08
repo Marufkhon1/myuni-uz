@@ -1,7 +1,7 @@
 import UniversityAvatar from "@/components/UniversityAvatar.jsx";
 import { COMPARE_SLOT_THEMES } from "./compareTheme.js";
 import CompareRecommendBadge from "./CompareRecommendBadge.jsx";
-import { formatCompareRating } from "@/utils/compareMath.js";
+import { compareSlotGridClass, formatCompareRating } from "@/utils/compareMath.js";
 import { getUniversityBannerUrl, getUniversityBrandGradient } from "@/utils/universityImage.js";
 import { FractionalStars } from "@/components/ui/StarRatingDisplay.jsx";
 
@@ -98,15 +98,11 @@ function StatTile({ label, value, icon, theme }) {
 
 export default function CompareHeroCards({ universities, leaderId, onViewReviews }) {
   return (
-    <div
-      className={`grid items-stretch gap-4 ${
-        universities.length === 3 ? "lg:grid-cols-3" : "sm:grid-cols-2"
-      }`}
-    >
+    <div className={`grid items-stretch gap-4 ${compareSlotGridClass(universities.length)}`}>
       {universities.map((university, index) => {
         const theme = COMPARE_SLOT_THEMES[index % COMPARE_SLOT_THEMES.length];
-        const isLeader = index === 1 && leaderId != null && String(leaderId) === String(university.id);
-        const positionBadge = index === 0 ? 1 : index === 2 ? 3 : null;
+        const isLeader = leaderId != null && String(leaderId) === String(university.id);
+        const positionBadge = isLeader ? null : index + 1;
         const imageUrl = heroImageForCard(university);
 
         return (

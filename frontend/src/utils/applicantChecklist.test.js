@@ -79,11 +79,18 @@ describe("applicantChecklist", () => {
     expect(suggestion?.universities.map((u) => u.id).sort()).toEqual([1, 2, 3]);
   });
 
-  it("returns null compare suggestion when fewer than three universities", () => {
+  it("returns pair compare suggestion when only two universities", () => {
     const universities = [
-      { id: 1, name: "TATU", short_name: "TATU" },
-      { id: 2, name: "TDTU", short_name: "TDTU" },
+      { id: 1, name: "TATU", short_name: "TATU", average_rating: 4.2 },
+      { id: 2, name: "TDTU", short_name: "TDTU", average_rating: 4.8 },
     ];
+    const suggestion = getCompareSuggestion(universities, "TATU");
+    expect(suggestion?.universities).toHaveLength(2);
+    expect(suggestion?.universities[0].id).toBe(1);
+  });
+
+  it("returns null compare suggestion when fewer than two universities", () => {
+    const universities = [{ id: 1, name: "TATU", short_name: "TATU" }];
     expect(getCompareSuggestion(universities, "TATU")).toBeNull();
   });
 

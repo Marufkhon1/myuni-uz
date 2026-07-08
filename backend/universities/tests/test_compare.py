@@ -69,17 +69,33 @@ class UniversityCompareTests(TestCase):
         self.assertIn("institution_label", payload["universities"][0])
         self.assertEqual(payload["universities"][2]["review_count"], 0)
 
-    def test_compare_requires_exactly_three_ids(self):
+    def test_compare_accepts_two_to_four_ids(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")
+        uni_d = University.objects.create(
+            name="Compare University D",
+            short_name="CUD",
+            location="Namangan",
+        )
+
+        two = self.client.get(
+            "/api/universities/compare/",
+            {"ids": f"{self.uni_a.id},{self.uni_b.id}"},
+        )
+        self.assertEqual(two.status_code, 200)
+        self.assertEqual(len(two.json()["universities"]), 2)
+
+        four = self.client.get(
+            "/api/universities/compare/",
+            {"ids": f"{self.uni_a.id},{self.uni_b.id},{self.uni_c.id},{uni_d.id}"},
+        )
+        self.assertEqual(four.status_code, 200)
+        self.assertEqual(len(four.json()["universities"]), 4)
+
+    def test_compare_rejects_out_of_range_ids(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")
         response = self.client.get(
             "/api/universities/compare/",
             {"ids": str(self.uni_a.id)},
-        )
-        self.assertEqual(response.status_code, 400)
-
-        response = self.client.get(
-            "/api/universities/compare/",
-            {"ids": f"{self.uni_a.id},{self.uni_b.id}"},
         )
         self.assertEqual(response.status_code, 400)
 
@@ -88,8 +104,18 @@ class UniversityCompareTests(TestCase):
             short_name="CUD",
             location="Namangan",
         )
+        uni_e = University.objects.create(
+            name="Compare University E",
+            short_name="CUE",
+            location="Andijon",
+        )
         response = self.client.get(
             "/api/universities/compare/",
-            {"ids": f"{self.uni_a.id},{self.uni_b.id},{self.uni_c.id},{uni_d.id}"},
+            {
+                "ids": (
+                    f"{self.uni_a.id},{self.uni_b.id},{self.uni_c.id},"
+                    f"{uni_d.id},{uni_e.id}"
+                )
+            },
         )
         self.assertEqual(response.status_code, 400)

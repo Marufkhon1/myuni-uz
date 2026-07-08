@@ -72,6 +72,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "myuni.wsgi.application"
+ASGI_APPLICATION = "myuni.asgi.application"
 
 database_url = os.getenv("DATABASE_URL")
 if database_url:
@@ -84,6 +85,9 @@ if database_url:
             "PASSWORD": parsed_database.password,
             "HOST": parsed_database.hostname,
             "PORT": parsed_database.port or 5432,
+            # Persistent connections cut handshake cost under gunicorn workers.
+            "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "60")),
+            "CONN_HEALTH_CHECKS": True,
         }
     }
 else:
@@ -151,6 +155,23 @@ PASSWORD_RESET_MAX_PER_SESSION_HOUR = int(os.getenv("PASSWORD_RESET_MAX_PER_SESS
 PASSWORD_RESET_WINDOW_SECONDS = int(os.getenv("PASSWORD_RESET_WINDOW_SECONDS", "3600"))
 PASSWORD_RESET_SESSION_KEY = "password_reset_attempts"
 
+# Auth throttle (login / register)
+AUTH_LOGIN_WINDOW_SECONDS = int(os.getenv("AUTH_LOGIN_WINDOW_SECONDS", "3600"))
+AUTH_LOGIN_MAX_PER_IP_HOUR = int(os.getenv("AUTH_LOGIN_MAX_PER_IP_HOUR", "40"))
+AUTH_LOGIN_MAX_PER_KEY_HOUR = int(os.getenv("AUTH_LOGIN_MAX_PER_KEY_HOUR", "12"))
+AUTH_LOGIN_FAILURE_THRESHOLD = int(os.getenv("AUTH_LOGIN_FAILURE_THRESHOLD", "5"))
+AUTH_LOGIN_FAILURE_COOLDOWN = int(os.getenv("AUTH_LOGIN_FAILURE_COOLDOWN", "120"))
+AUTH_REGISTER_MAX_PER_IP_HOUR = int(os.getenv("AUTH_REGISTER_MAX_PER_IP_HOUR", "15"))
+AUTH_GOOGLE_START_MAX_PER_IP_HOUR = int(os.getenv("AUTH_GOOGLE_START_MAX_PER_IP_HOUR", "30"))
+AUTH_GOOGLE_CALLBACK_MAX_PER_IP_HOUR = int(os.getenv("AUTH_GOOGLE_CALLBACK_MAX_PER_IP_HOUR", "20"))
+
+# JWT in JSON body: on in DEBUG by default (Postman/tests), off in production.
+_AUTH_TOKENS_BODY_DEFAULT = "True" if DEBUG else "False"
+AUTH_RETURN_TOKENS_IN_BODY = (
+    os.getenv("AUTH_RETURN_TOKENS_IN_BODY", _AUTH_TOKENS_BODY_DEFAULT) == "True"
+)
+AUTH_EXCHANGE_CODE_TTL_SECONDS = int(os.getenv("AUTH_EXCHANGE_CODE_TTL_SECONDS", "120"))
+
 REVIEW_SUBMIT_WINDOW_SECONDS = int(os.getenv("REVIEW_SUBMIT_WINDOW_SECONDS", "3600"))
 REVIEW_SUBMIT_FREE_ATTEMPTS = int(os.getenv("REVIEW_SUBMIT_FREE_ATTEMPTS", "3"))
 REVIEW_SUBMIT_COOLDOWN = int(os.getenv("REVIEW_SUBMIT_COOLDOWN", "300"))
@@ -160,7 +181,11 @@ REVIEW_SUBMIT_MAX_PER_IP_HOUR = int(os.getenv("REVIEW_SUBMIT_MAX_PER_IP_HOUR", "
 REVIEW_SUBMIT_MAX_PER_SESSION_HOUR = int(os.getenv("REVIEW_SUBMIT_MAX_PER_SESSION_HOUR", "6"))
 REVIEW_SUBMIT_SESSION_KEY = "review_submit_attempts"
 
-REVIEW_MODERATION_ENABLED = os.getenv("REVIEW_MODERATION_ENABLED", "False") == "True"
+# Production defaults ON (fail-closed). Local DEBUG stays OFF unless explicitly enabled.
+_REVIEW_MODERATION_DEFAULT = "False" if DEBUG else "True"
+REVIEW_MODERATION_ENABLED = (
+    os.getenv("REVIEW_MODERATION_ENABLED", _REVIEW_MODERATION_DEFAULT) == "True"
+)
 REVIEW_MODERATOR_EMAILS = os.getenv("REVIEW_MODERATOR_EMAILS", "")
 
 SUPPORT_MAX_PER_IP_HOUR = int(os.getenv("SUPPORT_MAX_PER_IP_HOUR", "10"))
@@ -178,52 +203,28 @@ WEB_PUSH_VAPID_CLAIMS = {
     "sub": os.getenv("WEB_PUSH_VAPID_SUBJECT", "mailto:hello@myuni.uz"),
 }
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "myuni-cache",
-    }
-}
+from myuni.cache_config import configure_caches_and_channels, verify_redis_connectivity
 
 _redis_url = os.getenv("REDIS_URL", "").strip()
-if _redis_url:
-    CACHES = {
-        "default": {
-            "BACKEND": "django_redis.cache.RedisCache",
-            "LOCATION": _redis_url,
-            "OPTIONS": {
-                "CLIENT_CLASS": "django_redis.client.DefaultClient",
-                "SOCKET_CONNECT_TIMEOUT": 5,
-                "SOCKET_TIMEOUT": 5,
-                "IGNORE_EXCEPTIONS": True,
-                "LOG_IGNORED_EXCEPTIONS": True,
-            },
-            "KEY_PREFIX": "myuni",
-        }
-    }
-elif not DEBUG:
-    import logging
+_redis_ignore_exceptions_env = os.getenv("REDIS_IGNORE_EXCEPTIONS", "").strip()
+_redis_ignore_exceptions = (
+    _redis_ignore_exceptions_env == "True"
+    if _redis_ignore_exceptions_env
+    else None
+)
 
-    logging.getLogger(__name__).warning(
-        "REDIS_URL is not set in production — rate limits and SSE tokens are per-process only."
-    )
+CACHES, _channel_layers = configure_caches_and_channels(
+    debug=DEBUG,
+    redis_url=_redis_url,
+    enable_channels=_enable_channels,
+    ignore_exceptions=_redis_ignore_exceptions,
+)
+if _channel_layers is not None:
+    CHANNEL_LAYERS = _channel_layers
 
-if _enable_channels:
-    if _redis_url:
-        CHANNEL_LAYERS = {
-            "default": {
-                "BACKEND": "channels_redis.core.RedisChannelLayer",
-                "CONFIG": {
-                    "hosts": [_redis_url],
-                },
-            }
-        }
-    else:
-        CHANNEL_LAYERS = {
-            "default": {
-                "BACKEND": "channels.layers.InMemoryChannelLayer",
-            }
-        }
+# Production boot check — bad Redis URL must fail closed (not LocMem fallback).
+if not DEBUG and _redis_url and os.getenv("REDIS_SKIP_PING", "False") != "True":
+    verify_redis_connectivity(_redis_url)
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -235,7 +236,31 @@ REST_FRAMEWORK = {
         "accounts.authentication.CookieJWTAuthentication",
         "accounts.authentication.PresenceJWTAuthentication",
     ],
+    "DEFAULT_THROTTLE_RATES": {
+        # /api/public/* — scrape / DDoS budget (override via env below)
+        "public": os.getenv("PUBLIC_THROTTLE_RATE", "300/hour"),
+        "public_heavy": os.getenv("PUBLIC_HEAVY_THROTTLE_RATE", "120/hour"),
+        "public_stats": os.getenv("PUBLIC_STATS_THROTTLE_RATE", "60/hour"),
+    },
 }
+
+# Public response cache (Redis in prod / LocMem in DEBUG without REDIS_URL).
+PUBLIC_API_CACHE_ENABLED = os.getenv("PUBLIC_API_CACHE_ENABLED", "True") == "True"
+PUBLIC_CACHE_TTL_STATS = int(os.getenv("PUBLIC_CACHE_TTL_STATS", "300"))
+PUBLIC_CACHE_TTL_LANDING = int(os.getenv("PUBLIC_CACHE_TTL_LANDING", "120"))
+PUBLIC_CACHE_TTL_TOP = int(os.getenv("PUBLIC_CACHE_TTL_TOP", "300"))
+PUBLIC_CACHE_TTL_FEATURED = int(os.getenv("PUBLIC_CACHE_TTL_FEATURED", "300"))
+PUBLIC_CACHE_TTL_FILTERS = int(os.getenv("PUBLIC_CACHE_TTL_FILTERS", "600"))
+PUBLIC_CACHE_TTL_CATALOG = int(os.getenv("PUBLIC_CACHE_TTL_CATALOG", "180"))
+PUBLIC_CACHE_TTL_DETAIL = int(os.getenv("PUBLIC_CACHE_TTL_DETAIL", "180"))
+PUBLIC_CACHE_TTL_ARTICLES = int(os.getenv("PUBLIC_CACHE_TTL_ARTICLES", "600"))
+PUBLIC_CACHE_TTL_FAQ = int(os.getenv("PUBLIC_CACHE_TTL_FAQ", "600"))
+PUBLIC_CACHE_TTL_RECENT = int(os.getenv("PUBLIC_CACHE_TTL_RECENT", "90"))
+PUBLIC_CACHE_TTL_COMPARE = int(os.getenv("PUBLIC_CACHE_TTL_COMPARE", "300"))
+PUBLIC_CACHE_TTL_COMPARE_SHARE = int(os.getenv("PUBLIC_CACHE_TTL_COMPARE_SHARE", "60"))
+PUBLIC_CACHE_TTL_SITEMAP = int(os.getenv("PUBLIC_CACHE_TTL_SITEMAP", "3600"))
+PUBLIC_CACHE_TTL_SHARE_PREVIEW = int(os.getenv("PUBLIC_CACHE_TTL_SHARE_PREVIEW", "300"))
+PUBLIC_CACHE_BROWSER_MAX_AGE = int(os.getenv("PUBLIC_CACHE_BROWSER_MAX_AGE", "60"))
 
 if not DEBUG:
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
@@ -259,6 +284,24 @@ CORS_ALLOWED_ORIGINS = [
     ).split(",")
     if origin.strip()
 ]
+
+# SPA cookie-JWT CSRF (Origin/Referer checks on unsafe methods).
+CSRF_TRUSTED_ORIGINS = list(
+    dict.fromkeys(
+        [
+            *[origin for origin in CORS_ALLOWED_ORIGINS if origin.startswith("http")],
+            *[
+                origin.strip()
+                for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+                if origin.strip()
+            ],
+            FRONTEND_URL,
+        ]
+    )
+)
+# Readable by JS for X-CSRFToken double-submit (must stay False).
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = "Lax"
 
 # Mahalliy tarmoq (telefon, boshqa kompyuter): DEBUG + DJANGO_ALLOW_LAN=True
 if DEBUG and os.getenv("DJANGO_ALLOW_LAN", "False") == "True":

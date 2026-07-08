@@ -28,9 +28,21 @@ describe("popularReviewStats", () => {
     expect(stats.averageRating).toBe(4.5);
     expect(stats.universityCount).toBe(2);
     expect(stats.distribution).toHaveLength(5);
+    expect(stats.campusAffiliatedCount).toBe(0);
     expect(stats.verifiedCount).toBe(0);
     expect(stats.fiveStarPercent).toBe(50);
     expect(stats.topUniversity?.id).toBe(1);
+  });
+
+  it("counts campus affiliated reviews from either API field", () => {
+    const stats = buildPopularReviewStats([
+      { rating: 5, like_count: 1, university: { id: 1 }, campus_affiliated: true },
+      { rating: 4, like_count: 1, university: { id: 2 }, is_verified_student: true },
+      { rating: 3, like_count: 0, university: { id: 3 } },
+    ]);
+
+    expect(stats.campusAffiliatedCount).toBe(2);
+    expect(stats.verifiedCount).toBe(2);
   });
 
   it("picks top university by helpful likes", () => {

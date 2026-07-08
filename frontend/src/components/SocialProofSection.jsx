@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import UserAvatar from "./dashboard/UserAvatar.jsx";
 import Skeleton from "./ui/Skeleton.jsx";
 import { FractionalStars } from "./ui/StarRatingDisplay.jsx";
@@ -139,11 +140,17 @@ export default function SocialProofSection() {
           <div className="max-w-2xl">
             <span className="eyebrow">Hamjamiyat ishonchi</span>
             <h2 className="mt-5 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl dark:text-white">
-              Real talabalar fikri — har kuni yangilanadi.
+              Real talabalar fikri — bazadan.
             </h2>
             <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">
-              Top universitetlarning eng ko&apos;p foydali deb topilgan sharhlari — tasdiqlangan
-              foydalanuvchilardan va moderatsiyadan o&apos;tgan.
+              Top universitetlarning eng foydali deb topilgan sharhlari. «Kampus ovozi» belgisi
+              chat a&apos;zoligini bildiradi — rasmiy OTM tasdiqi emas.{" "}
+              <Link
+                to="/ishonch-xavfsizlik"
+                className="font-bold text-primary underline-offset-2 hover:underline"
+              >
+                Ishonch qoidalari
+              </Link>
             </p>
           </div>
 

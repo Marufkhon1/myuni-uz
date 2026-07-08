@@ -26,6 +26,9 @@ const previewBase = `http://${previewHost}:${previewPort}`;
 const STATIC_ROUTES = [
   "/",
   "/universitetlar",
+  "/maqolalar",
+  "/metodologiya",
+  "/taqqoslash",
   "/foydalanish-shartlari",
   "/maxfiylik-siyosati",
   "/sharh-qoidalari",
@@ -148,6 +151,16 @@ async function fetchDynamicRoutes() {
   } catch (error) {
     failures.push(`faq: ${error.message}`);
     console.warn("[prerender] FAQ yuklanmadi:", error.message);
+  }
+
+  try {
+    const articles = await fetchJson(`${apiUrl}/api/public/articles/`);
+    if (Array.isArray(articles) && articles.length > 0) {
+      routes.push(...articles.map((item) => `/maqolalar/${item.slug}`));
+    }
+  } catch (error) {
+    failures.push(`articles: ${error.message}`);
+    console.warn("[prerender] Maqolalar yuklanmadi:", error.message);
   }
 
   if (requireApi && failures.length > 0) {

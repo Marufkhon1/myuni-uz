@@ -39,25 +39,25 @@ const navLinks = [
   { label: "Bosh sahifa", href: "#home" },
   { label: "Qanday ishlaydi", href: "#how-it-works" },
   { label: "Katalog", href: "/universitetlar", route: true },
-  { label: "Universitetlar", href: "#universities" },
+  { label: "Maqolalar", href: "/maqolalar", route: true },
   { label: "Sharhlar", href: "#reviews" },
-  { label: "Savollar", href: "#faq" },
+  { label: "Savollar", href: "/savollar-javob", route: true },
   { label: "Biz haqimizda", href: "#about" },
 ];
 
 function desktopNavLinkClass(isActive, isDark) {
   const base =
-    "relative inline-flex shrink-0 items-center whitespace-nowrap px-1 py-1 text-xs font-semibold transition-colors duration-200 lg:px-1.5 lg:text-[13px] xl:px-2 xl:text-sm";
+    "relative inline-flex shrink-0 items-center whitespace-nowrap px-1.5 py-1 text-xs font-semibold transition-colors duration-200 lg:px-2 lg:text-[13px] xl:px-2.5 xl:text-sm";
   if (isDark) {
     if (isActive) {
-      return `${base} font-bold text-white`;
+      return `${base} font-bold text-white after:absolute after:inset-x-1.5 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-sky-300`;
     }
-    return `${base} text-white/70 hover:text-white`;
+    return `${base} text-slate-100 hover:text-white`;
   }
   if (isActive) {
-    return `${base} font-bold text-slate-900`;
+    return `${base} font-bold text-primary after:absolute after:inset-x-1.5 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-primary`;
   }
-  return `${base} text-slate-500 hover:text-slate-900`;
+  return `${base} text-slate-700 hover:text-slate-950`;
 }
 
 function mobileNavLinkClass(isActive, isDark) {
@@ -66,12 +66,12 @@ function mobileNavLinkClass(isActive, isDark) {
     if (isActive) {
       return `${base} bg-white/10 font-bold text-white`;
     }
-    return `${base} text-white/80 hover:bg-white/10 hover:text-white`;
+    return `${base} text-slate-100 hover:bg-white/10 hover:text-white`;
   }
   if (isActive) {
-    return `${base} bg-slate-100 font-bold text-slate-900`;
+    return `${base} bg-slate-100 font-bold text-slate-950`;
   }
-  return `${base} text-slate-600 hover:bg-slate-50 hover:text-slate-900`;
+  return `${base} text-slate-700 hover:bg-slate-50 hover:text-slate-950`;
 }
 
 export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo, guestHomeButtonOnly = false }) {
@@ -113,10 +113,10 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 border-b backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-300 page-top-safe ${
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-300 page-top-safe ${
         isDark
-          ? "border-white/10 bg-[#0c1f4a]/95 shadow-[0_4px_24px_rgba(2,8,23,0.35)]"
-          : "border-slate-200/80 bg-white/98 shadow-[0_1px_0_rgba(15,23,42,0.04)]"
+          ? "border-white/10 bg-[#071533] shadow-[0_8px_24px_rgba(2,8,23,0.4)]"
+          : "border-slate-200/90 bg-white shadow-[0_1px_0_rgba(15,23,42,0.06)]"
       }`}
     >
       <nav
@@ -136,21 +136,23 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
           <span
             className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl p-0.5 transition duration-200 sm:h-10 sm:w-10 ${
               isDark
-                ? "bg-white/95 ring-1 ring-white/30 shadow-[0_4px_18px_rgba(37,99,235,0.35)] group-hover:ring-white/50"
+                ? "bg-white ring-1 ring-white/40 shadow-[0_4px_18px_rgba(37,99,235,0.35)] group-hover:ring-white/60"
                 : "bg-white ring-1 ring-slate-200/90 shadow-[0_4px_16px_rgba(37,99,235,0.18)] group-hover:shadow-[0_6px_20px_rgba(37,99,235,0.24)]"
             }`}
           >
             <img src={logo} alt="" className="h-full w-full rounded-[0.6rem] object-cover" />
           </span>
           <span
-            className={`whitespace-nowrap text-lg font-black tracking-tight sm:text-xl ${isDark ? "text-white" : "text-slate-950"}`}
+            className={`whitespace-nowrap text-lg font-black tracking-tight sm:text-xl ${
+              isDark ? "text-white" : "text-slate-950"
+            }`}
           >
             MyUni.uz
           </span>
         </Link>
 
         <div className="hidden min-w-0 items-center justify-center px-1 lg:flex">
-          <div className="flex w-max items-center justify-center gap-1 lg:gap-1.5 xl:gap-2.5">
+          <div className="flex w-max max-w-full items-center justify-center gap-1 overflow-x-auto lg:gap-1.5 xl:gap-2.5">
             {navLinks.map((link) => {
               const isActive = link.route
                 ? pathname === link.href
@@ -186,7 +188,12 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
 
         <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-2.5">
           {themeToggle && (
-            <ThemeToggle isDark={isDark} onToggle={themeToggle} className="h-10 w-10 shrink-0" />
+            <ThemeToggle
+              isDark={isDark}
+              onToggle={themeToggle}
+              variant="navbar"
+              className="h-10 shrink-0"
+            />
           )}
 
           <div className="hidden items-center gap-2 sm:gap-2.5 lg:flex">

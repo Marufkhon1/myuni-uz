@@ -1,13 +1,13 @@
-import { MAX_COMPARE } from "@/utils/compareMath.js";
+import { MAX_COMPARE, MIN_COMPARE } from "@/utils/compareMath.js";
 
 const STEPS = [
-  { id: "pick", label: "Tanlang", hint: "3 ta OTM" },
+  { id: "pick", label: "Tanlang", hint: `${MIN_COMPARE}–${MAX_COMPARE} ta` },
   { id: "compare", label: "Solishtiring", hint: "Jadval" },
   { id: "decide", label: "Xulosa", hint: "Natija" },
 ];
 
 export default function CompareStepProgress({ selectedCount, hasResults }) {
-  const activeIndex = hasResults ? 2 : selectedCount >= MAX_COMPARE ? 1 : 0;
+  const activeIndex = hasResults ? 2 : selectedCount >= MIN_COMPARE ? 1 : 0;
 
   return (
     <div className="w-full min-w-0 lg:max-w-md">

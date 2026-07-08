@@ -52,6 +52,7 @@ test.describe("Abituriyent kritik flow", () => {
       password: E2E_PASSWORD,
       role: "applicant",
       universityName: list[0].name,
+      universityId: list[0].id,
       fullName: "E2E Abituriyent",
     });
 
@@ -61,5 +62,24 @@ test.describe("Abituriyent kritik flow", () => {
       dashboardPattern: /\/applicant\/dashboard/,
     });
     await expect(page.getByRole("heading", { name: /Salom/i }).first()).toBeVisible({ timeout: 20000 });
+  });
+});
+
+test.describe("Guest compare + methodology", () => {
+  test("K7 — ochiq taqqoslash sahifa", async ({ page, request }) => {
+    const list = await fetchUniversities(request);
+    expect(list.length).toBeGreaterThanOrEqual(2);
+    const ids = `${list[0].id},${list[1].id}`;
+    await page.goto(`${WEB}/taqqoslash?ids=${ids}`);
+    await expect(page.getByText(/MyUni\.uz taqqoslash/i).first()).toBeVisible({ timeout: 20000 });
+    await expect(page.getByRole("button", { name: /Boshqa OTM/i })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
+  });
+
+  test("K8 — metodologiya", async ({ page }) => {
+    await page.goto(`${WEB}/metodologiya`);
+    await expect(page.getByRole("heading", { name: /metodologiya/i }).first()).toBeVisible({
+      timeout: 15000,
+    });
   });
 });

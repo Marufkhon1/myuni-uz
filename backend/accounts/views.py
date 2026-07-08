@@ -19,8 +19,21 @@ from .bio_validation import normalize_bio, validate_bio
 from .chat_colors import CHAT_COLOR_SET
 from .models import Profile
 from .profile_access import can_view_chat_profile
-from .auth_cookies import clear_auth_cookies, set_auth_cookies
+from .auth_cookies import set_auth_cookies
+from .auth_limits import (
+    check_google_oauth_callback_allowed,
+    check_google_oauth_start_allowed,
+    check_login_allowed,
+    check_register_allowed,
+    record_google_oauth_callback,
+    record_google_oauth_start,
+    record_login_attempt,
+    record_register_attempt,
+)
+from .auth_exchange import issue_auth_exchange_code
+from .auth_response import auth_json_response, strip_tokens_from_mapping
 from .presence import touch_user_last_seen
+from .rate_limit_utils import rate_limit_response
 from .serializers import LoginSerializer, PublicUserSerializer, RegisterSerializer, UserSerializer
 
 User = get_user_model()
@@ -56,6 +69,8 @@ def _google_oauth_error_message(token_response):
 
 def resolve_or_create_google_user(*, email, full_name, state):
     """Google OAuth: mavjud foydalanuvchini topish yoki yangi hisob yaratish."""
+    from .university_resolution import apply_university_to_profile
+
     user = User.objects.filter(email=email).first()
     if user:
         profile, _ = Profile.objects.get_or_create(
@@ -82,7 +97,8 @@ def resolve_or_create_google_user(*, email, full_name, state):
     flow = state.get("flow", "login")
     if flow == "signup":
         university = (state.get("university") or "").strip()
-        if not university:
+        university_id = state.get("university_id")
+        if not university and not university_id:
             return None, (
                 "/signup",
                 "Google orqali ro'yxatdan o'tish uchun avval universitet tanlang.",
@@ -91,17 +107,32 @@ def resolve_or_create_google_user(*, email, full_name, state):
     else:
         role = Profile.Role.APPLICANT
         university = ""
+        university_id = None
 
     user = User(username=email, email=email, first_name=full_name)
     user.set_unusable_password()
     user.save()
-    Profile.objects.create(
+    profile = Profile(
         user=user,
         full_name=full_name,
         role=role,
-        university=university,
         email_verified_at=timezone.now(),
     )
+    matched, errors = apply_university_to_profile(
+        profile,
+        university_id=university_id,
+        university_text=university if university else None,
+    )
+    if errors:
+        user.delete()
+        return None, ("/signup", errors[0])
+    if flow == "signup" and matched is None and not (profile.university or "").strip():
+        user.delete()
+        return None, (
+            "/signup",
+            "Google orqali ro'yxatdan o'tish uchun avval universitet tanlang.",
+        )
+    profile.save()
     return user, None
 
 
@@ -109,20 +140,23 @@ class RegisterView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        allowed, detail, retry_after = check_register_allowed(request)
+        if not allowed:
+            return rate_limit_response(detail, retry_after, code="register_rate_limited")
+
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        record_register_attempt(request)
         user = serializer.save()
 
         refresh = RefreshToken.for_user(user)
-        response_body = {
-            "detail": "Ro'yxatdan o'tdingiz.",
-            "access": str(refresh.access_token),
-            "refresh": str(refresh),
-            "user": UserSerializer(user, context={"request": request}).data,
-        }
-        response = Response(response_body, status=status.HTTP_201_CREATED)
-        set_auth_cookies(response, refresh)
-        return response
+        return auth_json_response(
+            refresh,
+            status=status.HTTP_201_CREATED,
+            user_data=UserSerializer(user, context={"request": request}).data,
+            extra={"detail": "Ro'yxatdan o'tdingiz."},
+            request=request,
+        )
 
 
 class LoginView(APIView):
@@ -143,16 +177,26 @@ class LoginView(APIView):
         }
 
     def post(self, request):
-        serializer = LoginSerializer(data=self._normalize_login_payload(request))
-        serializer.is_valid(raise_exception=True)
+        payload = self._normalize_login_payload(request)
+        login_key = payload["username"]
+        allowed, detail, retry_after = check_login_allowed(request, login_key)
+        if not allowed:
+            return rate_limit_response(detail, retry_after, code="login_rate_limited")
+
+        serializer = LoginSerializer(data=payload)
+        if not serializer.is_valid():
+            record_login_attempt(request, login_key, success=False)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         data = serializer.validated_data
+        record_login_attempt(request, login_key, success=True)
         user_data = data.get("user") or {}
         user_id = user_data.get("id")
         if user_id:
             touch_user_last_seen(User.objects.filter(pk=user_id).first(), force=True)
         refresh = RefreshToken(data["refresh"])
-        response = Response(data)
-        set_auth_cookies(response, refresh)
+        response = Response(strip_tokens_from_mapping(data))
+        set_auth_cookies(response, refresh, request=request)
         return response
 
 
@@ -174,6 +218,7 @@ class MeView(APIView):
         chat_color = request.data.get("chat_color")
         full_name = request.data.get("full_name")
         university = request.data.get("university")
+        university_id = request.data.get("university_id")
         bio = request.data.get("bio")
         email = request.data.get("email")
 
@@ -203,9 +248,20 @@ class MeView(APIView):
             user.first_name = profile.full_name
             user_update_fields.append("first_name")
 
-        if university is not None:
-            profile.university = str(university).strip()
-            update_fields.append("university")
+        if university is not None or university_id is not None:
+            from .university_resolution import apply_university_to_profile
+
+            _, uni_errors = apply_university_to_profile(
+                profile,
+                university_id=university_id if university_id is not None else None,
+                university_text=university if university is not None else None,
+            )
+            if uni_errors:
+                return Response(
+                    {"detail": uni_errors[0]},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            update_fields.extend(["university", "university_ref"])
 
         if bio is not None:
             normalized_bio = normalize_bio(bio)
@@ -321,6 +377,10 @@ class GoogleAuthStartView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        allowed, detail, retry_after = check_google_oauth_start_allowed(request)
+        if not allowed:
+            return rate_limit_response(detail, retry_after, code="google_oauth_rate_limited")
+
         client_id = os.getenv("GOOGLE_CLIENT_ID", "")
         redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", "")
 
@@ -333,10 +393,13 @@ class GoogleAuthStartView(APIView):
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
 
+        record_google_oauth_start(request)
+
         state_payload = {
             "flow": request.query_params.get("flow", "login"),
             "role": request.query_params.get("role", Profile.Role.APPLICANT),
             "university": request.query_params.get("university", ""),
+            "university_id": request.query_params.get("university_id", "") or None,
         }
 
         params = urlencode(
@@ -357,11 +420,22 @@ class GoogleAuthCallbackView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        allowed, detail, retry_after = check_google_oauth_callback_allowed(request)
+        if not allowed:
+            return frontend_redirect(
+                "/login",
+                google_error=detail or "Google orqali kirish uchun juda ko'p urinish.",
+                google_error_code="google_oauth_rate_limited",
+                retry_after=str(retry_after or ""),
+            )
+
         code = request.query_params.get("code")
         raw_state = request.query_params.get("state", "")
 
         if not code:
             return frontend_redirect("/login", google_error="Google code topilmadi.")
+
+        record_google_oauth_callback(request)
 
         try:
             state = signing.loads(raw_state) if raw_state else {}
@@ -414,11 +488,8 @@ class GoogleAuthCallbackView(APIView):
         from django.conf import settings
 
         frontend_url = settings.FRONTEND_URL.rstrip("/")
-        fragment = urlencode(
-            {
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
-                "next": dashboard_path_for(user),
-            }
-        )
-        return redirect(f"{frontend_url}/oauth/google/callback#{fragment}")
+        next_path = dashboard_path_for(user)
+        # One-time code (not JWT) — FE exchanges via /api proxy so cookies land on app origin.
+        exchange_code = issue_auth_exchange_code(refresh)
+        query = urlencode({"ok": "1", "code": exchange_code, "next": next_path})
+        return redirect(f"{frontend_url}/oauth/google/callback?{query}")

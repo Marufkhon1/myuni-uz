@@ -30,6 +30,9 @@ const FAQDetailPage = lazy(() => import("./pages/FAQDetailPage.jsx"));
 const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage.jsx"));
 const VerifyEmailPendingPage = lazy(() => import("./pages/VerifyEmailPendingPage.jsx"));
 const TrustSafetyPage = lazy(() => import("./pages/TrustSafetyPage.jsx"));
+const MethodologyPage = lazy(() => import("./pages/MethodologyPage.jsx"));
+const ArticlesPage = lazy(() => import("./pages/ArticlesPage.jsx"));
+const ArticleDetailPage = lazy(() => import("./pages/ArticleDetailPage.jsx"));
 const CompareSharePage = lazy(() => import("./pages/CompareSharePage.jsx"));
 const ModeratorDashboardPage = lazy(() => import("./pages/ModeratorDashboardPage.jsx"));
 
@@ -71,6 +74,9 @@ export default function App() {
         <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/verify-email/pending" element={<VerifyEmailPendingPage />} />
         <Route path="/ishonch-xavfsizlik" element={<TrustSafetyPage />} />
+        <Route path="/metodologiya" element={<MethodologyPage />} />
+        <Route path="/maqolalar" element={<ArticlesPage />} />
+        <Route path="/maqolalar/:slug" element={<ArticleDetailPage />} />
         <Route path="/universitet/:slug" element={<UniversityPublicPage />} />
         <Route path="/universitetlar" element={<UniversitiesDirectoryPage />} />
         <Route path="/taqqoslash" element={<CompareSharePage />} />

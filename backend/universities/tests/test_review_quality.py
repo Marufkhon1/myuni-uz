@@ -6,7 +6,11 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.models import Profile
 from universities.models import ChatMembership, Faculty, Review, StudyDirection, University
-from universities.review_trust_utils import generate_review_insight_summary, is_verified_student_user
+from universities.review_trust_utils import (
+    generate_review_insight_summary,
+    is_campus_affiliated_user,
+    is_verified_student_user,
+)
 
 User = get_user_model()
 
@@ -95,7 +99,10 @@ class ReviewQualityTests(TestCase):
         self.assertEqual(second.status_code, 400)
 
     def test_verified_student_badge(self):
+        self.assertTrue(is_campus_affiliated_user(self.student, self.university.id))
         self.assertTrue(is_verified_student_user(self.student, self.university.id))
+        # Soft campus affiliation does not depend on inbox email verification.
+        self.assertIsNone(self.student.profile.email_verified_at)
 
     def test_public_recent_reviews_filter_by_city(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")

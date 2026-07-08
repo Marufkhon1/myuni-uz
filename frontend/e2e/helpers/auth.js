@@ -23,27 +23,43 @@ export async function loginAccessToken(request, { username, email, password = E2
 
 export async function registerAccount(
   request,
-  { username, email, password = E2E_PASSWORD, role, universityName, fullName = "E2E Tekshiruv" }
+  {
+    username,
+    email,
+    password = E2E_PASSWORD,
+    role,
+    universityName,
+    universityId,
+    fullName = "E2E Tekshiruv",
+  }
 ) {
   const resolvedUsername =
     username ||
     (email ? email.split("@")[0].replace(/[^a-z0-9._-]/gi, "_").slice(0, 30) : `e2e_${Date.now()}`);
   const resolvedEmail = email || `${resolvedUsername}@sitecheck.test`;
 
+  const payload = {
+    full_name: fullName,
+    username: resolvedUsername,
+    email: resolvedEmail,
+    password,
+    role,
+    university: universityName,
+  };
+  if (universityId != null) {
+    payload.university_id = universityId;
+  }
+
   const register = await request.post(`${API}/api/auth/register/`, {
-    data: {
-      full_name: fullName,
-      username: resolvedUsername,
-      email: resolvedEmail,
-      password,
-      role,
-      university: universityName,
-    },
+    data: payload,
   });
   expect(register.status()).toBe(201);
   const body = await register.json();
-  const access = body.access || (await loginAccessToken(request, { username: resolvedUsername, password }));
-  return { access, body, username: resolvedUsername };
+  let access = body.access;
+  if (!access) {
+    access = await loginAccessToken(request, { username: resolvedUsername, password });
+  }
+  return { access, body, username: resolvedUsername, email: resolvedEmail };
 }
 
 export async function skipOnboardingForE2e(page) {

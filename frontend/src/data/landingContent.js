@@ -4,7 +4,7 @@ export const landingFeatureCards = [
     description:
       "Talabalarning o'qish jarayoni, yotoqxona, kampus hayoti va imkoniyatlar haqidagi batafsil fikrlarini o'qing.",
     metricKey: "review_count",
-    label: "Tasdiqlangan sharh",
+    label: "Sharhlar",
   },
   {
     title: "Universitet reytinglari",
@@ -21,9 +21,9 @@ export const landingFeatureCards = [
     label: "Ro'yxatdan o'tgan",
   },
   {
-    title: "Jonli muhokamalar",
+    title: "OTM guruh chatlari",
     description:
-      "Qabul, grant, yo'nalishlar, yotoqxona va kundalik talabalik hayoti bo'yicha chat xabarlari.",
+      "Qabul, grant, yo'nalishlar, yotoqxona va kundalik talabalik hayoti bo'yicha ochiq suhbatlar.",
     metricKey: "message_count",
     label: "Chat xabari",
   },

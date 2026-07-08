@@ -92,7 +92,7 @@ export function readSignupFormValues(formElement) {
 export function validateLoginPayload(payload) {
   const errors = {};
   if (!payload.username) {
-    errors.username = "Login kiriting.";
+    errors.username = "Login yoki email kiriting.";
   }
   if (!payload.password) {
     errors.password = "Parol kiriting.";

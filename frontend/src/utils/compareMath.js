@@ -1,9 +1,9 @@
 import { COMPARE_ASPECTS, COMPARE_METRICS } from "./compareRoleContent.js";
 
-export const MIN_COMPARE = 3;
-export const MAX_COMPARE = 3;
+export const MIN_COMPARE = 2;
+export const MAX_COMPARE = 4;
 
-const COMPOSITE_WEIGHTS = {
+export const COMPOSITE_WEIGHTS = {
   rating: 0.35,
   reviews: 0.25,
   chat: 0.2,
@@ -20,7 +20,10 @@ export function orderCompareUniversities(universities, selectedIds) {
   );
 }
 
-/** Tavsiya etilgan OTM doim o'rta ustunda (3 ta taqqoslash). */
+/**
+ * 3 ta tanlovda yetakchini o'rtaga qo'yadi.
+ * 2 yoki 4 ta tanlovda tanlash tartibi saqlanadi (yetakchi birinchi emas — UI badge bilan ajratadi).
+ */
 export function orderCompareUniversitiesWithLeaderCenter(universities, leaderId, selectedIds) {
   const ordered = orderCompareUniversities(universities, selectedIds);
   if (ordered.length !== 3 || leaderId == null) {
@@ -34,7 +37,21 @@ export function orderCompareUniversitiesWithLeaderCenter(universities, leaderId,
 
   const leader = ordered[leaderIndex];
   const others = ordered.filter((university) => String(university.id) !== String(leaderId));
-  return [others[0], leader, others[1]];
+  return [others[0], leader, others[1]].filter(Boolean);
+}
+
+export function isValidCompareCount(count) {
+  return count >= MIN_COMPARE && count <= MAX_COMPARE;
+}
+
+export function compareSlotGridClass(count) {
+  if (count <= 2) {
+    return "sm:grid-cols-2";
+  }
+  if (count === 3) {
+    return "sm:grid-cols-3";
+  }
+  return "sm:grid-cols-2 lg:grid-cols-4";
 }
 
 const HIGHLIGHT_FIELDS = {

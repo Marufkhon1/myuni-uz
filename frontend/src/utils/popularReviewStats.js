@@ -65,12 +65,18 @@ export function buildPopularReviewStats(reviews) {
   const distribution = buildRatingDistribution(reviews);
   const fiveStarRow = distribution.find((row) => row.stars === 5);
 
+  const campusAffiliatedCount = reviews.filter((item) =>
+    Boolean(item.campus_affiliated ?? item.is_verified_student)
+  ).length;
+
   return {
     count: reviews.length,
     totalLikes,
     averageRating: averageRating != null ? Number(averageRating.toFixed(1)) : null,
     universityCount: universityIds.size,
-    verifiedCount: reviews.filter((item) => item.is_verified_student).length,
+    campusAffiliatedCount,
+    /** @deprecated use campusAffiliatedCount */
+    verifiedCount: campusAffiliatedCount,
     fiveStarPercent: reviews.length > 0 ? fiveStarRow?.percent ?? 0 : null,
     topUniversity: pickTopUniversity(reviews),
     distribution,

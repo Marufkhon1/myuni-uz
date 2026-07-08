@@ -12,6 +12,8 @@ from .models import (
 )
 
 from .review_trust_utils import aspect_averages_for_university
+from .published_tuition import effective_contract_pricing
+from .tuition_honesty import tuition_compare_fields
 
 
 def approved_reviews_queryset(university):
@@ -179,6 +181,7 @@ def build_compare_row(university, joined_ids, favorite_ids):
         "has_website": bool(university.website),
         "is_joined": university.id in joined_ids,
         "is_favorited": university.id in favorite_ids,
+        **tuition_compare_fields(effective_contract_pricing(university)),
     }
 
 

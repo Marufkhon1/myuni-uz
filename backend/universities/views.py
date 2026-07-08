@@ -31,6 +31,7 @@ from .compare_share_utils import compare_share_expires_at, generate_compare_shar
 from .chat_permissions import require_university_member, user_is_university_member
 from .chat_utils import annotate_direct_threads_both_replied, get_or_create_direct_thread
 from .unread_utils import mark_direct_thread_read, mark_university_read
+from .published_tuition import tuition_honesty_for_university
 from .chat_realtime import (
     direct_typing_cache_key,
     get_typing_users,
@@ -306,6 +307,7 @@ class UniversityDetailView(APIView):
                 "review_insight_summary": generate_review_insight_summary(university.id),
                 "study_directions": directions,
                 "faculties": faculties,
+                "tuition_honesty": tuition_honesty_for_university(university),
             }
         )
 

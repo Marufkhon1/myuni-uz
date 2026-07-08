@@ -1,6 +1,6 @@
 import UniversityAvatar from "@/components/UniversityAvatar.jsx";
 import { FractionalStars } from "@/components/ui/StarRatingDisplay.jsx";
-import { MAX_COMPARE, formatCompareRating } from "@/utils/compareMath.js";
+import { MAX_COMPARE, MIN_COMPARE, formatCompareRating } from "@/utils/compareMath.js";
 import { COMPARE_SLOT_THEMES } from "./compareTheme.js";
 
 function SlotRating({ university, theme }) {
@@ -36,7 +36,10 @@ export default function CompareSelectionTray({
 }) {
   const filledCount = slots.filter(Boolean).length;
   const progressPct = Math.round((filledCount / MAX_COMPARE) * 100);
-  const ready = filledCount === MAX_COMPARE;
+  const ready = filledCount >= MIN_COMPARE;
+  const remainingToMin = Math.max(0, MIN_COMPARE - filledCount);
+  const slotsToRender = Math.max(filledCount, MIN_COMPARE, Math.min(MAX_COMPARE, filledCount + 1));
+  const visibleSlotCount = Math.min(MAX_COMPARE, Math.max(slotsToRender, filledCount || MIN_COMPARE));
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
@@ -79,7 +82,11 @@ export default function CompareSelectionTray({
                   : "text-slate-400"
               }
             >
-              {ready ? "✓ Taqqoslash tayyor" : `Yana ${MAX_COMPARE - filledCount} ta kerak`}
+              {ready
+                ? filledCount >= MAX_COMPARE
+                  ? "✓ To'liq — taqqoslash tayyor"
+                  : `✓ Taqqoslash tayyor (yana ${MAX_COMPARE - filledCount} qo'shish mumkin)`
+                : `Yana kamida ${remainingToMin} ta kerak`}
             </span>
           </div>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-white/10">
@@ -93,8 +100,16 @@ export default function CompareSelectionTray({
         </div>
       </div>
 
-      <div className="grid gap-3 p-4 sm:grid-cols-3 sm:p-5">
-        {Array.from({ length: MAX_COMPARE }, (_, index) => {
+      <div
+        className={`grid gap-3 p-4 sm:p-5 ${
+          visibleSlotCount <= 2
+            ? "sm:grid-cols-2"
+            : visibleSlotCount === 3
+              ? "sm:grid-cols-3"
+              : "sm:grid-cols-2 lg:grid-cols-4"
+        }`}
+      >
+        {Array.from({ length: visibleSlotCount }, (_, index) => {
           const id = slots[index];
           const university = id ? universitiesById.get(String(id)) : null;
           const theme = COMPARE_SLOT_THEMES[index];

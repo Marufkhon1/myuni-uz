@@ -17,6 +17,8 @@ import { readSignupFormValues } from "@/utils/authForm.js";
 import { emailValidationMessage } from "@/utils/email.js";
 import { usernameValidationMessage } from "@/utils/username.js";
 
+const SIGNUP_AUTOFILL_FIELDS = ["full_name", "username", "email", "password"];
+
 const roles = [
   {
     id: "applicant",
@@ -61,10 +63,7 @@ export default function SignupPage() {
     setForm((current) => ({ ...current, ...snapshot }));
   }, []);
 
-  const formRef = useFormAutofillSync(
-    ["full_name", "username", "email", "password"],
-    syncAutofillFields
-  );
+  const formRef = useFormAutofillSync(SIGNUP_AUTOFILL_FIELDS, syncAutofillFields);
 
   useEffect(() => {
     const googleError = searchParams.get("google_error");
@@ -127,14 +126,16 @@ export default function SignupPage() {
       return;
     }
 
+    const matchedUniversity = matchUniversityByText(universities, form.university);
     const payload = {
       ...readSignupFormValues(event.currentTarget),
       role: form.role,
-      university: form.university,
+      university: matchedUniversity?.name || form.university,
+      ...(matchedUniversity?.id != null ? { university_id: matchedUniversity.id } : {}),
     };
-    setForm((current) => ({ ...current, ...payload }));
+    setForm((current) => ({ ...current, ...payload, university: form.university }));
 
-    if (!matchUniversityByText(universities, payload.university)) {
+    if (!matchedUniversity) {
       toast.warning("Ro'yxatdan universitetni tanlang.");
       return;
     }
@@ -182,10 +183,12 @@ export default function SignupPage() {
       if (nextPath) {
         sessionStorage.setItem("myuni_auth_next", nextPath);
       }
+      const matchedUniversity = matchUniversityByText(universities, form.university);
       const authorizationUrl = await getGoogleAuthUrl({
         flow: "signup",
         role: form.role,
-        university: form.university,
+        university: matchedUniversity?.name || form.university,
+        ...(matchedUniversity?.id != null ? { university_id: matchedUniversity.id } : {}),
       });
       window.location.href = authorizationUrl;
     } catch (requestError) {
@@ -306,7 +309,7 @@ export default function SignupPage() {
 
       <div className="my-6 flex items-center gap-4">
         <span className="h-px flex-1 bg-slate-200 dark:bg-white/10" />
-        <span className="text-xs font-black uppercase tracking-[0.18em] text-slate-400">yoki</span>
+        <span className="text-xs font-black uppercase tracking-[0.18em] text-slate-600 dark:text-slate-300">yoki</span>
         <span className="h-px flex-1 bg-slate-200 dark:bg-white/10" />
       </div>
 

@@ -26,6 +26,16 @@ from .catalog_utils import (
     serialize_university_detail,
 )
 from .compare_utils import build_compare_rows, build_highlights, build_public_compare_snapshot
+from .public_cache import (
+    cache_key,
+    cached_http,
+    cached_json,
+    cached_payload_or_none,
+    is_anonymous_request,
+    query_fingerprint,
+    ttl,
+)
+from .throttling import PublicAnonThrottle, PublicHeavyAnonThrottle, PublicStatsAnonThrottle
 from .university_images import build_university_image_url, is_legacy_placeholder_url
 from .review_trust_utils import (
     annotate_reviews_with_likes,
@@ -35,6 +45,10 @@ from .review_trust_utils import (
 )
 from .models import Article, ChatMembership, ChatMessage, CompareShareLink, FAQItem, Review, University
 from .serializers import ReviewSerializer, UniversitySerializer, display_name_for_user
+
+
+def _browser_max_age():
+    return int(getattr(settings, "PUBLIC_CACHE_BROWSER_MAX_AGE", 60))
 
 User = get_user_model()
 
@@ -153,87 +167,141 @@ def _public_university_payload(university):
 
 class PublicTopUniversitiesView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
 
     def get(self, request):
-        queryset = (
-            University.objects.annotate(
-                review_count=Count(
-                    "reviews",
-                    filter=Q(reviews__status=Review.Status.APPROVED),
-                    distinct=True,
-                ),
-                average_rating=Avg(
-                    "reviews__rating",
-                    filter=Q(reviews__status=Review.Status.APPROVED),
-                ),
+        def build():
+            queryset = (
+                University.objects.annotate(
+                    review_count=Count(
+                        "reviews",
+                        filter=Q(reviews__status=Review.Status.APPROVED),
+                        distinct=True,
+                    ),
+                    average_rating=Avg(
+                        "reviews__rating",
+                        filter=Q(reviews__status=Review.Status.APPROVED),
+                    ),
+                )
+                .order_by("-review_count", "-average_rating", "name")[:6]
             )
-            .order_by("-review_count", "-average_rating", "name")[:6]
+            results = []
+            for university in queryset:
+                average = university.average_rating
+                results.append(
+                    {
+                        **UniversitySerializer(university).data,
+                        "review_count": university.review_count or 0,
+                        "average_rating": round(average, 1) if average is not None else None,
+                    }
+                )
+            return results
+
+        return cached_json(
+            cache_key("top", "v1"),
+            ttl("TOP", 300),
+            build,
+            browser_max_age=_browser_max_age(),
         )
-        results = []
-        for university in queryset:
-            average = university.average_rating
-            results.append(
-                {
-                    **UniversitySerializer(university).data,
-                    "review_count": university.review_count or 0,
-                    "average_rating": round(average, 1) if average is not None else None,
-                }
-            )
-        return Response(results)
 
 
 class PublicUniversityListView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicHeavyAnonThrottle]
 
     def get(self, request):
-        base_queryset = annotated_universities_queryset()
-        queryset = apply_catalog_filters(
-            base_queryset,
-            request.query_params,
-        )
-        results = [serialize_university_card(university) for university in queryset]
-        return Response(
-            {
+        fingerprint = query_fingerprint(request.query_params)
+
+        def build():
+            base_queryset = annotated_universities_queryset()
+            queryset = apply_catalog_filters(
+                base_queryset,
+                request.query_params,
+            )
+            results = [serialize_university_card(university) for university in queryset]
+            return {
                 "count": len(results),
                 "filters": catalog_filter_options(base_queryset),
                 "results": results,
             }
+
+        return cached_json(
+            cache_key("catalog", "v1", fingerprint),
+            ttl("CATALOG", 180),
+            build,
+            browser_max_age=_browser_max_age(),
         )
 
 
 class PublicUniversityCatalogFiltersView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
 
     def get(self, request):
-        return Response(catalog_filter_options())
+        return cached_json(
+            cache_key("uni-filters", "v1"),
+            ttl("FILTERS", 600),
+            catalog_filter_options,
+            browser_max_age=_browser_max_age(),
+        )
 
 
 class PublicUniversityDetailView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicHeavyAnonThrottle]
 
     def get(self, request, slug):
-        university = get_object_or_404(University, slug=slug)
-        payload = _public_university_payload(university)
-        from .review_trust_utils import annotate_reviews_with_likes
+        # Authenticated viewers may get personalized like flags — skip shared cache.
+        if not is_anonymous_request(request):
+            university = get_object_or_404(University, slug=slug)
+            payload = _public_university_payload(university)
+            reviews = annotate_reviews_with_likes(
+                Review.objects.filter(university=university, status=Review.Status.APPROVED)
+                .select_related(
+                    "university",
+                    "user",
+                    "user__profile",
+                    "study_direction",
+                    "official_reply",
+                    "official_reply__author",
+                )
+                .prefetch_related("images")
+                .order_by("-created_at"),
+                request.user,
+            )[:30]
+            payload["reviews"] = ReviewSerializer(
+                reviews, many=True, context={"request": request}
+            ).data
+            return Response(payload)
 
-        reviews = annotate_reviews_with_likes(
-            Review.objects.filter(university=university, status=Review.Status.APPROVED)
-            .select_related(
-                "university",
-                "user",
-                "user__profile",
-                "study_direction",
-                "official_reply",
-                "official_reply__author",
-            )
-            .prefetch_related("images")
-            .order_by("-created_at"),
-            request.user,
-        )[:30]
-        payload["reviews"] = ReviewSerializer(
-            reviews, many=True, context={"request": request}
-        ).data
-        return Response(payload)
+        def build():
+            university = get_object_or_404(University, slug=slug)
+            payload = _public_university_payload(university)
+            reviews = annotate_reviews_with_likes(
+                Review.objects.filter(university=university, status=Review.Status.APPROVED)
+                .select_related(
+                    "university",
+                    "user",
+                    "user__profile",
+                    "study_direction",
+                    "official_reply",
+                    "official_reply__author",
+                )
+                .prefetch_related("images")
+                .order_by("-created_at"),
+                None,
+            )[:30]
+            payload["reviews"] = ReviewSerializer(
+                reviews, many=True, context={"request": request}
+            ).data
+            return payload
+
+        return cached_json(
+            cache_key("uni", "v1", slug),
+            ttl("DETAIL", 180),
+            build,
+            browser_max_age=_browser_max_age(),
+        )
 
 
 def _serialize_public_article(article, *, include_body=False):
@@ -253,26 +321,60 @@ def _serialize_public_article(article, *, include_body=False):
 
 class PublicArticleListView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
 
     def get(self, request):
-        queryset = Article.objects.filter(status=Article.Status.PUBLISHED).order_by(
-            "-published_at", "-created_at"
+        def build():
+            queryset = Article.objects.filter(status=Article.Status.PUBLISHED).order_by(
+                "-published_at", "-created_at"
+            )
+            return [_serialize_public_article(article) for article in queryset]
+
+        return cached_json(
+            cache_key("articles", "v1"),
+            ttl("ARTICLES", 600),
+            build,
+            browser_max_age=_browser_max_age(),
         )
-        return Response([_serialize_public_article(article) for article in queryset])
 
 
 class PublicArticleDetailView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
 
     def get(self, request, slug):
-        article = get_object_or_404(Article, slug=slug, status=Article.Status.PUBLISHED)
-        return Response(_serialize_public_article(article, include_body=True))
+        def build():
+            article = get_object_or_404(Article, slug=slug, status=Article.Status.PUBLISHED)
+            return _serialize_public_article(article, include_body=True)
+
+        return cached_json(
+            cache_key("article", "v1", slug),
+            ttl("ARTICLES", 600),
+            build,
+            browser_max_age=_browser_max_age(),
+        )
 
 
 class PublicRecentReviewsView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicHeavyAnonThrottle]
 
     def get(self, request):
+        fingerprint = query_fingerprint(request.query_params)
+
+        # Liked-by-me differs for authenticated users — only cache anonymous traffic.
+        if not is_anonymous_request(request):
+            return Response(self._build_recent_payload(request))
+
+        return cached_json(
+            cache_key("recent", "v1", fingerprint),
+            ttl("RECENT", 90),
+            lambda: self._build_recent_payload(request),
+            browser_max_age=min(30, _browser_max_age()),
+        )
+
+    @staticmethod
+    def _build_recent_payload(request):
         try:
             limit = int(request.GET.get("limit", 6))
         except (TypeError, ValueError):
@@ -317,7 +419,8 @@ class PublicRecentReviewsView(APIView):
 
         sort = (request.GET.get("sort") or "newest").strip()
 
-        queryset = annotate_reviews_with_likes(queryset, request.user)
+        user = request.user if getattr(request.user, "is_authenticated", False) else None
+        queryset = annotate_reviews_with_likes(queryset, user)
         if sort == "rating":
             queryset = queryset.order_by("-rating", "-created_at")
         elif sort == "helpful":
@@ -326,12 +429,14 @@ class PublicRecentReviewsView(APIView):
             queryset = queryset.order_by("-created_at")
 
         queryset = queryset[:limit]
-        return Response(ReviewSerializer(queryset, many=True, context={"request": request}).data)
+        return ReviewSerializer(queryset, many=True, context={"request": request}).data
 
 
 def _top_university_featured_reviews(limit=3, request=None):
     """Top universitetlar uchun har biridan eng ko'p like olgan sharh."""
     user = getattr(request, "user", None) if request else None
+    if user is not None and not getattr(user, "is_authenticated", False):
+        user = None
     featured_reviews = []
 
     for university in _top_universities_queryset(limit=limit):
@@ -366,6 +471,7 @@ class PublicTopUniversityReviewsView(APIView):
     """Landing ijtimoiy isbot: top universitetlarning eng foydali sharhlari."""
 
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
 
     def get(self, request):
         try:
@@ -374,57 +480,82 @@ class PublicTopUniversityReviewsView(APIView):
             limit = 3
         limit = max(1, min(limit, 6))
 
-        reviews = _top_university_featured_reviews(limit=limit, request=request)
-        return Response(
-            ReviewSerializer(reviews, many=True, context={"request": request}).data
+        if not is_anonymous_request(request):
+            reviews = _top_university_featured_reviews(limit=limit, request=request)
+            return Response(
+                ReviewSerializer(reviews, many=True, context={"request": request}).data
+            )
+
+        def build():
+            reviews = _top_university_featured_reviews(limit=limit, request=None)
+            return ReviewSerializer(reviews, many=True, context={"request": request}).data
+
+        return cached_json(
+            cache_key("top-reviews", "v1", limit),
+            ttl("RECENT", 90),
+            build,
+            browser_max_age=min(30, _browser_max_age()),
         )
 
 
 class PublicReviewFiltersView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
 
     def get(self, request):
-        return Response(public_review_filter_options())
+        return cached_json(
+            cache_key("review-filters", "v1"),
+            ttl("FILTERS", 600),
+            public_review_filter_options,
+            browser_max_age=_browser_max_age(),
+        )
 
 
 class PublicPlatformStatsView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicStatsAnonThrottle]
 
     def get(self, request):
-        return Response(_platform_stats_payload())
+        return cached_json(
+            cache_key("stats", "v1"),
+            ttl("STATS", 300),
+            _platform_stats_payload,
+            browser_max_age=_browser_max_age(),
+        )
 
 
 class PublicLandingPreviewView(APIView):
     """Landing demo uchun faqat real DB ma'lumotlari."""
 
     permission_classes = [AllowAny]
+    throttle_classes = [PublicHeavyAnonThrottle]
 
     def get(self, request):
-        stats = _platform_stats_payload()
-        universities = [
-            _serialize_top_university(university)
-            for university in _top_universities_queryset(limit=3)
-        ]
-        compare_universities = universities[:2]
+        def build():
+            stats = _platform_stats_payload()
+            universities = [
+                _serialize_top_university(university)
+                for university in _top_universities_queryset(limit=3)
+            ]
+            compare_universities = universities[:2]
 
-        featured_review_qs = (
-            Review.objects.filter(status=Review.Status.APPROVED)
-            .select_related("university", "user", "user__profile")
-            .order_by("-created_at")[:1]
-        )
-        featured_review = (
-            ReviewSerializer(
-                featured_review_qs[0],
-                context={"request": request},
-            ).data
-            if featured_review_qs
-            else None
-        )
+            featured_review_qs = (
+                Review.objects.filter(status=Review.Status.APPROVED)
+                .select_related("university", "user", "user__profile")
+                .order_by("-created_at")[:1]
+            )
+            featured_review = (
+                ReviewSerializer(
+                    featured_review_qs[0],
+                    context={"request": request},
+                ).data
+                if featured_review_qs
+                else None
+            )
 
-        chat_messages, chat_university = _landing_demo_chat_thread(limit=12)
+            chat_messages, chat_university = _landing_demo_chat_thread(limit=12)
 
-        return Response(
-            {
+            return {
                 "stats": stats,
                 "universities": universities,
                 "compare_universities": compare_universities,
@@ -432,6 +563,12 @@ class PublicLandingPreviewView(APIView):
                 "chat_messages": chat_messages,
                 "chat_university": chat_university,
             }
+
+        return cached_json(
+            cache_key("landing", "v1"),
+            ttl("LANDING", 120),
+            build,
+            browser_max_age=min(30, _browser_max_age()),
         )
 
 
@@ -439,6 +576,7 @@ class PublicFeaturedUniversitiesView(APIView):
     """Landing hamkorlar/logotiplar uchun — chat yoki sharh faolligi bo'yicha."""
 
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
 
     def get(self, request):
         try:
@@ -447,8 +585,16 @@ class PublicFeaturedUniversitiesView(APIView):
             limit = 12
         limit = max(1, min(limit, 24))
 
-        queryset = _top_universities_queryset(limit=limit)
-        return Response([_serialize_top_university(university) for university in queryset])
+        def build():
+            queryset = _top_universities_queryset(limit=limit)
+            return [_serialize_top_university(university) for university in queryset]
+
+        return cached_json(
+            cache_key("featured", "v1", limit),
+            ttl("FEATURED", 300),
+            build,
+            browser_max_age=_browser_max_age(),
+        )
 
 
 def _serialize_faq_item(item, *, include_body=True):
@@ -458,7 +604,7 @@ def _serialize_faq_item(item, *, include_body=True):
         "question": item.question,
         "category": item.category,
         "sort_order": item.sort_order,
-        "updated_at": item.updated_at,
+        "updated_at": item.updated_at.isoformat() if item.updated_at else None,
     }
     if include_body:
         payload["answer"] = item.answer
@@ -467,66 +613,102 @@ def _serialize_faq_item(item, *, include_body=True):
 
 class PublicFAQListView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
 
     def get(self, request):
-        items = FAQItem.objects.filter(is_published=True)
         category = (request.GET.get("category") or "").strip()
-        if category:
-            items = items.filter(category=category)
-        items = items.order_by("sort_order", "id")
-        return Response(
-            {
+
+        def build():
+            items = FAQItem.objects.filter(is_published=True)
+            if category:
+                items = items.filter(category=category)
+            items = items.order_by("sort_order", "id")
+            return {
                 "count": items.count(),
                 "items": [_serialize_faq_item(item) for item in items],
             }
+
+        return cached_json(
+            cache_key("faq-list", "v1", category or "all"),
+            ttl("FAQ", 600),
+            build,
+            browser_max_age=_browser_max_age(),
         )
 
 
 class PublicFAQDetailView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
 
     def get(self, request, slug):
-        item = get_object_or_404(FAQItem, slug=slug, is_published=True)
-        return Response(_serialize_faq_item(item))
+        def build():
+            item = get_object_or_404(FAQItem, slug=slug, is_published=True)
+            return _serialize_faq_item(item)
+
+        return cached_json(
+            cache_key("faq", "v1", slug),
+            ttl("FAQ", 600),
+            build,
+            browser_max_age=_browser_max_age(),
+        )
 
 
 class PublicSitemapView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicStatsAnonThrottle]
 
     def get(self, request):
-        base = (getattr(settings, "FRONTEND_URL", None) or "https://myuni.uz").rstrip("/")
-        static_paths = [
-            "",
-            "login",
-            "signup",
-            "universitetlar",
-            "savollar-javob",
-            "foydalanish-shartlari",
-            "maxfiylik-siyosati",
-            "sharh-qoidalari",
-        ]
-        urls = []
-        for path in static_paths:
-            loc = f"{base}/{path}" if path else f"{base}/"
-            urls.append(f"  <url><loc>{loc}</loc><changefreq>weekly</changefreq></url>")
+        def build():
+            base = (getattr(settings, "FRONTEND_URL", None) or "https://myuni.uz").rstrip("/")
+            static_paths = [
+                "",
+                "universitetlar",
+                "maqolalar",
+                "metodologiya",
+                "taqqoslash",
+                "savollar-javob",
+                "ishonch-xavfsizlik",
+                "foydalanish-shartlari",
+                "maxfiylik-siyosati",
+                "sharh-qoidalari",
+            ]
+            urls = []
+            for path in static_paths:
+                loc = f"{base}/{path}" if path else f"{base}/"
+                urls.append(f"  <url><loc>{loc}</loc><changefreq>weekly</changefreq></url>")
 
-        for slug in University.objects.order_by("name").values_list("slug", flat=True):
-            urls.append(
-                f"  <url><loc>{base}/universitet/{slug}</loc><changefreq>weekly</changefreq></url>"
+            for slug in University.objects.order_by("name").values_list("slug", flat=True):
+                urls.append(
+                    f"  <url><loc>{base}/universitet/{slug}</loc><changefreq>weekly</changefreq></url>"
+                )
+
+            for slug in FAQItem.objects.filter(is_published=True).values_list("slug", flat=True):
+                urls.append(
+                    f"  <url><loc>{base}/savollar-javob/{slug}</loc><changefreq>monthly</changefreq></url>"
+                )
+
+            for slug in Article.objects.filter(status=Article.Status.PUBLISHED).values_list(
+                "slug", flat=True
+            ):
+                urls.append(
+                    f"  <url><loc>{base}/maqolalar/{slug}</loc><changefreq>monthly</changefreq></url>"
+                )
+
+            xml = (
+                '<?xml version="1.0" encoding="UTF-8"?>\n'
+                '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+                + "\n".join(urls)
+                + "\n</urlset>"
             )
+            return xml, "application/xml; charset=utf-8"
 
-        for slug in FAQItem.objects.filter(is_published=True).values_list("slug", flat=True):
-            urls.append(
-                f"  <url><loc>{base}/savollar-javob/{slug}</loc><changefreq>monthly</changefreq></url>"
-            )
-
-        xml = (
-            '<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-            + "\n".join(urls)
-            + "\n</urlset>"
+        return cached_http(
+            cache_key("sitemap", "v1"),
+            ttl("SITEMAP", 3600),
+            build,
+            browser_max_age=_browser_max_age(),
+            s_maxage=ttl("SITEMAP", 3600),
         )
-        return HttpResponse(xml, content_type="application/xml; charset=utf-8")
 
 
 SITE_NAME = "MyUni.uz"
@@ -648,6 +830,34 @@ def _build_share_meta_for_path(path):
             "description": _truncate_description(
                 "O'zbekiston universitetlarini shahar, turi, reyting va sharhlar bo'yicha "
                 "filtrlash va qidirish."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
+    if normalized == "/metodologiya":
+        return {
+            "title": "Reyting va taqqoslash metodologiyasi | MyUni.uz",
+            "description": _truncate_description(
+                "MyUni.uz reytingi, mezonlar va taqqoslash ballari qanday hisoblanadi — "
+                "ochiq formulalar. Bu vazirlik yoki QS reytingi emas."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
+    if normalized == "/ishonch-xavfsizlik":
+        return {
+            "title": "Ishonch va xavfsizlik | MyUni.uz",
+            "description": _truncate_description(
+                "MyUni.uz da foydalanuvchi xavfsizligi, moderatsiya, shikoyatlar va "
+                "ma'lumotlaringiz himoyasi."
             ),
             "canonical": canonical,
             "image": image,
@@ -805,17 +1015,30 @@ class PublicSharePreviewView(APIView):
     """Ijtimoiy tarmoq botlari uchun server-side link preview HTML."""
 
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
 
     def get(self, request):
         path = request.GET.get("path") or "/"
-        meta = _build_share_meta_for_path(path)
-        return HttpResponse(_render_share_html(meta), content_type="text/html; charset=utf-8")
+        normalized = _normalize_share_path(path)
+        path_key = normalized.strip("/") or "home"
+
+        def build():
+            meta = _build_share_meta_for_path(normalized)
+            return _render_share_html(meta), "text/html; charset=utf-8"
+
+        return cached_http(
+            cache_key("share-preview", "v1", path_key),
+            ttl("SHARE_PREVIEW", 300),
+            build,
+            browser_max_age=_browser_max_age(),
+        )
 
 
 class PublicCompareByIdsView(APIView):
-    """Umumiy taqqoslash — 3 ta universitet ID bo'yicha (authsiz)."""
+    """Umumiy taqqoslash — 2–4 ta universitet ID bo'yicha (authsiz)."""
 
     permission_classes = [AllowAny]
+    throttle_classes = [PublicHeavyAnonThrottle]
 
     def get(self, request):
         ids_param = request.query_params.get("ids", "")
@@ -823,23 +1046,37 @@ class PublicCompareByIdsView(APIView):
         if error:
             return Response({"detail": error}, status=status.HTTP_400_BAD_REQUEST)
 
-        universities = list(University.objects.filter(pk__in=university_ids))
-        if len(universities) != len(university_ids):
+        ids_key = ",".join(str(item) for item in university_ids)
+
+        def build():
+            universities = list(University.objects.filter(pk__in=university_ids))
+            if len(universities) != len(university_ids):
+                return None
+
+            order = {university_id: index for index, university_id in enumerate(university_ids)}
+            universities.sort(key=lambda item: order[item.id])
+
+            rows = build_compare_rows(universities, set(), set())
+            highlights = build_highlights(rows)
+            return build_public_compare_snapshot(rows, highlights)
+
+        response = cached_payload_or_none(
+            cache_key("compare", "v1", ids_key),
+            ttl("COMPARE", 300),
+            build,
+            browser_max_age=_browser_max_age(),
+        )
+        if response is None:
             return Response(
                 {"detail": "Tanlangan universitetlardan biri topilmadi."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-
-        order = {university_id: index for index, university_id in enumerate(university_ids)}
-        universities.sort(key=lambda item: order[item.id])
-
-        rows = build_compare_rows(universities, set(), set())
-        highlights = build_highlights(rows)
-        return Response(build_public_compare_snapshot(rows, highlights))
+        return response
 
 
 class PublicCompareShareView(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
 
     def get(self, request, token):
         share = CompareShareLink.objects.filter(token=token).first()
@@ -858,11 +1095,17 @@ class PublicCompareShareView(APIView):
                 status=410,
             )
 
-        return Response(
-            {
+        def build():
+            return {
                 **share.snapshot,
                 "expires_at": share.expires_at.isoformat(),
                 "created_at": share.created_at.isoformat(),
                 "token": share.token,
             }
+
+        return cached_json(
+            cache_key("compare-share", "v1", token),
+            ttl("COMPARE_SHARE", 60),
+            build,
+            browser_max_age=min(30, _browser_max_age()),
         )

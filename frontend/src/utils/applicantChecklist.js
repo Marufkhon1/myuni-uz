@@ -86,7 +86,7 @@ export function getDashboardChecklistSteps({
     {
       id: "compare",
       label: "Universitetlarni solishtiring",
-      description: "3 ta OTMni taqqoslang",
+      description: "2–4 ta OTMni taqqoslang",
       done: Boolean(stored.compare),
       section: "compare",
     },
@@ -103,7 +103,7 @@ export function getApplicantChecklistProgress(steps) {
 }
 
 export function getCompareSuggestion(universities, userUniversityName) {
-  if (!universities?.length || universities.length < 3) {
+  if (!universities?.length || universities.length < 2) {
     return null;
   }
 
@@ -119,13 +119,13 @@ export function getCompareSuggestion(universities, userUniversityName) {
 
   if (myUniversity) {
     const others = sorted.filter((item) => item.id !== myUniversity.id).slice(0, 2);
-    if (others.length < 2) {
+    if (others.length === 0) {
       return null;
     }
-    return { universities: [myUniversity, others[0], others[1]] };
+    return { universities: [myUniversity, ...others] };
   }
 
-  return { universities: sorted.slice(0, 3) };
+  return { universities: sorted.slice(0, Math.min(3, sorted.length)) };
 }
 
 export function getRecentJoinedChats(universities, joinedUniversityIds, limit = 3) {

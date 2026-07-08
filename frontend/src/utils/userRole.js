@@ -3,7 +3,7 @@ export function isStudentProfile(profile) {
   return profile?.role === "student";
 }
 
-/** Sharh yozish huquqi — faqat tasdiqlangan talaba profili. */
+/** Sharh yozish huquqi — faqat student roli (profil role=student). */
 export function canWriteReviews(profile) {
   return isStudentProfile(profile);
 }

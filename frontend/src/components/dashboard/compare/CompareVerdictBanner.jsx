@@ -2,7 +2,11 @@ import UniversityAvatar from "@/components/UniversityAvatar.jsx";
 import { FractionalStars } from "@/components/ui/StarRatingDisplay.jsx";
 import CompareRecommendBadge from "./CompareRecommendBadge.jsx";
 import { COMPARE_SLOT_THEMES } from "./compareTheme.js";
-import { formatCompareRating, winSharePercent } from "@/utils/compareMath.js";
+import {
+  compareSlotGridClass,
+  formatCompareRating,
+  winSharePercent,
+} from "@/utils/compareMath.js";
 
 function leaderSubtitle(leader, summary, content) {
   if (!leader?.university) {
@@ -88,7 +92,15 @@ function WinStatCard({ university, index, wins, decidedRows, composite, isLeader
 
         <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
           <div
-            className={`h-full rounded-full bg-gradient-to-r ${index === 0 ? "from-blue-400 to-primary" : index === 1 ? "from-violet-400 to-violet-500" : "from-emerald-400 to-emerald-500"} transition-all duration-700`}
+            className={`h-full rounded-full bg-gradient-to-r ${
+              index === 0
+                ? "from-blue-400 to-primary"
+                : index === 1
+                  ? "from-violet-400 to-violet-500"
+                  : index === 2
+                    ? "from-emerald-400 to-emerald-500"
+                    : "from-amber-400 to-amber-500"
+            } transition-all duration-700`}
             style={{ width: `${Math.max(pct, wins > 0 ? 8 : 0)}%` }}
           />
         </div>
@@ -167,7 +179,7 @@ export default function CompareVerdictBanner({ summary, content }) {
         )}
 
         {decidedRows > 0 && (
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          <div className={`mt-6 grid gap-3 ${compareSlotGridClass(universities.length)}`}>
             {universities.map((university, index) => (
               <WinStatCard
                 key={university.id}

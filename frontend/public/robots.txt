@@ -3,6 +3,10 @@ Allow: /
 Disallow: /applicant/
 Disallow: /student/
 Disallow: /dashboard
+Disallow: /moderator
 Disallow: /oauth/
+Disallow: /verify-email
+Disallow: /forgot-password
+Disallow: /reset-password
 
 Sitemap: https://myuni.uz/api/public/sitemap.xml

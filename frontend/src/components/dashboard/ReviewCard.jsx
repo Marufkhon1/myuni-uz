@@ -8,6 +8,7 @@ import { FractionalStars } from "../ui/StarRatingDisplay.jsx";
 import { resolveMediaUrl } from "@/utils/media.js";
 import { getPopularRankStyles } from "@/utils/popularReviewRank.js";
 import { hasReviewAspectRatings } from "@/utils/reviewAspects.js";
+import { campusAffiliationLabel, isCampusAffiliated } from "@/utils/campusAffiliation.js";
 
 const STATUS_LABELS = {
   pending: "Ko'rib chiqilmoqda",
@@ -50,6 +51,8 @@ function ReviewBadge({ children, variant = "default" }) {
   const styles = {
     default: "bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300",
     verified:
+      "gap-1 bg-emerald-500/10 text-emerald-700 ring-1 ring-inset ring-emerald-300/50 dark:bg-emerald-400/12 dark:text-emerald-300 dark:ring-emerald-400/25",
+    campus:
       "gap-1 bg-emerald-500/10 text-emerald-700 ring-1 ring-inset ring-emerald-300/50 dark:bg-emerald-400/12 dark:text-emerald-300 dark:ring-emerald-400/25",
     mine: "bg-blue-50 text-primary ring-1 ring-inset ring-blue-200/70 dark:bg-blue-400/10 dark:ring-blue-400/20",
     student:
@@ -201,12 +204,14 @@ export default function ReviewCard({
               <h3 className="text-base font-black tracking-tight text-slate-950 dark:text-white sm:text-[1.05rem]">
                 {item.author}
               </h3>
-              {item.is_verified_student && (
-                <ReviewBadge variant="verified">
-                  <span aria-hidden="true">✓</span> Tasdiqlangan
+              {isCampusAffiliated(item) && (
+                <ReviewBadge variant="campus">
+                  {campusAffiliationLabel(item)}
                 </ReviewBadge>
               )}
-              {showStudentVoiceBadge && isStudentAuthor && !item.is_verified_student && (
+              {showStudentVoiceBadge &&
+                isStudentAuthor &&
+                !isCampusAffiliated(item) && (
                 <ReviewBadge variant="student">Talaba tajribasi</ReviewBadge>
               )}
               {showApplicantVoiceBadge && isApplicantAuthor && (

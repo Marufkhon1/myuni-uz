@@ -6,7 +6,7 @@ export default function UniversityPublicAdmission({ cycles = [] }) {
   }
 
   return (
-    <section className="border-b border-slate-100 px-5 py-6 dark:border-white/10 sm:px-6">
+    <section className="border-b border-slate-100 px-5 py-6 dark:border-white/10 sm:px-6" id="admission">
       <p className="text-xs font-black uppercase tracking-wide text-primary">Qabul ma&apos;lumotlari</p>
       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
         Kvota, minimal ball va muddatlar — rasmiy e&apos;lonlar asosida yangilanadi.

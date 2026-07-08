@@ -182,6 +182,18 @@ export const PAGE_META = {
       "MyUni.uz da foydalanuvchi xavfsizligi, moderatsiya, shikoyatlar va ma'lumotlaringiz himoyasi.",
     path: "/ishonch-xavfsizlik",
   },
+  methodology: {
+    title: "Reyting va taqqoslash metodologiyasi | MyUni.uz",
+    description:
+      "MyUni.uz reytingi, mezonlar va taqqoslash ballari qanday hisoblanadi — ochiq formulalar va cheklovlar. Bu vazirlik yoki QS reytingi emas.",
+    path: "/metodologiya",
+  },
+  articlesList: {
+    title: "Maqolalar | MyUni.uz",
+    description:
+      "Universitet tanlash, qabul, reyting va MyUni.uz platformasidan foydalanish bo'yicha foydali maqolalar.",
+    path: "/maqolalar",
+  },
   faqList: {
     title: "Savol-javob (FAQ) | MyUni.uz",
     description:

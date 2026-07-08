@@ -3,6 +3,7 @@ export function isGoogleOAuthCallbackPath(pathname = "") {
   return path === "/oauth/google/callback";
 }
 
+/** Legacy hash tokens (pre cookie-redirect). Prefer query ?ok=1. */
 export function readGoogleOAuthHashTokens() {
   if (typeof window === "undefined" || !window.location.hash) {
     return { access: null, refresh: null, next: null };
@@ -21,4 +22,14 @@ export function clearGoogleOAuthHash() {
   }
   const { pathname, search } = window.location;
   window.history.replaceState(null, "", `${pathname}${search}`);
+}
+
+export function readGoogleOAuthCallbackParams(search = "") {
+  const query = search || (typeof window !== "undefined" ? window.location.search : "");
+  const params = new URLSearchParams(query.startsWith("?") ? query.slice(1) : query);
+  const ok = params.get("ok") === "1";
+  const next = params.get("next");
+  const code = params.get("code");
+  const googleError = params.get("google_error");
+  return { ok, next, code, googleError };
 }

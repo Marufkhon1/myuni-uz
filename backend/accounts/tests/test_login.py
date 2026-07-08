@@ -57,7 +57,7 @@ class LoginApiTests(TestCase):
     def test_login_empty_body_returns_uzbek_message(self):
         response = self.client.post("/api/auth/login/", {}, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data["username"][0], "Login kiriting.")
+        self.assertEqual(response.data["username"][0], "Login yoki email kiriting.")
 
     def test_login_wrong_password(self):
         response = self.client.post(

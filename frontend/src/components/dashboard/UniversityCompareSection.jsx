@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { CompareResultsSkeleton } from "../skeletons/DashboardSkeletons.jsx";
 import { useToast } from "@/hooks/useToast.js";
@@ -7,7 +7,7 @@ import { getUniversityCompare } from "@/services/universityService.js";
 import { matchUniversityByText } from "@/utils/universityMatch.js";
 import { getCompareContent } from "@/utils/compareRoleContent.js";
 import { getApiErrorMessage } from "@/utils/apiErrors.js";
-import { MAX_COMPARE, MIN_COMPARE } from "@/utils/compareMath.js";
+import { isValidCompareCount, MAX_COMPARE, MIN_COMPARE } from "@/utils/compareMath.js";
 import CompareSelectionTray from "./compare/CompareSelectionTray.jsx";
 import CompareUniversityPicker from "./compare/CompareUniversityPicker.jsx";
 import CompareQuickPicks from "./compare/CompareQuickPicks.jsx";
@@ -54,7 +54,7 @@ function parseCompareIdsParam(raw) {
   return unique.slice(0, MAX_COMPARE);
 }
 
-function buildQuickPicks(universities, myUniversity, limit = 2) {
+function buildQuickPicks(universities, myUniversity, limit = 3) {
   if (universities.length < MIN_COMPARE) {
     return [];
   }
@@ -65,7 +65,7 @@ function buildQuickPicks(universities, myUniversity, limit = 2) {
 
   function addPick(ids) {
     const unique = [...new Set(ids.map(String))];
-    if (unique.length !== MAX_COMPARE) {
+    if (!isValidCompareCount(unique.length)) {
       return;
     }
     const key = unique.sort().join("-");
@@ -81,10 +81,19 @@ function buildQuickPicks(universities, myUniversity, limit = 2) {
     }
   }
 
-  if (myUniversity && sorted.length >= 2) {
-    const partners = sorted.filter((item) => item.id !== myUniversity.id).slice(0, 2);
+  if (myUniversity && sorted.length >= 1) {
+    const partners = sorted.filter((item) => item.id !== myUniversity.id);
+    if (partners[0]) {
+      addPick([myUniversity.id, partners[0].id]);
+    }
     if (partners.length >= 2) {
       addPick([myUniversity.id, partners[0].id, partners[1].id]);
+    }
+  }
+
+  for (let i = 0; i < sorted.length && picks.length < limit; i += 1) {
+    for (let j = i + 1; j < sorted.length && picks.length < limit; j += 1) {
+      addPick([sorted[i].id, sorted[j].id]);
     }
   }
 
@@ -125,7 +134,7 @@ export default function UniversityCompareSection({
       return;
     }
     const ids = prefillIds.map(String).filter(Boolean).slice(0, MAX_COMPARE);
-    if (ids.length === MAX_COMPARE) {
+    if (ids.length >= 1) {
       setSelectedIds(ids);
       setSearch("");
       onPrefillConsumed?.();
@@ -138,14 +147,14 @@ export default function UniversityCompareSection({
       return;
     }
     const fromUrl = parseCompareIdsParam(searchParams.get("compare_ids"));
-    if (fromUrl.length === MAX_COMPARE) {
+    if (fromUrl.length >= 1) {
       setSelectedIds(fromUrl);
       hydratedFromUrl.current = true;
     }
   }, [searchParams, prefillIds]);
 
   useEffect(() => {
-    if (selectedIds.length !== MAX_COMPARE) {
+    if (!isValidCompareCount(selectedIds.length)) {
       setSearchParams(
         (current) => {
           const next = new URLSearchParams(current);
@@ -173,7 +182,7 @@ export default function UniversityCompareSection({
   );
 
   const canCompare =
-    selectedIds.length === MAX_COMPARE && new Set(selectedIds).size === MAX_COMPARE;
+    isValidCompareCount(selectedIds.length) && new Set(selectedIds).size === selectedIds.length;
   const selectionKey = canCompare ? selectedIds.join("|") : "";
   const isFull = selectedIds.length >= MAX_COMPARE;
 
@@ -275,7 +284,9 @@ export default function UniversityCompareSection({
   }
 
   const resultsReady =
-    resolvedKey === selectionKey && (compareData?.universities?.length ?? 0) === MAX_COMPARE;
+    resolvedKey === selectionKey &&
+    isValidCompareCount(compareData?.universities?.length ?? 0) &&
+    (compareData?.universities?.length ?? 0) === selectedIds.length;
   const showSkeleton = isLoading && !resultsReady;
   const showResults = resultsReady;
   const showLoadError = canCompare && !isLoading && compareError;
@@ -366,7 +377,7 @@ export default function UniversityCompareSection({
             />
           )}
 
-          {!canCompare && (
+          {!canCompare && selectedIds.length === 0 && (
             <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-5 text-center dark:border-white/10 dark:bg-white/[0.02]">
               <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">{content.emptyHint}</p>
               <p className="mt-1 text-xs text-slate-400">Yoki pastdagi qidiruvdan OTM qo&apos;shing</p>

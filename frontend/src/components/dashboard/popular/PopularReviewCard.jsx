@@ -4,6 +4,7 @@ import UniversityAvatar from "@/components/UniversityAvatar.jsx";
 import { resolveMediaUrl } from "@/utils/media.js";
 import { getPopularRankStyles } from "@/utils/popularReviewRank.js";
 import { formatReviewDate } from "@/utils/reviewFormat.js";
+import { campusAffiliationLabel, isCampusAffiliated } from "@/utils/campusAffiliation.js";
 import PopularLikeButton from "./PopularLikeButton.jsx";
 
 function StarRating({ rating, size = "sm" }) {
@@ -26,6 +27,7 @@ function MetaBadge({ children, variant = "default" }) {
   const styles = {
     default: "bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300",
     verified: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/60 dark:bg-emerald-400/10 dark:text-emerald-200 dark:ring-emerald-400/20",
+    campus: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/60 dark:bg-emerald-400/10 dark:text-emerald-200 dark:ring-emerald-400/20",
     student: "bg-violet-50 text-violet-700 ring-1 ring-violet-200/60 dark:bg-violet-400/10 dark:text-violet-200 dark:ring-violet-400/20",
   };
   return (
@@ -104,8 +106,14 @@ export default function PopularReviewCard({
                 {item.author}
               </h3>
               <div className="mt-1.5 flex flex-wrap gap-1.5">
-                {item.is_verified_student && <MetaBadge variant="verified">✓ Tasdiqlangan</MetaBadge>}
-                {showStudentVoiceBadge && isStudentAuthor && !item.is_verified_student && (
+                {isCampusAffiliated(item) && (
+                  <MetaBadge variant="campus">
+                    {campusAffiliationLabel(item)}
+                  </MetaBadge>
+                )}
+                {showStudentVoiceBadge &&
+                  isStudentAuthor &&
+                  !isCampusAffiliated(item) && (
                   <MetaBadge variant="student">Talaba tajribasi</MetaBadge>
                 )}
               </div>

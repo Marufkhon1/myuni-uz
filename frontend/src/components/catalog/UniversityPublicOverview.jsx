@@ -26,7 +26,11 @@ export default function UniversityPublicOverview({ detail }) {
   }
 
   return (
-    <section className="border-b border-slate-100 px-5 py-6 dark:border-white/10 sm:px-6">
+    <section
+      id="overview"
+      className="border-b border-slate-100 px-5 py-6 dark:border-white/10 sm:px-6"
+      aria-label="Qisqa ko'rsatkichlar"
+    >
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatPill
           label="O'rtacha baho"

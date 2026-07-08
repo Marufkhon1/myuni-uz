@@ -2,13 +2,20 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   clearTokens,
   establishAuthSession,
+  exchangeAuthCode,
   getCurrentUser,
   login as loginRequest,
   logoutSession,
+  markCookieSession,
   register as registerRequest,
 } from "@/services/authService.js";
+import { ensureCsrfCookie } from "@/services/api.js";
 import { AuthContext } from "./authContext.js";
-import { isGoogleOAuthCallbackPath, readGoogleOAuthHashTokens } from "@/utils/authPaths.js";
+import {
+  isGoogleOAuthCallbackPath,
+  readGoogleOAuthCallbackParams,
+  readGoogleOAuthHashTokens,
+} from "@/utils/authPaths.js";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -18,9 +25,12 @@ export function AuthProvider({ children }) {
     let isMounted = true;
 
     async function bootstrapAuth() {
+      await ensureCsrfCookie();
+
       if (isGoogleOAuthCallbackPath()) {
+        const { ok, code } = readGoogleOAuthCallbackParams();
         const { access, refresh } = readGoogleOAuthHashTokens();
-        if (access && refresh) {
+        if (ok || code || (access && refresh)) {
           if (isMounted) {
             setIsLoading(false);
           }
@@ -78,7 +88,25 @@ export function AuthProvider({ children }) {
         }
         return data;
       },
+      async completeCookieAuth() {
+        markCookieSession();
+        const nextUser = await getCurrentUser();
+        setUser(nextUser);
+        return nextUser;
+      },
+      async completeOAuthExchange(code) {
+        const session = await exchangeAuthCode(code);
+        const nextUser = session.user || (await getCurrentUser());
+        setUser(nextUser);
+        return nextUser;
+      },
       async completeGoogleAuth(tokens) {
+        if (!tokens?.access || !tokens?.refresh) {
+          markCookieSession();
+          const nextUser = await getCurrentUser();
+          setUser(nextUser);
+          return nextUser;
+        }
         const session = await establishAuthSession(tokens);
         const nextUser = session.user || (await getCurrentUser());
         setUser(nextUser);

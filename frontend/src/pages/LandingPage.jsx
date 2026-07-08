@@ -13,18 +13,15 @@ import ReviewsSection from "@/components/ReviewsSection.jsx";
 import TopUniversitiesSection from "@/components/TopUniversitiesSection.jsx";
 import JsonLd from "@/components/seo/JsonLd.jsx";
 import { PAGE_META } from "@/config/siteMeta.js";
-import usePublicFaqItems from "@/hooks/usePublicFaqItems.js";
 import { usePageMeta } from "@/hooks/usePageMeta.js";
 import MainLayout from "@/layouts/MainLayout.jsx";
 import {
-  buildFaqPageSchema,
   buildOrganizationSchema,
   buildWebSiteSchema,
 } from "@/utils/structuredData.js";
 
 export default function LandingPage() {
   usePageMeta(PAGE_META.landing);
-  const { items: faqItems } = usePublicFaqItems();
 
   const organizationSchema = useMemo(
     () =>
@@ -42,23 +39,12 @@ export default function LandingPage() {
     []
   );
 
-  const faqSchema = useMemo(
-    () =>
-      buildFaqPageSchema(
-        faqItems.map((item) => ({
-          question: item.question,
-          answer: item.answer,
-        }))
-      ),
-    [faqItems]
-  );
-
   return (
     <MainLayout>
       <div data-seo-ready="true">
       <JsonLd
         id="landing-json-ld"
-        schemas={[organizationSchema, websiteSchema, faqSchema].filter(Boolean)}
+        schemas={[organizationSchema, websiteSchema].filter(Boolean)}
       />
       <LandingHashScroll />
       <HeroSection />

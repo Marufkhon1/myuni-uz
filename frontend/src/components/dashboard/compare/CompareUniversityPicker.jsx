@@ -55,7 +55,9 @@ export default function CompareUniversityPicker({
               ✓
             </span>
             <div>
-              <p className="text-sm font-black text-amber-950 dark:text-amber-100">3 ta OTM tanlandi</p>
+              <p className="text-sm font-black text-amber-950 dark:text-amber-100">
+                {MAX_COMPARE} ta OTM tanlandi
+              </p>
               <p className="mt-1 text-xs leading-relaxed text-amber-800/80 dark:text-amber-200/80">
                 Maksimal {MAX_COMPARE} ta OTM tanlandi. Boshqasini qo&apos;shish uchun yuqoridagi kartalardan birini
                 olib tashlang.

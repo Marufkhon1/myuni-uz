@@ -20,6 +20,9 @@ export default function OfficeMapEmbed({
       className={`overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 ${className}`.trim()}
     >
       <iframe title={title} src={src} className={frameClassName} loading="lazy" />
+      <p className="border-t border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-semibold text-slate-500 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-400">
+        MyUni.uz ofis manzili — universitet kampusi emas.
+      </p>
     </div>
   );
 }

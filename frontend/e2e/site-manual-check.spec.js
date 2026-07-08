@@ -19,6 +19,7 @@ async function registerStudent(request) {
     password: E2E_PASSWORD,
     role: "student",
     universityName: list[0].name,
+    universityId: list[0].id,
   });
   return { access, universities: list };
 }
@@ -32,7 +33,7 @@ async function loginStudent(page) {
 }
 
 async function openReviewsSection(page) {
-  await page.getByRole("button", { name: /sharh yozish/i }).first().click();
+  await page.getByRole("link", { name: /sharh yozish/i }).first().click();
 }
 
 async function rateFiveStars(radioGroup) {
@@ -64,7 +65,7 @@ async function fillReviewForm(page, reviewText) {
   await submitButton.click();
 }
 
-test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
+test.describe("MyUni brauzer tekshiruvi (M1–M10)", () => {
   test.describe.configure({ mode: "serial" });
 
   let accessToken = "";
@@ -78,22 +79,35 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
 
   test("M1 — landing va CTA matni", async ({ page }) => {
     await page.goto(WEB);
-    await expect(page.getByText(/talabalar platformasi/i).first()).toBeVisible();
-    await expect(page.getByRole("link", { name: /ro'yxatga qo'shilish/i }).first()).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: /Eng yaxshi universitetni/i }).first()
+    ).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('a[href="/signup"]').first()).toBeVisible();
   });
 
-  test("M2 — signup: universitet dropdown", async ({ page }) => {
+  test("M2 — signup UI: forma to'ldirish va dashboard", async ({ page }) => {
+    const stamp = `${Date.now()}`;
+    const email = `e2e.ui.signup.${stamp}@sitecheck.test`;
+    const username = `ui_signup_${stamp}`.slice(0, 30);
+
     await page.goto(`${WEB}/signup`);
     await expect(page.getByText("Talaba")).toBeVisible();
-    await expect(page.getByText("Abituriyent")).toBeVisible();
+    await page.getByRole("button", { name: /talaba/i }).first().click();
+
+    await page.locator("#signup-full-name").fill("E2E UI Talaba");
+    await page.locator("#signup-username").fill(username);
+    await page.locator("#signup-email").fill(email);
+    await page.locator("#signup-password").fill(E2E_PASSWORD);
+
     const universityField = page.getByRole("combobox");
     await expect(universityField).toBeEnabled({ timeout: 15000 });
     await universityField.click();
     await expect(page.getByRole("listbox")).toBeVisible();
-    const options = await page.getByRole("option").count();
-    expect(options).toBeGreaterThan(0);
     await page.getByRole("option").first().click();
-    await expect(universityField).not.toHaveValue("");
+
+    await page.getByRole("button", { name: /hisob yaratish/i }).click();
+    await page.waitForURL(/\/student\/dashboard/, { timeout: 30000 });
+    await waitForDashboardReady(page);
   });
 
   test("M10 — sharh yozish va o'chirish", async ({ page }) => {
@@ -120,9 +134,9 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     await postedReview.getByRole("button", { name: "O'chirish" }).click();
     await expect(page.getByRole("heading", { name: /sharhni o'chirish/i })).toBeVisible();
     await page.getByRole("button", { name: "Ha", exact: true }).click();
-    await expect(
-      page.getByRole("article").filter({ hasText: reviewText })
-    ).toHaveCount(0, { timeout: 15000 });
+    await expect(page.getByRole("article").filter({ hasText: reviewText })).toHaveCount(0, {
+      timeout: 15000,
+    });
   });
 
   test("M6 — 404 sahifa", async ({ page }) => {
@@ -150,12 +164,25 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     await expect(supportDialog).toHaveCount(0);
   });
 
-  test("M9 — taqqoslash bo'limi", async ({ page }) => {
+  test("M9 — taqqoslash 2 ta OTM natija", async ({ page }) => {
     await loginStudent(page);
     await waitForDashboardReady(page);
-    await page.getByRole("link", { name: /^taqqoslash$/i }).click();
+
+    const a = seedUniversities[0];
+    const b = seedUniversities[1] || seedUniversities[0];
+    expect(a?.id).toBeTruthy();
+    expect(b?.id).toBeTruthy();
+    expect(String(a.id)).not.toBe(String(b.id));
+
+    await page.goto(
+      `${WEB}/student/dashboard/compare?compare_ids=${a.id},${b.id}`
+    );
+    await waitForDashboardReady(page);
     await expect(page.getByRole("heading", { name: /OTMlarni solishtiring/i })).toBeVisible();
-    await expect(page.getByText(/Aynan 3 ta universitetni yonma-yon jadvalda/i)).toBeVisible();
+    await expect(page.getByText(/2–4 ta universitetni yonma-yon/i)).toBeVisible();
+    await expect(page.getByText(/Umumiy natija/i).first()).toBeVisible({ timeout: 25000 });
+    await expect(page.getByText(a.short_name || a.name).first()).toBeVisible();
+    await expect(page.getByText(b.short_name || b.name).first()).toBeVisible();
   });
 
   test("M4 — qorong'u rejim", async ({ page }) => {
@@ -170,13 +197,21 @@ test.describe("MyUni brauzer tekshiruvi (M1–M7)", () => {
     expect(after).not.toBe(before);
   });
 
-  test("M5 — mobil: pastki navigatsiya", async ({ page }) => {
+  test("M5 — mobil: pastki navigatsiya 5 ta", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await loginStudent(page);
-    await expect(page.getByRole("navigation", { name: "Asosiy menyu" })).toBeVisible();
-    await expect(
-      page.getByRole("navigation", { name: "Asosiy menyu" }).getByRole("button", { name: "Chatlar", exact: true })
-    ).toBeVisible();
+    const nav = page.getByRole("navigation", { name: "Asosiy menyu" });
+    await expect(nav).toBeVisible();
+    await expect(nav).toHaveAttribute("data-nav-count", "5");
+    await expect(nav.getByRole("button", { name: "Bosh sahifa" })).toBeVisible();
+    await expect(nav.getByRole("button", { name: "Chatlar", exact: true })).toBeVisible();
+    await expect(nav.getByRole("button", { name: "Yana" })).toBeVisible();
+
+    await nav.getByRole("button", { name: "Yana" }).click();
+    const more = page.getByTestId("dashboard-bottom-nav-more");
+    await expect(more.getByRole("dialog", { name: "Yana" })).toBeVisible();
+    await more.getByRole("button", { name: /Profil/i }).click();
+    await expect(page.getByText("Raqamli ID")).toBeVisible({ timeout: 15000 });
   });
 
   test("M7 — chat: qo'shilish va xabar", async ({ page, request }) => {

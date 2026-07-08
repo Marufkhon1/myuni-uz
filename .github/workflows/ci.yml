@@ -98,6 +98,29 @@ jobs:
         run: npm ci --legacy-peer-deps
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
+      - name: Start servers for API smoke
+        env:
+          DJANGO_SECRET_KEY: ci-test-secret-key-at-least-32-characters-long
+          DJANGO_DEBUG: "True"
+        run: |
+          bash ../backend/scripts/run_ci_server.sh &
+          npm run dev -- --host 127.0.0.1 --port 5173 &
+          for i in $(seq 1 60); do
+            if curl -sf http://127.0.0.1:8000/api/public/universities/ >/dev/null \
+              && curl -sf http://127.0.0.1:5173 >/dev/null; then
+              echo "Servers ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Servers failed to become ready"
+          exit 1
+      - name: API smoke (login/register/review/compare)
+        working-directory: backend
+        env:
+          DJANGO_SECRET_KEY: ci-test-secret-key-at-least-32-characters-long
+          DJANGO_DEBUG: "True"
+        run: python scripts/site_integration_check.py
       - name: E2E tests
         env:
           CI: "true"

@@ -34,6 +34,19 @@ describe("useUniversityPublicSection", () => {
     pushState.mockRestore();
   });
 
+  it("pushes #overview when switching to overview", () => {
+    const pushState = vi.spyOn(window.history, "pushState");
+    const { result } = renderUniversityPublicSection("tsue", "/universitet/tsue#reviews");
+
+    act(() => {
+      result.current.handleSectionChange(UNIVERSITY_PUBLIC_SECTIONS.overview);
+    });
+
+    expect(result.current.activeSection).toBe(UNIVERSITY_PUBLIC_SECTIONS.overview);
+    expect(pushState).toHaveBeenCalledWith(null, "", "/universitet/tsue#overview");
+    pushState.mockRestore();
+  });
+
   it("syncs section on browser back/forward (popstate)", () => {
     const { result } = renderUniversityPublicSection("tsue", "/universitet/tsue");
 

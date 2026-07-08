@@ -5,7 +5,14 @@ from .password_reset import (
     PasswordResetRequestView,
     PasswordResetStatusView,
 )
-from .auth_views import AuthSessionView, CookieTokenRefreshView, LogoutView, StreamTokenView
+from .auth_views import (
+    AuthExchangeView,
+    AuthSessionView,
+    CookieTokenRefreshView,
+    CsrfCookieView,
+    LogoutView,
+    StreamTokenView,
+)
 from .support_views import SupportMessageView
 from .notification_views import NotificationListView, NotificationMarkReadView
 from .push_views import PushSubscribeView, PushUnsubscribeView, PushVapidPublicKeyView
@@ -35,8 +42,10 @@ urlpatterns = [
     path("support/message/", SupportMessageView.as_view(), name="support-message"),
     path("stream-token/", StreamTokenView.as_view(), name="stream-token"),
     path("session/", AuthSessionView.as_view(), name="auth-session"),
+    path("exchange/", AuthExchangeView.as_view(), name="auth-exchange"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("token/refresh/", CookieTokenRefreshView.as_view(), name="cookie-token-refresh"),
+    path("csrf/", CsrfCookieView.as_view(), name="csrf-cookie"),
     path("register/", RegisterView.as_view(), name="register"),
     path("login/", LoginView.as_view(), name="login"),
     path("verify-email/confirm/", EmailVerifyConfirmView.as_view(), name="verify-email-confirm"),
