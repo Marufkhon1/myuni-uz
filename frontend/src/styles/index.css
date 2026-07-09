@@ -97,7 +97,18 @@ body {
   }
 
   .nav-links {
-    @apply flex max-w-full items-center justify-center gap-0.5 overflow-x-auto [scrollbar-width:none] 2xl:gap-2 [&::-webkit-scrollbar]:hidden;
+    @apply flex max-w-full items-center justify-center gap-0.5 overflow-x-hidden overflow-y-hidden 2xl:gap-2;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
   }
 
   .nav-link {

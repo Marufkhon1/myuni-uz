@@ -151,8 +151,8 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
           </span>
         </Link>
 
-        <div className="hidden min-w-0 items-center justify-center px-1 lg:flex">
-          <div className="flex w-max max-w-full items-center justify-center gap-1 overflow-x-auto lg:gap-1.5 xl:gap-2.5">
+        <div className="hidden min-w-0 items-center justify-center overflow-hidden px-1 lg:flex">
+          <div className="nav-links gap-1 lg:gap-1.5 xl:gap-2.5">
             {navLinks.map((link) => {
               const isActive = link.route
                 ? pathname === link.href
