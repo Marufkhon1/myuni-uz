@@ -74,22 +74,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "myuni.wsgi.application"
 ASGI_APPLICATION = "myuni.asgi.application"
 
+from myuni.database_url import database_config_from_url
+
 database_url = os.getenv("DATABASE_URL")
 if database_url:
-    parsed_database = urlparse(database_url)
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": parsed_database.path.lstrip("/"),
-            "USER": parsed_database.username,
-            "PASSWORD": parsed_database.password,
-            "HOST": parsed_database.hostname,
-            "PORT": parsed_database.port or 5432,
-            # Persistent connections cut handshake cost under gunicorn workers.
-            "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "60")),
-            "CONN_HEALTH_CHECKS": True,
-        }
-    }
+    DATABASES = {"default": database_config_from_url(database_url)}
 else:
     DATABASES = {
         "default": {
@@ -206,6 +195,7 @@ WEB_PUSH_VAPID_CLAIMS = {
 from myuni.cache_config import configure_caches_and_channels, verify_redis_connectivity
 
 _redis_url = os.getenv("REDIS_URL", "").strip()
+_shared_hosting = os.getenv("SHARED_HOSTING", "False") == "True"
 _redis_ignore_exceptions_env = os.getenv("REDIS_IGNORE_EXCEPTIONS", "").strip()
 _redis_ignore_exceptions = (
     _redis_ignore_exceptions_env == "True"
@@ -218,6 +208,7 @@ CACHES, _channel_layers = configure_caches_and_channels(
     redis_url=_redis_url,
     enable_channels=_enable_channels,
     ignore_exceptions=_redis_ignore_exceptions,
+    shared_hosting=_shared_hosting,
 )
 if _channel_layers is not None:
     CHANNEL_LAYERS = _channel_layers

@@ -11,20 +11,23 @@ def configure_caches_and_channels(
     redis_url: str,
     enable_channels: bool,
     ignore_exceptions: bool | None = None,
+    shared_hosting: bool = False,
 ):
     """
     Returns (caches_dict, channel_layers_dict_or_None).
 
-    Production (debug=False): REDIS_URL is mandatory and Redis failures are not ignored.
+    Production (debug=False): REDIS_URL is mandatory unless shared_hosting=True
+    (Turon Master / single-process Python handler without Redis).
     Development: LocMem + InMemory when REDIS_URL is empty.
     """
     normalized = (redis_url or "").strip()
 
-    if not debug and not normalized:
+    if not debug and not normalized and not shared_hosting:
         raise ImproperlyConfigured(
             "REDIS_URL must be set when DJANGO_DEBUG=False. "
             "Shared cache is required for rate limits, SSE tokens, auth exchange, "
-            "public API response caching, and Channels across gunicorn/ASGI workers."
+            "public API response caching, and Channels across gunicorn/ASGI workers. "
+            "On Turon Master without Redis, set SHARED_HOSTING=True in .env."
         )
 
     if ignore_exceptions is None:
