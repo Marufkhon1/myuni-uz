@@ -3,6 +3,7 @@
  *
  * PRERENDER_SKIP_BACKEND=1 — API allaqachon ishlayotgan bo'lsa.
  * PRERENDER_REQUIRE_API=0 — dinamik yo'llar bo'lmasa ham build davom etadi.
+ * PRERENDER_SKIP=1 — Playwright prerender/verify o'tkazib yuboriladi (Turon shared hosting).
  */
 import { spawn } from "node:child_process";
 import fs from "node:fs";
@@ -154,6 +155,12 @@ async function main() {
       cwd: frontendRoot,
       env: buildEnv,
     });
+
+    if (process.env.PRERENDER_SKIP === "1") {
+      console.log("[build] PRERENDER_SKIP=1 — prerender o'tkazib yuborildi.");
+      console.log("[build] Tayyor.");
+      return;
+    }
 
     console.log("[build] Public sahifalar prerender...");
     await runCommand("node", ["scripts/prerender-public.mjs"], {

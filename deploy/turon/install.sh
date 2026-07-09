@@ -105,7 +105,7 @@ if [[ -s "${HOME}/.nvm/nvm.sh" ]]; then
   nvm use 22 >/dev/null 2>&1 || nvm install 22
 fi
 npm ci --legacy-peer-deps
-npm run build
+PRERENDER_SKIP=1 npm run build
 
 echo ""
 echo "TAYYOR. Keyin:"
