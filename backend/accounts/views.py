@@ -67,75 +67,7 @@ def _google_oauth_error_message(token_response):
     return "Google token olishda xatolik."
 
 
-def resolve_or_create_google_user(*, email, full_name, state):
-    """Google OAuth: mavjud foydalanuvchini topish yoki yangi hisob yaratish."""
-    from .university_resolution import apply_university_to_profile
-
-    user = User.objects.filter(email=email).first()
-    if user:
-        profile, _ = Profile.objects.get_or_create(
-            user=user,
-            defaults={
-                "full_name": full_name,
-                "role": Profile.Role.APPLICANT,
-                "university": "",
-                "email_verified_at": timezone.now(),
-            },
-        )
-        profile_updates = []
-        if not profile.email_verified_at:
-            profile.email_verified_at = timezone.now()
-            profile_updates.append("email_verified_at")
-        if full_name and not (profile.full_name or "").strip():
-            profile.full_name = full_name
-            profile_updates.append("full_name")
-        if profile_updates:
-            profile_updates.append("updated_at")
-            profile.save(update_fields=profile_updates)
-        return user, None
-
-    flow = state.get("flow", "login")
-    if flow == "signup":
-        university = (state.get("university") or "").strip()
-        university_id = state.get("university_id")
-        if not university and not university_id:
-            return None, (
-                "/signup",
-                "Google orqali ro'yxatdan o'tish uchun avval universitet tanlang.",
-            )
-        role = state.get("role", Profile.Role.APPLICANT)
-    else:
-        role = Profile.Role.APPLICANT
-        university = ""
-        university_id = None
-
-    user = User(username=email, email=email, first_name=full_name)
-    user.set_unusable_password()
-    user.save()
-    profile = Profile(
-        user=user,
-        full_name=full_name,
-        role=role,
-        email_verified_at=timezone.now(),
-    )
-    matched, errors = apply_university_to_profile(
-        profile,
-        university_id=university_id,
-        university_text=university if university else None,
-    )
-    if errors:
-        user.delete()
-        return None, ("/signup", errors[0])
-    if flow == "signup" and matched is None and not (profile.university or "").strip():
-        user.delete()
-        return None, (
-            "/signup",
-            "Google orqali ro'yxatdan o'tish uchun avval universitet tanlang.",
-        )
-    profile.save()
-    return user, None
-
-
+from .google_user_resolution import resolve_or_create_google_user
 class RegisterView(APIView):
     permission_classes = [AllowAny]
 
