@@ -98,6 +98,12 @@ python manage.py collectstatic --noinput
 
 echo "==> frontend build"
 cd ../frontend
+if [[ -s "${HOME}/.nvm/nvm.sh" ]]; then
+  # shellcheck disable=SC1091
+  export NVM_DIR="${HOME}/.nvm"
+  source "${NVM_DIR}/nvm.sh"
+  nvm use 22 >/dev/null 2>&1 || nvm install 22
+fi
 npm ci --legacy-peer-deps
 npm run build
 

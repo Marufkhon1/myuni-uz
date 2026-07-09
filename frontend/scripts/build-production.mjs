@@ -33,6 +33,26 @@ function resolvePythonCommand() {
 
 const pythonCommand = resolvePythonCommand();
 
+function buildBackendEnv(extra = {}) {
+  const hosts = new Set(
+    (process.env.DJANGO_ALLOWED_HOSTS || "")
+      .split(",")
+      .map((host) => host.trim())
+      .filter(Boolean)
+  );
+  hosts.add("127.0.0.1");
+  hosts.add("localhost");
+
+  return {
+    ...process.env,
+    DJANGO_SECRET_KEY:
+      process.env.DJANGO_SECRET_KEY || "local-build-secret-key-at-least-32-characters-long",
+    DJANGO_DEBUG: "True",
+    DJANGO_ALLOWED_HOSTS: [...hosts].join(","),
+    ...extra,
+  };
+}
+
 function runCommand(command, args, options = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
@@ -88,18 +108,11 @@ async function isApiReady() {
 }
 
 function startBackendServer() {
-  const env = {
-    ...process.env,
-    DJANGO_SECRET_KEY:
-      process.env.DJANGO_SECRET_KEY || "local-build-secret-key-at-least-32-characters-long",
-    DJANGO_DEBUG: process.env.DJANGO_DEBUG || "True",
-  };
-
   return spawn(pythonCommand, ["manage.py", "runserver", `${apiHost}:${apiPort}`, "--noreload"], {
     cwd: backendRoot,
     stdio: ["ignore", "pipe", "pipe"],
     shell: process.platform === "win32",
-    env,
+    env: buildBackendEnv(),
   });
 }
 
@@ -119,12 +132,7 @@ async function main() {
       console.log("[build] Backend migrate...");
       await runCommand(pythonCommand, ["manage.py", "migrate", "--noinput"], {
         cwd: backendRoot,
-        env: {
-          ...process.env,
-          DJANGO_SECRET_KEY:
-            process.env.DJANGO_SECRET_KEY || "local-build-secret-key-at-least-32-characters-long",
-          DJANGO_DEBUG: process.env.DJANGO_DEBUG || "True",
-        },
+        env: buildBackendEnv(),
       });
 
       console.log(`[build] Backend ishga tushirilmoqda (${apiUrl})...`);
