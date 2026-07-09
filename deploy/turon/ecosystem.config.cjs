@@ -14,7 +14,7 @@ module.exports = {
         "--timeout",
         "120",
         "--umask",
-        "007",
+        "000",
       ],
       interpreter: "none",
       autorestart: true,
