@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import JsonLd from "@/components/seo/JsonLd.jsx";
-import { PAGE_META, resolveArticleCoverImage } from "@/config/siteMeta.js";
+import { PAGE_META } from "@/config/siteMeta.js";
+import ArticleCoverImage from "@/components/articles/ArticleCoverImage.jsx";
 import { usePageMeta } from "@/hooks/usePageMeta.js";
 import { BlogListSkeleton } from "@/components/skeletons/PublicPageSkeletons.jsx";
 import EmptyState from "@/components/ui/EmptyState.jsx";
@@ -123,7 +124,6 @@ export default function ArticlesPage() {
           ) : (
             <ul className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {articles.map((article) => {
-                const cover = resolveArticleCoverImage(article.cover_image);
                 const dateLabel = formatArticleDate(article.published_at || article.updated_at);
 
                 return (
@@ -133,11 +133,10 @@ export default function ArticlesPage() {
                       className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-soft transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md dark:border-white/10 dark:bg-white/[0.04]"
                     >
                       <div className="aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-white/[0.06]">
-                        <img
-                          src={cover}
-                          alt=""
+                        <ArticleCoverImage
+                          coverImage={article.cover_image}
+                          slug={article.slug}
                           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                          loading="lazy"
                         />
                       </div>
                       <div className="flex flex-1 flex-col p-5 sm:p-6">

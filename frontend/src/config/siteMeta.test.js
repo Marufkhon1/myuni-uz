@@ -43,5 +43,11 @@ describe("siteMeta", () => {
       "/images/universities/tdiu.jpg"
     );
     expect(resolveArticleCoverImage("")).toContain("/images/hero/");
+    expect(resolveArticleCoverImage("/images/campuses/campus-02.jpg")).toBe(
+      "/images/universities/tdiu.jpg"
+    );
+    expect(
+      resolveArticleCoverImage("/images/campuses/campus-03.jpg", undefined, "2026-qabul-tsu-vs-tdtu")
+    ).toBe("/images/universities/ozmu.jpg");
   });
 });

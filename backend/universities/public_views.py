@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 
 from accounts.models import Profile
 
+from .article_covers import resolve_article_cover_image
 from .catalog_utils import (
     annotate_bayesian_rating,
     apply_catalog_filters,
@@ -310,7 +311,7 @@ def _serialize_public_article(article, *, include_body=False):
         "title": article.title,
         "slug": article.slug,
         "excerpt": article.excerpt,
-        "cover_image": article.cover_image,
+        "cover_image": resolve_article_cover_image(article.cover_image, article.slug),
         "published_at": article.published_at.isoformat() if article.published_at else None,
         "updated_at": article.updated_at.isoformat() if article.updated_at else None,
     }
@@ -331,7 +332,7 @@ class PublicArticleListView(APIView):
             return [_serialize_public_article(article) for article in queryset]
 
         return cached_json(
-            cache_key("articles", "v1"),
+            cache_key("articles", "v2"),
             ttl("ARTICLES", 600),
             build,
             browser_max_age=_browser_max_age(),
@@ -348,7 +349,7 @@ class PublicArticleDetailView(APIView):
             return _serialize_public_article(article, include_body=True)
 
         return cached_json(
-            cache_key("article", "v1", slug),
+            cache_key("article", "v2", slug),
             ttl("ARTICLES", 600),
             build,
             browser_max_age=_browser_max_age(),
@@ -915,15 +916,8 @@ def _build_share_meta_for_path(path):
         article = get_object_or_404(Article, slug=slug, status=Article.Status.PUBLISHED)
         title = f"{article.title} | MyUni.uz"
         description = article.excerpt or _truncate_description(article.body)
-        article_image = (article.cover_image or "").strip()
-        if article_image:
-            article_image = (
-                article_image
-                if article_image.startswith(("http://", "https://"))
-                else _absolute_share_url(article_image)
-            )
-        else:
-            article_image = image
+        resolved_cover = resolve_article_cover_image(article.cover_image, article.slug)
+        article_image = _absolute_share_url(resolved_cover) if resolved_cover else image
         return {
             "title": title,
             "description": _truncate_description(description),

@@ -210,7 +210,7 @@ export function buildArticleSchema({ article, slug }) {
   if (!article || !slug) {
     return null;
   }
-  const image = resolveArticleCoverImage(article.cover_image);
+  const image = resolveArticleCoverImage(article.cover_image, undefined, slug);
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -279,7 +279,7 @@ export function buildBlogListSchema(articles = []) {
         description: article.excerpt || truncateMetaDescription(article.body),
         url: buildCanonicalUrl(`/maqolalar/${article.slug}`),
         datePublished: article.published_at || article.created_at,
-        image: resolveAbsoluteUrl(resolveArticleCoverImage(article.cover_image)),
+        image: resolveAbsoluteUrl(resolveArticleCoverImage(article.cover_image, undefined, article.slug)),
       },
     })),
   };

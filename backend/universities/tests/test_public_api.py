@@ -303,6 +303,19 @@ class PublicApiTests(TestCase):
         self.assertEqual(share_response.status_code, 200)
         self.assertIn("Test maqola", share_response.content.decode())
 
+    def test_public_articles_detail_resolves_legacy_cover_paths(self):
+        article = Article.objects.create(
+            title="Cover test",
+            slug="cover-test-maqola",
+            excerpt="Qisqa.",
+            body="Matn.",
+            cover_image="/images/campuses/campus-02.jpg",
+            status=Article.Status.PUBLISHED,
+        )
+        response = self.client.get("/api/public/articles/cover-test-maqola/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["cover_image"], "/images/universities/tdiu.jpg")
+
     def test_article_sets_published_at_on_publish(self):
         article = Article.objects.create(
             title="Nashr vaqti test",

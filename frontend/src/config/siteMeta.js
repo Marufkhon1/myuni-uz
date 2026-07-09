@@ -1,3 +1,5 @@
+import { resolveArticleCoverPath } from "./articleCovers.js";
+
 export const SITE_NAME = "MyUni.uz";
 export const SITE_LOCALE = "uz_UZ";
 export const TWITTER_HANDLE = "@myuniuz";
@@ -62,25 +64,8 @@ export function resolveAbsoluteUrl(pathOrUrl) {
 }
 
 /** Maqola cover — localhost va productionda ishlaydigan nisbiy yo'l. */
-export function resolveArticleCoverImage(coverImage, fallback = DEFAULT_OG_IMAGE) {
-  const raw = String(coverImage || "").trim();
-  if (!raw) {
-    return fallback;
-  }
-  if (raw.startsWith("/")) {
-    return raw;
-  }
-  try {
-    const { pathname } = new URL(raw);
-    if (pathname.startsWith("/images/")) {
-      return pathname;
-    }
-  } catch {
-    if (raw.startsWith("images/")) {
-      return `/${raw}`;
-    }
-  }
-  return fallback;
+export function resolveArticleCoverImage(coverImage, fallback, slug = "") {
+  return resolveArticleCoverPath(coverImage, slug, fallback ?? DEFAULT_OG_IMAGE);
 }
 
 export function buildPageMeta({

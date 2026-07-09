@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import JsonLd from "@/components/seo/JsonLd.jsx";
 import { PAGE_META, resolveArticleCoverImage, truncateMetaDescription } from "@/config/siteMeta.js";
+import ArticleCoverImage from "@/components/articles/ArticleCoverImage.jsx";
 import { usePageMeta } from "@/hooks/usePageMeta.js";
 import { BlogArticleSkeleton } from "@/components/skeletons/PublicPageSkeletons.jsx";
 import EmptyState from "@/components/ui/EmptyState.jsx";
@@ -70,7 +71,7 @@ export default function ArticleDetailPage() {
   }, [slug]);
 
   const path = `/maqolalar/${slug || ""}`;
-  const cover = resolveArticleCoverImage(article?.cover_image);
+  const cover = resolveArticleCoverImage(article?.cover_image, undefined, slug);
 
   usePageMeta(
     article
@@ -164,9 +165,9 @@ export default function ArticleDetailPage() {
               </header>
 
               <div className="mt-8 overflow-hidden rounded-[1.75rem] border border-slate-200 dark:border-white/10">
-                <img
-                  src={cover}
-                  alt=""
+                <ArticleCoverImage
+                  coverImage={article.cover_image}
+                  slug={article.slug}
                   className="aspect-[16/9] w-full object-cover"
                   loading="eager"
                 />
