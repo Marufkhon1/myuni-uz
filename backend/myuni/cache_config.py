@@ -58,6 +58,22 @@ def configure_caches_and_channels(
             }
         return caches, channel_layers
 
+    if shared_hosting:
+        caches = {
+            "default": {
+                "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+                "LOCATION": "myuni_cache",
+            }
+        }
+        channel_layers = None
+        if enable_channels:
+            channel_layers = {
+                "default": {
+                    "BACKEND": "channels.layers.InMemoryChannelLayer",
+                }
+            }
+        return caches, channel_layers
+
     caches = {
         "default": {
             "BACKEND": "django.core.cache.backends.locmem.LocMemCache",

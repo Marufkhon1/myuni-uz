@@ -91,6 +91,7 @@ pip install -r requirements.txt -q
 
 echo "==> migrate + collectstatic"
 python manage.py migrate --noinput
+python manage.py createcachetable
 python manage.py collectstatic --noinput
 
 cd "$ROOT"
