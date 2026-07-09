@@ -41,27 +41,53 @@ if [[ -z "$PYTHON" ]]; then
 fi
 echo "    Python: $($PYTHON --version)"
 
+venv_ready() {
+  [[ -f .venv/bin/activate ]] && { [[ -x .venv/bin/python ]] || [[ -x .venv/bin/python3 ]]; }
+}
+
 create_venv() {
   rm -rf .venv
-  if "$PYTHON" -m venv .venv 2>/dev/null; then
+
+  if "$PYTHON" -m venv .venv 2>/dev/null && venv_ready; then
     return 0
   fi
+  rm -rf .venv
+
   echo "    ensurepip yo'q — --without-pip + get-pip.py"
-  if "$PYTHON" -m venv --without-pip .venv; then
+  if "$PYTHON" -m venv --without-pip .venv && venv_ready; then
     # shellcheck disable=SC1091
     source .venv/bin/activate
     curl -fsSL https://bootstrap.pypa.io/get-pip.py | python
     deactivate
     return 0
   fi
-  echo "    virtualenv (--user) sinab ko'rilmoqda"
-  "$PYTHON" -m pip install --user virtualenv
+  rm -rf .venv
+
+  echo "    virtualenv (--user)"
+  if ! "$PYTHON" -m pip --version >/dev/null 2>&1; then
+    echo "XATO: pip topilmadi ($PYTHON -m pip)"
+    exit 1
+  fi
+  "$PYTHON" -m pip install --user -U virtualenv
   export PATH="${HOME}/.local/bin:${PATH}"
-  virtualenv -p "$PYTHON" .venv
+  if command -v virtualenv >/dev/null 2>&1; then
+    virtualenv -p "$PYTHON" .venv
+  else
+    "$PYTHON" -m virtualenv -p "$PYTHON" .venv
+  fi
+
+  if ! venv_ready; then
+    echo "XATO: .venv yaratib bo'lmadi (python3-venv / virtualenv)"
+    exit 1
+  fi
 }
 
-if [[ ! -x .venv/bin/python ]]; then
+if ! venv_ready; then
   create_venv
+fi
+
+if [[ ! -x .venv/bin/python && -x .venv/bin/python3 ]]; then
+  ln -sf python3 .venv/bin/python
 fi
 
 # shellcheck disable=SC1091
