@@ -48,27 +48,12 @@ venv_ready() {
 create_venv() {
   rm -rf .venv
 
-  if "$PYTHON" -m venv .venv 2>/dev/null && venv_ready; then
-    return 0
-  fi
-  rm -rf .venv
-
-  echo "    ensurepip yo'q — --without-pip + get-pip.py"
-  if "$PYTHON" -m venv --without-pip .venv && venv_ready; then
-    # shellcheck disable=SC1091
-    source .venv/bin/activate
-    curl -fsSL https://bootstrap.pypa.io/get-pip.py | python
-    deactivate
-    return 0
-  fi
-  rm -rf .venv
-
-  echo "    virtualenv (--user)"
+  echo "    virtualenv (--user) — Turon shared hosting"
   if ! "$PYTHON" -m pip --version >/dev/null 2>&1; then
     echo "XATO: pip topilmadi ($PYTHON -m pip)"
     exit 1
   fi
-  "$PYTHON" -m pip install --user -U virtualenv
+  "$PYTHON" -m pip install --user -U virtualenv pip
   export PATH="${HOME}/.local/bin:${PATH}"
   if command -v virtualenv >/dev/null 2>&1; then
     virtualenv -p "$PYTHON" .venv
@@ -76,10 +61,22 @@ create_venv() {
     "$PYTHON" -m virtualenv -p "$PYTHON" .venv
   fi
 
-  if ! venv_ready; then
-    echo "XATO: .venv yaratib bo'lmadi (python3-venv / virtualenv)"
-    exit 1
+  if venv_ready; then
+    return 0
   fi
+  rm -rf .venv
+
+  echo "    zaxira: venv --without-pip + get-pip.py"
+  if "$PYTHON" -m venv --without-pip .venv 2>/dev/null && venv_ready; then
+    # shellcheck disable=SC1091
+    source .venv/bin/activate
+    curl -fsSL https://bootstrap.pypa.io/get-pip.py | python
+    deactivate
+    return 0
+  fi
+
+  echo "XATO: .venv yaratib bo'lmadi"
+  exit 1
 }
 
 if ! venv_ready; then
