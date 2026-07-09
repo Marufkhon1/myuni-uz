@@ -9,9 +9,6 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
-echo "==> server.py"
-cp -f deploy/turon/server.py ./server.py
-
 if [[ ! -f backend/.env ]]; then
   if [[ -f deploy/turon/production.env ]]; then
     cp deploy/turon/production.env backend/.env
@@ -96,8 +93,19 @@ echo "==> migrate + collectstatic"
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput
 
+cd "$ROOT"
+echo "==> server.py (venv shebang)"
+VENV_PY="${ROOT}/backend/.venv/bin/python"
+{
+  printf '#!%s\n' "$VENV_PY"
+  cat deploy/turon/server.py
+} > server.py
+chmod +x server.py
+mkdir -p tmp
+touch tmp/restart.txt
+
 echo "==> frontend build"
-cd ../frontend
+cd frontend
 if [[ -s "${HOME}/.nvm/nvm.sh" ]]; then
   # shellcheck disable=SC1091
   export NVM_DIR="${HOME}/.nvm"
