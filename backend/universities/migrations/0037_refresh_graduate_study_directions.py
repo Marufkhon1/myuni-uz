@@ -11,6 +11,18 @@ FACULTY_LEVELS = (
     ("Doktorantura (PhD)", "study_directions_doctorate", "doctorate", 3, 2),
 )
 
+MAX_SLUG_LEN = 120
+
+
+def _unique_direction_slug(faculty, base_slug, StudyDirection):
+    slug = base_slug[:MAX_SLUG_LEN]
+    counter = 2
+    while StudyDirection.objects.filter(faculty=faculty, slug=slug).exists():
+        suffix = f"-{counter}"
+        slug = f"{base_slug[: MAX_SLUG_LEN - len(suffix)]}{suffix}"
+        counter += 1
+    return slug
+
 
 def seed_all_study_directions(apps, schema_editor):
     University = apps.get_model("universities", "University")
@@ -31,7 +43,7 @@ def seed_all_study_directions(apps, schema_editor):
             if not directions:
                 continue
 
-            faculty_slug = slugify(faculty_name, allow_unicode=True) or degree_level
+            faculty_slug = (slugify(faculty_name, allow_unicode=True) or degree_level)[:MAX_SLUG_LEN]
             faculty, _ = Faculty.objects.get_or_create(
                 university=university,
                 slug=faculty_slug,
@@ -47,12 +59,8 @@ def seed_all_study_directions(apps, schema_editor):
                 if not name:
                     continue
                 dirid = (direction.get("dirid") or "").strip()
-                base_slug = slugify(name, allow_unicode=True) or f"{degree_level}-{index + 1}"
-                slug = base_slug
-                counter = 2
-                while StudyDirection.objects.filter(faculty=faculty, slug=slug).exists():
-                    slug = f"{base_slug}-{counter}"
-                    counter += 1
+                base_slug = (slugify(name, allow_unicode=True) or f"{degree_level}-{index + 1}")[:MAX_SLUG_LEN]
+                slug = _unique_direction_slug(faculty, base_slug, StudyDirection)
 
                 StudyDirection.objects.create(
                     faculty=faculty,
