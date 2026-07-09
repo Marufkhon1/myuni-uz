@@ -24,6 +24,15 @@ export function clearGoogleOAuthHash() {
   window.history.replaceState(null, "", `${pathname}${search}`);
 }
 
+export const GOOGLE_OAUTH_NOTICE = {
+  existingAccount: "existing_account",
+};
+
+export const GOOGLE_OAUTH_NOTICE_MESSAGES = {
+  [GOOGLE_OAUTH_NOTICE.existingAccount]:
+    "Sizda allaqachon akkaunt bor. O'sha hisobingizga kirdingiz.",
+};
+
 export function readGoogleOAuthCallbackParams(search = "") {
   const query = search || (typeof window !== "undefined" ? window.location.search : "");
   const params = new URLSearchParams(query.startsWith("?") ? query.slice(1) : query);
@@ -31,5 +40,6 @@ export function readGoogleOAuthCallbackParams(search = "") {
   const next = params.get("next");
   const code = params.get("code");
   const googleError = params.get("google_error");
-  return { ok, next, code, googleError };
+  const googleNotice = params.get("google_notice");
+  return { ok, next, code, googleError, googleNotice };
 }

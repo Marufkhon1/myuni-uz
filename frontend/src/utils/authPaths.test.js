@@ -8,6 +8,7 @@ describe("readGoogleOAuthCallbackParams", () => {
       code: "abc",
       next: "/student/dashboard",
       googleError: null,
+      googleNotice: null,
     });
   });
 
@@ -15,6 +16,13 @@ describe("readGoogleOAuthCallbackParams", () => {
     expect(readGoogleOAuthCallbackParams("?google_error=Xato")).toMatchObject({
       ok: false,
       googleError: "Xato",
+    });
+  });
+
+  it("detects google_notice", () => {
+    expect(readGoogleOAuthCallbackParams("?ok=1&code=abc&google_notice=existing_account")).toMatchObject({
+      ok: true,
+      googleNotice: "existing_account",
     });
   });
 });

@@ -18,28 +18,31 @@ class GoogleAuthProvisioningTests(TestCase):
             founded_year=2010,
         )
 
-    def test_login_flow_does_not_auto_create(self):
-        user, error = resolve_or_create_google_user(
+    def test_login_flow_creates_applicant_for_new_email(self):
+        user, error, meta = resolve_or_create_google_user(
             email="new.google.user@example.com",
             full_name="Google User",
             state={"flow": "login"},
         )
-        self.assertIsNone(user)
-        self.assertEqual(error[0], "/login")
-        self.assertFalse(User.objects.filter(email="new.google.user@example.com").exists())
+        self.assertIsNone(error)
+        self.assertFalse(meta["linked_existing"])
+        self.assertEqual(user.email, "new.google.user@example.com")
+        self.assertEqual(user.profile.role, Profile.Role.APPLICANT)
+        self.assertFalse(user.has_usable_password())
 
     def test_signup_flow_requires_university(self):
-        user, error = resolve_or_create_google_user(
+        user, error, meta = resolve_or_create_google_user(
             email="signup.only@example.com",
             full_name="Signup User",
             state={"flow": "signup", "role": Profile.Role.STUDENT, "university": ""},
         )
         self.assertIsNone(user)
         self.assertEqual(error[0], "/signup")
+        self.assertFalse(meta["linked_existing"])
 
     @override_settings(DEBUG=True)
     def test_signup_flow_creates_student_with_university(self):
-        user, error = resolve_or_create_google_user(
+        user, error, meta = resolve_or_create_google_user(
             email="student.google@example.com",
             full_name="Student Google",
             state={
@@ -49,6 +52,7 @@ class GoogleAuthProvisioningTests(TestCase):
             },
         )
         self.assertIsNone(error)
+        self.assertFalse(meta["linked_existing"])
         self.assertEqual(user.profile.role, Profile.Role.STUDENT)
         self.assertEqual(user.profile.university, "Google Test University")
 
@@ -69,15 +73,45 @@ class GoogleAuthProvisioningTests(TestCase):
         self.assertEqual(register.status_code, 201)
         registered = User.objects.get(username="marufxon4930")
 
-        linked, error = resolve_or_create_google_user(
+        linked, error, meta = resolve_or_create_google_user(
             email="mmansurjonov58@gmail.com",
             full_name="Maruf Google",
             state={"flow": "login"},
         )
         self.assertIsNone(error)
+        self.assertTrue(meta["linked_existing"])
         self.assertEqual(linked.pk, registered.pk)
         self.assertEqual(User.objects.filter(email__iexact="mmansurjonov58@gmail.com").count(), 1)
         self.assertIsNotNone(linked.profile.email_verified_at)
+
+    def test_signup_google_links_existing_account(self):
+        registered = User.objects.create_user(
+            username="marufxon4930",
+            email="mmansurjonov58@gmail.com",
+            password="SecurePass123!",
+            first_name="Primary User",
+        )
+        Profile.objects.create(
+            user=registered,
+            full_name="Primary User",
+            role=Profile.Role.APPLICANT,
+            university="Google Test University",
+        )
+
+        linked, error, meta = resolve_or_create_google_user(
+            email="mmansurjonov58@gmail.com",
+            full_name="Maruf Google",
+            state={
+                "flow": "signup",
+                "role": Profile.Role.STUDENT,
+                "university": "Google Test University",
+            },
+        )
+        self.assertIsNone(error)
+        self.assertTrue(meta["linked_existing"])
+        self.assertEqual(meta["flow"], "signup")
+        self.assertEqual(linked.pk, registered.pk)
+        self.assertEqual(User.objects.filter(email__iexact="mmansurjonov58@gmail.com").count(), 1)
 
     def test_prefers_password_account_when_google_duplicate_exists(self):
         primary = User.objects.create_user(
@@ -110,10 +144,11 @@ class GoogleAuthProvisioningTests(TestCase):
         found = find_user_for_google_email("mmansurjonov58@gmail.com")
         self.assertEqual(found.pk, primary.pk)
 
-        linked, error = resolve_or_create_google_user(
+        linked, error, meta = resolve_or_create_google_user(
             email="mmansurjonov58@gmail.com",
             full_name="Maruf Google",
             state={"flow": "login"},
         )
         self.assertIsNone(error)
+        self.assertTrue(meta["linked_existing"])
         self.assertEqual(linked.pk, primary.pk)

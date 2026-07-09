@@ -83,19 +83,18 @@ def link_google_identity_to_user(*, user, email: str, full_name: str):
 
 
 def resolve_or_create_google_user(*, email, full_name, state):
-    """Google OAuth: link to an existing account or create one during signup."""
+    """
+    Google OAuth provisioning.
+
+  * Existing email (password or Google) -> link and sign in to that account.
+  * New email on login or signup -> create a Google-only account.
+  * Signup + existing account -> same link; caller should surface "account exists" notice.
+    """
+    flow = state.get("flow", "login")
     user = find_user_for_google_email(email)
     if user:
         link_google_identity_to_user(user=user, email=email, full_name=full_name)
-        return user, None
-
-    flow = state.get("flow", "login")
-    if flow == "login":
-        return None, (
-            "/login",
-            "Bu Google email bilan ro'yxatdan o'tmagan hisob topilmadi. "
-            "Avval ro'yxatdan o'ting yoki login/parol bilan kiring.",
-        )
+        return user, None, {"linked_existing": True, "flow": flow}
 
     if flow == "signup":
         university = (state.get("university") or "").strip()
@@ -104,7 +103,7 @@ def resolve_or_create_google_user(*, email, full_name, state):
             return None, (
                 "/signup",
                 "Google orqali ro'yxatdan o'tish uchun avval universitet tanlang.",
-            )
+            ), {"linked_existing": False, "flow": flow}
         role = state.get("role", Profile.Role.APPLICANT)
     else:
         role = Profile.Role.APPLICANT
@@ -128,12 +127,12 @@ def resolve_or_create_google_user(*, email, full_name, state):
     )
     if errors:
         user.delete()
-        return None, ("/signup", errors[0])
+        return None, ("/signup", errors[0]), {"linked_existing": False, "flow": flow}
     if flow == "signup" and matched is None and not str(profile.university or "").strip():
         user.delete()
         return None, (
             "/signup",
             "Google orqali ro'yxatdan o'tish uchun avval universitet tanlang.",
-        )
+        ), {"linked_existing": False, "flow": flow}
     profile.save()
-    return user, None
+    return user, None, {"linked_existing": False, "flow": flow}

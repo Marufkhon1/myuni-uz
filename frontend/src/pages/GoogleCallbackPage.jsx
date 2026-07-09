@@ -11,6 +11,7 @@ import { usePageMeta } from "@/hooks/usePageMeta.js";
 import { useToast } from "@/hooks/useToast.js";
 import {
   clearGoogleOAuthHash,
+  GOOGLE_OAUTH_NOTICE_MESSAGES,
   readGoogleOAuthCallbackParams,
   readGoogleOAuthHashTokens,
 } from "@/utils/authPaths.js";
@@ -46,7 +47,7 @@ export default function GoogleCallbackPage() {
       const storedNext = sessionStorage.getItem("myuni_auth_next");
       sessionStorage.removeItem("myuni_auth_next");
 
-      const { ok, next: nextFromQuery, code, googleError } = readGoogleOAuthCallbackParams(
+      const { ok, next: nextFromQuery, code, googleError, googleNotice } = readGoogleOAuthCallbackParams(
         searchParams.toString() ? `?${searchParams.toString()}` : ""
       );
 
@@ -63,6 +64,10 @@ export default function GoogleCallbackPage() {
           // Strip code from URL ASAP (history / screenshot safety).
           window.history.replaceState(null, "", "/oauth/google/callback");
           user = await completeOAuthExchange(code);
+          const noticeMessage = GOOGLE_OAUTH_NOTICE_MESSAGES[googleNotice];
+          if (noticeMessage) {
+            toast.info(noticeMessage);
+          }
           const destination = resolvePostAuthPath(user, nextFromQuery, storedNext);
           navigate(destination, { replace: true });
           return;

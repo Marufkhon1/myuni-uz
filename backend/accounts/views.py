@@ -407,7 +407,7 @@ class GoogleAuthCallbackView(APIView):
         if not email or not is_verified:
             return frontend_redirect("/login", google_error="Google email tasdiqlanmagan.")
 
-        user, provision_error = resolve_or_create_google_user(
+        user, provision_error, oauth_meta = resolve_or_create_google_user(
             email=email,
             full_name=full_name,
             state=state,
@@ -423,5 +423,8 @@ class GoogleAuthCallbackView(APIView):
         next_path = dashboard_path_for(user)
         # One-time code (not JWT) — FE exchanges via /api proxy so cookies land on app origin.
         exchange_code = issue_auth_exchange_code(refresh)
-        query = urlencode({"ok": "1", "code": exchange_code, "next": next_path})
+        query_params = {"ok": "1", "code": exchange_code, "next": next_path}
+        if oauth_meta.get("linked_existing") and oauth_meta.get("flow") == "signup":
+            query_params["google_notice"] = "existing_account"
+        query = urlencode(query_params)
         return redirect(f"{frontend_url}/oauth/google/callback?{query}")
