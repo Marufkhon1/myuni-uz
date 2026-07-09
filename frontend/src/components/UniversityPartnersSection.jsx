@@ -94,7 +94,7 @@ function PartnerMarqueeRow({ universities, reverse = false, ariaLabel }) {
   }
 
   return (
-    <div className="partners-marquee" aria-label={ariaLabel}>
+    <div className="partners-marquee hide-scrollbar" aria-label={ariaLabel}>
       <div className={`partners-track ${reverse ? "partners-track--reverse" : ""}`}>
         {trackItems.map((university, index) => (
           <PartnerLogoCard

@@ -47,7 +47,7 @@ const navLinks = [
 
 function desktopNavLinkClass(isActive, isDark) {
   const base =
-    "relative inline-flex shrink-0 items-center whitespace-nowrap px-1.5 py-1 text-xs font-semibold transition-colors duration-200 lg:px-2 lg:text-[13px] xl:px-2.5 xl:text-sm";
+    "relative inline-flex shrink-0 items-center whitespace-nowrap px-1 py-1 text-[11px] font-semibold transition-colors duration-200 lg:px-1.5 lg:text-[12px] xl:px-2 xl:text-[13px] 2xl:px-2.5 2xl:text-sm";
   if (isDark) {
     if (isActive) {
       return `${base} font-bold text-white after:absolute after:inset-x-1.5 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-sky-300`;
@@ -113,7 +113,7 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color,box-shadow] duration-300 page-top-safe ${
+      className={`fixed inset-x-0 top-0 z-50 overflow-hidden border-b transition-[background-color,border-color,box-shadow] duration-300 page-top-safe ${
         isDark
           ? "border-white/10 bg-[#071533] shadow-[0_8px_24px_rgba(2,8,23,0.4)]"
           : "border-slate-200/90 bg-white shadow-[0_1px_0_rgba(15,23,42,0.06)]"
@@ -151,8 +151,8 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
           </span>
         </Link>
 
-        <div className="hidden min-w-0 items-center justify-center overflow-hidden px-1 lg:flex">
-          <div className="nav-links gap-1 lg:gap-1.5 xl:gap-2.5">
+        <div className="hidden min-w-0 items-center justify-center overflow-hidden px-0.5 lg:flex">
+          <div className="nav-links hide-scrollbar gap-0.5 lg:gap-1 xl:gap-2">
             {navLinks.map((link) => {
               const isActive = link.route
                 ? pathname === link.href
