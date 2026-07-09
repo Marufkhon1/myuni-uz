@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from universities.public_views import (
@@ -133,3 +133,14 @@ if settings.DEBUG or getattr(settings, "ENABLE_API_DOCS", False):
 
 if settings.DEBUG or settings.SERVE_MEDIA:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if getattr(settings, "SERVE_SPA", False):
+    from myuni.spa_views import FrontendDistView
+
+    urlpatterns += [
+        re_path(
+            r"^(?!api/|admin/|static/|media/).*$",
+            FrontendDistView.as_view(),
+            name="spa-fallback",
+        ),
+    ]

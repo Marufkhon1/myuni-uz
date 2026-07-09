@@ -28,6 +28,6 @@ exec "$VENV_GUNICORN" myuni.wsgi:application \
   --bind "unix:${SOCKET}" \
   --workers 2 \
   --timeout 120 \
-  --umask 007 \
+  --umask 000 \
   --access-logfile - \
   --error-logfile -

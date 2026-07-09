@@ -110,6 +110,9 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+FRONTEND_DIST = BASE_DIR.parent / "frontend" / "dist"
+SERVE_SPA = os.getenv("SERVE_SPA", "False") == "True"
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -196,6 +199,8 @@ from myuni.cache_config import configure_caches_and_channels, verify_redis_conne
 
 _redis_url = os.getenv("REDIS_URL", "").strip()
 _shared_hosting = os.getenv("SHARED_HOSTING", "False") == "True"
+if _shared_hosting and os.getenv("SERVE_SPA", "").strip() == "":
+    SERVE_SPA = True
 _redis_ignore_exceptions_env = os.getenv("REDIS_IGNORE_EXCEPTIONS", "").strip()
 _redis_ignore_exceptions = (
     _redis_ignore_exceptions_env == "True"
