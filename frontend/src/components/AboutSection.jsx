@@ -60,13 +60,17 @@ export default function AboutSection() {
           <div>
             <span className="eyebrow">Biz haqimizda</span>
             <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl dark:text-white">
-              MyUni.uz talabalar tomonidan ishlab chiqilayotgan biznes loyiha.
+              MyUni.uz nima?
             </h2>
             <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
-              Ushbu loyiha Toshkent davlat iqtisodiyot universiteti Samarqand filiali
-              Raqamli iqtisodiyot guruhi tomonidan tayyorlanmoqda. Maqsadimiz abituriyent va
-              talabalarga universitet tanlashda real tajriba, sharh va foydali ma&apos;lumotlarni
-              qulay formatda taqdim etish.
+              Oliy ta&apos;lim sohasida shaffof ma&apos;lumotlarga bo&apos;lgan ehtiyojdan kelib chiqqan holda,
+              MyUni.uz ta&apos;lim muassasalari va keyingi avlod mutaxassislari o&apos;rtasida ko&apos;prik bo&apos;lib
+              xizmat qiladi.
+            </p>
+            <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300">
+              Biz bandlik natijalari, talabalar mamnuniyati va akademik sifat asosida real vaqt reytinglarini
+              taqdim etamiz. Bizning maqsadimiz O&apos;zbekistondagi har bir talabaning kelib chiqishi yoki
+              mintaqasidan qat&apos;i nazar, muvaffaqiyatga to&apos;g&apos;ri yo&apos;l topishini ta&apos;minlashdir.
             </p>
             <p className="mt-4 text-sm font-semibold text-slate-500 dark:text-slate-400">
               Quyidagi raqamlar platforma bazasidan avtomatik olinadi — qo&apos;lda yozilgan reklama emas.

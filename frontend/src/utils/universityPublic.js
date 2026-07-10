@@ -10,6 +10,100 @@ export function splitSummaryParagraphs(summary) {
     .filter(Boolean);
 }
 
+/**
+ * Jumlalarga bo'lish — A.I. / R.G. kabi qisqartmalarni buzmaydi.
+ */
+function splitSummarySentences(text) {
+  const sentences = [];
+  let start = 0;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const ch = text[i];
+    if (ch !== "." && ch !== "!" && ch !== "?" && ch !== "…") {
+      continue;
+    }
+
+    // "A." / "I." — bitta harfli abbreviatura, jumla emas
+    if (ch === "." && i > 0 && /[A-Za-zА-Яа-яЁё]/.test(text[i - 1])) {
+      const beforeLetter = i >= 2 ? text[i - 2] : " ";
+      if (!/[A-Za-zА-Яа-яЁё]/.test(beforeLetter)) {
+        continue;
+      }
+    }
+
+    let next = i + 1;
+    while (next < text.length && /\s/.test(text[next])) {
+      next += 1;
+    }
+
+    const atEnd = next >= text.length;
+    const nextStartsSentence = atEnd || /[A-ZА-ЯЁ«"'(0-9]/.test(text[next]);
+    if (!nextStartsSentence) {
+      continue;
+    }
+
+    const piece = text.slice(start, i + 1).trim();
+    if (piece) {
+      sentences.push(piece);
+    }
+    start = next;
+    i = next - 1;
+  }
+
+  const tail = text.slice(start).trim();
+  if (tail) {
+    sentences.push(tail);
+  }
+  return sentences;
+}
+
+/**
+ * Kartalar uchun qisqa preview — odatda 1 jumla.
+ * Jumla chegarasida kesadi; juda uzun jumla bo'lsa so'z chegarasida qisqartiradi.
+ */
+export function truncateUniversitySummary(summary, { maxSentences = 1, maxLength = 220 } = {}) {
+  const normalized = String(summary || "").replace(/\s+/g, " ").trim();
+  if (!normalized) {
+    return "";
+  }
+
+  const cleaned = splitSummarySentences(normalized);
+
+  if (cleaned.length <= maxSentences && normalized.length <= maxLength) {
+    return normalized;
+  }
+
+  let preview = cleaned.slice(0, maxSentences).join(" ").trim();
+  if (!preview) {
+    preview = normalized;
+  }
+
+  if (preview.length > maxLength) {
+    const sliced = preview.slice(0, maxLength);
+    const lastSpace = sliced.lastIndexOf(" ");
+    preview = (lastSpace > 80 ? sliced.slice(0, lastSpace) : sliced).trimEnd();
+  }
+
+  const wasTruncated = preview.length < normalized.length;
+  if (!wasTruncated) {
+    return preview;
+  }
+
+  return /[.!?…]$/.test(preview) ? preview : `${preview}…`;
+}
+
+export function isLongUniversitySummary(summary, { charLimit = 160, maxSentences = 1 } = {}) {
+  const normalized = String(summary || "").replace(/\s+/g, " ").trim();
+  if (!normalized) {
+    return false;
+  }
+  const preview = truncateUniversitySummary(normalized, {
+    maxSentences,
+    maxLength: Math.max(charLimit * 2, 220),
+  });
+  return preview.length < normalized.length || normalized.length > charLimit;
+}
+
 export function summarizeDirections(faculties = []) {
   const counts = { bachelor: 0, master: 0, doctorate: 0, total: 0 };
   for (const faculty of faculties) {
