@@ -10,11 +10,15 @@ import { getGoogleAuthUrl } from "@/services/authService.js";
 import { useAuth } from "@/hooks/useAuth.js";
 import { getApiErrorMessage } from "@/utils/apiErrors.js";
 import { mergeLoginPayload, validateLoginPayload } from "@/utils/authForm.js";
+import { buildGoogleCompleteProfilePath, userNeedsGoogleProfileSetup } from "@/utils/authPaths.js";
 import { dashboardPathForRole } from "@/utils/navigation.js";
 
 const LOGIN_AUTOFILL_FIELDS = ["username", "password"];
 
 function resolveAfterAuthPath(user, nextParam) {
+  if (userNeedsGoogleProfileSetup(user)) {
+    return buildGoogleCompleteProfilePath(nextParam);
+  }
   if (nextParam && nextParam.startsWith("/")) {
     return nextParam;
   }

@@ -13,6 +13,7 @@ import { getGoogleAuthUrl } from "@/services/authService.js";
 import { getPublicUniversities } from "@/services/publicService.js";
 import { getApiErrorMessage } from "@/utils/apiErrors.js";
 import { dashboardPathForRole } from "@/utils/navigation.js";
+import { buildGoogleCompleteProfilePath, userNeedsGoogleProfileSetup } from "@/utils/authPaths.js";
 import { readSignupFormValues } from "@/utils/authForm.js";
 import { emailValidationMessage } from "@/utils/email.js";
 import { usernameValidationMessage } from "@/utils/username.js";
@@ -33,6 +34,9 @@ const roles = [
 ];
 
 function resolveAfterAuthPath(user, nextParam) {
+  if (userNeedsGoogleProfileSetup(user)) {
+    return buildGoogleCompleteProfilePath(nextParam);
+  }
   if (nextParam && nextParam.startsWith("/")) {
     return nextParam;
   }
@@ -112,14 +116,6 @@ export default function SignupPage() {
     setForm((current) => ({ ...current, university: value }));
   }
 
-  function ensureUniversitySelected() {
-    if (!matchUniversityByText(universities, form.university)) {
-      toast.warning("Ro'yxatdan universitetni tanlang.");
-      return false;
-    }
-    return true;
-  }
-
   async function handleSubmit(event) {
     event.preventDefault();
     if (isSubmitting) {
@@ -175,20 +171,14 @@ export default function SignupPage() {
     : "Tanlamoqchi universitetingizni tanlang";
 
   async function handleGoogleLogin() {
-    if (!ensureUniversitySelected()) {
-      return;
-    }
-
     try {
       if (nextPath) {
         sessionStorage.setItem("myuni_auth_next", nextPath);
       }
-      const matchedUniversity = matchUniversityByText(universities, form.university);
+      // Role/university/nickname so'raladi Google hisob ochilgandan keyin.
       const authorizationUrl = await getGoogleAuthUrl({
         flow: "signup",
         role: form.role,
-        university: matchedUniversity?.name || form.university,
-        ...(matchedUniversity?.id != null ? { university_id: matchedUniversity.id } : {}),
       });
       window.location.href = authorizationUrl;
     } catch (requestError) {

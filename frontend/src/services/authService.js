@@ -159,21 +159,18 @@ export async function deleteAvatar() {
 
 
 export async function updateProfileSettings(payload) {
-
   const { data } = await api.patch("/auth/me/", payload);
-
   return data;
-
 }
 
-
+export async function completeGoogleProfile(payload) {
+  const { data } = await api.post("/auth/me/complete-profile/", payload);
+  return data;
+}
 
 export async function getGoogleAuthUrl(params = {}) {
-
   const { data } = await api.get("/auth/google/start/", { params });
-
   return data.authorization_url;
-
 }
 
 

@@ -30,18 +30,21 @@ class GoogleAuthProvisioningTests(TestCase):
         self.assertEqual(user.profile.role, Profile.Role.APPLICANT)
         self.assertFalse(user.has_usable_password())
 
-    def test_signup_flow_requires_university(self):
+    def test_signup_flow_creates_provisional_account_without_university(self):
         user, error, meta = resolve_or_create_google_user(
             email="signup.only@example.com",
             full_name="Signup User",
             state={"flow": "signup", "role": Profile.Role.STUDENT, "university": ""},
         )
-        self.assertIsNone(user)
-        self.assertEqual(error[0], "/signup")
+        self.assertIsNone(error)
         self.assertFalse(meta["linked_existing"])
+        self.assertEqual(user.email, "signup.only@example.com")
+        self.assertEqual(user.username, "signup.only@example.com")
+        self.assertEqual(user.profile.role, Profile.Role.STUDENT)
+        self.assertEqual(user.profile.university, "")
 
     @override_settings(DEBUG=True)
-    def test_signup_flow_creates_student_with_university(self):
+    def test_signup_flow_prefills_university_when_provided(self):
         user, error, meta = resolve_or_create_google_user(
             email="student.google@example.com",
             full_name="Student Google",
@@ -55,6 +58,7 @@ class GoogleAuthProvisioningTests(TestCase):
         self.assertFalse(meta["linked_existing"])
         self.assertEqual(user.profile.role, Profile.Role.STUDENT)
         self.assertEqual(user.profile.university, "Google Test University")
+        self.assertIn("@", user.username)
 
     def test_register_then_google_login_uses_same_account(self):
         client = APIClient()

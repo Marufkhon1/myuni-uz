@@ -28,6 +28,7 @@ from .moderator_views import (
 )
 from .trust_views import MyReportsView
 from .views import (
+    CompleteGoogleProfileView,
     GoogleAuthCallbackView,
     GoogleAuthStartView,
     LoginView,
@@ -71,6 +72,7 @@ urlpatterns = [
         name="password-reset-confirm",
     ),
     path("me/", MeView.as_view(), name="me"),
+    path("me/complete-profile/", CompleteGoogleProfileView.as_view(), name="complete-google-profile"),
     path("me/avatar/", ProfileAvatarView.as_view(), name="profile-avatar"),
     path("notifications/", NotificationListView.as_view(), name="notifications"),
     path("notifications/mark-read/", NotificationMarkReadView.as_view(), name="notifications-mark-read"),

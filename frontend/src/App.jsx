@@ -20,6 +20,7 @@ const UniversityPublicPage = lazy(() => import("./pages/UniversityPublicPage.jsx
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const SignupPage = lazy(() => import("./pages/SignupPage.jsx"));
 const GoogleCallbackPage = lazy(() => import("./pages/GoogleCallbackPage.jsx"));
+const GoogleCompleteProfilePage = lazy(() => import("./pages/GoogleCompleteProfilePage.jsx"));
 const ForgotPasswordPage = lazy(() => import("./pages/ForgotPasswordPage.jsx"));
 const ForgotPasswordSentPage = lazy(() => import("./pages/ForgotPasswordSentPage.jsx"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage.jsx"));
@@ -87,6 +88,7 @@ export default function App() {
         <Route path="/maxfiylik-siyosati" element={<LegalDocumentPage />} />
         <Route path="/sharh-qoidalari" element={<LegalDocumentPage />} />
         <Route path="/oauth/google/callback" element={<GoogleCallbackPage />} />
+        <Route path="/oauth/google/complete" element={<GoogleCompleteProfilePage />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardRedirect />} />
           <Route path="/moderator" element={<ModeratorDashboardPage />} />

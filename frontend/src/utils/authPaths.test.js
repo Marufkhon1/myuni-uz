@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { readGoogleOAuthCallbackParams } from "@/utils/authPaths.js";
+import {
+  buildGoogleCompleteProfilePath,
+  readGoogleOAuthCallbackParams,
+  userNeedsGoogleProfileSetup,
+} from "@/utils/authPaths.js";
 
 describe("readGoogleOAuthCallbackParams", () => {
   it("parses ok, code, and next from query", () => {
@@ -24,5 +28,18 @@ describe("readGoogleOAuthCallbackParams", () => {
       ok: true,
       googleNotice: "existing_account",
     });
+  });
+});
+
+describe("google complete profile helpers", () => {
+  it("builds complete profile path with next", () => {
+    expect(buildGoogleCompleteProfilePath("/applicant/dashboard")).toBe(
+      "/oauth/google/complete?next=%2Fapplicant%2Fdashboard"
+    );
+  });
+
+  it("detects needs_profile_setup flag", () => {
+    expect(userNeedsGoogleProfileSetup({ needs_profile_setup: true })).toBe(true);
+    expect(userNeedsGoogleProfileSetup({ needs_profile_setup: false })).toBe(false);
   });
 });

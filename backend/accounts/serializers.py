@@ -11,6 +11,7 @@ from .avatar_access import avatar_url_for_viewer
 from .chat_colors import resolve_chat_color_key
 from .models import Notification, Profile
 from .presence import is_user_online, resolve_user_last_seen
+from .profile_setup import user_needs_profile_setup
 from .username_validation import normalize_username, validate_username_format
 
 User = get_user_model()
@@ -57,10 +58,14 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
+    needs_profile_setup = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ["id", "username", "email", "first_name", "last_name", "profile"]
+        fields = ["id", "username", "email", "first_name", "last_name", "profile", "needs_profile_setup"]
+
+    def get_needs_profile_setup(self, obj):
+        return user_needs_profile_setup(obj)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)

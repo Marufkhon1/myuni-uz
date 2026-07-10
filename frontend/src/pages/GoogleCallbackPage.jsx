@@ -10,19 +10,27 @@ import { useAuth } from "@/hooks/useAuth.js";
 import { usePageMeta } from "@/hooks/usePageMeta.js";
 import { useToast } from "@/hooks/useToast.js";
 import {
+  buildGoogleCompleteProfilePath,
   clearGoogleOAuthHash,
   GOOGLE_OAUTH_NOTICE_MESSAGES,
   readGoogleOAuthCallbackParams,
   readGoogleOAuthHashTokens,
+  userNeedsGoogleProfileSetup,
 } from "@/utils/authPaths.js";
 import { dashboardPathForRole } from "@/utils/navigation.js";
 
 function resolvePostAuthPath(user, nextParam, storedNext) {
-  if (storedNext && storedNext.startsWith("/")) {
-    return storedNext;
+  const preferredNext =
+    (storedNext && storedNext.startsWith("/") && storedNext) ||
+    (nextParam && nextParam.startsWith("/") && nextParam) ||
+    "";
+
+  if (userNeedsGoogleProfileSetup(user)) {
+    return buildGoogleCompleteProfilePath(preferredNext);
   }
-  if (nextParam && nextParam.startsWith("/")) {
-    return nextParam;
+
+  if (preferredNext) {
+    return preferredNext;
   }
   return dashboardPathForRole(user?.profile?.role);
 }
@@ -61,7 +69,6 @@ export default function GoogleCallbackPage() {
         let user;
         if (ok && code) {
           clearGoogleOAuthHash();
-          // Strip code from URL ASAP (history / screenshot safety).
           window.history.replaceState(null, "", "/oauth/google/callback");
           user = await completeOAuthExchange(code);
           const noticeMessage = GOOGLE_OAUTH_NOTICE_MESSAGES[googleNotice];
@@ -73,7 +80,6 @@ export default function GoogleCallbackPage() {
           return;
         }
 
-        // Legacy hash fallback.
         const { access, refresh, next: nextFromHash } = readGoogleOAuthHashTokens();
         clearGoogleOAuthHash();
         if (!access || !refresh) {

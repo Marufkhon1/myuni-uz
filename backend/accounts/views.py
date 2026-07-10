@@ -19,6 +19,8 @@ from .bio_validation import normalize_bio, validate_bio
 from .chat_colors import CHAT_COLOR_SET
 from .models import Profile
 from .profile_access import can_view_chat_profile
+from .profile_setup import user_needs_profile_setup, username_looks_provisional
+from .username_validation import normalize_username, validate_username_format
 from .auth_cookies import set_auth_cookies
 from .auth_limits import (
     check_google_oauth_callback_allowed,
@@ -243,6 +245,105 @@ class MeView(APIView):
             user.save(update_fields=user_update_fields)
         request.user.profile = profile
         return Response(UserSerializer(request.user, context={"request": request}).data)
+
+
+class CompleteGoogleProfileView(APIView):
+    """
+    Post-Google onboarding: role + university + login nickname.
+
+    Allowed while the account still needs setup (provisional email username
+    and/or missing university).
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        if not user_needs_profile_setup(user):
+            return Response(
+                {"detail": "Profil allaqachon to'ldirilgan."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        profile, _ = Profile.objects.get_or_create(
+            user=user,
+            defaults={"full_name": user.first_name or user.email or ""},
+        )
+
+        role = str(request.data.get("role") or "").strip()
+        username_raw = request.data.get("username")
+        university = request.data.get("university")
+        university_id = request.data.get("university_id")
+
+        if role not in {Profile.Role.APPLICANT, Profile.Role.STUDENT}:
+            return Response(
+                {"detail": "Rolni tanlang: abituriyent yoki talaba."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if username_raw is None or not str(username_raw).strip():
+            return Response(
+                {"detail": "Login (nickname) kiriting."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            normalized_username = normalize_username(username_raw)
+            validate_username_format(normalized_username)
+        except Exception as exc:
+            from rest_framework.exceptions import ValidationError as DrfValidationError
+
+            if isinstance(exc, DrfValidationError):
+                detail = exc.detail
+                if isinstance(detail, (list, tuple)):
+                    detail = detail[0]
+                return Response({"detail": str(detail)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+        if username_looks_provisional(normalized_username):
+            return Response(
+                {"detail": "Login email bo'lishi mumkin emas. Oddiy nickname tanlang."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if User.objects.filter(username__iexact=normalized_username).exclude(pk=user.pk).exists():
+            return Response(
+                {"detail": "Bu login band. Boshqa nickname tanlang."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if university is None and university_id is None:
+            return Response(
+                {"detail": "Universitetni tanlang."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        from .university_resolution import apply_university_to_profile
+
+        _, uni_errors = apply_university_to_profile(
+            profile,
+            university_id=university_id if university_id is not None else None,
+            university_text=university if university is not None else None,
+        )
+        if uni_errors:
+            return Response({"detail": uni_errors[0]}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not str(profile.university or "").strip() and not profile.university_ref_id:
+            return Response(
+                {"detail": "Ro'yxatdan universitetni tanlang."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        profile.role = role
+        profile.save(update_fields=["role", "university", "university_ref", "updated_at"])
+
+        user.username = normalized_username
+        user.save(update_fields=["username"])
+
+        user.refresh_from_db()
+        profile.refresh_from_db()
+        user.profile = profile
+        return Response(UserSerializer(user, context={"request": request}).data)
 
 
 class ProfileAvatarView(APIView):

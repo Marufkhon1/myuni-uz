@@ -3,6 +3,17 @@ export function isGoogleOAuthCallbackPath(pathname = "") {
   return path === "/oauth/google/callback";
 }
 
+export function buildGoogleCompleteProfilePath(nextPath = "") {
+  if (nextPath && nextPath.startsWith("/")) {
+    return `/oauth/google/complete?next=${encodeURIComponent(nextPath)}`;
+  }
+  return "/oauth/google/complete";
+}
+
+export function userNeedsGoogleProfileSetup(user) {
+  return Boolean(user?.needs_profile_setup);
+}
+
 /** Legacy hash tokens (pre cookie-redirect). Prefer query ?ok=1. */
 export function readGoogleOAuthHashTokens() {
   if (typeof window === "undefined" || !window.location.hash) {

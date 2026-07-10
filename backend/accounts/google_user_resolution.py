@@ -87,8 +87,9 @@ def resolve_or_create_google_user(*, email, full_name, state):
     Google OAuth provisioning.
 
   * Existing email (password or Google) -> link and sign in to that account.
-  * New email on login or signup -> create a Google-only account.
-  * Signup + existing account -> same link; caller should surface "account exists" notice.
+  * New email on login or signup -> create a Google-only provisional account
+    (username=email). Role / university / login nickname are collected on
+    the post-auth complete-profile step.
     """
     flow = state.get("flow", "login")
     user = find_user_for_google_email(email)
@@ -96,19 +97,12 @@ def resolve_or_create_google_user(*, email, full_name, state):
         link_google_identity_to_user(user=user, email=email, full_name=full_name)
         return user, None, {"linked_existing": True, "flow": flow}
 
-    if flow == "signup":
-        university = (state.get("university") or "").strip()
-        university_id = state.get("university_id")
-        if not university and not university_id:
-            return None, (
-                "/signup",
-                "Google orqali ro'yxatdan o'tish uchun avval universitet tanlang.",
-            ), {"linked_existing": False, "flow": flow}
-        role = state.get("role", Profile.Role.APPLICANT)
-    else:
+    # Optional prefill from signup state (complete-profile still required while username is email).
+    role = state.get("role") or Profile.Role.APPLICANT
+    if role not in {Profile.Role.APPLICANT, Profile.Role.STUDENT}:
         role = Profile.Role.APPLICANT
-        university = ""
-        university_id = None
+    university = (state.get("university") or "").strip()
+    university_id = state.get("university_id")
 
     normalized_email = str(email or "").lower().strip()
     user = User(username=normalized_email, email=normalized_email, first_name=full_name)
@@ -120,19 +114,18 @@ def resolve_or_create_google_user(*, email, full_name, state):
         role=role,
         email_verified_at=timezone.now(),
     )
-    matched, errors = apply_university_to_profile(
-        profile,
-        university_id=university_id,
-        university_text=university if university else None,
-    )
-    if errors:
-        user.delete()
-        return None, ("/signup", errors[0]), {"linked_existing": False, "flow": flow}
-    if flow == "signup" and matched is None and not str(profile.university or "").strip():
-        user.delete()
-        return None, (
-            "/signup",
-            "Google orqali ro'yxatdan o'tish uchun avval universitet tanlang.",
-        ), {"linked_existing": False, "flow": flow}
+    if university or university_id:
+        matched, errors = apply_university_to_profile(
+            profile,
+            university_id=university_id,
+            university_text=university if university else None,
+        )
+        if errors:
+            # Soft-fail university prefill — user can pick it on complete-profile.
+            profile.university = ""
+            profile.university_ref = None
+        elif matched is None and not str(profile.university or "").strip():
+            profile.university = ""
+            profile.university_ref = None
     profile.save()
     return user, None, {"linked_existing": False, "flow": flow}
