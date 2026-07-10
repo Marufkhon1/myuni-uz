@@ -54,7 +54,7 @@ function parseCompareIdsParam(raw) {
   return unique.slice(0, MAX_COMPARE);
 }
 
-function buildQuickPicks(universities, myUniversity, limit = 3) {
+function buildQuickPicks(universities, myUniversity, limit = 4) {
   if (universities.length < MIN_COMPARE) {
     return [];
   }
@@ -68,7 +68,7 @@ function buildQuickPicks(universities, myUniversity, limit = 3) {
     if (!isValidCompareCount(unique.length)) {
       return;
     }
-    const key = unique.sort().join("-");
+    const key = unique.slice().sort().join("-");
     if (used.has(key)) {
       return;
     }
@@ -81,12 +81,13 @@ function buildQuickPicks(universities, myUniversity, limit = 3) {
     }
   }
 
-  if (myUniversity && sorted.length >= 1) {
+  // Prefer clean 2-way matchups first (fills a 4-card row nicely).
+  if (myUniversity) {
     const partners = sorted.filter((item) => item.id !== myUniversity.id);
-    if (partners[0]) {
-      addPick([myUniversity.id, partners[0].id]);
+    for (let i = 0; i < partners.length && picks.length < limit; i += 1) {
+      addPick([myUniversity.id, partners[i].id]);
     }
-    if (partners.length >= 2) {
+    if (partners.length >= 2 && picks.length < limit) {
       addPick([myUniversity.id, partners[0].id, partners[1].id]);
     }
   }
