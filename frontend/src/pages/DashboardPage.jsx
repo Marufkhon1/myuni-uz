@@ -4,6 +4,7 @@ import { DashboardProvider } from "@/context/DashboardProvider.jsx";
 import { DashboardChatProvider } from "@/context/DashboardChatProvider.jsx";
 import { dashboardPathForRole } from "@/utils/navigation.js";
 import { getDashboardCabinetEyebrow, getDashboardMenuItems } from "@/utils/dashboardRoleContent.js";
+import { shouldSuppressDashboardMobileChrome } from "@/utils/dashboardMobileChrome.js";
 import DashboardLayout from "./dashboard/DashboardLayout.jsx";
 import DashboardDialogs from "./dashboard/DashboardDialogs.jsx";
 import {
@@ -165,6 +166,12 @@ export default function DashboardPage({ role }) {
     () => wrapChangeSection(changeSectionBase),
     [wrapChangeSection, changeSectionBase]
   );
+
+  const isMobileChatImmersive = shouldSuppressDashboardMobileChrome({
+    isCompactLayout,
+    activeSection,
+    mobileChatScreen,
+  });
 
   const onReviewLikeUpdate = useCallback(
     (updateItem) => {
@@ -359,6 +366,10 @@ export default function DashboardPage({ role }) {
     editingChatMessage,
     openEditChatMessage,
     cancelEditChatMessage,
+    replyingToChatMessage,
+    replyComposePreview,
+    openReplyChatMessage,
+    cancelReplyChatMessage,
     sendGroupChatMessage,
     sendPrivateChatMessage,
     handleGroupReaction,
@@ -389,6 +400,7 @@ export default function DashboardPage({ role }) {
     selectedThreadId,
     setDirectThreads,
     setDraftThread,
+    setComposerFocusToken,
   });
 
   const chatUi = useDashboardChatUi({
@@ -471,6 +483,7 @@ export default function DashboardPage({ role }) {
     reportChatError,
     clearChatError,
     cancelEditChatMessage,
+    cancelReplyChatMessage,
     closeGroupChatSearch: chatUi.closeGroupChatSearch,
     closePrivateChatSearch: chatUi.closePrivateChatSearch,
     setHighlightedGroupMessageId: chatUi.setHighlightedGroupMessageId,
@@ -584,6 +597,9 @@ export default function DashboardPage({ role }) {
     editingChatMessage,
     openEditChatMessage,
     cancelEditChatMessage,
+    replyComposePreview,
+    openReplyChatMessage,
+    cancelReplyChatMessage,
     requestDeleteGroupMessage,
     requestDeletePrivateMessage,
     groupChatTags,
@@ -628,6 +644,7 @@ export default function DashboardPage({ role }) {
             notifications={notifications}
       isDataLoading={isDataLoading}
       isWideChatLayout={dashboardChatSectionValue.isWideChatLayout}
+      isMobileChatImmersive={isMobileChatImmersive}
     >
             {activeSection === "home" && (
               <Suspense fallback={<DashboardSectionSkeleton section="home" />}>

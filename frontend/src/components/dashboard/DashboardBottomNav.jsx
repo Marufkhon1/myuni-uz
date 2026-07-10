@@ -73,7 +73,12 @@ const TAB_ACTIVE = "bg-slate-950 text-white dark:bg-white dark:text-slate-950";
 const TAB_IDLE =
   "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10";
 
-export default function DashboardBottomNav({ items, activeSection, onSelect }) {
+export default function DashboardBottomNav({
+  items,
+  activeSection,
+  onSelect,
+  hidden = false,
+}) {
   const { barItems, moreItems } = splitDashboardBottomNavItems(items);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const sheetRef = useRef(null);
@@ -94,6 +99,12 @@ export default function DashboardBottomNav({ items, activeSection, onSelect }) {
     }
   }, [activeSection, moreActive]);
 
+  useEffect(() => {
+    if (hidden) {
+      setIsMoreOpen(false);
+    }
+  }, [hidden]);
+
   function handlePrimarySelect(sectionId) {
     setIsMoreOpen(false);
     onSelect(sectionId);
@@ -102,6 +113,10 @@ export default function DashboardBottomNav({ items, activeSection, onSelect }) {
   function handleMoreSelect(sectionId) {
     setIsMoreOpen(false);
     onSelect(sectionId);
+  }
+
+  if (hidden) {
+    return null;
   }
 
   return (

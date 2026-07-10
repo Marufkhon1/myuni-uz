@@ -11,6 +11,7 @@ import {
 } from "@/services/chatService.js";
 import { getApiErrorMessage } from "@/utils/apiErrors.js";
 import { mergeById } from "@/hooks/useMessageStream.js";
+import { buildReplyPayload, parseReplyPayload } from "@/utils/chatReplyFormat.js";
 
 export function useGroupChat({ reportChatError, clearChatError, onMessageCreated } = {}) {
   const [groupMessage, setGroupMessage] = useState("");
@@ -28,7 +29,7 @@ export function useGroupChat({ reportChatError, clearChatError, onMessageCreated
     (message) => {
       setEditingChatMessage({ message, scope: "group" });
       clearChatError();
-      setGroupMessage(message.text);
+      setGroupMessage(parseReplyPayload(message.text).body || message.text);
     },
     [clearChatError]
   );
@@ -43,7 +44,7 @@ export function useGroupChat({ reportChatError, clearChatError, onMessageCreated
   }, []);
 
   const sendGroupChatMessage = useCallback(
-    async (event, { hasJoinedSelectedChat, selectedUniversityId }) => {
+    async (event, { hasJoinedSelectedChat, selectedUniversityId, replyTo = null, onSent } = {}) => {
       event.preventDefault();
       const trimmed = groupMessage.trim();
       if (!hasJoinedSelectedChat || !trimmed || !selectedUniversityId || isGroupSending) {
@@ -51,11 +52,21 @@ export function useGroupChat({ reportChatError, clearChatError, onMessageCreated
       }
 
       const isEditingGroup = editingChatMessage?.scope === "group";
+      const textToSend =
+        !isEditingGroup && replyTo ? buildReplyPayload(replyTo, trimmed) : trimmed;
       setIsGroupSending(true);
       clearChatError();
       try {
         if (isEditingGroup) {
-          const updated = await editUniversityMessage(editingChatMessage.message.id, trimmed);
+          const original = editingChatMessage.message.text || "";
+          const { reply } = parseReplyPayload(original);
+          const nextText = reply
+            ? buildReplyPayload(
+                { id: reply.id, author: reply.author, text: reply.text },
+                trimmed
+              )
+            : trimmed;
+          const updated = await editUniversityMessage(editingChatMessage.message.id, nextText);
           updateMessageInList(setGroupMessages, updated);
           if (groupPinnedMessage?.id === updated.id) {
             setGroupPinnedMessage(updated);
@@ -63,10 +74,11 @@ export function useGroupChat({ reportChatError, clearChatError, onMessageCreated
           setEditingChatMessage(null);
           setGroupMessage("");
         } else {
-          const created = await sendUniversityMessage(selectedUniversityId, trimmed);
+          const created = await sendUniversityMessage(selectedUniversityId, textToSend);
           setGroupMessages((current) => mergeById(current, [created]));
           onMessageCreated?.(created);
           setGroupMessage("");
+          onSent?.();
         }
       } catch (error) {
         reportChatError(

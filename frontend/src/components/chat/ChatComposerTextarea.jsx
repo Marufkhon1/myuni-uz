@@ -11,6 +11,7 @@ export default function ChatComposerTextarea({
   className = "",
   minRows = 1,
   maxRows = 8,
+  onFocus,
 }) {
   const localRef = useRef(null);
   const ref = inputRef || localRef;
@@ -40,6 +41,17 @@ export default function ChatComposerTextarea({
     element.style.overflowY = element.scrollHeight > maxHeight ? "auto" : "hidden";
   }
 
+  function handleFocus(event) {
+    onFocus?.(event);
+    const thread = event.currentTarget.closest("[data-chat-thread]");
+    const scroller = thread?.querySelector(".chat-messages-scroll");
+    if (scroller) {
+      requestAnimationFrame(() => {
+        scroller.scrollTop = scroller.scrollHeight;
+      });
+    }
+  }
+
   return (
     <textarea
       ref={ref}
@@ -47,7 +59,9 @@ export default function ChatComposerTextarea({
       rows={minRows}
       onChange={handleChange}
       onKeyDown={onKeyDown}
+      onFocus={handleFocus}
       placeholder={placeholder}
+      enterKeyHint="send"
       className={
         "block w-full resize-none break-words [overflow-wrap:anywhere] whitespace-pre-wrap leading-6 outline-none " +
         className

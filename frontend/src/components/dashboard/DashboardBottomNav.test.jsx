@@ -75,4 +75,17 @@ describe("DashboardBottomNav", () => {
     await user.keyboard("{Escape}");
     expect(screen.queryByTestId("dashboard-bottom-nav-more")).not.toBeInTheDocument();
   });
+
+  it("renders nothing when hidden (chat thread must own the bottom zone)", () => {
+    render(
+      <DashboardBottomNav
+        items={getDashboardMenuItems(true)}
+        activeSection="chats"
+        onSelect={() => {}}
+        hidden
+      />
+    );
+    expect(screen.queryByTestId("dashboard-bottom-nav")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("dashboard-bottom-nav-more")).not.toBeInTheDocument();
+  });
 });

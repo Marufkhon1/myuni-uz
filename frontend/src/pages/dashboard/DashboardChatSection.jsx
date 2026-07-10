@@ -1,9 +1,11 @@
 import { useEffect, useRef } from "react";
 import { useDashboard } from "@/hooks/useDashboard.js";
 import { useDashboardChatSection } from "@/hooks/useDashboardChatSection.js";
+import { useVisualViewportKeyboardInset } from "@/hooks/useVisualViewportKeyboardInset.js";
 import PrivateThreadRow from "@/components/dashboard/PrivateThreadRow.jsx";
 import ChatTagFilterBar from "@/components/chat/ChatTagFilterBar.jsx";
 import ChatComposeEditBar from "@/components/chat/ChatComposeEditBar.jsx";
+import ChatComposeReplyBar from "@/components/chat/ChatComposeReplyBar.jsx";
 import ChatComposerTextarea from "@/components/chat/ChatComposerTextarea.jsx";
 import ChatGroupJoinBar from "@/components/chat/ChatGroupJoinBar.jsx";
 import ChatGroupSearchPanel from "@/components/chat/ChatGroupSearchPanel.jsx";
@@ -11,6 +13,11 @@ import PinnedMessageBar from "@/components/chat/PinnedMessageBar.jsx";
 import TypingUsersLine from "@/components/chat/TypingUsersLine.jsx";
 import PrivateChatHeaderStatus from "@/components/chat/PrivateChatHeaderStatus.jsx";
 import ChatUniversityRow from "@/components/ChatUniversityRow.jsx";
+import ChatSuggestedPrompts from "@/components/chat/ChatSuggestedPrompts.jsx";
+import {
+  GROUP_CHAT_SUGGESTED_PROMPTS,
+  PRIVATE_CHAT_SUGGESTED_PROMPTS,
+} from "@/utils/chatSuggestedPrompts.js";
 import EmptyState from "@/components/ui/EmptyState.jsx";
 import ChatMessageBubble from "@/components/dashboard/ChatMessageBubble.jsx";
 import DashboardIcon from "@/components/dashboard/DashboardIcon.jsx";
@@ -27,6 +34,10 @@ export default function DashboardChatSection() {
   const { openMessageReport } = useDashboard();
   const privateInputRef = useRef(null);
   const groupInputRef = useRef(null);
+  const { isKeyboardOpen, keyboardInsetPx } = useVisualViewportKeyboardInset(
+    Boolean(p.isImmersiveThread),
+    { syncDocumentCssVar: false }
+  );
   const isPrivateThreadMuted =
     Boolean(p.selectedThread?.other_user_id) &&
     Boolean(p.isChatUserMuted?.(p.selectedThread.other_user_id, "private"));
@@ -64,9 +75,25 @@ export default function DashboardChatSection() {
     groupInputRef.current?.focus();
   }, [p.composerFocusToken, p.chatPanel]);
 
+  useEffect(() => {
+    if (!p.isImmersiveThread || !isKeyboardOpen) {
+      return;
+    }
+    const thread = document.querySelector("[data-chat-thread]");
+    const scroller = thread?.querySelector(".chat-messages-scroll");
+    if (!scroller) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      scroller.scrollTop = scroller.scrollHeight;
+    });
+  }, [p.isImmersiveThread, isKeyboardOpen, keyboardInsetPx]);
+
   return (
     <section
-                className={`grid gap-4 md:items-stretch md:gap-6 ${p.chatSectionGridClass}`}
+                className={`grid md:items-stretch ${
+                  p.isImmersiveThread ? "h-full min-h-0" : "gap-4 md:gap-6"
+                } ${p.chatSectionGridClass}`}
               >
                 <div
                   className={`flex w-full flex-col rounded-[2rem] border border-slate-200 bg-white p-4 shadow-soft sm:p-5 dark:border-white/10 dark:bg-white/[0.06] ${p.chatColumnEqualHeightClass} ${
@@ -179,10 +206,9 @@ export default function DashboardChatSection() {
                 </div>
 
                 <div
-                  className={`flex w-full flex-col overflow-hidden border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-white/[0.06] ${p.chatColumnEqualHeightClass} ${
+                  data-chat-thread="true"
+                  className={`flex w-full flex-col overflow-hidden bg-white dark:bg-white/[0.06] ${p.chatColumnEqualHeightClass} ${p.chatThreadSurfaceClass} ${
                     p.isPhone && p.mobileChatScreen !== "chat" ? "hidden" : ""
-                  } ${
-                    p.isWideChatLayout ? "rounded-2xl md:rounded-[1.25rem]" : "rounded-[2rem]"
                   }`}
                 >
                   {p.chatPanel === "private" && p.selectedThread ? (
@@ -194,7 +220,7 @@ export default function DashboardChatSection() {
                       {!(p.isPhone && p.isPrivateChatSearchOpen) && (
                         <>
                     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-                      <div className="border-b border-slate-200 p-4 sm:px-5 dark:border-white/10">
+                      <div className={p.chatThreadHeaderClass}>
                         {p.isPhone && (
                           <button
                             type="button"
@@ -308,21 +334,25 @@ export default function DashboardChatSection() {
                         {p.isPrivateMessagesLoading ? (
                           <ChatMessagesAreaSkeleton />
                         ) : p.directMessages.length === 0 ? (
-                          <EmptyState
-                            compact
-                            variant="messages"
-                            title={
-                              p.selectedThread?.other_user_blocked_by_me
-                                ? "Bloklangan foydalanuvchi xabarlari yashirilgan"
-                                : "Birinchi shaxsiy xabar"
-                            }
-                            description={
-                              p.selectedThread?.other_user_blocked_by_me
-                                ? "Blokdan ochsangiz, yashirilgan xabarlar ham ko'rinadi."
-                                : "Suhbatni boshlang — xabaringiz shu yerda ko'rinadi."
-                            }
-                            className="h-full min-h-[12rem] border-none bg-transparent dark:bg-transparent"
-                          />
+                          p.selectedThread?.other_user_blocked_by_me ? (
+                            <EmptyState
+                              compact
+                              variant="messages"
+                              title="Bloklangan foydalanuvchi xabarlari yashirilgan"
+                              description="Blokdan ochsangiz, yashirilgan xabarlar ham ko'rinadi."
+                              className="h-full min-h-[12rem] border-none bg-transparent dark:bg-transparent"
+                            />
+                          ) : (
+                            <ChatSuggestedPrompts
+                              title="Suhbatni boshlang"
+                              prompts={PRIVATE_CHAT_SUGGESTED_PROMPTS}
+                              onSelect={(text) => {
+                                p.setPrivateMessage(text);
+                                requestAnimationFrame(() => privateInputRef.current?.focus());
+                              }}
+                              className="h-full min-h-[12rem]"
+                            />
+                          )
                         ) : (
                           <div className="w-full space-y-3 pb-3">
                             {p.directMessages.map((item) => (
@@ -359,6 +389,11 @@ export default function DashboardChatSection() {
                                 )}
                                 onEdit={(msg) => p.openEditChatMessage(msg, "private")}
                                 onDelete={p.handleDeletePrivateMessage}
+                                onReply={
+                                  p.selectedThread?.other_user_blocked_by_me
+                                    ? undefined
+                                    : (msg) => p.openReplyChatMessage(msg, "private")
+                                }
                                 onAuthorClick={(authorId, prefetch) =>
                                   p.openUserProfile(authorId, prefetch, {})
                                 }
@@ -371,7 +406,7 @@ export default function DashboardChatSection() {
                         )}
                       </div>
                       {p.selectedThread?.other_user_blocked_by_me ? (
-                        <div className="shrink-0 border-t border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900/90">
+                        <div className={p.chatComposerBarClass}>
                           <button
                             type="button"
                             onClick={p.onUnblockPrivateChatUser}
@@ -384,7 +419,7 @@ export default function DashboardChatSection() {
                       ) : (
                       <form
                         onSubmit={p.sendPrivateChatMessage}
-                        className="shrink-0 border-t border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900/90"
+                        className={p.chatComposerBarClass}
                       >
                         {p.editingChatMessage?.scope === "private" && (
                           <ChatComposeEditBar
@@ -392,6 +427,14 @@ export default function DashboardChatSection() {
                             onCancel={p.cancelEditChatMessage}
                           />
                         )}
+                        {p.replyComposePreview?.scope === "private" &&
+                        p.editingChatMessage?.scope !== "private" ? (
+                          <ChatComposeReplyBar
+                            author={p.replyComposePreview.author}
+                            preview={p.replyComposePreview.preview}
+                            onCancel={p.cancelReplyChatMessage}
+                          />
+                        ) : null}
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
                           <ChatComposerTextarea
                             inputRef={privateInputRef}
@@ -406,6 +449,11 @@ export default function DashboardChatSection() {
                               if (event.key === "Escape" && p.editingChatMessage?.scope === "private") {
                                 event.preventDefault();
                                 p.cancelEditChatMessage();
+                                return;
+                              }
+                              if (event.key === "Escape" && p.replyComposePreview?.scope === "private") {
+                                event.preventDefault();
+                                p.cancelReplyChatMessage();
                                 return;
                               }
                               if (event.key === "Enter" && !event.shiftKey) {
@@ -457,7 +505,7 @@ export default function DashboardChatSection() {
                       {!(p.isPhone && p.isGroupChatSearchOpen) && (
                         <>
                       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-                      <div className="shrink-0 border-b border-slate-200 p-4 sm:px-5 dark:border-white/10">
+                      <div className={p.chatThreadHeaderClass}>
                         {p.isPhone && p.displayedGroupUniversity && (
                           <button
                             type="button"
@@ -567,21 +615,25 @@ export default function DashboardChatSection() {
                         {p.isGroupMessagesLoading ? (
                           <ChatMessagesAreaSkeleton />
                         ) : p.groupMessages.length === 0 ? (
-                          <EmptyState
-                            compact
-                            variant="messages"
-                            title={
-                              p.hasJoinedSelectedChat
-                                ? "Birinchi xabaringiz"
-                                : "Hozircha xabar yo'q"
-                            }
-                            description={
-                              p.hasJoinedSelectedChat
-                                ? "Talabalarga savol bering — suhbat shu yerdan boshlanadi."
-                                : "Chatga qo'shilsangiz, xabar yozish va real vaqtda yangilanish ochiladi."
-                            }
-                            className="h-full min-h-[12rem] border-none bg-transparent dark:bg-transparent"
-                          />
+                          p.hasJoinedSelectedChat ? (
+                            <ChatSuggestedPrompts
+                              title="Talabalarga savol bering"
+                              prompts={GROUP_CHAT_SUGGESTED_PROMPTS}
+                              onSelect={(text) => {
+                                p.setGroupMessage(text);
+                                requestAnimationFrame(() => groupInputRef.current?.focus());
+                              }}
+                              className="h-full min-h-[12rem]"
+                            />
+                          ) : (
+                            <EmptyState
+                              compact
+                              variant="messages"
+                              title="Hozircha xabar yo'q"
+                              description="Chatga qo'shilsangiz, xabar yozish va real vaqtda yangilanish ochiladi."
+                              className="h-full min-h-[12rem] border-none bg-transparent dark:bg-transparent"
+                            />
+                          )
                         ) : (
                           <div className="w-full space-y-3 pb-3">
                             {p.groupMessages.map((item) => (
@@ -633,6 +685,11 @@ export default function DashboardChatSection() {
                                   onDelete={
                                     p.hasJoinedSelectedChat ? p.handleDeleteGroupMessage : undefined
                                   }
+                                  onReply={
+                                    p.hasJoinedSelectedChat
+                                      ? (msg) => p.openReplyChatMessage(msg, "group")
+                                      : undefined
+                                  }
                                   onAuthorClick={p.openGroupChatAuthorProfile}
                                   showAuthorAvatar
                                   isReacting={p.reactingMessageId === item.id}
@@ -647,7 +704,7 @@ export default function DashboardChatSection() {
                       {p.hasJoinedSelectedChat ? (
                         <form
                           onSubmit={p.sendGroupChatMessage}
-                          className="shrink-0 border-t border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-slate-900/90"
+                          className={p.chatComposerBarClass}
                         >
                           {p.editingChatMessage?.scope === "group" && (
                             <ChatComposeEditBar
@@ -655,6 +712,14 @@ export default function DashboardChatSection() {
                               onCancel={p.cancelEditChatMessage}
                             />
                           )}
+                          {p.replyComposePreview?.scope === "group" &&
+                          p.editingChatMessage?.scope !== "group" ? (
+                            <ChatComposeReplyBar
+                              author={p.replyComposePreview.author}
+                              preview={p.replyComposePreview.preview}
+                              onCancel={p.cancelReplyChatMessage}
+                            />
+                          ) : null}
                           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
                             <ChatComposerTextarea
                               inputRef={groupInputRef}
@@ -669,6 +734,11 @@ export default function DashboardChatSection() {
                                 if (event.key === "Escape" && p.editingChatMessage?.scope === "group") {
                                   event.preventDefault();
                                   p.cancelEditChatMessage();
+                                  return;
+                                }
+                                if (event.key === "Escape" && p.replyComposePreview?.scope === "group") {
+                                  event.preventDefault();
+                                  p.cancelReplyChatMessage();
                                   return;
                                 }
                                 if (event.key === "Enter" && !event.shiftKey) {
@@ -693,6 +763,9 @@ export default function DashboardChatSection() {
                           <ChatGroupJoinBar
                             onJoin={() => p.handleJoin(p.selectedUniversity.id)}
                             isJoining={p.isGroupJoining}
+                            className={
+                              p.isImmersiveThread ? "chat-composer-dock pb-safe" : ""
+                            }
                           />
                         )
                       )}

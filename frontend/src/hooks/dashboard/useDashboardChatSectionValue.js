@@ -1,50 +1,8 @@
 import { useMemo } from "react";
+import { buildDashboardChatLayoutClasses } from "./buildDashboardChatLayoutClasses.js";
 
-function useDashboardChatLayout({
-  isDesktop,
-  activeSection,
-  chatListTab,
-  chatPanel,
-  isCompactLayout,
-}) {
-  const isPrivateChatLayout =
-    isDesktop && activeSection === "chats" && chatListTab === "private";
-
-  const isGroupChatLayout =
-    isDesktop && activeSection === "chats" && chatPanel === "group";
-
-  const isWideChatLayout = isPrivateChatLayout || isGroupChatLayout;
-
-  const chatColumnEqualHeightClass = isCompactLayout
-    ? "h-fit max-h-[calc(100dvh-11rem)] self-start md:max-h-[calc(100vh-10rem)]"
-    : "md:flex md:h-[calc(100dvh-11.5rem)] md:max-h-[calc(100dvh-11.5rem)] md:flex-col md:overflow-hidden";
-
-  const chatListScrollClass = isCompactLayout
-    ? "chat-messages-scroll mt-4 max-h-[min(28rem,calc(100dvh-17rem))] space-y-1 overflow-y-auto overscroll-contain pr-1"
-    : "chat-messages-scroll mt-4 min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain pr-1";
-
-  const chatMessagesAreaClass = isCompactLayout
-    ? "chat-messages-scroll h-[calc(100dvh-14rem)] min-h-[200px] overflow-y-auto overflow-x-hidden overscroll-contain"
-    : "chat-messages-scroll min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain";
-
-  const chatPanelInnerClass = isCompactLayout
-    ? "flex flex-col"
-    : "flex min-h-0 flex-1 flex-col overflow-hidden";
-
-  const chatSectionGridClass = isCompactLayout
-    ? "grid-cols-1"
-    : isWideChatLayout
-      ? "lg:grid-cols-[minmax(280px,30%)_minmax(0,1fr)] lg:gap-4 xl:gap-5"
-      : "lg:grid-cols-[minmax(0,340px)_minmax(0,1fr)] xl:grid-cols-[420px_1fr]";
-
-  return {
-    isWideChatLayout,
-    chatSectionGridClass,
-    chatColumnEqualHeightClass,
-    chatListScrollClass,
-    chatMessagesAreaClass,
-    chatPanelInnerClass,
-  };
+function useDashboardChatLayout(args) {
+  return buildDashboardChatLayoutClasses(args);
 }
 
 export function useDashboardChatSectionValue({
@@ -100,6 +58,9 @@ export function useDashboardChatSectionValue({
   editingChatMessage,
   openEditChatMessage,
   cancelEditChatMessage,
+  replyComposePreview,
+  openReplyChatMessage,
+  cancelReplyChatMessage,
   requestDeleteGroupMessage,
   requestDeletePrivateMessage,
   groupChatTags,
@@ -115,6 +76,7 @@ export function useDashboardChatSectionValue({
     chatListTab,
     chatPanel,
     isCompactLayout,
+    mobileChatScreen,
   });
 
   const { displayedGroupUniversity, isGroupChatHeaderLoading } = chatUi;
@@ -127,11 +89,15 @@ export function useDashboardChatSectionValue({
       composerFocusToken,
       isPhone: isCompactLayout,
       mobileChatScreen,
+      isImmersiveThread: layout.isImmersiveThread,
       chatSectionGridClass: layout.chatSectionGridClass,
       chatColumnEqualHeightClass: layout.chatColumnEqualHeightClass,
       chatListScrollClass: layout.chatListScrollClass,
       chatMessagesAreaClass: layout.chatMessagesAreaClass,
       chatPanelInnerClass: layout.chatPanelInnerClass,
+      chatThreadSurfaceClass: layout.chatThreadSurfaceClass,
+      chatComposerBarClass: layout.chatComposerBarClass,
+      chatThreadHeaderClass: layout.chatThreadHeaderClass,
       chatListTab,
       handleChatTabChange: chatUi.handleChatTabChange,
       totalJoinedUnread,
@@ -179,6 +145,9 @@ export function useDashboardChatSectionValue({
       editingChatMessage,
       openEditChatMessage,
       cancelEditChatMessage,
+      replyComposePreview,
+      openReplyChatMessage,
+      cancelReplyChatMessage,
       handleDeleteGroupMessage: requestDeleteGroupMessage,
       handleDeletePrivateMessage: requestDeletePrivateMessage,
       groupChatTags,
@@ -202,11 +171,15 @@ export function useDashboardChatSectionValue({
       composerFocusToken,
       isCompactLayout,
       mobileChatScreen,
+      layout.isImmersiveThread,
       layout.chatSectionGridClass,
       layout.chatColumnEqualHeightClass,
       layout.chatListScrollClass,
       layout.chatMessagesAreaClass,
       layout.chatPanelInnerClass,
+      layout.chatThreadSurfaceClass,
+      layout.chatComposerBarClass,
+      layout.chatThreadHeaderClass,
       chatListTab,
       totalJoinedUnread,
       totalPrivateUnread,
@@ -253,6 +226,9 @@ export function useDashboardChatSectionValue({
       editingChatMessage,
       openEditChatMessage,
       cancelEditChatMessage,
+      replyComposePreview,
+      openReplyChatMessage,
+      cancelReplyChatMessage,
       requestDeleteGroupMessage,
       requestDeletePrivateMessage,
       groupChatTags,

@@ -1,4 +1,5 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { getChatMessagePlainPreview, normalizeReplySource } from "@/utils/chatReplyFormat.js";
 
 export function useDashboardChatActions({
   clearChatError,
@@ -22,7 +23,10 @@ export function useDashboardChatActions({
   selectedThreadId,
   setDirectThreads,
   setDraftThread,
+  setComposerFocusToken,
 }) {
+  const [replyingToChatMessage, setReplyingToChatMessage] = useState(null);
+
   const editingChatMessage = useMemo(
     () =>
       groupEditingChatMessage?.scope === "group"
@@ -33,8 +37,24 @@ export function useDashboardChatActions({
     [groupEditingChatMessage, privateEditingChatMessage]
   );
 
+  const cancelReplyChatMessage = useCallback(() => {
+    setReplyingToChatMessage(null);
+  }, []);
+
+  const openReplyChatMessage = useCallback(
+    (message, scope) => {
+      cancelEditGroupMessage();
+      cancelEditPrivateMessage();
+      setReplyingToChatMessage({ message, scope });
+      clearChatError();
+      setComposerFocusToken?.((value) => value + 1);
+    },
+    [cancelEditGroupMessage, cancelEditPrivateMessage, clearChatError, setComposerFocusToken]
+  );
+
   const openEditChatMessage = useCallback(
     (message, scope) => {
+      setReplyingToChatMessage(null);
       if (scope === "group") {
         openEditGroupMessage(message);
         return;
@@ -64,8 +84,17 @@ export function useDashboardChatActions({
       sendGroupChatMessageBase(event, {
         hasJoinedSelectedChat,
         selectedUniversityId,
+        replyTo:
+          replyingToChatMessage?.scope === "group" ? replyingToChatMessage.message : null,
+        onSent: cancelReplyChatMessage,
       }),
-    [sendGroupChatMessageBase, hasJoinedSelectedChat, selectedUniversityId]
+    [
+      sendGroupChatMessageBase,
+      hasJoinedSelectedChat,
+      selectedUniversityId,
+      replyingToChatMessage,
+      cancelReplyChatMessage,
+    ]
   );
 
   const sendPrivateChatMessage = useCallback(
@@ -74,8 +103,18 @@ export function useDashboardChatActions({
         selectedThreadId,
         setDirectThreads,
         setDraftThread,
+        replyTo:
+          replyingToChatMessage?.scope === "private" ? replyingToChatMessage.message : null,
+        onSent: cancelReplyChatMessage,
       }),
-    [sendPrivateChatMessageBase, selectedThreadId, setDirectThreads, setDraftThread]
+    [
+      sendPrivateChatMessageBase,
+      selectedThreadId,
+      setDirectThreads,
+      setDraftThread,
+      replyingToChatMessage,
+      cancelReplyChatMessage,
+    ]
   );
 
   const handleGroupReaction = useCallback(
@@ -132,10 +171,26 @@ export function useDashboardChatActions({
     [handleUnpinPrivateMessageBase, selectedThreadId, clearChatError]
   );
 
+  const replyComposePreview = useMemo(() => {
+    if (!replyingToChatMessage?.message) {
+      return null;
+    }
+    const source = normalizeReplySource(replyingToChatMessage.message);
+    return {
+      scope: replyingToChatMessage.scope,
+      author: source?.author || "Foydalanuvchi",
+      preview: getChatMessagePlainPreview(replyingToChatMessage.message.text || "", 160),
+    };
+  }, [replyingToChatMessage]);
+
   return {
     editingChatMessage,
     openEditChatMessage,
     cancelEditChatMessage,
+    replyingToChatMessage,
+    replyComposePreview,
+    openReplyChatMessage,
+    cancelReplyChatMessage,
     sendGroupChatMessage,
     sendPrivateChatMessage,
     handleGroupReaction,

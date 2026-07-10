@@ -10,6 +10,7 @@ import {
 } from "@/services/chatService.js";
 import { getApiErrorMessage } from "@/utils/apiErrors.js";
 import { mergeById } from "@/hooks/useMessageStream.js";
+import { buildReplyPayload, parseReplyPayload } from "@/utils/chatReplyFormat.js";
 
 export function useDirectChat({ reportChatError, clearChatError, onMessageCreated } = {}) {
   const [privateMessage, setPrivateMessage] = useState("");
@@ -26,7 +27,7 @@ export function useDirectChat({ reportChatError, clearChatError, onMessageCreate
     (message) => {
       setEditingChatMessage({ message, scope: "private" });
       clearChatError();
-      setPrivateMessage(message.text);
+      setPrivateMessage(parseReplyPayload(message.text).body || message.text);
     },
     [clearChatError]
   );
@@ -41,7 +42,10 @@ export function useDirectChat({ reportChatError, clearChatError, onMessageCreate
   }, []);
 
   const sendPrivateChatMessage = useCallback(
-    async (event, { selectedThreadId, setDirectThreads, setDraftThread }) => {
+    async (
+      event,
+      { selectedThreadId, setDirectThreads, setDraftThread, replyTo = null, onSent } = {}
+    ) => {
       event.preventDefault();
       const trimmed = privateMessage.trim();
       if (!trimmed || !selectedThreadId || isPrivateSending) {
@@ -49,11 +53,21 @@ export function useDirectChat({ reportChatError, clearChatError, onMessageCreate
       }
 
       const isEditingPrivate = editingChatMessage?.scope === "private";
+      const textToSend =
+        !isEditingPrivate && replyTo ? buildReplyPayload(replyTo, trimmed) : trimmed;
       setIsPrivateSending(true);
       clearChatError();
       try {
         if (isEditingPrivate) {
-          const updated = await editDirectMessage(editingChatMessage.message.id, trimmed);
+          const original = editingChatMessage.message.text || "";
+          const { reply } = parseReplyPayload(original);
+          const nextText = reply
+            ? buildReplyPayload(
+                { id: reply.id, author: reply.author, text: reply.text },
+                trimmed
+              )
+            : trimmed;
+          const updated = await editDirectMessage(editingChatMessage.message.id, nextText);
           updateMessageInList(setDirectMessages, updated);
           if (privatePinnedMessage?.id === updated.id) {
             setPrivatePinnedMessage(updated);
@@ -61,10 +75,11 @@ export function useDirectChat({ reportChatError, clearChatError, onMessageCreate
           setEditingChatMessage(null);
           setPrivateMessage("");
         } else {
-          const created = await sendDirectMessage(selectedThreadId, trimmed);
+          const created = await sendDirectMessage(selectedThreadId, textToSend);
           setDirectMessages((current) => mergeById(current, [created]));
           onMessageCreated?.(created);
           setPrivateMessage("");
+          onSent?.();
           const threads = await getDirectThreads();
           setDirectThreads(threads);
           setDraftThread(null);

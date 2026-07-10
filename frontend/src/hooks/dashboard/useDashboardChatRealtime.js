@@ -40,6 +40,7 @@ export function useDashboardChatRealtime({
   reportChatError,
   clearChatError,
   cancelEditChatMessage,
+  cancelReplyChatMessage,
   closeGroupChatSearch,
   closePrivateChatSearch,
   setHighlightedGroupMessageId,
@@ -181,7 +182,8 @@ export function useDashboardChatRealtime({
 
   useEffect(() => {
     cancelEditChatMessage();
-  }, [selectedUniversityId, selectedThreadId, cancelEditChatMessage]);
+    cancelReplyChatMessage?.();
+  }, [selectedUniversityId, selectedThreadId, cancelEditChatMessage, cancelReplyChatMessage]);
 
   useEffect(() => {
     closeGroupChatSearch();

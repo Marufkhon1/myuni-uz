@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getSupportBotWelcome } from "@/components/dashboard/supportBot.js";
 
 export function useSupportChat(isStudent = false) {
@@ -11,10 +11,13 @@ export function useSupportChat(isStudent = false) {
     setDraft("");
   }, [isStudent]);
 
+  const openChatModal = useCallback(() => setIsChatModalOpen(true), []);
+  const closeChatModal = useCallback(() => setIsChatModalOpen(false), []);
+
   return {
     isChatModalOpen,
-    openChatModal: () => setIsChatModalOpen(true),
-    closeChatModal: () => setIsChatModalOpen(false),
+    openChatModal,
+    closeChatModal,
     draft,
     setDraft,
     messages,

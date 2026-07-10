@@ -62,6 +62,18 @@ html {
   }
 }
 
+/* Immersive mobile chat: shrink shell by soft-keyboard overlap (visualViewport). */
+.dashboard-chat-immersive {
+  height: calc(100dvh - var(--myuni-keyboard-inset, 0px));
+  max-height: calc(100dvh - var(--myuni-keyboard-inset, 0px));
+  overflow: hidden;
+}
+
+/* When keyboard is open, drop home-indicator padding so composer sits flush above keys. */
+html[data-myuni-keyboard-open="true"] .dashboard-chat-immersive .chat-composer-dock {
+  padding-bottom: 0.75rem;
+}
+
 body {
   margin: 0;
   min-width: 320px;

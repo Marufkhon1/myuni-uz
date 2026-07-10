@@ -4,10 +4,13 @@ import ChatAuthorName from "../chat/ChatAuthorName.jsx";
 import ChatMessageContextMenu from "../chat/ChatMessageContextMenu.jsx";
 import ChatMessageText from "../chat/ChatMessageText.jsx";
 import ChatReactionPicker from "../chat/ChatReactionPicker.jsx";
+import ChatReplyQuote from "../chat/ChatReplyQuote.jsx";
 import UserAvatarWithPresence from "./UserAvatarWithPresence.jsx";
 import { clampContextMenuPosition, getReactionPickerPosition } from "@/utils/chatMenuPosition.js";
+import { parseReplyPayload } from "@/utils/chatReplyFormat.js";
+import { useSwipeToReply } from "@/hooks/useSwipeToReply.js";
 
-const MENU_ESTIMATE = { width: 210, height: 168 };
+const MENU_ESTIMATE = { width: 210, height: 200 };
 const HOVER_HEART_DELAY_MS = 1500;
 const HOVER_LEAVE_DELAY_MS = 200;
 const HOVER_LEAVE_WITH_PICKER_MS = 400;
@@ -20,6 +23,7 @@ export default function ChatMessageBubble({
   onDelete,
   onReport,
   onMute,
+  onReply,
   isAuthorMuted = false,
   onTagClick,
   onPin,
@@ -35,6 +39,7 @@ export default function ChatMessageBubble({
   const isMine = message.is_mine;
   const authorId = message.author_id ?? message.sender_id;
   const authorColorKey = message.author_color ?? message.sender_color;
+  const { reply, body: messageBody } = parseReplyPayload(message.text);
   const [showMenu, setShowMenu] = useState(false);
   const [menuClick, setMenuClick] = useState({ x: 0, y: 0 });
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
@@ -54,8 +59,10 @@ export default function ChatMessageBubble({
 
   const bubbleClass = isMine ? mineClassName : otherClassName;
   const canReact = typeof onReact === "function";
+  const canReply = typeof onReply === "function";
   const hasContextMenuActions =
     canReact ||
+    canReply ||
     (isMine && onEdit) ||
     (isMine && onDelete) ||
     onPin ||
@@ -134,7 +141,28 @@ export default function ChatMessageBubble({
     }
   }
 
+  const triggerReply = useCallback(() => {
+    if (!canReply) {
+      return;
+    }
+    setShowMenu(false);
+    onReply(message);
+  }, [canReply, message, onReply]);
+
+  const swipe = useSwipeToReply({
+    enabled: canReply,
+    onReply: triggerReply,
+  });
+
+  function clearLongPress() {
+    if (longPressTimerRef.current) {
+      window.clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  }
+
   function handleTouchStart(event) {
+    swipe.handlers.onTouchStart(event);
     if (!hasContextMenuActions) {
       return;
     }
@@ -148,15 +176,19 @@ export default function ChatMessageBubble({
     }, 450);
   }
 
-  function handleTouchEnd() {
-    if (longPressTimerRef.current) {
-      window.clearTimeout(longPressTimerRef.current);
-      longPressTimerRef.current = null;
-    }
+  function handleTouchEnd(event) {
+    swipe.handlers.onTouchEnd(event);
+    clearLongPress();
   }
 
-  function handleTouchMove() {
-    handleTouchEnd();
+  function handleTouchMove(event) {
+    swipe.handlers.onTouchMove(event);
+    clearLongPress();
+  }
+
+  function handleTouchCancel(event) {
+    swipe.handlers.onTouchCancel(event);
+    clearLongPress();
   }
 
   function scheduleHeartTrigger() {
@@ -322,6 +354,7 @@ export default function ChatMessageBubble({
           isReacting={isReacting}
           isPinned={isPinned}
           onReact={onReact}
+          onReply={canReply ? triggerReply : undefined}
           onPin={onPin}
           onUnpin={onUnpin}
           onReport={onReport}
@@ -365,11 +398,38 @@ export default function ChatMessageBubble({
     <>
       <article
         ref={rootRef}
-        className={`group relative w-full ${hasReactions ? "mb-5" : showHeartTrigger && canReact ? "mb-2" : ""}`}
+        className={`group relative w-full touch-pan-y ${hasReactions ? "mb-5" : showHeartTrigger && canReact ? "mb-2" : ""}`}
         onMouseEnter={canReact ? handleArticleMouseEnter : undefined}
         onMouseLeave={canReact ? handleArticleMouseLeave : undefined}
       >
-        <div className={`flex w-full gap-2 ${isMine ? "justify-end" : "justify-start"}`}>
+        <div className="relative overflow-hidden">
+          {canReply ? (
+            <div
+              className={`pointer-events-none absolute inset-y-0 left-2 flex items-center transition ${
+                swipe.offsetX > 8 ? "opacity-100" : "opacity-0"
+              }`}
+              aria-hidden="true"
+            >
+              <span
+                className={`grid h-9 w-9 place-items-center rounded-full bg-primary/15 text-primary transition ${
+                  swipe.isArmed ? "scale-110 bg-primary text-white" : ""
+                }`}
+                style={{ opacity: Math.max(0.35, swipe.progress) }}
+              >
+                <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor">
+                  <path d="M7.707 3.293a1 1 0 0 1 0 1.414L5.414 7H12a5 5 0 0 1 0 10h-1a1 1 0 1 1 0-2h1a3 3 0 1 0 0-6H5.414l2.293 2.293a1 1 0 1 1-1.414 1.414l-4-4a1 1 0 0 1 0-1.414l4-4a1 1 0 0 1 1.414 0Z" />
+                </svg>
+              </span>
+            </div>
+          ) : null}
+
+          <div
+            className={`flex w-full gap-2 will-change-transform ${isMine ? "justify-end" : "justify-start"}`}
+            style={{
+              transform: swipe.offsetX ? `translate3d(${swipe.offsetX}px, 0, 0)` : undefined,
+              transition: swipe.isDragging ? "none" : "transform 160ms ease-out",
+            }}
+          >
           {!isMine && showAuthorAvatar && displayName ? (
             <div className="w-9 shrink-0 self-end pb-0.5">
               {onAuthorClick && authorId ? (
@@ -415,7 +475,7 @@ export default function ChatMessageBubble({
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
             onTouchMove={handleTouchMove}
-            onTouchCancel={handleTouchEnd}
+            onTouchCancel={handleTouchCancel}
           >
             <div
               className={`relative px-3 py-2 shadow-sm ${bubbleClass} ${
@@ -445,12 +505,21 @@ export default function ChatMessageBubble({
                   />
                 )
               )}
+              {reply ? (
+                <div className={!isMine && displayName ? "mt-1" : ""}>
+                  <ChatReplyQuote
+                    author={reply.author}
+                    text={reply.text}
+                    tone={isMine ? "mine" : "other"}
+                  />
+                </div>
+              ) : null}
               <p
                 className={`break-words [overflow-wrap:anywhere] whitespace-pre-wrap text-[15px] leading-snug select-text ${
-                  !isMine && displayName ? "mt-0.5" : ""
+                  !isMine && displayName && !reply ? "mt-0.5" : ""
                 }`}
               >
-                <ChatMessageText text={message.text} onTagClick={onTagClick} />
+                <ChatMessageText text={messageBody} onTagClick={onTagClick} />
               </p>
               <time
                 className={`mt-1 block text-[10px] font-semibold opacity-60 ${
@@ -497,6 +566,7 @@ export default function ChatMessageBubble({
                 )}
               </div>
             )}
+          </div>
           </div>
         </div>
       </article>
