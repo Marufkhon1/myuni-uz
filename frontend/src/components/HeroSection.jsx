@@ -334,9 +334,11 @@ export default function HeroSection() {
         />
       </div>
 
-      <div className="container-shell grid items-center gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-16">
-        <div className="hero-enter-left max-w-xl lg:max-w-none [animation:hero-fade-up_0.7s_ease-out_both]">
-          <span className="eyebrow">To&apos;g&apos;ri universitet, to&apos;g&apos;ri kelajak</span>
+      <div className="container-shell grid min-w-0 items-center gap-10 lg:grid-cols-2 lg:gap-14 xl:gap-16">
+        <div className="hero-enter-left min-w-0 max-w-xl lg:max-w-none [animation:hero-fade-up_0.7s_ease-out_both]">
+          <span className="eyebrow !px-3 !py-1.5 !text-xs sm:!px-4 sm:!py-2 sm:!text-sm">
+            To&apos;g&apos;ri universitet, to&apos;g&apos;ri kelajak
+          </span>
 
           <h1
             className={

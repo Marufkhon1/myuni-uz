@@ -69,8 +69,8 @@ function FooterLink({ link }) {
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white py-14 dark:border-white/10 dark:bg-slate-950">
-      <div className="container-shell">
+    <footer className="border-t border-slate-200 bg-white pb-[max(3.5rem,calc(2.5rem+env(safe-area-inset-bottom,0px)))] pt-14 dark:border-white/10 dark:bg-slate-950">
+      <div className="container-shell min-w-0">
         <div className="grid gap-10 lg:grid-cols-[1.2fr_2fr]">
           <div>
             <Link

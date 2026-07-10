@@ -186,7 +186,7 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-2.5">
+        <div className="flex shrink-0 items-center justify-end gap-1.5 sm:gap-2.5">
           {themeToggle && (
             <ThemeToggle
               isDark={isDark}

@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import UniversityAvatar from "./UniversityAvatar.jsx";
 import UserAvatar from "./dashboard/UserAvatar.jsx";
 import Skeleton from "./ui/Skeleton.jsx";
 import { getPublicLandingPreview } from "../services/publicService.js";
@@ -141,20 +142,20 @@ function DemoTimelineBar({
 function DemoBrowserChrome({ activeScene, children, isLoading, sceneProgress }) {
   return (
     <div className="demo-window">
-      <div className="flex items-center gap-2 border-b border-slate-100/80 bg-slate-50/90 px-4 py-3 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.03]">
-        <span className="h-2.5 w-2.5 rounded-full bg-red-400/90 shadow-sm" />
-        <span className="h-2.5 w-2.5 rounded-full bg-amber-400/90 shadow-sm" />
-        <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/90 shadow-sm" />
-        <div className="ml-2 flex min-w-0 flex-1 items-center justify-between gap-2">
-          <div className="flex min-w-0 flex-1 items-center gap-2 truncate rounded-lg border border-slate-200/80 bg-white px-3 py-1.5 dark:border-white/10 dark:bg-slate-950/80">
-            <span className="text-[10px]" aria-hidden="true">
+      <div className="flex min-w-0 items-center gap-1.5 border-b border-slate-100/80 bg-slate-50/90 px-2.5 py-2.5 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.03] sm:gap-2 sm:px-4 sm:py-3">
+        <span className="h-2 w-2 shrink-0 rounded-full bg-red-400/90 shadow-sm sm:h-2.5 sm:w-2.5" />
+        <span className="h-2 w-2 shrink-0 rounded-full bg-amber-400/90 shadow-sm sm:h-2.5 sm:w-2.5" />
+        <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400/90 shadow-sm sm:h-2.5 sm:w-2.5" />
+        <div className="ml-1 flex min-w-0 flex-1 items-center gap-1.5 sm:ml-2 sm:gap-2">
+          <div className="flex min-w-0 flex-1 items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white px-2 py-1 dark:border-white/10 dark:bg-slate-950/80 sm:gap-2 sm:px-3 sm:py-1.5">
+            <span className="shrink-0 text-[9px] sm:text-[10px]" aria-hidden="true">
               🔒
             </span>
-            <span className="truncate text-xs font-semibold text-slate-600 dark:text-slate-300">
+            <span className="min-w-0 truncate text-[11px] font-semibold text-slate-600 dark:text-slate-300 sm:text-xs">
               myuni.uz — {activeScene.label}
             </span>
           </div>
-          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-slate-950/5 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-slate-600 ring-1 ring-slate-200/80 dark:bg-white/10 dark:text-slate-200 dark:ring-white/15">
+          <span className="hidden shrink-0 items-center rounded-full bg-slate-950/5 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-slate-600 ring-1 ring-slate-200/80 sm:inline-flex dark:bg-white/10 dark:text-slate-200 dark:ring-white/15">
             Demo
           </span>
         </div>
@@ -164,23 +165,23 @@ function DemoBrowserChrome({ activeScene, children, isLoading, sceneProgress }) 
         <div className="demo-scene-progress-fill h-px rounded-none" style={{ width: `${sceneProgress}%` }} />
       </div>
 
-      <div className="demo-window-grid relative h-[min(440px,58vh)] min-h-[320px] overflow-hidden bg-[#f5f7fb]/90 px-4 pt-4 pb-6 sm:px-5 sm:pt-5 sm:pb-7 dark:bg-slate-950/90">
+      <div className="demo-window-grid relative h-[min(400px,52vh)] min-h-[280px] min-w-0 overflow-hidden bg-[#f5f7fb]/90 px-3 pt-3 pb-4 sm:h-[min(440px,58vh)] sm:min-h-[320px] sm:px-5 sm:pt-5 sm:pb-7 dark:bg-slate-950/90">
         {isLoading ? (
-          <div className="absolute inset-x-4 top-4 bottom-6 space-y-3 sm:inset-x-5 sm:top-5 sm:bottom-7">
-            <Skeleton className="h-16 w-full rounded-2xl" />
-            <Skeleton className="h-14 w-full rounded-2xl" />
-            <Skeleton className="h-14 w-full rounded-2xl" />
-            <Skeleton className="h-14 w-full rounded-2xl" />
+          <div className="absolute inset-x-3 top-3 bottom-4 min-w-0 space-y-2 sm:inset-x-5 sm:top-5 sm:bottom-7 sm:space-y-3">
+            <Skeleton className="h-12 w-full rounded-xl sm:h-16 sm:rounded-2xl" />
+            <Skeleton className="h-12 w-full rounded-xl sm:h-14 sm:rounded-2xl" />
+            <Skeleton className="h-12 w-full rounded-xl sm:h-14 sm:rounded-2xl" />
+            <Skeleton className="h-12 w-full rounded-xl sm:h-14 sm:rounded-2xl" />
           </div>
         ) : (
           <AnimatePresence mode="wait">
             <motion.div
               key={activeScene.id}
-              initial={{ opacity: 0, scale: 0.98, y: 12 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.99, y: -8 }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-x-4 top-4 bottom-6 sm:inset-x-5 sm:top-5 sm:bottom-7"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-x-3 top-3 bottom-4 min-w-0 sm:inset-x-5 sm:top-5 sm:bottom-7"
             >
               {children}
             </motion.div>
@@ -202,42 +203,63 @@ function BrowseScene({ universities }) {
   }
 
   return (
-    <div className="demo-panel-scroll grid h-full min-h-0 gap-2.5 overflow-y-auto overscroll-contain pb-2 pr-1">
-      <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-blue-50 to-white p-3.5 shadow-sm dark:border-primary/25 dark:from-blue-400/10 dark:to-white/[0.04]">
-        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-primary">Katalog</p>
-        <p className="mt-1 text-base font-black text-slate-950 dark:text-white">Reyting va sharhlar</p>
+    <div className="demo-panel-scroll grid h-full min-h-0 min-w-0 gap-2 overflow-y-auto overscroll-contain pb-1 pr-0.5 sm:gap-2.5 sm:pb-2 sm:pr-1">
+      <div className="min-w-0 rounded-xl border border-primary/20 bg-gradient-to-br from-blue-50 to-white px-3 py-2.5 shadow-sm dark:border-primary/25 dark:from-blue-400/10 dark:to-white/[0.04] sm:rounded-2xl sm:p-3.5">
+        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-primary">Katalog</p>
+        <p className="mt-0.5 text-sm font-black text-slate-950 sm:mt-1 sm:text-base dark:text-white">
+          Reyting va sharhlar
+        </p>
       </div>
       {universities.map((university, index) => (
         <motion.div
           key={university.id}
-          initial={{ opacity: 0, x: -16 }}
+          initial={{ opacity: 0, x: -12 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: index * 0.1, duration: 0.4, ease: "easeOut" }}
-          className={`flex items-center justify-between rounded-2xl border bg-white px-3.5 py-3 shadow-sm transition dark:bg-white/[0.06] ${
+          transition={{ delay: index * 0.08, duration: 0.35, ease: "easeOut" }}
+          className={`flex min-w-0 items-center gap-2.5 rounded-xl border bg-white px-2.5 py-2 shadow-sm transition sm:gap-3 sm:rounded-2xl sm:px-3.5 sm:py-2.5 dark:bg-white/[0.06] ${
             index === 0
-              ? "border-primary/35 ring-2 ring-primary/15"
+              ? "border-primary/35 ring-1 ring-primary/15 sm:ring-2"
               : "border-slate-200/90 dark:border-white/10"
           }`}
         >
-          <div className="min-w-0 pr-3">
-            <p className="truncate font-black text-slate-950 dark:text-white">
-              {university.short_name || university.name}
+          <UniversityAvatar university={university} size="xs" />
+          <div className="min-w-0 flex-1">
+            <div className="flex min-w-0 items-center gap-1.5">
+              {index < 3 ? (
+                <span className="shrink-0 rounded-md bg-slate-950/90 px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide text-white dark:bg-white/15">
+                  Top {index + 1}
+                </span>
+              ) : null}
+              <p className="truncate text-sm font-black text-slate-950 dark:text-white">
+                {university.short_name || university.name}
+              </p>
+            </div>
+            <p className="mt-0.5 truncate text-[11px] font-semibold text-slate-500 sm:text-xs">
+              {[
+                university.location,
+                university.member_count != null
+                  ? `${formatLandingStat(university.member_count)} a'zo`
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(" · ") || `${formatLandingStat(university.review_count)} sharh`}
             </p>
-            <p className="mt-0.5 truncate text-xs font-semibold text-slate-500">{university.location}</p>
           </div>
-          <div className="shrink-0 text-right">
+          <div className="min-w-0 shrink-0 text-right">
             {formatLandingRating(university.average_rating) ? (
               <StarRatingDisplay
                 rating={Number(university.average_rating)}
                 variant="pill"
                 showNumeric
-                starClassName="text-[11px]"
+                starClassName="text-[10px]"
                 numericClassName="text-[10px] font-black text-amber-700 dark:text-amber-200"
               />
             ) : (
-              <span className="text-xs font-bold text-slate-400">Baho yo&apos;q</span>
+              <span className="inline-flex rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500 dark:bg-white/10 dark:text-slate-400">
+                Hali baho yo&apos;q
+              </span>
             )}
-            <p className="mt-1 text-[11px] font-semibold text-slate-500">
+            <p className="mt-0.5 text-[10px] font-semibold text-slate-500 sm:mt-1 sm:text-[11px]">
               {formatLandingStat(university.review_count)} sharh
             </p>
           </div>
@@ -567,52 +589,54 @@ export default function ProductDemoSection() {
   }
 
   return (
-    <section id="demo" className="section-padding relative">
+    <section id="demo" className="section-padding relative overflow-x-hidden">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-64 bg-gradient-to-b from-blue-500/[0.06] to-transparent dark:from-blue-500/10" />
 
-      <div className="container-shell grid items-center gap-12 xl:grid-cols-[0.92fr_1.08fr] xl:gap-16">
-        <div className="relative">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="eyebrow">Platforma demo</span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-950 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-white dark:bg-white dark:text-slate-950">
+      <div className="container-shell grid min-w-0 items-start gap-8 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] xl:items-center xl:gap-16">
+        <div className="relative min-w-0 max-w-full">
+          <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
+            <span className="eyebrow !px-3 !py-1.5 !text-xs sm:!px-4 sm:!py-2 sm:!text-sm">
+              Platforma demo
+            </span>
+            <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-slate-950 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-white dark:bg-white dark:text-slate-950 sm:px-3">
               Bazadan
             </span>
           </div>
 
-          <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-[3.25rem] lg:leading-[1.08] dark:text-white">
+          <h2 className="mt-4 text-[1.75rem] font-black leading-tight tracking-tight text-slate-950 sm:mt-5 sm:text-5xl sm:leading-none lg:text-[3.25rem] lg:leading-[1.08] dark:text-white">
             Platforma o&apos;zi gapiradi —{" "}
             <span className="bg-gradient-to-r from-primary via-violet-600 to-cyan-500 bg-clip-text text-transparent">
               30 soniyada
             </span>
           </h2>
-          <p className="mt-5 max-w-xl text-lg leading-8 text-slate-600 dark:text-slate-300">
+          <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600 sm:mt-5 sm:text-lg sm:leading-8 dark:text-slate-300">
             Video o&apos;rniga haqiqiy interfeys — universitetlar, sharhlar va chat xabarlari
             to&apos;g&apos;ridan-to&apos;g&apos;ri bazadan keladi. Statik screenshot emas.
           </p>
 
-          <ol className="relative mt-10 space-y-2">
+          <ol className="relative mt-6 space-y-1.5 sm:mt-10 sm:space-y-2">
             <span className="demo-step-rail hidden sm:block" aria-hidden="true" />
             {scenes.map((scene, index) => {
               const hasData = isLoading || availableScenes.includes(scene.id);
               const isActive = sceneIndex === index;
 
               return (
-                <li key={scene.id}>
+                <li key={scene.id} className="min-w-0">
                   <button
                     type="button"
                     disabled={!hasData}
                     onClick={() => hasData && handleSceneSelect(index)}
-                    className={`relative flex w-full items-start gap-4 rounded-2xl border px-4 py-4 text-left transition-all duration-300 ${
+                    className={`relative flex w-full min-w-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-all duration-300 sm:items-start sm:gap-4 sm:rounded-2xl sm:px-4 sm:py-4 ${
                       isActive
                         ? "border-primary/35 bg-white shadow-[0_12px_40px_-20px_rgba(37,99,235,0.45)] dark:bg-white/[0.06]"
                         : "border-transparent bg-white/60 hover:border-slate-200 hover:bg-white dark:bg-white/[0.03] dark:hover:border-white/10"
                     } ${!hasData ? "cursor-not-allowed opacity-40" : ""}`}
                   >
                     <span
-                      className={`relative z-[1] grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-xl text-sm ${
+                      className={`relative z-[1] grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-xl text-sm sm:h-10 sm:w-10 ${
                         isActive
                           ? "bg-premium-gradient text-white shadow-glow"
-                          : "bg-slate-100 text-lg dark:bg-white/10"
+                          : "bg-slate-100 text-base dark:bg-white/10 sm:text-lg"
                       }`}
                     >
                       {isActive && isPlaying && !prefersReducedMotion ? (
@@ -628,14 +652,16 @@ export default function ProductDemoSection() {
                         <span aria-hidden="true">{scene.icon}</span>
                       )}
                     </span>
-                    <span className="min-w-0 pt-0.5">
-                      <span className="flex flex-wrap items-center gap-2">
-                        <span className="font-black text-slate-950 dark:text-white">{scene.label}</span>
-                        <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                    <span className="min-w-0 flex-1 sm:pt-0.5">
+                      <span className="flex min-w-0 items-center gap-2">
+                        <span className="truncate text-sm font-black text-slate-950 sm:text-base dark:text-white">
+                          {scene.label}
+                        </span>
+                        <span className="hidden shrink-0 font-mono text-[10px] font-bold uppercase tracking-widest text-slate-400 sm:inline">
                           FIG {scene.fig}
                         </span>
                       </span>
-                      <span className="mt-1 block text-sm leading-6 text-slate-500 dark:text-slate-400">
+                      <span className="mt-0.5 block truncate text-xs leading-5 text-slate-500 sm:mt-1 sm:whitespace-normal sm:text-sm sm:leading-6 dark:text-slate-400">
                         {scene.caption}
                         {!isLoading && !availableScenes.includes(scene.id) ? " · hozircha yo'q" : ""}
                       </span>
@@ -646,8 +672,11 @@ export default function ProductDemoSection() {
             })}
           </ol>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Link to="/signup" className="landing-btn-gradient px-7 py-4 text-center text-base">
+          <div className="mt-6 flex flex-col gap-2.5 sm:mt-8 sm:flex-row sm:items-center sm:gap-3">
+            <Link
+              to="/signup"
+              className="landing-btn-gradient w-full px-7 py-3.5 text-center text-base sm:w-auto sm:py-4"
+            >
               Bepul boshlash
             </Link>
             <a
@@ -664,10 +693,10 @@ export default function ProductDemoSection() {
           </div>
         </div>
 
-        <div className="relative">
-          <div className="demo-stage p-3 sm:p-4">
+        <div className="relative min-w-0 max-w-full">
+          <div className="demo-stage p-2 sm:p-4">
             <div className="demo-stage-glow" aria-hidden="true" />
-            <div className="demo-device-shell relative">
+            <div className="demo-device-shell relative min-w-0">
               <div className="demo-device-notch" aria-hidden="true" />
               <DemoBrowserChrome
                 activeScene={activeScene}
@@ -678,18 +707,18 @@ export default function ProductDemoSection() {
               </DemoBrowserChrome>
             </div>
 
-            <div className="relative mt-4 rounded-2xl border border-slate-200/80 bg-white/90 p-4 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/80">
-              <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="relative mt-3 min-w-0 rounded-xl border border-slate-200/80 bg-white/90 p-3 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/80 sm:mt-4 sm:rounded-2xl sm:p-4">
+              <div className="mb-2.5 flex min-w-0 items-center justify-between gap-2 sm:mb-3 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setIsPlaying((value) => !value)}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-xl bg-slate-950 px-4 py-2 text-xs font-black text-white transition hover:bg-primary dark:bg-white dark:text-slate-950 dark:hover:bg-primary dark:hover:text-white"
+                  className="inline-flex min-h-9 items-center gap-2 rounded-xl bg-slate-950 px-3 py-2 text-xs font-black text-white transition hover:bg-primary sm:min-h-10 sm:px-4 dark:bg-white dark:text-slate-950 dark:hover:bg-primary dark:hover:text-white"
                   aria-pressed={isPlaying}
                 >
                   <span aria-hidden="true">{isPlaying ? "⏸" : "▶"}</span>
                   {isPlaying ? "Pauza" : "Davom etish"}
                 </button>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <span className="truncate text-[10px] font-bold uppercase tracking-wider text-slate-400">
                   {availableScenes.length} ta demo sahna
                 </span>
               </div>
@@ -704,7 +733,7 @@ export default function ProductDemoSection() {
             </div>
           </div>
 
-          <p className="mt-4 text-center text-xs leading-5 text-slate-500 dark:text-slate-400">
+          <p className="mt-3 px-1 text-center text-xs leading-5 text-slate-500 dark:text-slate-400 sm:mt-4">
             {isLoading
               ? "Haqiqiy ma'lumotlar yuklanmoqda..."
               : prefersReducedMotion
