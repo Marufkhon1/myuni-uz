@@ -167,7 +167,8 @@ export default function ReviewsSection() {
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-600 dark:text-slate-300">
             O&apos;qituvchilar, yotoqxona va infratuzilma bo&apos;yicha baholar. «Kampus ovozi»
-            chat a&apos;zoligini bildiradi; yangi sharhlar moderatsiyadan o&apos;tadi.
+            chat a&apos;zoligini bildiradi; haqoratli matn avto-filterdan o&apos;tmaydi, odobli
+            sharhlar tez tasdiqlanadi.
           </p>
         </div>
 

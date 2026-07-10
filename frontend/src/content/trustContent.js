@@ -33,9 +33,15 @@ Holat o'zgarganda bildirishnoma ham keladi.`,
     },
     {
       heading: "5. Moderatsiya",
-      body: `Ishlab chiqarish muhitida yangi sharhlar avval moderatsiya navbatiga tushadi, keyin ommaviy ko'rinadi. Moderatorlar platforma qoidalariga asoslanib kontentni tasdiqlaydi, yashiradi yoki foydalanuvchini cheklaydi.
+      body: `Sharhlar avval avtomatik tekshiruvdan o'tadi (haqorat va so'kinish filtri, jumladan buzib yozilgan shakllar).
 
-Shikoyat holatlari: kutilmoqda, ko'rib chiqilmoqda, hal qilindi, rad etildi. Har bir holat foydalanuvchiga tushunarli tarzda ko'rsatiladi.`,
+• Odobli sharhlar tezda tasdiqlanadi va saytda ko'rinadi.
+• Haqorat/so'kinish aniqlansa, tizim darhol rad etadi: «Sizniki moderatsiyadan o'tmadi. Iltimos, odobli til bilan qayta yozing.»
+• Shikoyatlar moderator tomonidan ko'rib chiqiladi; qoidabuzar kontent yashirilishi yoki foydalanuvchi cheklanishi mumkin.
+
+Hozirgi avto-filter sharhlar va chat (guruh + DM) xabarlariga tatbiq etiladi; bir harflik xato (fuzzy) ehtiyotkor threshold bilan, toxicity signal esa faqat noaniq (fuzzy) holatlarda ishlatiladi.
+
+Shikoyat holatlari: kutilmoqda, ko'rib chiqilmoqda, hal qilindi, rad etildi.`,
     },
     {
       heading: "6. Bloklash va cheklovlar",

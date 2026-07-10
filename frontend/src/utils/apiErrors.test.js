@@ -4,7 +4,9 @@ import {
   getApiErrorMessage,
   getEmailNotVerifiedInfo,
   getRateLimitInfo,
+  getReviewSubmitErrorMessage,
 } from "./apiErrors.js";
+import { isModerationRejectionMessage } from "@/content/reviewModerationCopy.js";
 
 describe("getApiErrorMessage", () => {
   it("returns detail from API response", () => {
@@ -41,6 +43,26 @@ describe("getApiErrorMessage", () => {
       },
     };
     expect(getApiErrorMessage(error, "fallback")).toMatch(/30 soniyadan keyin/);
+  });
+
+  it("prefers review text field errors for moderation rejects", () => {
+    const error = {
+      response: {
+        status: 400,
+        data: {
+          text: ["Sizniki moderatsiyadan o'tmadi. Iltimos, odobli til bilan qayta yozing."],
+          rating: ["This field is required."],
+        },
+      },
+    };
+    expect(getReviewSubmitErrorMessage(error, "fallback")).toMatch(/moderatsiyadan o'tmadi/);
+  });
+});
+
+describe("isModerationRejectionMessage", () => {
+  it("detects moderation rejection copy", () => {
+    expect(isModerationRejectionMessage("Sizniki moderatsiyadan o'tmadi. Iltimos...")).toBe(true);
+    expect(isModerationRejectionMessage("Backendga ulanib bo'lmadi")).toBe(false);
   });
 });
 

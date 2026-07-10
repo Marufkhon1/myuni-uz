@@ -35,7 +35,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "drf_spectacular",
     "accounts",
-    "universities",
+    "universities.apps.UniversitiesConfig",
 ]
 
 _enable_channels = os.getenv("ENABLE_CHANNELS", "True") == "True"
@@ -178,6 +178,20 @@ _REVIEW_MODERATION_DEFAULT = "False" if DEBUG else "True"
 REVIEW_MODERATION_ENABLED = (
     os.getenv("REVIEW_MODERATION_ENABLED", _REVIEW_MODERATION_DEFAULT) == "True"
 )
+# So'kinish/haqorat avto-filtri (sharhlar + chat).
+PROFANITY_FILTER_ENABLED = os.getenv("PROFANITY_FILTER_ENABLED", "True") == "True"
+PROFANITY_LEXICON_PATH = os.getenv("PROFANITY_LEXICON_PATH", "")
+# Step 8 — fuzzy (1 harf) + toxicity faqat noaniq holatlar uchun
+PROFANITY_FUZZY_ENABLED = os.getenv("PROFANITY_FUZZY_ENABLED", "True") == "True"
+PROFANITY_FUZZY_MIN_STEM_LEN = int(os.getenv("PROFANITY_FUZZY_MIN_STEM_LEN", "5"))
+# high-confidence fuzzy soft-clear: toxicity shu dan past bo'lsa ruxsat
+PROFANITY_FUZZY_HIGH_MIN_SCORE = float(os.getenv("PROFANITY_FUZZY_HIGH_MIN_SCORE", "0.25"))
+PROFANITY_TOXICITY_ENABLED = os.getenv("PROFANITY_TOXICITY_ENABLED", "True") == "True"
+# heuristic | none | callable
+PROFANITY_TOXICITY_BACKEND = os.getenv("PROFANITY_TOXICITY_BACKEND", "heuristic")
+PROFANITY_TOXICITY_THRESHOLD = float(os.getenv("PROFANITY_TOXICITY_THRESHOLD", "0.72"))
+# Masalan: myapp.moderation.score_toxicity
+PROFANITY_TOXICITY_CALLABLE = os.getenv("PROFANITY_TOXICITY_CALLABLE", "")
 REVIEW_MODERATOR_EMAILS = os.getenv("REVIEW_MODERATOR_EMAILS", "")
 
 SUPPORT_MAX_PER_IP_HOUR = int(os.getenv("SUPPORT_MAX_PER_IP_HOUR", "10"))

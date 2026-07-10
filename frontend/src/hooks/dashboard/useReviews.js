@@ -11,7 +11,9 @@ import {
   buildDefaultAspectRatings,
   flattenReviewPayload,
 } from "@/utils/reviewAspects.js";
-import { getApiErrorMessage } from "@/utils/apiErrors.js";
+import { getApiErrorMessage, getReviewSubmitErrorMessage } from "@/utils/apiErrors.js";
+import { useToast } from "@/hooks/useToast.js";
+import { isModerationRejectionMessage } from "@/content/reviewModerationCopy.js";
 
 export function useReviews({
   isStudent,
@@ -20,6 +22,7 @@ export function useReviews({
   onReviewLikeUpdate,
   onReviewSubmitted,
 }) {
+  const toast = useToast();
   const [reviewUniversity, setReviewUniversity] = useState("");
   const [reviewUniversityDetail, setReviewUniversityDetail] = useState(null);
   const [reviewUniversitySearch, setReviewUniversitySearch] = useState("");
@@ -186,9 +189,15 @@ export function useReviews({
         onReviewSubmitted?.(nextReview);
         return nextReview;
       } catch (requestError) {
-        setReviewSubmitError(
-          getApiErrorMessage(requestError, "Sharh yuborilmadi. Qayta urinib ko'ring.")
+        const message = getReviewSubmitErrorMessage(
+          requestError,
+          "Sharh yuborilmadi. Qayta urinib ko'ring."
         );
+        setReviewSubmitError(message);
+        // Moderatsiya xatosi formada ko'rinadi — toast takrorlanmasin.
+        if (!isModerationRejectionMessage(message)) {
+          toast.error(message);
+        }
       } finally {
         setIsReviewSubmitting(false);
       }
@@ -201,6 +210,7 @@ export function useReviews({
       reviewText,
       studyDirectionId,
       onReviewSubmitted,
+      toast,
     ]
   );
 
@@ -218,7 +228,10 @@ export function useReviews({
     studyDirectionId,
     setStudyDirectionId,
     reviewText,
-    setReviewText,
+    setReviewText: (value) => {
+      setReviewSubmitError("");
+      setReviewText(value);
+    },
     reviews,
     setReviews,
     isReviewSubmitting,

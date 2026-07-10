@@ -1,4 +1,15 @@
+import { Link } from "react-router-dom";
+import { useEffect, useRef } from "react";
 import { aspectRatingsComplete } from "@/utils/reviewAspects.js";
+import {
+  REVIEW_GUIDELINES_HREF,
+  REVIEW_MODERATION_ERROR_HINT,
+  REVIEW_MODERATION_FOOTER_NOTE,
+  REVIEW_MODERATION_SCOPE_NOTE,
+  REVIEW_MODERATION_SHORT_RULES,
+  REVIEW_REWRITE_CTA_LABEL,
+  isModerationRejectionMessage,
+} from "@/content/reviewModerationCopy.js";
 import { AspectRatingRows } from "./ReviewAspectForm.jsx";
 import StarRatingRow from "./StarRatingRow.jsx";
 
@@ -133,6 +144,96 @@ function ModerationNote({ children }) {
   );
 }
 
+function ReviewRulesCard() {
+  return (
+    <aside
+      className="rounded-2xl border border-primary/15 bg-gradient-to-br from-blue-50/80 via-white to-violet-50/40 px-4 py-3.5 dark:border-primary/20 dark:from-primary/10 dark:via-white/[0.03] dark:to-violet-500/5"
+      aria-label="Sharh qoidalari"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-primary dark:text-blue-300">
+          Moderatsiya qoidalari
+        </p>
+        <Link
+          to={REVIEW_GUIDELINES_HREF}
+          className="text-[11px] font-bold text-primary underline-offset-2 hover:underline dark:text-blue-300"
+        >
+          Batafsil →
+        </Link>
+      </div>
+      <ul className="mt-2.5 space-y-1.5">
+        {REVIEW_MODERATION_SHORT_RULES.map((rule) => (
+          <li
+            key={rule}
+            className="flex items-start gap-2 text-xs font-semibold leading-snug text-slate-600 dark:text-slate-300"
+          >
+            <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary/70" aria-hidden="true" />
+            <span>{rule}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-[11px] font-semibold text-slate-400 dark:text-slate-500">
+        {REVIEW_MODERATION_SCOPE_NOTE}
+      </p>
+    </aside>
+  );
+}
+
+function ReviewSubmitErrorBanner({ message, onRewrite }) {
+  const isModeration = isModerationRejectionMessage(message);
+
+  return (
+    <div
+      id="review-text-error"
+      role="alert"
+      aria-live="assertive"
+      className="border-t border-rose-300/80 bg-rose-50 px-4 py-3.5 dark:border-rose-400/25 dark:bg-rose-500/[0.12] sm:px-5"
+    >
+      <div className="flex items-start gap-3">
+        <span
+          className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-rose-500/15 text-rose-600 dark:bg-rose-400/15 dark:text-rose-300"
+          aria-hidden="true"
+        >
+          <svg viewBox="0 0 20 20" className="h-4 w-4" fill="currentColor">
+            <path
+              fillRule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v4.5a.75.75 0 001.5 0v-4.5zm0 7a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-black leading-snug text-rose-800 dark:text-rose-200">{message}</p>
+          {isModeration ? (
+            <p className="mt-1 text-xs font-semibold leading-relaxed text-rose-700/90 dark:text-rose-300/85">
+              {REVIEW_MODERATION_ERROR_HINT}
+            </p>
+          ) : null}
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={onRewrite}
+              aria-controls="review-text"
+              className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-rose-600 px-4 py-2 text-xs font-black text-white shadow-sm transition hover:bg-rose-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-500 dark:bg-rose-500 dark:hover:bg-rose-400"
+            >
+              {REVIEW_REWRITE_CTA_LABEL}
+              <span aria-hidden="true">→</span>
+            </button>
+            {isModeration ? (
+              <Link
+                to={REVIEW_GUIDELINES_HREF}
+                className="text-xs font-bold text-rose-700 underline-offset-2 hover:underline dark:text-rose-300"
+              >
+                Qoidalarni ko&apos;rish
+              </Link>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SectionStatus({ done }) {
   return (
     <span
@@ -182,7 +283,7 @@ export default function ReviewComposeForm({
   placeholder,
   overallLabel = "Qanday baho berasiz?",
   aspectHint = "Har bir yo'nalish alohida — aniqroq sharh beradi",
-  footerNote = "Sharh moderatsiyadan o'tadi. Shaxsiy ma'lumot yozmang.",
+  footerNote = REVIEW_MODERATION_FOOTER_NOTE,
   rating,
   onRatingChange,
   aspectRatings,
@@ -193,18 +294,45 @@ export default function ReviewComposeForm({
   reviewText,
   onReviewTextChange,
   isSubmitting,
+  submitError = "",
   onSubmit,
 }) {
   const hasRating = rating > 0;
   const hasAspects = aspectRatingsComplete(aspectRatings);
   const hasText = reviewText.trim().length >= 30;
-  const canSubmit = hasRating && hasAspects && hasText && !isSubmitting;
+  // Moderatsiya/xato bo'lsa matn bo'limi "Tayyor" ko'rinmasin.
+  const textAccepted = hasText && !submitError;
+  const canSubmit = hasRating && hasAspects && hasText && !isSubmitting && !submitError;
+  const errorRef = useRef(null);
+  const textAreaRef = useRef(null);
   const steps = [
     { done: hasRating, label: COMPOSE_STEPS[0].label },
     { done: hasAspects, label: COMPOSE_STEPS[1].label },
-    { done: hasText, label: COMPOSE_STEPS[2].label },
+    { done: textAccepted, label: COMPOSE_STEPS[2].label },
   ];
   const completedCount = steps.filter((step) => step.done).length;
+
+  useEffect(() => {
+    if (!submitError) {
+      return;
+    }
+    errorRef.current?.scrollIntoView?.({ behavior: "smooth", block: "center" });
+  }, [submitError]);
+
+  function handleRewriteClick() {
+    const field = textAreaRef.current;
+    if (!field) {
+      return;
+    }
+    field.focus({ preventScroll: true });
+    const length = field.value.length;
+    try {
+      field.setSelectionRange(0, length);
+    } catch {
+      // ignore selection errors on unsupported inputs
+    }
+    field.scrollIntoView?.({ behavior: "smooth", block: "center" });
+  }
 
   return (
     <section id="review-compose-form" className="scroll-mt-4">
@@ -315,12 +443,20 @@ export default function ReviewComposeForm({
 
         <FormSection
           title="Sharh matni"
-          hint="Kamida 30 ta belgi — aniq va halol yozing"
-          done={hasText}
+          hint="Kamida 30 ta belgi — aniq, halol va odobli yozing"
+          done={textAccepted}
           tone="default"
         >
           <div className="space-y-4">
-            <div className="relative overflow-hidden rounded-2xl border border-primary/15 bg-gradient-to-br from-slate-50/90 via-white to-blue-50/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] dark:border-primary/20 dark:from-primary/[0.07] dark:via-white/[0.02] dark:to-violet-950/15">
+            <ReviewRulesCard />
+
+            <div
+              className={`relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-50/90 via-white to-blue-50/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] dark:from-primary/[0.07] dark:via-white/[0.02] dark:to-violet-950/15 ${
+                submitError
+                  ? "border-2 border-rose-400/80 dark:border-rose-400/50"
+                  : "border border-primary/15 dark:border-primary/20"
+              }`}
+            >
               <div
                 className="pointer-events-none absolute -left-8 bottom-0 h-32 w-32 rounded-full bg-primary/10 blur-3xl dark:bg-blue-500/10"
                 aria-hidden="true"
@@ -330,14 +466,25 @@ export default function ReviewComposeForm({
                 <TextLengthProgress length={reviewText.length} />
               </div>
 
+              <label htmlFor="review-text" className="sr-only">
+                Sharh matni
+              </label>
               <textarea
                 id="review-text"
+                name="text"
+                ref={textAreaRef}
                 value={reviewText}
                 onChange={(event) => onReviewTextChange(event.target.value)}
                 rows={6}
                 maxLength={1200}
                 placeholder={placeholder}
-                className="relative min-h-[11rem] w-full resize-y border-0 bg-transparent px-4 py-4 text-[15px] leading-[1.8] text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white/50 dark:text-white dark:focus:bg-white/[0.02] sm:px-5 sm:py-5"
+                aria-invalid={Boolean(submitError)}
+                aria-describedby={submitError ? "review-text-error" : undefined}
+                className={`relative min-h-[11rem] w-full resize-y border-0 bg-transparent px-4 py-4 text-[15px] leading-[1.8] text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white/50 dark:text-white dark:focus:bg-white/[0.02] sm:px-5 sm:py-5 ${
+                  submitError
+                    ? "ring-2 ring-inset ring-rose-500/60 dark:ring-rose-400/50"
+                    : ""
+                }`}
               />
 
               {reviewText.length > 0 && reviewText.length < 30 && (
@@ -347,6 +494,12 @@ export default function ReviewComposeForm({
                   </p>
                 </div>
               )}
+
+              {submitError ? (
+                <div ref={errorRef}>
+                  <ReviewSubmitErrorBanner message={submitError} onRewrite={handleRewriteClick} />
+                </div>
+              ) : null}
             </div>
           </div>
         </FormSection>

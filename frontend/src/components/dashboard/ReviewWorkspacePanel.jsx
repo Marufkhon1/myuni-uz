@@ -135,6 +135,7 @@ export default function ReviewWorkspacePanel({
   reviewText,
   onReviewTextChange,
   isReviewSubmitting,
+  reviewSubmitError = "",
   onLike,
   onOpenChat,
   className = "",
@@ -272,6 +273,7 @@ export default function ReviewWorkspacePanel({
                 reviewText={reviewText}
                 onReviewTextChange={onReviewTextChange}
                 isSubmitting={isReviewSubmitting}
+                submitError={reviewSubmitError}
                 onSubmit={onSubmitReview}
               />
             )}

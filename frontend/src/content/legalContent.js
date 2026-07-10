@@ -110,11 +110,13 @@ Bir foydalanuvchi bir universitetga faqat bitta sharh qoldirishi mumkin. Sharhni
       },
       {
         heading: "3. Taqiqlangan kontent",
-        body: `• Haqorat, nafrat nutqi va kamsituvchi iboralar
+        body: `• Haqorat, so'kinish va kamsituvchi iboralar (jumladan ataylab buzib yozilgan shakllar)
 • Shaxsiy ma'lumotlar (telefon raqami, manzil, pasport ma'lumotlari)
 • Reklama, havola spam va tijorat takliflari
 • Yolg'on ayblovlar va tasdiqlanmagan jiddiy da'volar
-• Bir xil sharhni qisqa vaqt ichida takroran yuborish`,
+• Bir xil sharhni qisqa vaqt ichida takroran yuborish
+
+Haqoratli matn yuborilganda tizim darhol rad etadi: «Sizniki moderatsiyadan o'tmadi. Iltimos, odobli til bilan qayta yozing.»`,
       },
       {
         heading: "4. Cheklovlar",
@@ -124,9 +126,13 @@ Agar cheklov bilan duch kelsangiz, biroz kuting yoki hello@myuni.uz manziliga mu
       },
       {
         heading: "5. Moderatsiya",
-        body: `Barcha sharhlar moderatsiyadan o'tishi mumkin. Shikoyatlar administrator tomonidan ko'rib chiqiladi.
+        body: `Sharhlar avval avtomatik tekshiruvdan o'tadi (haqorat/so'kinish filtri).
 
-Qoidabuzar sharh yashirilishi, rad etilishi yoki foydalanuvchi vaqtincha cheklanishi mumkin. Jazo darajasi buzilish og'irligiga qarab belgilanadi.
+• Odobli, qoidaga mos sharhlar tezda tasdiqlanadi va saytda ko'rinadi.
+• Haqorat yoki so'kinish aniqlansa, sharh qabul qilinmaydi — matnni odobli qilib qayta yozing.
+• Shikoyatlar moderator tomonidan ko'rib chiqiladi; qoidabuzar kontent yashirilishi yoki foydalanuvchi cheklanishi mumkin.
+
+Hozirgi avto-filter sharhlar va chat (guruh + DM) xabarlariga tatbiq etiladi.
 
 Adolatli va foydali sharhlar platformaning asosiy qimmati — iltimos, tajribangizni halol va hurmat bilan ulashing.`,
       },

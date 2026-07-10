@@ -6,7 +6,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.models import Profile
 from universities.models import Review, University
-from universities.review_moderation import set_review_status
+from universities.profanity_policy import PROFANITY_CLEAR_NOTE, PROFANITY_REJECTION_MESSAGE
+from universities.review_moderation import auto_approve_review_fields, set_review_status
 
 User = get_user_model()
 
@@ -17,6 +18,7 @@ User = get_user_model()
     REVIEW_SUBMIT_FREE_ATTEMPTS=10,
     REVIEW_SUBMIT_COOLDOWN=0,
     REVIEW_SUBMIT_MIN_INTERVAL=0,
+    PROFANITY_FILTER_ENABLED=True,
 )
 class ReviewModerationTests(TestCase):
     def setUp(self):
@@ -41,8 +43,11 @@ class ReviewModerationTests(TestCase):
         )
         self.token = str(RefreshToken.for_user(self.student).access_token)
 
-    def test_new_review_is_pending(self):
+    def _auth(self):
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")
+
+    def test_new_review_is_approved_when_clean(self):
+        self._auth()
         response = self.client.post(
             "/api/universities/reviews/",
             {
@@ -51,12 +56,154 @@ class ReviewModerationTests(TestCase):
                 "rating_teachers": 5,
                 "rating_dormitory": 4,
                 "rating_infrastructure": 4,
-                "text": "Yangi sharh moderatsiyada — o'qish sharoiti yaxshi va zamonaviy.",
+                "text": "Yangi sharh toza matn — o'qish sharoiti yaxshi va zamonaviy.",
             },
             format="json",
         )
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data["status"], "pending")
+        self.assertEqual(response.data["status"], "approved")
+        # User API da auto: note yashiriladi.
+        self.assertEqual(response.data.get("moderation_note") or "", "")
+
+        review = Review.objects.get(id=response.data["id"])
+        self.assertEqual(review.status, Review.Status.APPROVED)
+        self.assertEqual(review.moderation_note, PROFANITY_CLEAR_NOTE)
+        self.assertIsNotNone(review.moderated_at)
+
+    def test_profanity_review_is_rejected_at_submit(self):
+        self._auth()
+        before = Review.objects.count()
+        response = self.client.post(
+            "/api/universities/reviews/",
+            {
+                "university_id": self.university.id,
+                "rating": 2,
+                "rating_teachers": 2,
+                "rating_dormitory": 2,
+                "rating_infrastructure": 2,
+                "text": "Bu universitetda ahmoqlar ko'p, o'qish sharoiti juda yomon.",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("moderatsiyadan o'tmadi", str(response.data).lower())
+        self.assertIn(PROFANITY_REJECTION_MESSAGE, str(response.data))
+        self.assertNotIn("ahmoq", str(response.data).lower())
+        self.assertEqual(Review.objects.count(), before)
+
+    def test_update_clean_text_stays_approved_with_clear_note(self):
+        self._auth()
+        create = self.client.post(
+            "/api/universities/reviews/",
+            {
+                "university_id": self.university.id,
+                "rating": 4,
+                "rating_teachers": 4,
+                "rating_dormitory": 4,
+                "rating_infrastructure": 4,
+                "text": "Birinchi toza sharh — o'qish muhiti yaxshi va qulay.",
+            },
+            format="json",
+        )
+        self.assertEqual(create.status_code, 201)
+        review_id = create.data["id"]
+
+        update = self.client.patch(
+            f"/api/universities/reviews/{review_id}/",
+            {
+                "text": "Yangilangan toza sharh — kutubxona va laboratoriya juda qulay.",
+                "rating": 5,
+                "rating_teachers": 5,
+                "rating_dormitory": 4,
+                "rating_infrastructure": 5,
+            },
+            format="json",
+        )
+        self.assertEqual(update.status_code, 200)
+        self.assertEqual(update.data["status"], "approved")
+
+        review = Review.objects.get(id=review_id)
+        self.assertEqual(review.status, Review.Status.APPROVED)
+        self.assertEqual(review.moderation_note, PROFANITY_CLEAR_NOTE)
+        self.assertIsNotNone(review.moderated_at)
+
+    def test_update_with_profanity_returns_400(self):
+        self._auth()
+        create = self.client.post(
+            "/api/universities/reviews/",
+            {
+                "university_id": self.university.id,
+                "rating": 4,
+                "rating_teachers": 4,
+                "rating_dormitory": 4,
+                "rating_infrastructure": 4,
+                "text": "Birinchi toza sharh — o'qish muhiti yaxshi va qulay.",
+            },
+            format="json",
+        )
+        review_id = create.data["id"]
+        original_text = Review.objects.get(id=review_id).text
+
+        update = self.client.patch(
+            f"/api/universities/reviews/{review_id}/",
+            {"text": "Bu yerda ahmoq ustozlar ko'p, sharoit yomon va tartibsiz."},
+            format="json",
+        )
+        self.assertEqual(update.status_code, 400)
+        self.assertIn("moderatsiyadan o'tmadi", str(update.data).lower())
+        self.assertIn("text", update.data)
+        review = Review.objects.get(id=review_id)
+        self.assertEqual(review.text, original_text)
+
+    def test_partial_patch_without_text_keeps_approved(self):
+        self._auth()
+        create = self.client.post(
+            "/api/universities/reviews/",
+            {
+                "university_id": self.university.id,
+                "rating": 4,
+                "rating_teachers": 4,
+                "rating_dormitory": 4,
+                "rating_infrastructure": 4,
+                "text": "Birinchi toza sharh — o'qish muhiti yaxshi va qulay.",
+            },
+            format="json",
+        )
+        review_id = create.data["id"]
+        update = self.client.patch(
+            f"/api/universities/reviews/{review_id}/",
+            {"rating": 5},
+            format="json",
+        )
+        self.assertEqual(update.status_code, 200)
+        self.assertEqual(update.data["status"], "approved")
+        review = Review.objects.get(id=review_id)
+        self.assertEqual(review.rating, 5)
+        self.assertEqual(review.moderation_note, PROFANITY_CLEAR_NOTE)
+
+    def test_profanity_error_is_on_text_field(self):
+        self._auth()
+        response = self.client.post(
+            "/api/universities/reviews/",
+            {
+                "university_id": self.university.id,
+                "rating": 2,
+                "rating_teachers": 2,
+                "rating_dormitory": 2,
+                "rating_infrastructure": 2,
+                "text": "Bu universitetda ahmoqlar ko'p, o'qish sharoiti juda yomon.",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("text", response.data)
+        self.assertIn("moderatsiyadan o'tmadi", str(response.data["text"]).lower())
+
+    def test_auto_approve_fields_helper(self):
+        fields = auto_approve_review_fields()
+        self.assertEqual(fields["status"], Review.Status.APPROVED)
+        self.assertEqual(fields["moderation_note"], PROFANITY_CLEAR_NOTE)
+        self.assertIn("moderated_at", fields)
 
     def test_public_list_hides_pending_from_others(self):
         review = Review.objects.create(

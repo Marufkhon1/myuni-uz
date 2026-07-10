@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from accounts.notifications_service import notify_review_liked, notify_review_pending
+from accounts.notifications_service import notify_review_liked
 from accounts.rate_limit_utils import rate_limit_response
 from accounts.avatar_access import avatar_url_for_viewer
 from accounts.chat_colors import resolve_chat_color_key
@@ -64,9 +64,7 @@ from .review_trust_utils import (
 from .reaction_serializers import MessageReactionSerializer
 from .reaction_utils import toggle_message_reaction
 from .review_moderation import (
-    initial_review_status,
-    moderation_enabled,
-    notify_moderators_new_review,
+    auto_approve_review_fields,
     reviews_visible_to_user,
 )
 from .serializers import (
@@ -407,13 +405,10 @@ class ReviewListCreateView(generics.ListCreateAPIView):
         return response
 
     def perform_create(self, serializer):
-        status_value = initial_review_status()
-        review = serializer.save(status=status_value)
+        # Step 5: validation (filter) o'tgan — tez avto-approve.
+        review = serializer.save(**auto_approve_review_fields())
         files = self.request.FILES.getlist("images")
         _save_review_images(review, files)
-        if status_value == Review.Status.PENDING:
-            notify_moderators_new_review(review)
-            notify_review_pending(review)
 
 
 class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -446,15 +441,12 @@ class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
         review = self.get_object()
         if review.user_id != self.request.user.id:
             raise PermissionDenied("Faqat o'z sharhingizni tahrirlashingiz mumkin.")
-        status_value = initial_review_status() if moderation_enabled() else Review.Status.APPROVED
-        review = serializer.save(status=status_value)
+        # Step 5: yakuniy matn filterdan o'tgan (validate / ensure_review_text_allowed).
+        review = serializer.save(**auto_approve_review_fields())
         files = self.request.FILES.getlist("images")
         if files:
             review.images.all().delete()
             _save_review_images(review, files)
-        if status_value == Review.Status.PENDING:
-            notify_moderators_new_review(review)
-            notify_review_pending(review)
 
     def perform_destroy(self, instance):
         if instance.user_id != self.request.user.id:

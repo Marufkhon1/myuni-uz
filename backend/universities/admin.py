@@ -11,6 +11,7 @@ from .models import (
     FAQItem,
     Faculty,
     MessageReport,
+    ProfanityBlockDaily,
     Review,
     ReviewImage,
     ReviewLike,
@@ -192,3 +193,23 @@ class UserMuteAdmin(admin.ModelAdmin):
     list_display = ("muter", "muted_user", "university", "created_at")
     list_filter = ("university",)
     search_fields = ("muter__email", "muted_user__email")
+
+
+@admin.register(ProfanityBlockDaily)
+class ProfanityBlockDailyAdmin(admin.ModelAdmin):
+    """Privacy-safe: faqat kunlik stem/count — xom matn yo'q."""
+
+    list_display = ("day", "scope", "matched", "strategy", "count", "updated_at")
+    list_filter = ("scope", "day", "strategy")
+    search_fields = ("matched",)
+    readonly_fields = ("day", "scope", "matched", "strategy", "count", "updated_at")
+    ordering = ("-day", "-count")
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

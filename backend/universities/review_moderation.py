@@ -1,3 +1,10 @@
+"""
+Step 5 — Review flow: create/update → filter (validation) → avto approve.
+
+Hit: validate_review_text → 400 (moderatsiyadan o'tmadi), DB ga yozilmaydi.
+Clean: status=approved, moderation_note=auto:profanity_clear, moderated_at=now.
+"""
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import Q
@@ -6,6 +13,7 @@ from django.utils import timezone
 from accounts.notifications_service import notify_review_status_change
 
 from .models import Review
+from .profanity_policy import PROFANITY_CLEAR_NOTE
 
 
 def moderation_enabled() -> bool:
@@ -21,9 +29,28 @@ def reviews_visible_to_user(queryset, user):
 
 
 def initial_review_status() -> str:
-    if moderation_enabled():
-        return Review.Status.PENDING
+    """
+    Toza matn (so'kinish filtridan o'tgan) — tez tasdiqlanadi.
+    Haqoratli matn validate_review_text da rad etiladi, shu yerga yetmaydi.
+    """
     return Review.Status.APPROVED
+
+
+def auto_approve_review_fields() -> dict:
+    """
+    Step 5 clean path: create/update da serializer.save(**fields).
+
+    moderation_note = auto:profanity_clear — filter yoqilganda;
+    oddiy user API da yashiriladi (serializer).
+    """
+    note = ""
+    if getattr(settings, "PROFANITY_FILTER_ENABLED", True):
+        note = PROFANITY_CLEAR_NOTE
+    return {
+        "status": Review.Status.APPROVED,
+        "moderation_note": note,
+        "moderated_at": timezone.now(),
+    }
 
 
 def _user_email(user) -> str:
@@ -50,7 +77,7 @@ def notify_review_author(review: Review, *, previous_status: str) -> None:
             f"Salom!\n\n"
             f"«{university_name}» bo'yicha sharhingiz moderator tomonidan rad etildi.\n"
         )
-        if note:
+        if note and not note.startswith("auto:"):
             body += f"Sabab: {note}\n"
         body += "\nKerak bo'lsa, sharhni qayta yozishingiz mumkin.\n\nMyUni.uz jamoasi"
     else:

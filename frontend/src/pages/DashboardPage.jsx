@@ -38,6 +38,10 @@ import { useApplicantChecklistVersion } from "@/hooks/dashboard/useApplicantChec
 import { useDashboardCompare } from "@/hooks/dashboard/useDashboardCompare.js";
 import { useDashboardReviewNav } from "@/hooks/dashboard/useDashboardReviewNav.js";
 import { useDashboardChatActions } from "@/hooks/dashboard/useDashboardChatActions.js";
+import {
+  REVIEW_APPROVED_TOAST,
+  REVIEW_PENDING_TOAST,
+} from "@/content/reviewModerationCopy.js";
 import { useDashboardChatLists } from "@/hooks/dashboard/useDashboardChatLists.js";
 import { useDashboardUnreadCounts } from "@/hooks/dashboard/useDashboardUnreadCounts.js";
 import { useDashboardChatSummaryPolling } from "@/hooks/dashboard/useDashboardChatSummaryPolling.js";
@@ -183,11 +187,9 @@ export default function DashboardPage({ role }) {
   const onReviewSubmitted = useCallback(
     (nextReview) => {
       if (nextReview.status === "pending") {
-        toast.warning(
-          "Sharh yuborildi. Moderator tasdiqlagach saytda ko'rinadi (email xabari yuboriladi)."
-        );
+        toast.warning(REVIEW_PENDING_TOAST);
       } else {
-        toast.success("Sharhingiz muvaffaqiyatli yuborildi.");
+        toast.success(REVIEW_APPROVED_TOAST);
       }
     },
     [toast]
@@ -210,6 +212,7 @@ export default function DashboardPage({ role }) {
     setReviewText,
     reviews,
     isReviewSubmitting,
+    reviewSubmitError,
     mobileReviewScreen,
     setMobileReviewScreen,
     filteredReviewUniversities,
@@ -708,6 +711,7 @@ export default function DashboardPage({ role }) {
                 reviewText={reviewText}
                 onReviewTextChange={setReviewText}
                 isReviewSubmitting={isReviewSubmitting}
+                reviewSubmitError={reviewSubmitError}
                 onLike={handleReviewLike}
                 onOpenChat={openChatFromReviewUniversity}
               />

@@ -16,7 +16,7 @@ from .models import (
     StudyDirection,
     University,
 )
-from .review_validation import validate_aspect_rating, validate_review_text
+from .review_validation import ensure_review_text_allowed, validate_aspect_rating, validate_review_text
 from .review_trust_utils import (
     MAX_REVIEW_IMAGES,
     campus_affiliation_label,
@@ -334,6 +334,22 @@ class ReviewSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         return bool(request and request.user.is_authenticated and request.user.id == obj.user_id)
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        # Ichki auto: note larni oddiy userga ko'rsatmaymiz (admin ko'radi).
+        note = (data.get("moderation_note") or "").strip()
+        if note.startswith("auto:"):
+            request = self.context.get("request")
+            is_staff = bool(
+                request
+                and getattr(request, "user", None)
+                and request.user.is_authenticated
+                and request.user.is_staff
+            )
+            if not is_staff:
+                data["moderation_note"] = ""
+        return data
+
     def validate_text(self, value):
         return validate_review_text(value)
 
@@ -370,6 +386,11 @@ class ReviewSerializer(serializers.ModelSerializer):
                 ("rating_infrastructure", "Infratuzilma"),
             ):
                 validate_aspect_rating(attrs.get(field), label)
+
+        # Step 5: partial PATCH da text kelmasa ham yakuniy matn filterdan o'tadi.
+        if "text" not in attrs and self.instance is not None:
+            ensure_review_text_allowed(self.instance.text)
+
         return attrs
 
     def create(self, validated_data):
@@ -483,6 +504,11 @@ class ChatMessageSerializer(serializers.ModelSerializer):
 
 class ChatMessageCreateSerializer(serializers.Serializer):
     text = serializers.CharField(max_length=4000)
+
+    def validate_text(self, value):
+        from .chat_validation import validate_chat_text
+
+        return validate_chat_text(value)
 
 
 class DirectMessageSerializer(serializers.ModelSerializer):

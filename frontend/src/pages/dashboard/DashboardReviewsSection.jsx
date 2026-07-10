@@ -25,6 +25,7 @@ export default function DashboardReviewsSection({
   reviewText,
   onReviewTextChange,
   isReviewSubmitting,
+  reviewSubmitError = "",
   onLike,
   onOpenChat,
 }) {
@@ -68,6 +69,7 @@ export default function DashboardReviewsSection({
           reviewText={reviewText}
           onReviewTextChange={onReviewTextChange}
           isReviewSubmitting={isReviewSubmitting}
+          reviewSubmitError={reviewSubmitError}
           onLike={onLike}
           onOpenChat={onOpenChat}
           className={`min-w-0 w-full ${isPhone && mobileReviewScreen !== "detail" ? "hidden" : ""}`}

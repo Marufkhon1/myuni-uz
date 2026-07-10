@@ -85,6 +85,21 @@ export function getApiErrorMessage(error, fallback) {
   return fallback;
 }
 
+/** Sharh create/update: avvalo `text` maydoni xatosi (moderatsiya). */
+export function getReviewSubmitErrorMessage(error, fallback) {
+  const data = error?.response?.data;
+  if (data && typeof data === "object") {
+    const textError = data.text;
+    if (Array.isArray(textError) && textError[0]) {
+      return localizeApiErrorMessage(textError[0]);
+    }
+    if (typeof textError === "string" && textError.trim()) {
+      return localizeApiErrorMessage(textError);
+    }
+  }
+  return getApiErrorMessage(error, fallback);
+}
+
 const API_ERROR_TRANSLATIONS = {
   "This field is required.": "Bu maydon to'ldirilishi shart.",
   "This field may not be blank.": "Bu maydon bo'sh bo'lmasligi kerak.",

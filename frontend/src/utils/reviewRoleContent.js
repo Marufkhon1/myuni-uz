@@ -1,5 +1,7 @@
 /** Sharhlar bo'limi — talaba yozadi, abituriyent o'qiydi. */
 
+import { REVIEW_MODERATION_FOOTER_NOTE } from "@/content/reviewModerationCopy.js";
+
 export function getReviewListContent(isStudent) {
   if (isStudent) {
     return {
@@ -45,7 +47,7 @@ export function getReviewPanelContent(isStudent) {
       formPlaceholder: "O'qish muhiti, ustozlar, yotoqxona, imkoniyatlar haqida yozing...",
       formOverallLabel: "Qanday baho berasiz?",
       formAspectHint: "Har bir yo'nalish alohida — aniqroq sharh beradi",
-      formFooterNote: "Sharh moderatsiyadan o'tadi. Shaxsiy ma'lumot yozmang.",
+      formFooterNote: REVIEW_MODERATION_FOOTER_NOTE,
     };
   }
 

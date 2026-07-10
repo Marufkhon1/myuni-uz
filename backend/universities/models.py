@@ -279,6 +279,12 @@ class Review(models.Model):
                 name="unique_review_per_user_university",
             ),
         ]
+        indexes = [
+            models.Index(
+                fields=["university", "status", "-created_at"],
+                name="review_uni_status_created_idx",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.university} - {self.rating}/5"
@@ -444,6 +450,10 @@ class ChatMessage(models.Model):
 
     class Meta:
         ordering = ["created_at"]
+        indexes = [
+            models.Index(fields=["university", "-created_at"], name="chatmsg_uni_created_idx"),
+            models.Index(fields=["university", "-id"], name="chatmsg_uni_id_idx"),
+        ]
 
     def __str__(self):
         return f"{self.university_id}: {self.text[:40]}"
@@ -779,3 +789,35 @@ class Article(models.Model):
         if self.status == self.Status.PUBLISHED and not self.published_at:
             self.published_at = timezone.now()
         super().save(*args, **kwargs)
+
+
+class ProfanityBlockDaily(models.Model):
+    """
+    Step 7 — kunlik block hisobi (privacy-safe).
+
+    Faqat kanonik stem + strategy + scope saqlanadi.
+    Xom sharh / so'kinish matni HECH QACHON yozilmaydi.
+    """
+
+    day = models.DateField(db_index=True)
+    scope = models.CharField(max_length=32, default="reviews", db_index=True)
+    matched = models.CharField(max_length=64, db_index=True)
+    strategy = models.CharField(max_length=32, blank=True, default="")
+    count = models.PositiveIntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Profanity block (kunlik)"
+        verbose_name_plural = "Profanity blocklar (kunlik)"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["day", "scope", "matched", "strategy"],
+                name="uniq_profanity_block_daily",
+            ),
+        ]
+        indexes = [
+            models.Index(fields=["day", "scope"], name="profanity_day_scope_idx"),
+        ]
+
+    def __str__(self):
+        return f"{self.day} {self.scope}:{self.matched}={self.count}"
