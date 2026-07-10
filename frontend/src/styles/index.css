@@ -564,6 +564,8 @@ body {
   .partners-track {
     display: flex;
     width: max-content;
+    min-width: 100%;
+    justify-content: center;
     gap: 1rem;
     animation: partners-scroll 48s linear infinite;
   }
