@@ -58,7 +58,7 @@ html {
   }
 
   .pt-safe {
-    padding-top: max(0px, env(safe-area-inset-top));
+    padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
   }
 }
 
@@ -789,7 +789,7 @@ body {
   }
 
   .page-top-safe {
-    padding-top: max(0px, env(safe-area-inset-top));
+    padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
   }
 
   .page-bottom-safe {

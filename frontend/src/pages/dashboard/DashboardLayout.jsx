@@ -52,7 +52,7 @@ export default function DashboardLayout({
         />
 
         <section
-          className={`min-w-0 ${isMobileChatImmersive ? "flex h-full min-h-0 flex-col" : ""}`}
+          className={`min-w-0 overflow-x-hidden ${isMobileChatImmersive ? "flex h-full min-h-0 flex-col" : ""}`}
         >
           {!isMobileChatImmersive ? (
             <DashboardHeader
@@ -76,7 +76,7 @@ export default function DashboardLayout({
             className={
               isMobileChatImmersive
                 ? "dashboard-page-shell flex min-h-0 flex-1 flex-col p-0"
-                : `dashboard-page-shell min-h-[calc(100dvh-9rem)] pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] lg:pb-8 ${
+                : `dashboard-page-shell min-h-[calc(100dvh-9rem)] overflow-x-hidden pb-[calc(7.75rem+env(safe-area-inset-bottom,0px))] lg:pb-8 ${
                     isWideChatLayout ? "p-3 sm:p-4 md:p-5 lg:px-6 lg:py-6" : "p-3 sm:p-5 md:p-6 lg:p-8"
                   }`
             }

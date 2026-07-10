@@ -68,8 +68,9 @@ function NavIcon({ name }) {
 }
 
 const TAB_BASE =
-  "flex min-h-11 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-1.5 py-2.5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950 md:min-h-12 md:gap-1.5 md:px-2.5";
-const TAB_ACTIVE = "bg-slate-950 text-white dark:bg-white dark:text-slate-950";
+  "flex min-h-10 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1.5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950 md:min-h-12 md:gap-1 md:rounded-2xl md:px-2.5 md:py-2";
+const TAB_ACTIVE =
+  "bg-primary/10 text-primary dark:bg-white/12 dark:text-white";
 const TAB_IDLE =
   "text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10";
 

@@ -18,20 +18,28 @@ export default function DashboardHeader({
   notifications,
 }) {
   const notificationsRef = useRef(null);
+  const shortName = String(displayName || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)[0] || displayName;
 
   return (
-    <header className="page-top-safe sticky top-0 z-40 border-b border-slate-200 bg-[#f5f7fb]/90 px-3 py-2.5 backdrop-blur-xl sm:px-6 sm:py-4 lg:px-8 dark:border-white/10 dark:bg-slateNight/85">
-      <div className="flex items-center justify-between gap-2 sm:gap-4">
-        <div className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">
+    <header className="page-top-safe sticky top-0 z-40 border-b border-slate-200 bg-[#f5f7fb]/90 px-3 pb-2.5 pt-[max(0.5rem,env(safe-area-inset-top,0px))] backdrop-blur-xl sm:px-6 sm:pb-4 lg:px-8 dark:border-white/10 dark:bg-slateNight/85">
+      <div className="flex min-w-0 items-center justify-between gap-2 sm:gap-4">
+        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <Link to="/" className="grid shrink-0 lg:hidden" aria-label="MyUni.uz bosh sahifa">
-            <img src={logo} alt="" className="h-9 w-9 rounded-xl object-cover shadow-glow sm:h-11 sm:w-11" />
+            <img src={logo} alt="" className="h-8 w-8 rounded-xl object-cover shadow-glow sm:h-11 sm:w-11" />
           </Link>
-          <div className="min-w-0">
-            <p className="truncate text-[10px] font-black uppercase tracking-[0.16em] text-primary sm:text-xs">
-              {cabinetEyebrow} · {activeSectionLabel}
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-[10px] font-black uppercase tracking-[0.14em] text-primary sm:text-xs sm:tracking-[0.16em]">
+              <span className="sm:hidden">{activeSectionLabel || cabinetEyebrow}</span>
+              <span className="hidden sm:inline">
+                {cabinetEyebrow} · {activeSectionLabel}
+              </span>
             </p>
             <h1 className="truncate text-base font-black text-slate-950 sm:text-2xl lg:text-3xl dark:text-white">
-              Salom, {displayName}
+              <span className="sm:hidden">Salom, {shortName}</span>
+              <span className="hidden sm:inline">Salom, {displayName}</span>
             </h1>
             <p className="mt-0.5 hidden truncate text-xs font-semibold text-slate-500 sm:block dark:text-slate-400">
               {subtitle}
@@ -39,19 +47,19 @@ export default function DashboardHeader({
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+        <div className="flex shrink-0 items-center gap-0.5 sm:gap-2">
           <div className="relative" ref={notificationsRef}>
             <button
               type="button"
               onClick={() => notifications.setIsOpen((value) => !value)}
-              className="dashboard-toolbar-btn relative"
+              className="dashboard-toolbar-btn relative !h-10 !w-10 sm:!h-11 sm:!w-11"
               aria-label="Bildirishnomalar"
               aria-expanded={notifications.isOpen}
             >
               <DashboardIcon name="bell" />
               {notifications.unreadCount > 0 ? (
                 <span className="absolute -right-1 -top-1">
-                  <UnreadBadge count={notifications.unreadCount} />
+                  <UnreadBadge count={notifications.unreadCount} size="sm" />
                 </span>
               ) : null}
             </button>
@@ -69,13 +77,17 @@ export default function DashboardHeader({
             />
           </div>
 
-          <ThemeToggle isDark={isDark} onToggle={onToggleTheme} className="!h-11 !w-11 !shadow-soft" />
+          <ThemeToggle
+            isDark={isDark}
+            onToggle={onToggleTheme}
+            className="!h-10 !w-10 !shadow-soft sm:!h-11 sm:!w-11"
+          />
           <button
             type="button"
             onClick={() => void onLogout?.()}
             disabled={isLoggingOut}
             aria-busy={isLoggingOut}
-            className="dashboard-toolbar-btn !min-w-0 px-3 disabled:cursor-not-allowed disabled:opacity-60 sm:px-5"
+            className="dashboard-toolbar-btn !h-10 !min-w-0 !w-10 px-0 disabled:cursor-not-allowed disabled:opacity-60 sm:!h-11 sm:!w-auto sm:px-5"
             aria-label="Chiqish"
           >
             <span className="hidden sm:inline">{isLoggingOut ? "Chiqilmoqda..." : "Chiqish"}</span>
