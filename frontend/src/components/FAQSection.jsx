@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
-
 import { useId, useState } from "react";
-
 import { Link } from "react-router-dom";
-
+import { SUPPORT_EMAIL } from "@/config/siteContact.js";
+import { trackHubCta } from "@/lib/analytics.js";
 import usePublicFaqItems from "../hooks/usePublicFaqItems.js";
 
 
@@ -79,23 +78,22 @@ export default function FAQSection() {
               </p>
 
               <p className="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
-
-                Kabinet ichidagi yordamchi chat-bot yoki{" "}
-
-                <a
-
-                  href="mailto:hello@myuni.uz"
-
+                Kabinet ichidagi yordamchi chat-bot,{" "}
+                <Link
+                  to="/aloqa"
+                  onClick={() => trackHubCta("/aloqa", "landing_faq")}
                   className="font-black text-primary transition hover:text-blue-700 hover:underline dark:hover:text-blue-200"
-
                 >
-
-                  hello@myuni.uz
-
+                  aloqa sahifasi
+                </Link>{" "}
+                yoki{" "}
+                <a
+                  href={`mailto:${SUPPORT_EMAIL}`}
+                  className="font-black text-primary transition hover:text-blue-700 hover:underline dark:hover:text-blue-200"
+                >
+                  {SUPPORT_EMAIL}
                 </a>{" "}
-
                 orqali biz bilan bog&apos;laning.
-
               </p>
 
               <Link

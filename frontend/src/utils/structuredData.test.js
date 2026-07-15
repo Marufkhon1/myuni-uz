@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildArticleSchema,
   buildBlogListSchema,
   buildBreadcrumbSchema,
+  buildContactPageSchema,
   buildFaqPageSchema,
   buildJsonLdGraph,
   buildOrganizationSchema,
+  buildRankingsListSchema,
   buildReviewSchemas,
   buildUniversitySchema,
+  buildWebPageSchema,
   buildWebSiteSchema,
   serializeJsonLd,
 } from "./structuredData.js";
@@ -59,6 +63,42 @@ describe("structuredData", () => {
     expect(schema.itemListElement[1].name).toBe("Maqolalar");
   });
 
+  it("buildWebPageSchema supports AboutPage type", () => {
+    const schema = buildWebPageSchema({
+      title: "Biz haqimizda | MyUni.uz",
+      description: "About",
+      path: "/haqida",
+      pageType: "AboutPage",
+    });
+    expect(schema["@type"]).toBe("AboutPage");
+    expect(schema.url).toContain("/haqida");
+  });
+
+  it("buildContactPageSchema includes ContactPoint email", () => {
+    const schema = buildContactPageSchema({
+      title: "Aloqa | MyUni.uz",
+      description: "Bog'lanish",
+      path: "/aloqa",
+      email: "hello@myuni.uz",
+      address: "Samarqand",
+    });
+    expect(schema["@type"]).toBe("ContactPage");
+    expect(schema.mainEntity.contactPoint.email).toBe("hello@myuni.uz");
+    expect(schema.mainEntity.contactPoint.telephone).toBeUndefined();
+  });
+
+  it("buildRankingsListSchema emits ItemList without AggregateRating", () => {
+    const schema = buildRankingsListSchema({
+      year: 2026,
+      universities: [{ slug: "tdiu", name: "TDIU" }],
+      totalCount: 42,
+    });
+    expect(schema["@type"]).toBe("ItemList");
+    expect(schema.numberOfItems).toBe(42);
+    expect(schema.itemListElement[0].position).toBe(1);
+    expect(JSON.stringify(schema)).not.toContain("AggregateRating");
+  });
+
   it("buildReviewSchemas limits review count", () => {
     const reviews = Array.from({ length: 12 }, (_, index) => ({
       id: index,
@@ -105,6 +145,24 @@ describe("structuredData", () => {
     expect(schema["@type"]).toBe("ItemList");
     expect(schema.itemListElement).toHaveLength(1);
     expect(schema.itemListElement[0].item.headline).toBe("Test maqola");
+  });
+
+  it("buildArticleSchema uses news path and NewsArticle type", () => {
+    const schema = buildArticleSchema({
+      article: {
+        title: "Yangilik",
+        excerpt: "Qisqa",
+        body: "Matn",
+        published_at: "2026-01-01T00:00:00Z",
+      },
+      slug: "test-yangilik",
+      basePath: "/yangiliklar",
+      schemaType: "NewsArticle",
+    });
+    expect(schema["@type"]).toBe("NewsArticle");
+    expect(schema.url).toContain("/yangiliklar/test-yangilik");
+    expect(schema.mainEntityOfPage).toContain("/yangiliklar/test-yangilik");
+    expect(schema.url).not.toContain("/maqolalar/");
   });
 
   it("buildJsonLdGraph merges multiple schemas", () => {

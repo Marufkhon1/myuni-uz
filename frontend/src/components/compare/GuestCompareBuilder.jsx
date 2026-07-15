@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UniversityAvatar from "@/components/UniversityAvatar.jsx";
 import CompareSearchInput from "@/components/dashboard/compare/CompareSearchInput.jsx";
-import { getPublicUniversities } from "@/services/publicService.js";
+import { getAllPublicUniversities } from "@/services/publicService.js";
 import {
   compareSlotGridClass,
   isValidCompareCount,
@@ -43,7 +43,7 @@ export default function GuestCompareBuilder({ initialIds = [], onCompare }) {
       setIsLoadingCatalog(true);
       setCatalogError(false);
       try {
-        const data = await getPublicUniversities({ page_size: 200, ordering: "-member_count" });
+        const data = await getAllPublicUniversities({ sort: "reviews" });
         if (mounted) {
           setUniversities(data.results ?? []);
         }

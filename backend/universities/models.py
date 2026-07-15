@@ -763,11 +763,21 @@ class Article(models.Model):
         DRAFT = "draft", "Qoralama"
         PUBLISHED = "published", "Nashr qilingan"
 
+    class Kind(models.TextChoices):
+        GUIDE = "guide", "Qo'llanma"
+        NEWS = "news", "Yangilik"
+
     title = models.CharField(max_length=220)
     slug = models.SlugField(max_length=220, unique=True)
     excerpt = models.TextField(max_length=500, blank=True)
     body = models.TextField()
     cover_image = models.URLField(blank=True)
+    kind = models.CharField(
+        max_length=16,
+        choices=Kind.choices,
+        default=Kind.GUIDE,
+        db_index=True,
+    )
     status = models.CharField(
         max_length=20,
         choices=Status.choices,

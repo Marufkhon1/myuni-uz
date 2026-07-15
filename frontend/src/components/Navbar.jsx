@@ -1,31 +1,20 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/myuni-logo.png";
+import {
+  ABOUT_NAV,
+  isNavPathActive,
+  PRIMARY_NAV_LINKS,
+  RESOURCE_NAV_LINKS,
+} from "@/config/navigation.js";
+import { trackHubCta } from "@/lib/analytics.js";
 import { useAuth } from "../hooks/useAuth.js";
 import useFocusTrap from "../hooks/useFocusTrap.js";
-import { useLandingActiveSection } from "../hooks/useLandingActiveSection.js";
-import { normalizeNavHash } from "../utils/landingNav.js";
-import { scrollToLandingSection } from "../utils/landingScroll.js";
 import { PublicBackHomeButton, PublicLoginButton, PublicSignupButton } from "./PublicPageButtons.jsx";
+import NavbarSearch from "./NavbarSearch.jsx";
+import ResourcesMenu from "./ResourcesMenu.jsx";
 import ThemeToggle from "./ThemeToggle.jsx";
-
-const publicRouteToHash = {
-  "/universitetlar": "#universities",
-  "/savollar-javob": "#faq",
-};
-
-const navSectionIds = ["#home", "#how-it-works", "#universities", "#reviews", "#faq", "#about"];
-
-function isNavLinkActive(pathname, activeHash, linkHref) {
-  if (linkHref.startsWith("/")) {
-    return pathname === linkHref || pathname.startsWith(`${linkHref}/`);
-  }
-  if (pathname === "/") {
-    return normalizeNavHash(linkHref) === normalizeNavHash(activeHash);
-  }
-  return publicRouteToHash[pathname] === linkHref;
-}
 
 function isDashboardPath(pathname) {
   return (
@@ -35,19 +24,9 @@ function isDashboardPath(pathname) {
   );
 }
 
-const navLinks = [
-  { label: "Bosh sahifa", href: "#home" },
-  { label: "Qanday ishlaydi", href: "#how-it-works" },
-  { label: "Katalog", href: "/universitetlar", route: true },
-  { label: "Maqolalar", href: "/maqolalar", route: true },
-  { label: "Sharhlar", href: "#reviews" },
-  { label: "Savollar", href: "/savollar-javob", route: true },
-  { label: "Biz haqimizda", href: "#about" },
-];
-
 function desktopNavLinkClass(isActive, isDark) {
   const base =
-    "relative inline-flex shrink-0 items-center whitespace-nowrap px-1 py-1 text-[11px] font-semibold transition-colors duration-200 lg:px-1.5 lg:text-[12px] xl:px-2 xl:text-[13px] 2xl:px-2.5 2xl:text-sm";
+    "relative inline-flex shrink-0 items-center whitespace-nowrap px-1.5 py-1 text-[12px] font-semibold transition-colors duration-200 xl:px-2 xl:text-[13px] 2xl:text-sm";
   if (isDark) {
     if (isActive) {
       return `${base} font-bold text-white after:absolute after:inset-x-1.5 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-sky-300`;
@@ -76,44 +55,36 @@ function mobileNavLinkClass(isActive, isDark) {
 
 export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo, guestHomeButtonOnly = false }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const mobileMenuRef = useRef(null);
   const { pathname } = useLocation();
-  const navigate = useNavigate();
-  const { activeHash, setActiveSection } = useLandingActiveSection(navSectionIds);
   const { isAuthenticated, isLoading, role } = useAuth();
   const dashboardPath = role === "student" ? "/student/dashboard/home" : "/applicant/dashboard/home";
   const themeToggle = onToggleTheme ? () => onToggleTheme() : undefined;
+  const aboutActive = isNavPathActive(pathname, ABOUT_NAV.href);
 
   useFocusTrap(isOpen, mobileMenuRef, {
     onEscape: () => setIsOpen(false),
     lockScroll: false,
   });
 
-  function goToLandingSection(event, targetHash) {
-    event.preventDefault();
+  useEffect(() => {
     setIsOpen(false);
-
-    const normalized = normalizeNavHash(targetHash);
-    const hashValue = normalized.replace(/^#/, "");
-
-    if (pathname === "/") {
-      setActiveSection(normalized);
-      navigate({ pathname: "/", hash: hashValue }, { replace: true });
-      scrollToLandingSection(normalized);
-      return;
-    }
-
-    navigate({ pathname: "/", hash: hashValue });
-  }
+    setMobileSearchOpen(false);
+  }, [pathname]);
 
   const authButtonClass =
     "inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap px-5 text-sm font-bold leading-none";
   const signupButtonClass = authButtonClass;
   const navTone = isDark ? "navbar" : "navbarLight";
 
+  function trackNav(href, source) {
+    trackHubCta(href, source);
+  }
+
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 overflow-hidden border-b transition-[background-color,border-color,box-shadow] duration-300 page-top-safe ${
+      className={`fixed inset-x-0 top-0 z-50 overflow-visible border-b transition-[background-color,border-color,box-shadow] duration-300 page-top-safe ${
         isDark
           ? "border-white/10 bg-[#071533] shadow-[0_8px_24px_rgba(2,8,23,0.4)]"
           : "border-slate-200/90 bg-white shadow-[0_1px_0_rgba(15,23,42,0.06)]"
@@ -125,11 +96,7 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
       >
         <Link
           to="/"
-          onClick={() => {
-            if (pathname === "/") {
-              setActiveSection("#home");
-            }
-          }}
+          onClick={() => trackNav("/", "nav_logo")}
           className="group flex shrink-0 items-center gap-2.5 sm:gap-3"
           aria-label="MyUni.uz bosh sahifa"
         >
@@ -151,42 +118,57 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
           </span>
         </Link>
 
-        <div className="hidden min-w-0 items-center justify-center overflow-hidden px-0.5 lg:flex">
+        <div className="hidden min-w-0 items-center justify-center gap-3 px-0.5 lg:flex xl:gap-4">
+          <NavbarSearch isDark={isDark} className="w-40 xl:w-52 2xl:w-56" />
           <div className="nav-links hide-scrollbar gap-0.5 lg:gap-1 xl:gap-2">
-            {navLinks.map((link) => {
-              const isActive = link.route
-                ? pathname === link.href
-                : isNavLinkActive(pathname, activeHash, link.href);
-
-              if (link.route) {
-                return (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    className={desktopNavLinkClass(isActive, isDark)}
-                    aria-current={isActive ? "page" : undefined}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              }
-
+            {PRIMARY_NAV_LINKS.map((link) => {
+              const isActive = isNavPathActive(pathname, link.href);
               return (
-                <a
+                <Link
                   key={link.href}
-                  href={link.href}
-                  onClick={(event) => goToLandingSection(event, link.href)}
+                  to={link.href}
+                  onClick={() => trackNav(link.href, "nav_primary")}
                   className={desktopNavLinkClass(isActive, isDark)}
                   aria-current={isActive ? "page" : undefined}
                 >
                   {link.label}
-                </a>
+                </Link>
               );
             })}
+            <ResourcesMenu isDark={isDark} pathname={pathname} />
+            <Link
+              to={ABOUT_NAV.href}
+              onClick={() => trackNav(ABOUT_NAV.href, "nav_primary")}
+              className={desktopNavLinkClass(aboutActive, isDark)}
+              aria-current={aboutActive ? "page" : undefined}
+            >
+              {ABOUT_NAV.label}
+            </Link>
           </div>
         </div>
 
         <div className="flex shrink-0 items-center justify-end gap-1.5 sm:gap-2.5">
+          <button
+            type="button"
+            onClick={() => {
+              setMobileSearchOpen((value) => !value);
+              setIsOpen(false);
+            }}
+            className={
+              "grid h-10 w-10 shrink-0 place-items-center rounded-xl border transition lg:hidden " +
+              (isDark
+                ? "border-white/20 bg-white/5 text-white hover:bg-white/10"
+                : "border-slate-200 bg-white text-slate-800 hover:bg-slate-50")
+            }
+            aria-label={mobileSearchOpen ? "Qidiruvni yopish" : "Qidiruvni ochish"}
+            aria-expanded={mobileSearchOpen}
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+            </svg>
+          </button>
+
           {themeToggle && (
             <ThemeToggle
               isDark={isDark}
@@ -223,7 +205,10 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
 
           <button
             type="button"
-            onClick={() => setIsOpen((value) => !value)}
+            onClick={() => {
+              setIsOpen((value) => !value);
+              setMobileSearchOpen(false);
+            }}
             className={
               "grid h-10 w-10 shrink-0 place-items-center rounded-xl border transition lg:hidden " +
               (isDark
@@ -242,6 +227,23 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
           </button>
         </div>
       </nav>
+
+      <AnimatePresence>
+        {mobileSearchOpen ? (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="container-shell pb-3 lg:hidden"
+          >
+            <NavbarSearch
+              isDark={isDark}
+              className="w-full"
+              onSubmitSuccess={() => setMobileSearchOpen(false)}
+            />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isOpen && (
@@ -263,37 +265,59 @@ export default function Navbar({ isDark = true, onToggleTheme, loginTo, signupTo
               }`}
             >
               <div className="grid gap-0.5">
-                {navLinks.map((link) => {
-                  const isActive = link.route
-                    ? pathname === link.href
-                    : isNavLinkActive(pathname, activeHash, link.href);
-
-                  if (link.route) {
-                    return (
-                      <Link
-                        key={link.href}
-                        to={link.href}
-                        onClick={() => setIsOpen(false)}
-                        className={mobileNavLinkClass(isActive, isDark)}
-                        aria-current={isActive ? "page" : undefined}
-                      >
-                        {link.label}
-                      </Link>
-                    );
-                  }
-
+                {PRIMARY_NAV_LINKS.map((link) => {
+                  const isActive = isNavPathActive(pathname, link.href);
                   return (
-                    <a
+                    <Link
                       key={link.href}
-                      href={link.href}
-                      onClick={(event) => goToLandingSection(event, link.href)}
+                      to={link.href}
+                      onClick={() => {
+                        trackNav(link.href, "nav_mobile");
+                        setIsOpen(false);
+                      }}
                       className={mobileNavLinkClass(isActive, isDark)}
                       aria-current={isActive ? "page" : undefined}
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   );
                 })}
+                <p
+                  className={
+                    "px-4 pb-1 pt-3 text-[10px] font-black uppercase tracking-[0.16em] " +
+                    (isDark ? "text-slate-400" : "text-slate-400")
+                  }
+                >
+                  Resurslar
+                </p>
+                {RESOURCE_NAV_LINKS.map((link) => {
+                  const isActive = isNavPathActive(pathname, link.href);
+                  return (
+                    <Link
+                      key={link.href}
+                      to={link.href}
+                      onClick={() => {
+                        trackNav(link.href, "nav_mobile_resources");
+                        setIsOpen(false);
+                      }}
+                      className={mobileNavLinkClass(isActive, isDark)}
+                      aria-current={isActive ? "page" : undefined}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
+                <Link
+                  to={ABOUT_NAV.href}
+                  onClick={() => {
+                    trackNav(ABOUT_NAV.href, "nav_mobile");
+                    setIsOpen(false);
+                  }}
+                  className={mobileNavLinkClass(aboutActive, isDark)}
+                  aria-current={aboutActive ? "page" : undefined}
+                >
+                  {ABOUT_NAV.label}
+                </Link>
               </div>
               <div
                 className={`mt-3 grid gap-2 border-t pt-3 sm:grid-cols-2 ${isDark ? "border-white/10" : "border-slate-200"}`}

@@ -15,6 +15,16 @@ class SupportMessageView(APIView):
         if not allowed:
             return rate_limit_response(detail, retry_after)
 
+        # Honeypot (bots fill hidden company/website) — silent accept, no notify.
+        honeypot = (
+            str(request.data.get("company") or request.data.get("website") or "")
+        ).strip()
+        if honeypot:
+            return Response(
+                {"accepted": True, "operator_notified": False},
+                status=status.HTTP_202_ACCEPTED,
+            )
+
         message = (request.data.get("message") or "").strip()
         if not message:
             return Response({"detail": "Xabar bo'sh bo'lmasligi kerak."}, status=status.HTTP_400_BAD_REQUEST)

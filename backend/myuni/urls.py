@@ -15,6 +15,7 @@ from universities.public_views import (
     PublicLandingPreviewView,
     PublicPlatformStatsView,
     PublicRecentReviewsView,
+    PublicRelatedUniversitiesView,
     PublicReviewFiltersView,
     PublicTopUniversityReviewsView,
     PublicSharePreviewView,
@@ -23,6 +24,9 @@ from universities.public_views import (
     PublicUniversityCatalogFiltersView,
     PublicUniversityDetailView,
     PublicUniversityListView,
+    PublicUniversityReviewsView,
+    PublicProgramsView,
+    PublicCityUniversitiesView,
 )
 
 urlpatterns = [
@@ -65,6 +69,16 @@ urlpatterns = [
         name="public-university-filters",
     ),
     path(
+        "api/public/universities/<slug:slug>/related/",
+        PublicRelatedUniversitiesView.as_view(),
+        name="public-university-related",
+    ),
+    path(
+        "api/public/universities/<slug:slug>/reviews/",
+        PublicUniversityReviewsView.as_view(),
+        name="public-university-reviews",
+    ),
+    path(
         "api/public/universities/<slug:slug>/",
         PublicUniversityDetailView.as_view(),
         name="public-university-detail",
@@ -78,6 +92,16 @@ urlpatterns = [
         "api/public/stats/",
         PublicPlatformStatsView.as_view(),
         name="public-platform-stats",
+    ),
+    path(
+        "api/public/programs/",
+        PublicProgramsView.as_view(),
+        name="public-programs",
+    ),
+    path(
+        "api/public/cities/<slug:slug>/",
+        PublicCityUniversitiesView.as_view(),
+        name="public-city-universities",
     ),
     path(
         "api/public/articles/",

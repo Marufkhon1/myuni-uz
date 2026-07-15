@@ -95,6 +95,12 @@ def annotated_universities_queryset():
                 "reviews__rating",
                 filter=Q(reviews__status=Review.Status.APPROVED),
             ),
+            faculty_count=Count("faculties", distinct=True),
+            admission_count=Count(
+                "admission_cycles",
+                filter=Q(admission_cycles__status=AdmissionCycle.Status.PUBLISHED),
+                distinct=True,
+            ),
         )
     )
 
@@ -229,6 +235,8 @@ def serialize_university_card(university):
         "display_rating": display_rating,
         "review_count": review_count,
         "rating_confidence": rating_confidence_label(review_count),
+        "faculty_count": getattr(university, "faculty_count", None) or 0,
+        "admission_count": getattr(university, "admission_count", None) or 0,
         "tuition_honesty": tuition_honesty_for_university(university),
     }
 
@@ -277,6 +285,7 @@ def serialize_university_detail(university, *, include_faculties=False, include_
             .order_by("sort_order", "name")
         )
         payload["faculties"] = [serialize_faculty(faculty) for faculty in faculties]
+        payload["faculty_count"] = len(payload["faculties"])
 
     if include_admission:
         cycles = (
@@ -288,6 +297,7 @@ def serialize_university_detail(university, *, include_faculties=False, include_
             .order_by("-academic_year")
         )
         payload["admission_cycles"] = [serialize_admission_cycle(cycle) for cycle in cycles]
+        payload["admission_count"] = len(payload["admission_cycles"])
 
     return payload
 

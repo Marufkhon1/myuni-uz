@@ -71,7 +71,18 @@ jobs:
           DJANGO_SECRET_KEY: ci-test-secret-key-at-least-32-characters-long
           DJANGO_DEBUG: "True"
           PRERENDER_REQUIRE_API: "1"
+          PRERENDER_CONCURRENCY: "3"
+          CWV_SMOKE: "1"
         run: npm run build
+      - name: SSG health gate
+        run: node scripts/check-ssg-health.mjs
+      - name: Upload full SSG dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: myuni-ssg-dist
+          path: frontend/dist
+          if-no-files-found: error
+          retention-days: 14
 
   e2e:
     runs-on: ubuntu-latest

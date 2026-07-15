@@ -7,9 +7,9 @@ export const landingFeatureCards = [
     label: "Sharhlar",
   },
   {
-    title: "Universitet reytinglari",
+    title: "Soft (Bayesian) reyting",
     description:
-      "Ta'lim sifati, sharoit, talabalar fikri va umumiy muhit bo'yicha universitetlarni solishtiring.",
+      "Talabalar sharhlari asosida yumshoq soft ball — vazirlik yoki QS emas. Ishonch og'irligi bilan solishtiring.",
     metricKey: "university_count",
     label: "Universitet",
   },

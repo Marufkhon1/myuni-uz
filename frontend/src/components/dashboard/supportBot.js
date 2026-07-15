@@ -1,4 +1,5 @@
 import {
+  SHOW_SUPPORT_PHONE,
   SUPPORT_EMAIL,
   SUPPORT_PHONE_DISPLAY,
 } from "@/config/siteContact.js";
@@ -36,7 +37,10 @@ export function getSupportBotReply(text, { isStudent = false } = {}) {
     return `Pochta orqali yozing: ${SUPPORT_EMAIL}`;
   }
   if (query.includes("telefon") || query.includes("qo'ng'iroq") || query.includes("nomer")) {
-    return `Qo'ng'iroq qiling: ${SUPPORT_PHONE_DISPLAY}`;
+    if (SHOW_SUPPORT_PHONE && SUPPORT_PHONE_DISPLAY) {
+      return `Qo'ng'iroq qiling: ${SUPPORT_PHONE_DISPLAY}`;
+    }
+    return `Telefon raqami hozircha e'lon qilinmagan. Email yozing: ${SUPPORT_EMAIL}`;
   }
   return (
     "Rahmat! Aniqroq yordam uchun email yoki telefon orqali murojaat qiling. Operator tez orada javob beradi."

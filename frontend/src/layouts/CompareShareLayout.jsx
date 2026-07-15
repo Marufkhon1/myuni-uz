@@ -15,11 +15,15 @@ export function JoinMyUniButton({ className = "" }) {
   );
 }
 
-export default function CompareShareLayout({ children, showFooter = true }) {
+export default function CompareShareLayout({ children, showFooter = true, seoReady = false }) {
   const { isDark, setIsDark } = useDarkMode();
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-50 via-white to-slate-100 text-slate-950 dark:from-[#060b14] dark:via-[#0b1220] dark:to-[#060b14] dark:text-white">
+    <div
+      className="flex min-h-screen flex-col bg-gradient-to-b from-slate-50 via-white to-slate-100 text-slate-950 dark:from-[#060b14] dark:via-[#0b1220] dark:to-[#060b14] dark:text-white"
+      data-seo-ready={seoReady ? "true" : undefined}
+      data-ssg-ready={seoReady ? "true" : undefined}
+    >
       <header className="shrink-0 border-b border-slate-200/60 bg-white/70 px-4 py-4 backdrop-blur dark:border-white/10 dark:bg-[#0b1220]/80 sm:px-6">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-3">

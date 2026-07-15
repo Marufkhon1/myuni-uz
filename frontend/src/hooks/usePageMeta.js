@@ -30,14 +30,30 @@ function upsertMetaByProperty(property, content) {
   element.setAttribute("content", content);
 }
 
-function upsertLink(rel, href) {
-  let element = document.querySelector(`link[rel="${rel}"]`);
+function upsertLink(rel, href, { hreflang } = {}) {
+  const selector = hreflang
+    ? `link[rel="${rel}"][hreflang="${hreflang}"]`
+    : `link[rel="${rel}"]:not([hreflang])`;
+  let element = document.querySelector(selector);
+  if (!href) {
+    if (element) {
+      element.remove();
+    }
+    return;
+  }
   if (!element) {
     element = document.createElement("link");
     element.setAttribute("rel", rel);
+    if (hreflang) {
+      element.setAttribute("hreflang", hreflang);
+    }
     document.head.appendChild(element);
   }
   element.setAttribute("href", href);
+}
+
+function clearHreflangLinks() {
+  document.querySelectorAll('link[rel="alternate"][hreflang]').forEach((node) => node.remove());
 }
 
 function applyPageMeta(meta) {
@@ -51,7 +67,7 @@ function applyPageMeta(meta) {
   upsertMetaByProperty("og:description", meta.description);
   upsertMetaByProperty("og:url", meta.canonicalUrl);
   upsertMetaByProperty("og:type", meta.type);
-  upsertMetaByProperty("og:locale", SITE_LOCALE);
+  upsertMetaByProperty("og:locale", meta.ogLocale || SITE_LOCALE);
   upsertMetaByProperty("og:image", meta.absoluteImage);
   upsertMetaByProperty("og:image:secure_url", meta.absoluteImage);
   upsertMetaByProperty("og:image:alt", meta.imageAlt);
@@ -79,6 +95,18 @@ function applyPageMeta(meta) {
   }
 
   upsertLink("canonical", meta.canonicalUrl);
+  upsertLink("prev", meta.prevUrl || "");
+  upsertLink("next", meta.nextUrl || "");
+
+  clearHreflangLinks();
+  if (Array.isArray(meta.hreflang) && meta.hreflang.length > 0) {
+    for (const item of meta.hreflang) {
+      if (!item?.hreflang || !item?.href) {
+        continue;
+      }
+      upsertLink("alternate", item.href, { hreflang: item.hreflang });
+    }
+  }
 }
 
 /**
@@ -97,11 +125,15 @@ export function usePageMeta(options = {}) {
     publishedTime,
     modifiedTime,
     author,
+    prevUrl,
+    nextUrl,
+    ogLocale,
+    hreflang,
   } = options;
 
   useEffect(() => {
-    applyPageMeta(
-      buildPageMeta({
+    applyPageMeta({
+      ...buildPageMeta({
         title,
         description,
         path: path ?? pathname,
@@ -112,8 +144,12 @@ export function usePageMeta(options = {}) {
         publishedTime,
         modifiedTime,
         author,
-      })
-    );
+      }),
+      prevUrl,
+      nextUrl,
+      ogLocale,
+      hreflang,
+    });
   }, [
     title,
     description,
@@ -126,6 +162,10 @@ export function usePageMeta(options = {}) {
     publishedTime,
     modifiedTime,
     author,
+    prevUrl,
+    nextUrl,
+    ogLocale,
+    hreflang,
   ]);
 }
 

@@ -114,9 +114,33 @@ if [[ -s "${HOME}/.nvm/nvm.sh" ]]; then
   nvm use 22 >/dev/null 2>&1 || nvm install 22
 fi
 npm ci --legacy-peer-deps
-PRERENDER_SKIP=1 npm run build
+
+# Phase 4 fail-closed: HTML-first SSG required for release.
+# Optional escape hatch for emergency: ALLOW_SPA_ONLY=1
+if [[ "${ALLOW_SPA_ONLY:-0}" == "1" ]]; then
+  echo "OGOHLANTIRISH: ALLOW_SPA_ONLY=1 — SEO ceiling past"
+  PRERENDER_SKIP=1 npm run build
+else
+  echo "==> Phase 4 full SSG (fail-closed)"
+  npx playwright install chromium
+  PRERENDER_REQUIRE_API=1 CWV_SMOKE=1 npm run build
+  node scripts/check-ssg-health.mjs
+fi
+
+if [[ ! -f dist/prerender-manifest.json && "${ALLOW_SPA_ONLY:-0}" != "1" ]]; then
+  echo "XATO: SSG manifest yo'q"
+  exit 1
+fi
+
+if [[ -f dist/spa.html ]]; then
+  echo "    spa.html CSR fallback OK"
+else
+  echo "XATO: dist/spa.html yo'q"
+  exit 1
+fi
 
 echo ""
 echo "TAYYOR. Keyin:"
 echo "  cd ~/www/myuni.uz/backend && source .venv/bin/activate && python manage.py createsuperuser"
 echo "  Panel: Перезапустить (Python)"
+echo "  Nginx: deploy/nginx-myuni.conf (Googlebot → static HTML, social → share-preview)"

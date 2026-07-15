@@ -1,12 +1,13 @@
 import html
+import math
 import re
 from datetime import timedelta
 from urllib.parse import urlparse
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db.models import Avg, Count, F, Q
-from django.http import HttpResponse
+from django.db.models import Avg, Case, Count, F, IntegerField, Q, Value, When
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework import status
@@ -44,12 +45,34 @@ from .review_trust_utils import (
     generate_review_insight_summary,
     public_review_filter_options,
 )
-from .models import Article, ChatMembership, ChatMessage, CompareShareLink, FAQItem, Review, University
+from .models import (
+    Article,
+    ChatMembership,
+    ChatMessage,
+    CompareShareLink,
+    FAQItem,
+    Review,
+    StudyDirection,
+    University,
+)
+from .city_pages import FEATURED_CITY_PAGES, resolve_featured_city
 from .serializers import ReviewSerializer, UniversitySerializer, display_name_for_user
 
 
 def _browser_max_age():
     return int(getattr(settings, "PUBLIC_CACHE_BROWSER_MAX_AGE", 60))
+
+
+def _parse_positive_int(raw, default):
+    try:
+        value = int(raw)
+    except (TypeError, ValueError):
+        return default
+    return value if value > 0 else default
+
+
+CATALOG_DEFAULT_PAGE_SIZE = 24
+CATALOG_MAX_PAGE_SIZE = 48
 
 User = get_user_model()
 
@@ -214,20 +237,81 @@ class PublicUniversityListView(APIView):
         fingerprint = query_fingerprint(request.query_params)
 
         def build():
+            page = _parse_positive_int(request.query_params.get("page"), 1)
+            page_size = min(
+                CATALOG_MAX_PAGE_SIZE,
+                _parse_positive_int(
+                    request.query_params.get("page_size"),
+                    CATALOG_DEFAULT_PAGE_SIZE,
+                ),
+            )
             base_queryset = annotated_universities_queryset()
             queryset = apply_catalog_filters(
                 base_queryset,
                 request.query_params,
             )
-            results = [serialize_university_card(university) for university in queryset]
+            count = queryset.count()
+            total_pages = max(1, math.ceil(count / page_size)) if count else 1
+            if page > total_pages:
+                page = total_pages
+            offset = (page - 1) * page_size
+            page_qs = queryset[offset : offset + page_size]
+            results = [serialize_university_card(university) for university in page_qs]
             return {
-                "count": len(results),
+                "count": count,
+                "page": page,
+                "page_size": page_size,
+                "total_pages": total_pages,
+                "next": page + 1 if page < total_pages else None,
+                "previous": page - 1 if page > 1 else None,
                 "filters": catalog_filter_options(base_queryset),
                 "results": results,
             }
 
         return cached_json(
-            cache_key("catalog", "v1", fingerprint),
+            cache_key("catalog", "v2", fingerprint),
+            ttl("CATALOG", 180),
+            build,
+            browser_max_age=_browser_max_age(),
+        )
+
+
+class PublicRelatedUniversitiesView(APIView):
+    permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
+
+    def get(self, request, slug):
+        university = get_object_or_404(University, slug=slug)
+
+        def build():
+            city = (university.city or "").strip()
+            ownership = university.ownership_type
+            rank_whens = []
+            if city:
+                rank_whens.append(When(city__iexact=city, then=Value(0)))
+            if ownership:
+                rank_whens.append(When(ownership_type=ownership, then=Value(1)))
+            queryset = (
+                annotated_universities_queryset()
+                .exclude(pk=university.pk)
+                .annotate(
+                    related_rank=Case(
+                        *rank_whens,
+                        default=Value(2),
+                        output_field=IntegerField(),
+                    )
+                )
+                .order_by(
+                    "related_rank",
+                    F("bayesian_rating").desc(nulls_last=True),
+                    F("review_count").desc(nulls_last=True),
+                    "name",
+                )[:4]
+            )
+            return [serialize_university_card(item) for item in queryset]
+
+        return cached_json(
+            cache_key("related", "v1", slug),
             ttl("CATALOG", 180),
             build,
             browser_max_age=_browser_max_age(),
@@ -253,6 +337,8 @@ class PublicUniversityDetailView(APIView):
 
     def get(self, request, slug):
         # Authenticated viewers may get personalized like flags — skip shared cache.
+        # Full review lists live on /reviews/ (paginated); hub keeps a small teaser.
+        teaser_limit = 5
         if not is_anonymous_request(request):
             university = get_object_or_404(University, slug=slug)
             payload = _public_university_payload(university)
@@ -269,7 +355,7 @@ class PublicUniversityDetailView(APIView):
                 .prefetch_related("images")
                 .order_by("-created_at"),
                 request.user,
-            )[:30]
+            )[:teaser_limit]
             payload["reviews"] = ReviewSerializer(
                 reviews, many=True, context={"request": request}
             ).data
@@ -291,18 +377,74 @@ class PublicUniversityDetailView(APIView):
                 .prefetch_related("images")
                 .order_by("-created_at"),
                 None,
-            )[:30]
+            )[:teaser_limit]
             payload["reviews"] = ReviewSerializer(
                 reviews, many=True, context={"request": request}
             ).data
             return payload
 
         return cached_json(
-            cache_key("uni", "v1", slug),
+            cache_key("uni", "v2", slug),
             ttl("DETAIL", 180),
             build,
             browser_max_age=_browser_max_age(),
         )
+
+
+REVIEW_SILO_DEFAULT_PAGE_SIZE = 20
+REVIEW_SILO_MAX_PAGE_SIZE = 48
+
+
+class PublicUniversityReviewsView(APIView):
+    """Paginated approved reviews for the /sharhlari silo."""
+
+    permission_classes = [AllowAny]
+    throttle_classes = [PublicHeavyAnonThrottle]
+
+    def get(self, request, slug):
+        page = _parse_positive_int(request.query_params.get("page"), 1)
+        page_size = min(
+            REVIEW_SILO_MAX_PAGE_SIZE,
+            _parse_positive_int(request.query_params.get("page_size"), REVIEW_SILO_DEFAULT_PAGE_SIZE),
+        )
+        fingerprint = query_fingerprint({"page": page, "page_size": page_size})
+
+        if not is_anonymous_request(request):
+            return Response(self._build(request, slug, page, page_size))
+
+        return cached_json(
+            cache_key("uni-reviews", "v1", slug, fingerprint),
+            ttl("DETAIL", 180),
+            lambda: self._build(request, slug, page, page_size),
+            browser_max_age=_browser_max_age(),
+        )
+
+    def _build(self, request, slug, page, page_size):
+        university = get_object_or_404(University, slug=slug)
+        queryset = (
+            Review.objects.filter(university=university, status=Review.Status.APPROVED)
+            .select_related(
+                "university",
+                "user",
+                "user__profile",
+                "study_direction",
+                "official_reply",
+                "official_reply__author",
+            )
+            .prefetch_related("images")
+            .order_by("-created_at")
+        )
+        like_user = None if is_anonymous_request(request) else request.user
+        annotated = annotate_reviews_with_likes(queryset, like_user)
+        total = annotated.count()
+        start = (page - 1) * page_size
+        reviews = annotated[start : start + page_size]
+        return {
+            "count": total,
+            "page": page,
+            "page_size": page_size,
+            "results": ReviewSerializer(reviews, many=True, context={"request": request}).data,
+        }
 
 
 def _serialize_public_article(article, *, include_body=False):
@@ -310,6 +452,7 @@ def _serialize_public_article(article, *, include_body=False):
         "id": article.id,
         "title": article.title,
         "slug": article.slug,
+        "kind": article.kind,
         "excerpt": article.excerpt,
         "cover_image": resolve_article_cover_image(article.cover_image, article.slug),
         "published_at": article.published_at.isoformat() if article.published_at else None,
@@ -325,14 +468,19 @@ class PublicArticleListView(APIView):
     throttle_classes = [PublicAnonThrottle]
 
     def get(self, request):
+        fingerprint = query_fingerprint(request.query_params)
+
         def build():
             queryset = Article.objects.filter(status=Article.Status.PUBLISHED).order_by(
                 "-published_at", "-created_at"
             )
+            kind = (request.query_params.get("kind") or "").strip().lower()
+            if kind in {Article.Kind.GUIDE, Article.Kind.NEWS}:
+                queryset = queryset.filter(kind=kind)
             return [_serialize_public_article(article) for article in queryset]
 
         return cached_json(
-            cache_key("articles", "v2"),
+            cache_key("articles", "v3", fingerprint),
             ttl("ARTICLES", 600),
             build,
             browser_max_age=_browser_max_age(),
@@ -344,12 +492,20 @@ class PublicArticleDetailView(APIView):
     throttle_classes = [PublicAnonThrottle]
 
     def get(self, request, slug):
+        kind = (request.query_params.get("kind") or "").strip().lower()
+        if kind in {Article.Kind.GUIDE, Article.Kind.NEWS}:
+            article = Article.objects.filter(slug=slug, status=Article.Status.PUBLISHED).only("kind").first()
+            if article is None:
+                raise Http404
+            if article.kind != kind:
+                raise Http404
+
         def build():
             article = get_object_or_404(Article, slug=slug, status=Article.Status.PUBLISHED)
             return _serialize_public_article(article, include_body=True)
 
         return cached_json(
-            cache_key("article", "v2", slug),
+            cache_key("article", "v4", slug),
             ttl("ARTICLES", 600),
             build,
             browser_max_age=_browser_max_age(),
@@ -654,6 +810,155 @@ class PublicFAQDetailView(APIView):
         )
 
 
+PROGRAMS_DEFAULT_PAGE_SIZE = 24
+PROGRAMS_MAX_PAGE_SIZE = 48
+CITY_DEFAULT_PAGE_SIZE = 24
+CITY_MAX_PAGE_SIZE = 48
+
+
+def _serialize_public_program(direction):
+    faculty = direction.faculty
+    university = faculty.university
+    return {
+        "id": direction.id,
+        "name": direction.name,
+        "slug": direction.slug,
+        "degree_level": direction.degree_level,
+        "degree_level_label": direction.get_degree_level_display(),
+        "exam_subjects": direction.exam_subjects or [],
+        "study_forms": direction.study_forms or [],
+        "duration_years": float(direction.duration_years)
+        if direction.duration_years is not None
+        else None,
+        "faculty": {
+            "id": faculty.id,
+            "name": faculty.name,
+            "slug": faculty.slug,
+        },
+        "university": {
+            "id": university.id,
+            "name": university.name,
+            "short_name": university.short_name,
+            "slug": university.slug,
+            "city": university.city,
+            "location": university.location,
+        },
+    }
+
+
+class PublicProgramsView(APIView):
+    """Cross-university study direction search (Phase 5 program discovery)."""
+
+    permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
+
+    def get(self, request):
+        q = (request.query_params.get("q") or "").strip()
+        degree = (request.query_params.get("degree") or "").strip().lower()
+        city = (request.query_params.get("city") or "").strip()
+        page = _parse_positive_int(request.query_params.get("page"), 1)
+        page_size = min(
+            PROGRAMS_MAX_PAGE_SIZE,
+            _parse_positive_int(request.query_params.get("page_size"), PROGRAMS_DEFAULT_PAGE_SIZE),
+        )
+        fingerprint = query_fingerprint(
+            {"q": q, "degree": degree, "city": city, "page": page, "page_size": page_size}
+        )
+
+        def build():
+            queryset = StudyDirection.objects.select_related(
+                "faculty", "faculty__university"
+            ).order_by("name", "id")
+            if q:
+                queryset = queryset.filter(
+                    Q(name__icontains=q)
+                    | Q(faculty__name__icontains=q)
+                    | Q(faculty__university__name__icontains=q)
+                    | Q(faculty__university__short_name__icontains=q)
+                )
+            if degree in {
+                StudyDirection.DegreeLevel.BACHELOR,
+                StudyDirection.DegreeLevel.MASTER,
+                StudyDirection.DegreeLevel.DOCTORATE,
+            }:
+                queryset = queryset.filter(degree_level=degree)
+            if city:
+                queryset = queryset.filter(
+                    Q(faculty__university__city__iexact=city)
+                    | Q(faculty__university__location__icontains=city)
+                )
+            total = queryset.count()
+            start = (page - 1) * page_size
+            rows = list(queryset[start : start + page_size])
+            total_pages = max(1, math.ceil(total / page_size)) if total else 1
+            return {
+                "count": total,
+                "page": page,
+                "page_size": page_size,
+                "total_pages": total_pages,
+                "results": [_serialize_public_program(item) for item in rows],
+            }
+
+        return cached_json(
+            cache_key("programs", "v1", fingerprint),
+            ttl("CATALOG", 180),
+            build,
+            browser_max_age=_browser_max_age(),
+        )
+
+
+class PublicCityUniversitiesView(APIView):
+    """Featured city landing payload — universities in a known city slug."""
+
+    permission_classes = [AllowAny]
+    throttle_classes = [PublicAnonThrottle]
+
+    def get(self, request, slug):
+        city_name = resolve_featured_city(slug)
+        if not city_name:
+            return Response({"detail": "Shahar topilmadi."}, status=status.HTTP_404_NOT_FOUND)
+
+        page = _parse_positive_int(request.query_params.get("page"), 1)
+        page_size = min(
+            CITY_MAX_PAGE_SIZE,
+            _parse_positive_int(request.query_params.get("page_size"), CITY_DEFAULT_PAGE_SIZE),
+        )
+        fingerprint = query_fingerprint({"slug": slug, "page": page, "page_size": page_size})
+
+        def build():
+            queryset = (
+                annotated_universities_queryset()
+                .filter(Q(city__iexact=city_name) | Q(location__icontains=city_name))
+                .order_by("name")
+            )
+            total = queryset.count()
+            start = (page - 1) * page_size
+            results = [
+                serialize_university_card(item)
+                for item in queryset[start : start + page_size]
+            ]
+            total_pages = max(1, math.ceil(total / page_size)) if total else 1
+            return {
+                "slug": slug.lower(),
+                "city": city_name,
+                "count": total,
+                "page": page,
+                "page_size": page_size,
+                "total_pages": total_pages,
+                "results": results,
+            }
+
+        return cached_json(
+            cache_key("city", "v2", fingerprint),
+            ttl("CATALOG", 180),
+            build,
+            browser_max_age=_browser_max_age(),
+        )
+
+
+CURRENT_RANKING_YEAR = 2026  # Frontend config/rankings.js bilan sinxron
+
+
 class PublicSitemapView(APIView):
     permission_classes = [AllowAny]
     throttle_classes = [PublicStatsAnonThrottle]
@@ -664,10 +969,21 @@ class PublicSitemapView(APIView):
             static_paths = [
                 "",
                 "universitetlar",
+                "reyting",
+                f"reyting/{CURRENT_RANKING_YEAR}",
                 "maqolalar",
+                "yangiliklar",
+                "yo-nalishlar",
+                "stipendiyalar",
+                "qabul-qollanmasi",
+                "hamkorlar",
                 "metodologiya",
+                "haqida",
+                "aloqa",
+                "xato-xabar",
                 "taqqoslash",
                 "savollar-javob",
+                "sayt-xaritasi",
                 "ishonch-xavfsizlik",
                 "foydalanish-shartlari",
                 "maxfiylik-siyosati",
@@ -678,21 +994,61 @@ class PublicSitemapView(APIView):
                 loc = f"{base}/{path}" if path else f"{base}/"
                 urls.append(f"  <url><loc>{loc}</loc><changefreq>weekly</changefreq></url>")
 
-            for slug in University.objects.order_by("name").values_list("slug", flat=True):
+            for city_slug, city_name in FEATURED_CITY_PAGES:
+                city_has_unis = University.objects.filter(
+                    Q(city__iexact=city_name) | Q(location__icontains=city_name)
+                ).exists()
+                if not city_has_unis:
+                    continue
+                urls.append(
+                    f"  <url><loc>{base}/shahar/{city_slug}</loc>"
+                    f"<changefreq>weekly</changefreq></url>"
+                )
+
+            uni_rows = (
+                University.objects.annotate(
+                    approved_review_count=Count(
+                        "reviews",
+                        filter=Q(reviews__status=Review.Status.APPROVED),
+                        distinct=True,
+                    ),
+                    faculty_count=Count("faculties", distinct=True),
+                    admission_count=Count("admission_cycles", distinct=True),
+                )
+                .order_by("name")
+                .values_list("slug", "approved_review_count", "faculty_count", "admission_count")
+            )
+            for slug, review_count, faculty_count, admission_count in uni_rows:
                 urls.append(
                     f"  <url><loc>{base}/universitet/{slug}</loc><changefreq>weekly</changefreq></url>"
                 )
+                if review_count:
+                    urls.append(
+                        f"  <url><loc>{base}/universitet/{slug}/sharhlari</loc>"
+                        f"<changefreq>weekly</changefreq></url>"
+                    )
+                if faculty_count:
+                    urls.append(
+                        f"  <url><loc>{base}/universitet/{slug}/fakultetlar</loc>"
+                        f"<changefreq>weekly</changefreq></url>"
+                    )
+                if admission_count:
+                    urls.append(
+                        f"  <url><loc>{base}/universitet/{slug}/qabul</loc>"
+                        f"<changefreq>weekly</changefreq></url>"
+                    )
 
             for slug in FAQItem.objects.filter(is_published=True).values_list("slug", flat=True):
                 urls.append(
                     f"  <url><loc>{base}/savollar-javob/{slug}</loc><changefreq>monthly</changefreq></url>"
                 )
 
-            for slug in Article.objects.filter(status=Article.Status.PUBLISHED).values_list(
-                "slug", flat=True
+            for slug, kind in Article.objects.filter(status=Article.Status.PUBLISHED).values_list(
+                "slug", "kind"
             ):
+                prefix = "yangiliklar" if kind == Article.Kind.NEWS else "maqolalar"
                 urls.append(
-                    f"  <url><loc>{base}/maqolalar/{slug}</loc><changefreq>monthly</changefreq></url>"
+                    f"  <url><loc>{base}/{prefix}/{slug}</loc><changefreq>monthly</changefreq></url>"
                 )
 
             xml = (
@@ -704,7 +1060,7 @@ class PublicSitemapView(APIView):
             return xml, "application/xml; charset=utf-8"
 
         return cached_http(
-            cache_key("sitemap", "v1"),
+            cache_key("sitemap", "v6"),
             ttl("SITEMAP", 3600),
             build,
             browser_max_age=_browser_max_age(),
@@ -853,6 +1209,176 @@ def _build_share_meta_for_path(path):
             "robots": robots,
         }
 
+    if normalized == "/haqida":
+        return {
+            "title": "Biz haqimizda | MyUni.uz",
+            "description": _truncate_description(
+                "MyUni.uz missiyasi, qarashi, tahririy siyosati, tasdiqlash jarayoni "
+                "va reyting metodologiyasi haqida."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
+    if normalized == "/aloqa":
+        return {
+            "title": "Aloqa | MyUni.uz",
+            "description": _truncate_description(
+                "MyUni.uz bilan bog'laning — email, telefon, ofis manzili va xarita. "
+                "Savol yoki xato xabari uchun."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
+    if normalized == "/stipendiyalar":
+        return {
+            "title": "Stipendiyalar va grantlar | MyUni.uz",
+            "description": _truncate_description(
+                "O'zbekistonda grant, kontrakt va stipendiyalarni tushunish — ochiq qo'llanma."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
+    if normalized == "/qabul-qollanmasi":
+        return {
+            "title": "Qabul qo'llanmasi | MyUni.uz",
+            "description": _truncate_description(
+                "OTMlarga qabul: muddatlar, hujjatlar, grant/kontrakt va MyUni da qayerdan tekshirish."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
+    if normalized == "/hamkorlar":
+        return {
+            "title": "Hamkorlar | MyUni.uz",
+            "description": _truncate_description(
+                "MyUni.uz loyihasi va faol universitetlar — rasmiy sponsorlik da'vosiz tushuntirish."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
+    if normalized == "/yo-nalishlar":
+        return {
+            "title": "Yo'nalishlar katalogi | MyUni.uz",
+            "description": _truncate_description(
+                "O'zbekiston OTMlari yo'nalishlarini qidirish — bakalavr, magistratura va boshqalar."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
+    city_match = re.fullmatch(r"/shahar/(?P<slug>[-\w]+)", normalized)
+    if city_match:
+        city_name = resolve_featured_city(city_match.group("slug"))
+        if not city_name:
+            raise Http404
+        city_has_unis = University.objects.filter(
+            Q(city__iexact=city_name) | Q(location__icontains=city_name)
+        ).exists()
+        return {
+            "title": f"{city_name} universitetlari | MyUni.uz",
+            "description": _truncate_description(
+                f"{city_name} shahridagi universitetlar — sharhlar, soft reyting va taqqoslash."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": f"{city_name} — MyUni.uz",
+            "type": page_type,
+            "robots": "index, follow" if city_has_unis else "noindex, follow",
+        }
+
+    if normalized == "/reyting":
+        return {
+            "title": "Soft reyting | MyUni.uz",
+            "description": _truncate_description(
+                "MyUni.uz soft reytingi — talabalar sharhlari va Bayesian ishonch. "
+                "Vazirlik yoki QS reytingi emas."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
+    reyting_year = re.fullmatch(r"/reyting/(?P<year>\d{4})", normalized)
+    if reyting_year:
+        year = int(reyting_year.group("year"))
+        if year == CURRENT_RANKING_YEAR:
+            return {
+                "title": f"{year} soft reyting | MyUni.uz",
+                "description": _truncate_description(
+                    f"MyUni.uz {year} soft reyting jadvali — tasdiqlangan talabalar "
+                    "sharhlariga asoslangan jonli tartib. Rasmiy vazirlik reytingi emas."
+                ),
+                "canonical": canonical,
+                "image": image,
+                "image_alt": image_alt,
+                "type": page_type,
+                "robots": robots,
+            }
+        # Muzlatilgan arxiv hali yo'q — share botsga soxta yillik jadval va'da qilmaymiz.
+        return {
+            "title": f"{year} soft reyting arxiv yo'q | MyUni.uz",
+            "description": _truncate_description(
+                f"{year} yil uchun muzlatilgan soft reyting arxivi hali chiqarilmagan. "
+                f"Hozir faqat {CURRENT_RANKING_YEAR} jonli jadval mavjud."
+            ),
+            "canonical": _canonical_share_url("/reyting"),
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": "noindex, follow",
+        }
+
+    if normalized.startswith("/reyting/"):
+        return {
+            "title": "Soft reyting | MyUni.uz",
+            "description": _truncate_description(
+                "So'ralgan soft reyting arxivi topilmadi. MyUni.uz soft reyting indeksi va jonli jadval."
+            ),
+            "canonical": _canonical_share_url("/reyting"),
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": "noindex, follow",
+        }
+
+    if normalized == "/xato-xabar":
+        return {
+            "title": "Xato haqida xabar | MyUni.uz",
+            "description": _truncate_description(
+                "MyUni.uz sahifa yoki ma'lumotlardagi xato haqida xabar bering."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
     if normalized == "/ishonch-xavfsizlik":
         return {
             "title": "Ishonch va xavfsizlik | MyUni.uz",
@@ -873,6 +1399,32 @@ def _build_share_meta_for_path(path):
             "description": _truncate_description(
                 "Universitet tanlash, sharhlar va MyUni.uz platformasidan foydalanish "
                 "bo'yicha foydali maqolalar."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
+    if normalized == "/yangiliklar":
+        return {
+            "title": "Yangiliklar | MyUni.uz",
+            "description": _truncate_description(
+                "O'zbekiston oliy ta'limi, qabul va universitetlar bo'yicha MyUni.uz yangiliklari."
+            ),
+            "canonical": canonical,
+            "image": image,
+            "image_alt": image_alt,
+            "type": page_type,
+            "robots": robots,
+        }
+
+    if normalized == "/sayt-xaritasi":
+        return {
+            "title": "Sayt xaritasi | MyUni.uz",
+            "description": _truncate_description(
+                "MyUni.uz sahifalari, universitetlar, maqolalar va reyting bo'limlarining to'liq xaritasi."
             ),
             "canonical": canonical,
             "image": image,
@@ -913,7 +1465,13 @@ def _build_share_meta_for_path(path):
     article_match = re.fullmatch(r"/maqolalar/(?P<slug>[-\w]+)", normalized)
     if article_match:
         slug = article_match.group("slug")
-        article = get_object_or_404(Article, slug=slug, status=Article.Status.PUBLISHED)
+        # News silo = /yangiliklar/; guide URL must not index news content.
+        article = get_object_or_404(
+            Article,
+            slug=slug,
+            status=Article.Status.PUBLISHED,
+            kind=Article.Kind.GUIDE,
+        )
         title = f"{article.title} | MyUni.uz"
         description = article.excerpt or _truncate_description(article.body)
         resolved_cover = resolve_article_cover_image(article.cover_image, article.slug)
@@ -928,6 +1486,71 @@ def _build_share_meta_for_path(path):
             "robots": robots,
         }
 
+    news_match = re.fullmatch(r"/yangiliklar/(?P<slug>[-\w]+)", normalized)
+    if news_match:
+        slug = news_match.group("slug")
+        article = get_object_or_404(
+            Article,
+            slug=slug,
+            status=Article.Status.PUBLISHED,
+            kind=Article.Kind.NEWS,
+        )
+        title = f"{article.title} | MyUni.uz"
+        description = article.excerpt or _truncate_description(article.body)
+        resolved_cover = resolve_article_cover_image(article.cover_image, article.slug)
+        article_image = _absolute_share_url(resolved_cover) if resolved_cover else image
+        return {
+            "title": title,
+            "description": _truncate_description(description),
+            "canonical": _canonical_share_url(normalized),
+            "image": article_image,
+            "image_alt": f"{article.title} — MyUni.uz yangiligi",
+            "type": "article",
+            "robots": robots,
+        }
+
+    university_silo_match = re.fullmatch(
+        r"/universitet/(?P<slug>[-\w]+)/(?P<silo>sharhlari|fakultetlar|qabul)",
+        normalized,
+    )
+    if university_silo_match:
+        slug = university_silo_match.group("slug")
+        silo = university_silo_match.group("silo")
+        university = get_object_or_404(University, slug=slug)
+        silo_meta = {
+            "sharhlari": (
+                f"{university.name} sharhlari | MyUni.uz",
+                f"{university.name} haqida tasdiqlangan talabalar sharhlari, baholar va fikrlar.",
+            ),
+            "fakultetlar": (
+                f"{university.name} fakultetlari | MyUni.uz",
+                f"{university.name} fakultetlari, yo'nalishlari va dasturlari MyUni.uz da.",
+            ),
+            "qabul": (
+                f"{university.name} qabul | MyUni.uz",
+                f"{university.name} qabul shartlari, muddatlari va kvotalari haqida ma'lumot.",
+            ),
+        }
+        title, description = silo_meta[silo]
+        has_content = True
+        if silo == "sharhlari":
+            has_content = Review.objects.filter(
+                university=university, status=Review.Status.APPROVED
+            ).exists()
+        elif silo == "fakultetlar":
+            has_content = university.faculties.exists()
+        elif silo == "qabul":
+            has_content = university.admission_cycles.exists()
+        return {
+            "title": title,
+            "description": _truncate_description(description),
+            "canonical": _canonical_share_url(normalized),
+            "image": _university_og_image(university),
+            "image_alt": f"{university.name} — MyUni.uz {silo} sahifasi",
+            "type": page_type,
+            "robots": "noindex, follow" if not has_content else robots,
+        }
+
     university_match = re.fullmatch(r"/universitet/(?P<slug>[-\w]+)", normalized)
     if university_match:
         slug = university_match.group("slug")
@@ -939,10 +1562,10 @@ def _build_share_meta_for_path(path):
         average = stats["average_rating"]
         review_count = stats["review_count"] or 0
         average_label = round(average, 1) if average is not None else "—"
-        title = f"{university.name} — sharhlar va reyting | MyUni.uz"
+        title = f"{university.name} | MyUni.uz"
         description = (
-            f"{university.name} ({university.location}): {review_count} ta talaba sharhi, "
-            f"o'rtacha baho {average_label}. MyUni.uz da o'qing."
+            f"{university.name} ({university.location}): soft reyting {average_label}, "
+            f"{review_count} ta sharh. Sharhlar, fakultetlar va qabul silolari MyUni.uz da."
         )
         return {
             "title": title,
@@ -1021,7 +1644,7 @@ class PublicSharePreviewView(APIView):
             return _render_share_html(meta), "text/html; charset=utf-8"
 
         return cached_http(
-            cache_key("share-preview", "v1", path_key),
+            cache_key("share-preview", "v5", path_key),
             ttl("SHARE_PREVIEW", 300),
             build,
             browser_max_age=_browser_max_age(),

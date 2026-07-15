@@ -25,9 +25,11 @@ export const DEFAULT_CATALOG_FILTERS = {
   min_rating: "",
   min_reviews: "",
   sort: "name",
+  page: 1,
 };
 
 export function parseCatalogSearchParams(searchParams) {
+  const pageRaw = Number(searchParams.get("page"));
   return {
     q: searchParams.get("q") || "",
     city: searchParams.get("city") || "",
@@ -35,6 +37,7 @@ export function parseCatalogSearchParams(searchParams) {
     min_rating: searchParams.get("min_rating") || "",
     min_reviews: searchParams.get("min_reviews") || "",
     sort: searchParams.get("sort") || "name",
+    page: Number.isInteger(pageRaw) && pageRaw > 1 ? pageRaw : 1,
   };
 }
 
@@ -45,6 +48,9 @@ export function buildCatalogSearchParams(filters) {
       return;
     }
     if (key === "sort" && value === "name") {
+      return;
+    }
+    if (key === "page" && (value === 1 || value === "1")) {
       return;
     }
     params.set(key, String(value));
@@ -63,6 +69,9 @@ export function catalogFiltersEqual(left, right) {
 export function activeFilterCount(filters) {
   return Object.entries(filters).filter(([key, value]) => {
     if (key === "sort" && value === "name") {
+      return false;
+    }
+    if (key === "page") {
       return false;
     }
     return value !== "" && value != null;

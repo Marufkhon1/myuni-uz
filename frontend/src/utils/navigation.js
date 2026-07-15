@@ -1,3 +1,5 @@
+import { buildUniversitySiloPath } from "@/config/universitySilos.js";
+
 export function dashboardPathForRole(role) {
   return role === "student" ? "/student/dashboard" : "/applicant/dashboard";
 }
@@ -24,11 +26,12 @@ export function parseDashboardSectionFromPath(pathname) {
   return match[2];
 }
 
-export function buildUniversityPublicPath(university) {
-  if (university?.slug) {
-    return `/universitet/${university.slug}`;
+export function buildUniversityPublicPath(university, silo = "overview") {
+  const slug = typeof university === "string" ? university : university?.slug;
+  if (!slug) {
+    return "/#universities";
   }
-  return "/#universities";
+  return buildUniversitySiloPath(slug, silo);
 }
 
 /** Kirishdan keyin — rolga qarab to'g'ri kabinet. */

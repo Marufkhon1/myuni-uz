@@ -40,9 +40,28 @@ export function normalizeCanonicalPath(path = "/") {
     return "/";
   }
   const withoutHash = raw.split("#")[0];
-  const withoutQuery = withoutHash.split("?")[0];
-  const normalized = withoutQuery.startsWith("/") ? withoutQuery : `/${withoutQuery}`;
-  return normalized.replace(/\/+$/, "") || "/";
+  const [pathnamePart, queryPart = ""] = withoutHash.split("?");
+  const normalized = (pathnamePart.startsWith("/") ? pathnamePart : `/${pathnamePart}`).replace(
+    /\/+$/,
+    ""
+  ) || "/";
+
+  // Pagination SEO: faqat filtrlarsiz page>=2 ni canonicalda saqlaymiz.
+  const keepPageCanonical =
+    normalized === "/universitetlar" ||
+    normalized === "/yo-nalishlar" ||
+    /^\/universitet\/[^/]+\/sharhlari$/.test(normalized) ||
+    /^\/shahar\/[^/]+$/.test(normalized);
+  if (keepPageCanonical && queryPart) {
+    const params = new URLSearchParams(queryPart);
+    const page = Number(params.get("page"));
+    const keys = [...params.keys()].filter((key) => key !== "page");
+    if (keys.length === 0 && Number.isInteger(page) && page > 1) {
+      return `${normalized}?page=${page}`;
+    }
+  }
+
+  return normalized;
 }
 
 export function buildCanonicalUrl(path = "/") {
@@ -190,5 +209,77 @@ export const PAGE_META = {
     description:
       "O'zbekiston universitetlarini shahar, turi, reyting va sharhlar bo'yicha filtrlash va qidirish.",
     path: "/universitetlar",
+  },
+  about: {
+    title: "Biz haqimizda | MyUni.uz",
+    description:
+      "MyUni.uz missiyasi, qarashi, tahririy siyosati, tasdiqlash jarayoni va reyting metodologiyasi haqida.",
+    path: "/haqida",
+  },
+  contact: {
+    title: "Aloqa | MyUni.uz",
+    description:
+      "MyUni.uz bilan bog'laning — email, telefon, ofis manzili va xarita. Savol yoki xato xabari uchun.",
+    path: "/aloqa",
+  },
+  rankings: {
+    title: "Soft reyting | MyUni.uz",
+    description:
+      "MyUni soft reyting yillari indeksi — Bayesian jadval va metodologiya. Vazirlik yoki QS emas.",
+    path: "/reyting",
+  },
+  rankingsYear: {
+    title: "Yillik soft reyting | MyUni.uz",
+    description:
+      "MyUni.uz yillik soft reyting jadvali — kamida 3 sharhli OTMlar, Bayesian tartib. Rasmiy vazirlik reytingi emas.",
+    path: "/reyting",
+  },
+  reportError: {
+    title: "Xato haqida xabar | MyUni.uz",
+    description:
+      "MyUni.uz sahifa yoki ma'lumotlardagi xato haqida xabar bering — tekshiramiz va tuzatamiz.",
+    path: "/xato-xabar",
+  },
+  htmlSitemap: {
+    title: "Sayt xaritasi | MyUni.uz",
+    description:
+      "MyUni.uz ochiq sahifalari — universitetlar, reyting, maqolalar, yangiliklar va yordam bo'limlari.",
+    path: "/sayt-xaritasi",
+  },
+  news: {
+    title: "Yangiliklar | MyUni.uz",
+    description:
+      "Oliy ta'lim va MyUni.uz platformasi bo'yicha yangiliklar. Qo'llanmalar /maqolalar da.",
+    path: "/yangiliklar",
+  },
+  scholarships: {
+    title: "Stipendiyalar va grantlar | MyUni.uz",
+    description:
+      "O'zbekistonda grant, kontrakt va stipendiyalarni tushunish — ochiq MyUni.uz qo'llanmasi.",
+    path: "/stipendiyalar",
+  },
+  admissionGuide: {
+    title: "Qabul qo'llanmasi | MyUni.uz",
+    description:
+      "OTMlarga qabul: muddatlar, hujjatlar, grant/kontrakt va MyUni da qayerdan tekshirish.",
+    path: "/qabul-qollanmasi",
+  },
+  partners: {
+    title: "Hamkorlar | MyUni.uz",
+    description:
+      "MyUni.uz loyihasi va faol universitetlar — rasmiy sponsorlik da'vosiz ochiq tushuntirish.",
+    path: "/hamkorlar",
+  },
+  programs: {
+    title: "Yo'nalishlar katalogi | MyUni.uz",
+    description:
+      "O'zbekiston OTMlari yo'nalishlarini qidirish — bakalavr, magistratura va doktorantura.",
+    path: "/yo-nalishlar",
+  },
+  cityLanding: {
+    title: "Shahar universitetlari | MyUni.uz",
+    description:
+      "Mintaqaviy universitetlar katalogi — soft reyting, sharhlar va taqqoslash.",
+    path: "/shahar",
   },
 };

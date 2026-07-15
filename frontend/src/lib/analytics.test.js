@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { normalizeAnalyticsPath } from "./analytics.js";
+import { describe, expect, it, vi, beforeEach } from "vitest";
+import { normalizeAnalyticsPath, trackHubCta } from "./analytics.js";
 
 describe("normalizeAnalyticsPath", () => {
   it("strips dashboard section query params from pageview path", () => {
@@ -21,5 +21,22 @@ describe("normalizeAnalyticsPath", () => {
     expect(normalizeAnalyticsPath("/applicant/dashboard", "?section=home&foo=bar")).toBe(
       "/applicant/dashboard?foo=bar"
     );
+  });
+
+  it("preserves Phase 1 authority paths including hash for landing", () => {
+    expect(normalizeAnalyticsPath("/haqida")).toBe("/haqida");
+    expect(normalizeAnalyticsPath("/aloqa")).toBe("/aloqa");
+    expect(normalizeAnalyticsPath("/", "", "#about")).toBe("/#about");
+  });
+});
+
+describe("trackHubCta", () => {
+  beforeEach(() => {
+    vi.stubGlobal("plausible", undefined);
+    vi.stubGlobal("gtag", undefined);
+  });
+
+  it("is a safe no-op without analytics providers", () => {
+    expect(() => trackHubCta("/haqida", "landing_about")).not.toThrow();
   });
 });
