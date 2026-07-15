@@ -1,9 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import CatalogFilterDrawer from "@/components/catalog/CatalogFilterDrawer.jsx";
-import CatalogPagination, {
-  buildCatalogPageHref,
-  CATALOG_PAGE_SIZE,
-} from "@/components/catalog/CatalogPagination.jsx";
 import JsonLd from "@/components/seo/JsonLd.jsx";
 import UniversityFiltersBar, {
   UniversityDirectoryCard,
@@ -17,7 +13,6 @@ import {
   DEFAULT_CATALOG_FILTERS,
 } from "@/utils/universityCatalog.js";
 import { buildBreadcrumbSchema, buildWebPageSchema } from "@/utils/structuredData.js";
-import { buildCanonicalUrl } from "@/config/siteMeta.js";
 import { usePageMeta } from "@/hooks/usePageMeta.js";
 
 export default function UniversitiesDirectoryPage() {
@@ -25,36 +20,18 @@ export default function UniversitiesDirectoryPage() {
   const [results, setResults] = useState([]);
   const [filterOptions, setFilterOptions] = useState(null);
   const [count, setCount] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  const page = Number(debouncedFilters.page) > 1 ? Number(debouncedFilters.page) : 1;
-  const activeCount = useMemo(() => activeFilterCount(filters), [filters]);
-  const catalogPath =
-    activeCount > 0 ? "/universitetlar" : buildCatalogPageHref(page, debouncedFilters);
-  const prevUrl =
-    activeCount === 0 && page > 1
-      ? buildCanonicalUrl(buildCatalogPageHref(page - 1, debouncedFilters))
-      : "";
-  const nextUrl =
-    activeCount === 0 && page < totalPages
-      ? buildCanonicalUrl(buildCatalogPageHref(page + 1, debouncedFilters))
-      : "";
-
   usePageMeta({
-    title:
-      activeCount === 0 && page > 1
-        ? `Universitetlar katalogi — ${page}-sahifa | MyUni.uz`
-        : "Universitetlar katalogi | MyUni.uz",
+    title: "Universitetlar katalogi | MyUni.uz",
     description:
       "O'zbekiston universitetlarini shahar, turi, reyting va sharhlar bo'yicha filtrlash va qidirish.",
-    path: catalogPath,
-    prevUrl,
-    nextUrl,
-    robots: activeCount > 0 ? "noindex, follow" : "index, follow",
-  });  useEffect(() => {
+    path: "/universitetlar",
+  });
+
+  useEffect(() => {
     let cancelled = false;
     getPublicUniversityFilters()
       .then((data) => {
@@ -76,15 +53,12 @@ export default function UniversitiesDirectoryPage() {
     const params = Object.fromEntries(
       Object.entries(debouncedFilters).filter(([, value]) => value !== "" && value != null)
     );
-    params.page = page;
-    params.page_size = CATALOG_PAGE_SIZE;
 
     getPublicUniversityCatalog(params)
       .then((data) => {
         if (!cancelled) {
           setResults(data.results ?? []);
           setCount(data.count ?? data.results?.length ?? 0);
-          setTotalPages(data.total_pages ?? 1);
           setFilterOptions(data.filters);
         }
       })
@@ -92,7 +66,6 @@ export default function UniversitiesDirectoryPage() {
         if (!cancelled) {
           setResults([]);
           setCount(0);
-          setTotalPages(1);
           setError("Universitetlar yuklanmadi. Keyinroq qayta urinib ko'ring.");
         }
       })
@@ -105,7 +78,9 @@ export default function UniversitiesDirectoryPage() {
     return () => {
       cancelled = true;
     };
-  }, [debouncedFilters, page]);
+  }, [debouncedFilters]);
+
+  const activeCount = useMemo(() => activeFilterCount(filters), [filters]);
 
   const breadcrumbSchema = useMemo(
     () =>
@@ -121,13 +96,13 @@ export default function UniversitiesDirectoryPage() {
       buildWebPageSchema({
         title: "Universitetlar katalogi | MyUni.uz",
         description: "O'zbekiston universitetlari katalogi — filtr, qidiruv va reyting.",
-        path: catalogPath,
+        path: "/universitetlar",
       }),
-    [catalogPath]
+    []
   );
 
   function applyFilters(nextFilters) {
-    setFilters({ ...nextFilters, page: 1 });
+    setFilters(nextFilters);
   }
 
   function resetFilters() {
@@ -183,13 +158,11 @@ export default function UniversitiesDirectoryPage() {
 
         <div className="mt-6 flex items-center justify-between gap-3">
           <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-            {loading
-              ? "Yuklanmoqda..."
-              : `${count} ta universitet · ${page}/${totalPages} sahifa`}
+            {loading ? "Yuklanmoqda..." : `${count} ta universitet topildi`}
           </p>
         </div>
 
-        {error ? (
+        {error && (
           <EmptyState
             variant="university"
             title="Yuklash xatosi"
@@ -197,9 +170,9 @@ export default function UniversitiesDirectoryPage() {
             action={{ label: "Qayta urinish", onClick: () => applyFilters({ ...filters }) }}
             className="mt-8"
           />
-        ) : null}
+        )}
 
-        {!error && !loading && results.length === 0 ? (
+        {!error && !loading && results.length === 0 && (
           <EmptyState
             variant="university"
             title="Natija topilmadi"
@@ -207,19 +180,13 @@ export default function UniversitiesDirectoryPage() {
             action={{ label: "Filtrlarni tozalash", onClick: resetFilters }}
             className="mt-8"
           />
-        ) : null}
+        )}
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {results.map((university) => (
             <UniversityDirectoryCard key={university.id} university={university} />
           ))}
         </div>
-
-        <CatalogPagination
-          page={page}
-          totalPages={totalPages}
-          buildPageHref={(nextPage) => buildCatalogPageHref(nextPage, filters)}
-        />
       </div>
     </MainLayout>
   );

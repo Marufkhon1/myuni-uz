@@ -99,8 +99,8 @@ export default defineConfig({
         ],
       },
       workbox: {
-        navigateFallback: "/spa.html",
-        navigateFallbackDenylist: [/^\/api\//, /^\/media\//],
+        navigateFallback: "/index.html",
+        navigateFallbackDenylist: [/^\/api\//],
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
         importScripts: ["/push-handler.js"],
         offlineGoogleAnalytics: false,

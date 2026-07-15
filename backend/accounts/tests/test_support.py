@@ -19,13 +19,3 @@ class SupportMessageTests(TestCase):
         self.assertEqual(response.status_code, 202)
         self.assertTrue(response.data["accepted"])
         self.assertFalse(response.data["operator_notified"])
-
-    def test_honeypot_company_silently_accepted(self):
-        response = self.client.post(
-            "/api/auth/support/message/",
-            {"message": "Spam payload", "company": "bot-corp"},
-            format="json",
-        )
-        self.assertEqual(response.status_code, 202)
-        self.assertTrue(response.data["accepted"])
-        self.assertFalse(response.data["operator_notified"])

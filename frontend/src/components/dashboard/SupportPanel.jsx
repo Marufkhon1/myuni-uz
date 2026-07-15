@@ -1,5 +1,4 @@
 import {
-  SHOW_SUPPORT_PHONE,
   SUPPORT_EMAIL,
   SUPPORT_PHONE,
   SUPPORT_PHONE_DISPLAY,
@@ -116,7 +115,6 @@ export default function SupportPanel({ isStudent = false }) {
                 </svg>
               }
             />
-            {SHOW_SUPPORT_PHONE ? (
             <ContactLink
               href={`tel:${SUPPORT_PHONE}`}
               label="Telefon"
@@ -133,7 +131,6 @@ export default function SupportPanel({ isStudent = false }) {
                 </svg>
               }
             />
-            ) : null}
           </div>
         </div>
 

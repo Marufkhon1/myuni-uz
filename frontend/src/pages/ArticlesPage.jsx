@@ -41,10 +41,10 @@ export default function ArticlesPage() {
     setLoading(true);
     setError("");
 
-    getPublicArticles({ kind: "guide" })
+    getPublicArticles()
       .then((data) => {
         if (!cancelled) {
-          setArticles(Array.isArray(data) ? data : data?.results ?? []);
+          setArticles(Array.isArray(data) ? data : []);
         }
       })
       .catch(() => {

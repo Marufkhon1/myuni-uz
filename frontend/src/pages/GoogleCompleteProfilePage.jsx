@@ -8,7 +8,7 @@ import { usePageMeta } from "@/hooks/usePageMeta.js";
 import { useToast } from "@/hooks/useToast.js";
 import AuthLayout from "@/layouts/AuthLayout.jsx";
 import { completeGoogleProfile } from "@/services/authService.js";
-import { getAllPublicUniversities } from "@/services/publicService.js";
+import { getPublicUniversities } from "@/services/publicService.js";
 import { getApiErrorMessage } from "@/utils/apiErrors.js";
 import { matchUniversityByText } from "@/utils/universityMatch.js";
 import { dashboardPathForRole } from "@/utils/navigation.js";
@@ -72,7 +72,7 @@ export default function GoogleCompleteProfilePage() {
 
   useEffect(() => {
     let mounted = true;
-    getAllPublicUniversities()
+    getPublicUniversities()
       .then(({ results }) => {
         if (mounted) {
           setUniversities(results);

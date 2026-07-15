@@ -128,14 +128,6 @@ export function trackEvent(name, props = {}) {
   });
 }
 
-/** Homepage / chrome hub CTAlar (About, Aloqa, katalog…). */
-export function trackHubCta(destination, source = "unknown") {
-  if (!destination) {
-    return;
-  }
-  trackEvent("hub_cta", { destination, source });
-}
-
 export function trackDashboardSection(section) {
   trackEvent("dashboard_section", { section });
 }

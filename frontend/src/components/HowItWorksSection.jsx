@@ -84,36 +84,6 @@ export default function HowItWorksSection() {
             </motion.li>
           ))}
         </ol>
-
-        <nav
-          aria-label="Qo'llanmalar va mintaqaviy sahifalar"
-          className="mt-12 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-bold text-slate-700 dark:text-slate-200"
-        >
-          <Link to="/yo-nalishlar" className="landing-text-link">
-            Yo&apos;nalishlar
-          </Link>
-          <Link to="/stipendiyalar" className="landing-text-link">
-            Stipendiyalar
-          </Link>
-          <Link to="/qabul-qollanmasi" className="landing-text-link">
-            Qabul qo&apos;llanmasi
-          </Link>
-          <Link to="/hamkorlar" className="landing-text-link">
-            Hamkorlar
-          </Link>
-          <Link to="/shahar/toshkent" className="landing-text-link">
-            Toshkent
-          </Link>
-          <Link to="/shahar/samarqand" className="landing-text-link">
-            Samarqand
-          </Link>
-          <Link to="/shahar/buxoro" className="landing-text-link">
-            Buxoro
-          </Link>
-          <Link to="/sayt-xaritasi" className="landing-text-link">
-            Barcha shaharlar
-          </Link>
-        </nav>
       </div>
     </section>
   );

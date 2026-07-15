@@ -12,19 +12,11 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import { ToastProvider } from "./context/ToastContext.jsx";
 import DashboardRedirect from "./pages/DashboardRedirect.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
-import DocumentLocaleSync from "./components/i18n/DocumentLocaleSync.jsx";
 
 const DashboardPage = lazy(() => import("./pages/DashboardPage.jsx"));
 const LandingPage = lazy(() => import("./pages/LandingPage.jsx"));
 const UniversitiesDirectoryPage = lazy(() => import("./pages/UniversitiesDirectoryPage.jsx"));
 const UniversityPublicPage = lazy(() => import("./pages/UniversityPublicPage.jsx"));
-const UniversityOverviewPage = lazy(() => import("./pages/university/UniversityOverviewPage.jsx"));
-const UniversityReviewsPage = lazy(() => import("./pages/university/UniversityReviewsPage.jsx"));
-const UniversityFacultiesPage = lazy(() => import("./pages/university/UniversityFacultiesPage.jsx"));
-const UniversityAdmissionPage = lazy(() => import("./pages/university/UniversityAdmissionPage.jsx"));
-const HtmlSitemapPage = lazy(() => import("./pages/HtmlSitemapPage.jsx"));
-const NewsPage = lazy(() => import("./pages/NewsPage.jsx"));
-const NewsDetailPage = lazy(() => import("./pages/NewsDetailPage.jsx"));
 const LoginPage = lazy(() => import("./pages/LoginPage.jsx"));
 const SignupPage = lazy(() => import("./pages/SignupPage.jsx"));
 const GoogleCallbackPage = lazy(() => import("./pages/GoogleCallbackPage.jsx"));
@@ -40,20 +32,9 @@ const VerifyEmailPage = lazy(() => import("./pages/VerifyEmailPage.jsx"));
 const VerifyEmailPendingPage = lazy(() => import("./pages/VerifyEmailPendingPage.jsx"));
 const TrustSafetyPage = lazy(() => import("./pages/TrustSafetyPage.jsx"));
 const MethodologyPage = lazy(() => import("./pages/MethodologyPage.jsx"));
-const AboutPage = lazy(() => import("./pages/AboutPage.jsx"));
-const ContactPage = lazy(() => import("./pages/ContactPage.jsx"));
-const RankingsPage = lazy(() => import("./pages/RankingsPage.jsx"));
-const RankingsYearPage = lazy(() => import("./pages/RankingsYearPage.jsx"));
-const ReportErrorPage = lazy(() => import("./pages/ReportErrorPage.jsx"));
 const ArticlesPage = lazy(() => import("./pages/ArticlesPage.jsx"));
 const ArticleDetailPage = lazy(() => import("./pages/ArticleDetailPage.jsx"));
 const CompareSharePage = lazy(() => import("./pages/CompareSharePage.jsx"));
-const RuLocaleHubPage = lazy(() => import("./pages/RuLocaleHubPage.jsx"));
-const ScholarshipsPage = lazy(() => import("./pages/ScholarshipsPage.jsx"));
-const AdmissionGuidePage = lazy(() => import("./pages/AdmissionGuidePage.jsx"));
-const PartnersPage = lazy(() => import("./pages/PartnersPage.jsx"));
-const ProgramsPage = lazy(() => import("./pages/ProgramsPage.jsx"));
-const CityUniversitiesPage = lazy(() => import("./pages/CityUniversitiesPage.jsx"));
 const ModeratorDashboardPage = lazy(() => import("./pages/ModeratorDashboardPage.jsx"));
 
 function PageFallback() {
@@ -80,19 +61,12 @@ export default function App() {
       <MotionConfig reducedMotion="user">
       <SkipToContent />
       <ScrollToTop />
-      <DocumentLocaleSync />
       <OfflineBanner />
       <PwaInstallPrompt />
       <AnalyticsProvider>
       <Suspense fallback={<PageFallback />}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/ru" element={<RuLocaleHubPage />} />
-        <Route path="/stipendiyalar" element={<ScholarshipsPage />} />
-        <Route path="/qabul-qollanmasi" element={<AdmissionGuidePage />} />
-        <Route path="/hamkorlar" element={<PartnersPage />} />
-        <Route path="/yo-nalishlar" element={<ProgramsPage />} />
-        <Route path="/shahar/:citySlug" element={<CityUniversitiesPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/forgot-password/sent" element={<ForgotPasswordSentPage />} />
@@ -102,22 +76,9 @@ export default function App() {
         <Route path="/verify-email/pending" element={<VerifyEmailPendingPage />} />
         <Route path="/ishonch-xavfsizlik" element={<TrustSafetyPage />} />
         <Route path="/metodologiya" element={<MethodologyPage />} />
-        <Route path="/haqida" element={<AboutPage />} />
-        <Route path="/aloqa" element={<ContactPage />} />
-        <Route path="/reyting" element={<RankingsPage />} />
-        <Route path="/reyting/:year" element={<RankingsYearPage />} />
-        <Route path="/xato-xabar" element={<ReportErrorPage />} />
         <Route path="/maqolalar" element={<ArticlesPage />} />
         <Route path="/maqolalar/:slug" element={<ArticleDetailPage />} />
-        <Route path="/yangiliklar" element={<NewsPage />} />
-        <Route path="/yangiliklar/:slug" element={<NewsDetailPage />} />
-        <Route path="/sayt-xaritasi" element={<HtmlSitemapPage />} />
-        <Route path="/universitet/:slug" element={<UniversityPublicPage />}>
-          <Route index element={<UniversityOverviewPage />} />
-          <Route path="sharhlari" element={<UniversityReviewsPage />} />
-          <Route path="fakultetlar" element={<UniversityFacultiesPage />} />
-          <Route path="qabul" element={<UniversityAdmissionPage />} />
-        </Route>
+        <Route path="/universitet/:slug" element={<UniversityPublicPage />} />
         <Route path="/universitetlar" element={<UniversitiesDirectoryPage />} />
         <Route path="/taqqoslash" element={<CompareSharePage />} />
         <Route path="/taqqoslash/:token" element={<CompareSharePage />} />

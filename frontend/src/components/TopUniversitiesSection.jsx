@@ -1,8 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { trackHubCta } from "@/lib/analytics.js";
-import { rankingsYearPath } from "@/config/rankings.js";
 import UniversityCampusBanner from "./UniversityCampusBanner.jsx";
 import UniversityMetaLine from "./UniversityMetaLine.jsx";
 import UniversityRatingStars from "./dashboard/UniversityRatingStars.jsx";
@@ -58,21 +56,12 @@ export default function TopUniversitiesSection() {
               Talabalar eng ko'p qiziqadigan universitetlarni ko'ring.
             </h2>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <Link
-              to={rankingsYearPath()}
-              onClick={() => trackHubCta(rankingsYearPath(), "landing_top_unis")}
-              className="inline-flex w-fit items-center rounded-full bg-primary px-6 py-3 text-sm font-black text-white shadow-soft transition hover:-translate-y-1 hover:bg-primary/90"
-            >
-              Soft reyting
-            </Link>
-            <Link
-              to={UNIVERSITIES_CATALOG_PATH}
-              className="inline-flex w-fit items-center rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-black text-slate-900 shadow-soft transition hover:-translate-y-1 hover:border-primary dark:border-white/10 dark:bg-white/10 dark:text-white"
-            >
-              Barchasini ko&apos;rish
-            </Link>
-          </div>
+          <Link
+            to={UNIVERSITIES_CATALOG_PATH}
+            className="inline-flex w-fit items-center rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-black text-slate-900 shadow-soft transition hover:-translate-y-1 hover:border-primary dark:border-white/10 dark:bg-white/10 dark:text-white"
+          >
+            Barchasini ko'rish
+          </Link>
         </div>
 
         {isFetching && <LandingUniversitiesSkeleton />}

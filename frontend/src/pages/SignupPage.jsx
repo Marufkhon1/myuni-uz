@@ -10,7 +10,7 @@ import { usePageMeta } from "@/hooks/usePageMeta.js";
 import { useToast } from "@/hooks/useToast.js";
 import { useFormAutofillSync } from "@/hooks/useFormAutofillSync.js";
 import { getGoogleAuthUrl } from "@/services/authService.js";
-import { getAllPublicUniversities } from "@/services/publicService.js";
+import { getPublicUniversities } from "@/services/publicService.js";
 import { getApiErrorMessage } from "@/utils/apiErrors.js";
 import { dashboardPathForRole } from "@/utils/navigation.js";
 import { buildGoogleCompleteProfilePath, userNeedsGoogleProfileSetup } from "@/utils/authPaths.js";
@@ -81,7 +81,7 @@ export default function SignupPage() {
 
     async function loadUniversities() {
       try {
-        const { results } = await getAllPublicUniversities();
+        const { results } = await getPublicUniversities();
         if (isMounted) {
           setUniversities(results);
         }

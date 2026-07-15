@@ -206,24 +206,17 @@ export function buildReviewSchemas({ reviews = [], universityName, slug, limit =
   }));
 }
 
-export function buildArticleSchema({
-  article,
-  slug,
-  basePath = "/maqolalar",
-  schemaType = "BlogPosting",
-}) {
+export function buildArticleSchema({ article, slug }) {
   if (!article || !slug) {
     return null;
   }
   const image = resolveArticleCoverImage(article.cover_image, undefined, slug);
-  const prefix = String(basePath || "/maqolalar").replace(/\/+$/, "") || "/maqolalar";
-  const pageUrl = buildCanonicalUrl(`${prefix}/${slug}`);
   return {
     "@context": "https://schema.org",
-    "@type": schemaType || "BlogPosting",
+    "@type": "BlogPosting",
     headline: article.title,
     description: article.excerpt || truncateMetaDescription(article.body),
-    url: pageUrl,
+    url: buildCanonicalUrl(`/maqolalar/${slug}`),
     image: resolveAbsoluteUrl(image),
     datePublished: article.published_at || article.created_at,
     dateModified: article.updated_at || article.published_at || article.created_at,
@@ -242,17 +235,17 @@ export function buildArticleSchema({
       },
     },
     inLanguage: "uz",
-    mainEntityOfPage: pageUrl,
+    mainEntityOfPage: buildCanonicalUrl(`/maqolalar/${slug}`),
   };
 }
 
-export function buildWebPageSchema({ title, description, path, pageType = "WebPage" }) {
+export function buildWebPageSchema({ title, description, path }) {
   if (!title || !path) {
     return null;
   }
   return {
     "@context": "https://schema.org",
-    "@type": pageType || "WebPage",
+    "@type": "WebPage",
     name: title,
     description: description || DEFAULT_DESCRIPTION,
     url: buildCanonicalUrl(path),
@@ -262,97 +255,6 @@ export function buildWebPageSchema({ title, description, path, pageType = "WebPa
       name: SITE_NAME,
       url: buildCanonicalUrl("/"),
     },
-  };
-}
-
-/**
- * Aloqa sahifasi — ContactPage + ContactPoint (email/telefon ixtiyoriy).
- */
-export function buildContactPageSchema({
-  title,
-  description,
-  path = "/aloqa",
-  email,
-  telephone,
-  address,
-} = {}) {
-  if (!title || !path) {
-    return null;
-  }
-
-  const contactPoint = {
-    "@type": "ContactPoint",
-    contactType: "customer support",
-    availableLanguage: ["uz", "ru"],
-  };
-  if (email) {
-    contactPoint.email = email;
-  }
-  if (telephone) {
-    contactPoint.telephone = telephone;
-  }
-
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    name: title,
-    description: description || DEFAULT_DESCRIPTION,
-    url: buildCanonicalUrl(path),
-    inLanguage: "uz",
-    mainEntity: {
-      "@type": "Organization",
-      name: SITE_NAME,
-      url: buildCanonicalUrl("/"),
-      contactPoint,
-    },
-  };
-
-  if (address) {
-    schema.mainEntity.address = {
-      "@type": "PostalAddress",
-      streetAddress: address,
-      addressCountry: "UZ",
-    };
-  }
-
-  return schema;
-}
-
-/**
- * Soft reyting jadvali — ItemList (AggregateRating yo'q: hubda soxta ball chiqarmaymiz).
- * `universities` — schema uchun top N; `totalCount` — to'liq jadval uzunligi.
- */
-export function buildRankingsListSchema({
-  year,
-  universities = [],
-  totalCount,
-} = {}) {
-  if (!year || !universities.length) {
-    return null;
-  }
-  const listed = universities.filter((uni) => uni?.slug);
-  if (!listed.length) {
-    return null;
-  }
-  const count =
-    typeof totalCount === "number" && totalCount >= listed.length
-      ? totalCount
-      : listed.length;
-  return {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: `MyUni soft reyting ${year}`,
-    description:
-      "Talabalar sharhlariga asoslangan MyUni.uz soft (Bayesian) reytingi. Rasmiy vazirlik yoki QS reytingi emas.",
-    url: buildCanonicalUrl(`/reyting/${year}`),
-    numberOfItems: count,
-    itemListOrder: "https://schema.org/ItemListOrderDescending",
-    itemListElement: listed.map((uni, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      url: buildCanonicalUrl(`/universitet/${uni.slug}`),
-      name: uni.name,
-    })),
   };
 }
 

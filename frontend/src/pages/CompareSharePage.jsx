@@ -3,12 +3,10 @@ import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import CompareShareLayout from "@/layouts/CompareShareLayout.jsx";
 import CompareResults from "@/components/dashboard/compare/CompareResults.jsx";
 import GuestCompareBuilder from "@/components/compare/GuestCompareBuilder.jsx";
-import JsonLd from "@/components/seo/JsonLd.jsx";
 import { getPublicCompareByIds, getPublicCompareShare } from "@/services/publicService.js";
 import { PUBLIC_COMPARE_CONTENT } from "@/utils/compareRoleContent.js";
 import { isValidCompareCount, MAX_COMPARE, MIN_COMPARE } from "@/utils/compareMath.js";
 import { usePageMeta } from "@/hooks/usePageMeta.js";
-import { buildBreadcrumbSchema, buildWebPageSchema } from "@/utils/structuredData.js";
 
 function formatExpiry(isoString) {
   if (!isoString) {
@@ -131,32 +129,8 @@ export default function CompareSharePage() {
     navigate("/taqqoslash", { replace: true });
   }
 
-  const seoReady =
-    showBuilder ||
-    state.status === "ready" ||
-    state.status === "error" ||
-    state.status === "expired" ||
-    state.status === "idle";
-
-  const schemas = useMemo(
-    () =>
-      [
-        buildBreadcrumbSchema([
-          { name: "Bosh sahifa", path: "/" },
-          { name: "Taqqoslash", path: "/taqqoslash" },
-        ]),
-        buildWebPageSchema({
-          title: "Universitetlar taqqoslashi — MyUni.uz",
-          description: `${MIN_COMPARE}–${MAX_COMPARE} ta OTM ni yonma-yon solishtiring — sharhlar, reyting va qabul ma'lumotlari.`,
-          path: pagePath,
-        }),
-      ].filter(Boolean),
-    [pagePath]
-  );
-
   return (
-    <CompareShareLayout seoReady={seoReady}>
-      <JsonLd id="compare-share-json-ld" schemas={schemas} />
+    <CompareShareLayout>
       <div className="relative overflow-hidden pb-8 pt-6 sm:pt-8">
         <div
           className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(ellipse_at_top,rgba(37,99,235,0.12),transparent_65%)] dark:bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.16),transparent_65%)]"

@@ -1,10 +1,8 @@
-import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import Skeleton from "./ui/Skeleton.jsx";
 import { getPublicPlatformStats } from "../services/publicService.js";
 import { buildAboutStats } from "../utils/landingStats.js";
-import { trackHubCta } from "@/lib/analytics.js";
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
 
 function AboutStatsSkeleton() {
   return (
@@ -65,24 +63,18 @@ export default function AboutSection() {
               MyUni.uz nima?
             </h2>
             <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
-              MyUni.uz — abituriyent va talabalar uchun universitetlarni real sharhlar, ochiq
-              ma&apos;lumot va taqqoslash orqali tanlash platformasi.
+              Oliy ta&apos;lim sohasida shaffof ma&apos;lumotlarga bo&apos;lgan ehtiyojdan kelib chiqqan holda,
+              MyUni.uz ta&apos;lim muassasalari va keyingi avlod mutaxassislari o&apos;rtasida ko&apos;prik bo&apos;lib
+              xizmat qiladi.
             </p>
             <p className="mt-4 text-lg leading-8 text-slate-600 dark:text-slate-300">
-              Missiya, tahririy siyosat, tasdiqlash jarayoni va reyting qanday ishlashi haqida
-              to&apos;liq ma&apos;lumot alohida sahifada.
+              Biz bandlik natijalari, talabalar mamnuniyati va akademik sifat asosida real vaqt reytinglarini
+              taqdim etamiz. Bizning maqsadimiz O&apos;zbekistondagi har bir talabaning kelib chiqishi yoki
+              mintaqasidan qat&apos;i nazar, muvaffaqiyatga to&apos;g&apos;ri yo&apos;l topishini ta&apos;minlashdir.
             </p>
             <p className="mt-4 text-sm font-semibold text-slate-500 dark:text-slate-400">
               Quyidagi raqamlar platforma bazasidan avtomatik olinadi — qo&apos;lda yozilgan reklama emas.
             </p>
-            <Link
-              to="/haqida"
-              onClick={() => trackHubCta("/haqida", "landing_about")}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-            >
-              To&apos;liq haqida sahifasi
-              <span aria-hidden="true">→</span>
-            </Link>
           </div>
 
           <div className="grid content-center gap-6">

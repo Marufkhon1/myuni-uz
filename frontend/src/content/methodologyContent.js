@@ -4,7 +4,7 @@ export const methodologyDocument = {
   title: "Reyting va taqqoslash metodologiyasi",
   description:
     "MyUni.uz da universitet reytingi, baholar va taqqoslash ballari qanday hisoblanishi — ochiq formulalar, ogohlantirishlar va cheklovlar.",
-  updatedAt: "2026-yil iyul",
+  updatedAt: "2026-yil",
   sections: [
     {
       heading: "1. Bu nima — va nima emas",
@@ -18,27 +18,12 @@ Maqsad — real foydalanuvchi tajribasini yonma-yon ko'rsatish. Qaror qabul qili
     },
     {
       heading: "2. Umumiy reyting (1–5 yulduz)",
-      body: `Universitet sahifasidagi «oddiy o'rtacha» — faqat moderatsiyadan o'tgan (tasdiqlangan) sharhlarning arifmetik o'rtachasi.
+      body: `Universitet sahifasidagi umumiy reyting — faqat moderatsiyadan o'tgan (tasdiqlangan) sharhlarning o'rtacha bali.
 
 • Har bir sharh 1 dan 5 gacha baholanadi.
 • O'rtacha arifmetik: barcha tasdiqlangan sharhlar reytingi yig'indisi / sharhlar soni.
 • Moderatsiya navbatidagi yoki yashirilgan sharhlar hisobga kirmaydi.
-• Schema.org AggregateRating faqat shu xom o'rtacha va sharhlar soni > 0 bo'lganda chiqariladi.`,
-    },
-    {
-      id: "bayesian",
-      heading: "2b. Soft reyting (Bayesian / display_rating)",
-      body: `Katalog tartibi va /reyting jadvalidagi «Soft ball» — Bayesian (ishonch og'irlikli) ko'rsatkich:
-
-display ≈ (n × o'rtacha + 10 × 3.8) / (n + 10)
-
-• prior_mean = 3.8, prior_weight = 10 (kam sharhli OTMlar uchun yumshatish).
-• n = tasdiqlangan sharhlar soni.
-• Ishonch: 0 → yo'q; <3 → kam; <10 → o'rtacha; ≥10 → yuqori.
-• /reyting jadvaliga kirish uchun kamida 3 ta tasdiqlangan sharh kerak (medium+ ishonch).
-
-Bu soft ball QS/THE yoki vazirlik o'rnini egallamaydi. Universitet sahifasidagi AggregateRating esa xom o'rtachaga tayanadi — chalkashtirmang.
-JSON-LD ItemList da faqat top-N universitet chiqadi; to'liq jadval sahifada.`,
+• AggregateRating schema.org faqat sharhlar soni > 0 va o'rtacha mavjud bo'lganda chiqariladi — bo'sh yoki o'ylab topilgan reyting yo'q.`,
     },
     {
       heading: "3. Mezonlar (aspektlar)",

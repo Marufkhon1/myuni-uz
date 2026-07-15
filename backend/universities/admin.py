@@ -153,8 +153,8 @@ class DirectMessageAdmin(admin.ModelAdmin):
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ("title", "slug", "kind", "status", "published_at", "updated_at")
-    list_filter = ("kind", "status")
+    list_display = ("title", "slug", "status", "published_at", "updated_at")
+    list_filter = ("status",)
     search_fields = ("title", "slug", "excerpt")
     prepopulated_fields = {"slug": ("title",)}
     readonly_fields = ("created_at", "updated_at")

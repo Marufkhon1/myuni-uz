@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import JsonLd from "@/components/seo/JsonLd.jsx";
 import { PAGE_META, resolveArticleCoverImage, truncateMetaDescription } from "@/config/siteMeta.js";
 import ArticleCoverImage from "@/components/articles/ArticleCoverImage.jsx";
@@ -35,29 +35,20 @@ export default function ArticleDetailPage() {
   const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [redirectToNews, setRedirectToNews] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     setError("");
     setArticle(null);
-    setRedirectToNews(false);
 
-    Promise.all([
-      getPublicArticleBySlug(slug),
-      getPublicArticles({ kind: "guide" }).catch(() => []),
-    ])
+    Promise.all([getPublicArticleBySlug(slug), getPublicArticles().catch(() => [])])
       .then(([detail, list]) => {
         if (cancelled) {
           return;
         }
-        if (detail?.kind === "news") {
-          setRedirectToNews(true);
-          return;
-        }
         setArticle(detail);
-        const others = (Array.isArray(list) ? list : list?.results || [])
+        const others = (Array.isArray(list) ? list : [])
           .filter((item) => item.slug !== slug)
           .slice(0, 3);
         setRelated(others);
@@ -98,7 +89,7 @@ export default function ArticleDetailPage() {
           ...PAGE_META.articlesList,
           title: "Maqola | MyUni.uz",
           path,
-          robots: "noindex, follow",
+          robots: loading ? "index, follow" : "noindex, follow",
         }
   );
 
@@ -113,15 +104,7 @@ export default function ArticleDetailPage() {
   );
 
   const articleSchema = useMemo(
-    () =>
-      article
-        ? buildArticleSchema({
-            article,
-            slug,
-            basePath: "/maqolalar",
-            schemaType: "BlogPosting",
-          })
-        : null,
+    () => (article ? buildArticleSchema({ article, slug }) : null),
     [article, slug]
   );
 
@@ -137,11 +120,7 @@ export default function ArticleDetailPage() {
     [article, path]
   );
 
-  if (redirectToNews && slug) {
-    return <Navigate to={`/yangiliklar/${slug}`} replace />;
-  }
-
-  const seoReady = !loading && (Boolean(article) || Boolean(error) || redirectToNews);
+  const seoReady = !loading && Boolean(article);
 
   return (
     <MainLayout>

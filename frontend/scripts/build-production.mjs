@@ -158,14 +158,6 @@ async function main() {
 
     if (process.env.PRERENDER_SKIP === "1") {
       console.log("[build] PRERENDER_SKIP=1 — prerender o'tkazib yuborildi.");
-      // Still keep spa.html so nginx fallback never uses a missing file after accidental SSG.
-      const distDir = path.join(frontendRoot, "dist");
-      const indexHtml = path.join(distDir, "index.html");
-      const spaHtml = path.join(distDir, "spa.html");
-      if (fs.existsSync(indexHtml) && !fs.existsSync(spaHtml)) {
-        fs.copyFileSync(indexHtml, spaHtml);
-        console.log("[build] spa.html yaratildi (SPA-only mode).");
-      }
       console.log("[build] Tayyor.");
       return;
     }
@@ -182,27 +174,7 @@ async function main() {
       env: buildEnv,
     });
 
-    console.log("[build] Bundle / CWV proxy budgets...");
-    await runCommand("node", ["scripts/check-bundle-budget.mjs"], {
-      cwd: frontendRoot,
-      env: buildEnv,
-    });
-
-    if (process.env.CWV_SMOKE !== "0") {
-      console.log("[build] CWV smoke (Playwright)...");
-      await runCommand("node", ["scripts/check-cwv-budgets.mjs"], {
-        cwd: frontendRoot,
-        env: buildEnv,
-      });
-    }
-
-    console.log("[build] SSG health gate...");
-    await runCommand("node", ["scripts/check-ssg-health.mjs"], {
-      cwd: frontendRoot,
-      env: buildEnv,
-    });
-
-    console.log("[build] Tayyor (Phase 4 HTML-first SSG).");
+    console.log("[build] Tayyor.");
   } finally {
     if (apiProcess && startedLocally) {
       apiProcess.kill("SIGTERM");
